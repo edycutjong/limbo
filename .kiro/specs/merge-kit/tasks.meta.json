@@ -163,6 +163,25 @@
         "chatSessionId": "sess_f88b7646-46e0-4a78-b64f-562e503ef4de",
         "timestamp": 1794730841326
       }
+    ],
+    "5.6 `kit/props/suite.props.test.ts` over the registry.": [
+      {
+        "executionId": "5b9fd4ff-c90a-40a6-a76d-f7cf180e08b8",
+        "chatSessionId": "sess_c5ae1fb3-b395-479f-afeb-f7fb091307ab",
+        "timestamp": 1794730869714
+      },
+      {
+        "executionId": "5b9fd4ff-c90a-40a6-a76d-f7cf180e08b8",
+        "chatSessionId": "sess_c5ae1fb3-b395-479f-afeb-f7fb091307ab",
+        "timestamp": 1794730919729
+      }
+    ],
+    "5. Property harness, intent properties, vacuity guard": [
+      {
+        "executionId": "5b9fd4ff-c90a-40a6-a76d-f7cf180e08b8",
+        "chatSessionId": "sess_c5ae1fb3-b395-479f-afeb-f7fb091307ab",
+        "timestamp": 1794730919731
+      }
     ]
   }
 }
