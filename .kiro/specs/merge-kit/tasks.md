@@ -7,10 +7,10 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests: new selftest cases in `kit/hooks/tests` (absolute path in, `./...` out; path outside root unchanged); all existing selftests stay green.
   - _Requirements: R18_
 
-- [ ] 2. Op layer and causal buffer
-  - [ ] 2.1 `skeleton/src/core/types.ts`: `Op`, `Stamp`, `VV`, `Intent`, `Merge`, `OpDef` as in `local-first.md`.
-  - [ ] 2.2 `skeleton/src/core/causal.ts`: `compareStamp`, `covers`, `concurrent`, `createOp`, `allocKey`, `canonical`.
-  - [ ] 2.3 `causalBuffer`: apply on deps met, hold otherwise, ignore duplicates, track contiguous `vv`.
+- [x] 2. Op layer and causal buffer
+  - [x] 2.1 `skeleton/src/core/types.ts`: `Op`, `Stamp`, `VV`, `Intent`, `Merge`, `OpDef` as in `local-first.md`.
+  - [x] 2.2 `skeleton/src/core/causal.ts`: `compareStamp`, `covers`, `concurrent`, `createOp`, `allocKey`, `canonical`.
+  - [x] 2.3 `causalBuffer`: apply on deps met, hold otherwise, ignore duplicates, track contiguous `vv`.
   - Tests (`skeleton/src/core/causal.test.ts`): stamp order by `l`, `r`, `n`, and `r` by code unit (`'B' < 'a'`, a non-BMP id case); `covers` and `concurrent` truth table; `createOp` sets `l`, `n`, `deps`; `canonical` sorts keys and rejects floats; buffer holds and releases out-of-order ops, ignores duplicates, `vv` stays contiguous; `allocKey` returns distinct keys for two replicas in one gap and loops on a prefix `right`.
   - _Requirements: R1, R2, R6.2, R6.3_
 

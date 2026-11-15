@@ -12,6 +12,18 @@
         "chatSessionId": "sess_73f3d634-28be-4b72-a004-90585ea88e0f",
         "timestamp": 1794729725364
       }
+    ],
+    "2. Op layer and causal buffer": [
+      {
+        "executionId": "c9bfab49-9135-4a8f-9e21-7f15263ec778",
+        "chatSessionId": "sess_bcae6c5e-ebca-4d8c-b0fd-dea66f7f246c",
+        "timestamp": 1794729778977
+      },
+      {
+        "executionId": "c9bfab49-9135-4a8f-9e21-7f15263ec778",
+        "chatSessionId": "sess_bcae6c5e-ebca-4d8c-b0fd-dea66f7f246c",
+        "timestamp": 1794729854092
+      }
     ]
   }
 }
