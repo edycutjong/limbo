@@ -41,15 +41,14 @@
       "move-move": 0.9794,
       "move-same-gap": 0.917,
       "move-delete": 0.9987,
-      "claim-release-claim": 0.6487
+      "claim-release-claim": 0.6487,
+      "lww-equal": 0.9545,
+      "lww-different": 0.9414
     },
-    "na": [
-      "lww-equal",
-      "lww-different"
-    ]
+    "na": []
   },
   "yjsVersion": "13.6.33",
   "nodeVersion": "22.22.0",
-  "durationMs": 428034,
+  "durationMs": 463003,
   "date": "2026-11-15"
 }
