@@ -8,10 +8,13 @@ import { describe, expect, it } from 'vitest';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
 import { CONFLICT_CLASSES } from './arbitraries/index.ts';
 import { config } from './config.ts';
-import { runOpProperties } from './run.ts';
+import { runOpProperties, type RunOptions } from './run.ts';
 import { MIN_SHARE, formatVacuity, measureVacuity, vacuityFailures } from './vacuity.ts';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+/** Per-op options come from the sibling `<op>.props.ts` (`export const opts`), as in each op's own test. */
+const optsByOp = new Map<string, RunOptions>();
 
 async function loadRegistry(): Promise<OpDef[]> {
   const appsDir = join(ROOT, 'apps');
@@ -21,7 +24,13 @@ async function loadRegistry(): Promise<OpDef[]> {
     const file = join(appsDir, app, 'src', 'ops', 'registry.gen.ts');
     if (!existsSync(file)) continue;
     const mod = (await import(pathToFileURL(file).href)) as { ops?: OpDef[] };
-    defs.push(...(mod.ops ?? []));
+    for (const def of mod.ops ?? []) {
+      defs.push(def);
+      const propsFile = join(appsDir, app, 'src', 'ops', `${def.name}.props.ts`);
+      if (!existsSync(propsFile)) continue;
+      const pm = (await import(pathToFileURL(propsFile).href)) as { opts?: RunOptions };
+      if (pm.opts) optsByOp.set(def.name, pm.opts);
+    }
   }
   return defs;
 }
@@ -33,10 +42,19 @@ if (defs.length === 0) {
     it.skip('skipped:no-ops (no registered ops; not counted as passing)', () => {});
   });
 } else {
-  for (const def of defs) runOpProperties(def);
+  for (const def of defs) runOpProperties(def, optsByOp.get(def.name));
+
+  // Mixed-script generator for the vacuity guard: each op draws its payload from its own generator, and every
+  // op lands on one hot item so ops of different kinds collide (delete-edit, claim-delete, move-delete ...).
+  const gen: NonNullable<RunOptions['gen']> = (def, rand) => {
+    const g = optsByOp.get(def.name)?.gen ?? (() => ({ target: 't0', payload: {} }));
+    return { ...g(def, rand), target: 't0' };
+  };
+  // Long scripts: a class such as claim-release-claim needs three causally chained ops on one replica.
+  const steps = { min: 40, max: 80 };
 
   describe('vacuity guard', () => {
-    const report = measureVacuity(defs);
+    const report = measureVacuity(defs, { gen, steps });
     const na = new Set(report.na);
     for (const c of CONFLICT_CLASSES) {
       if (na.has(c.name)) {

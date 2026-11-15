@@ -304,6 +304,18 @@
         "chatSessionId": "sess_ba7cdbf2-2d93-4d74-8e5b-06c9bae4c1fc",
         "timestamp": 1794731992708
       }
+    ],
+    "9.5 `item.move`.": [
+      {
+        "executionId": "e4601877-10af-45c3-8820-3f840e9cd72e",
+        "chatSessionId": "sess_aa116fe3-cc24-4048-8e7e-30904e1435cf",
+        "timestamp": 1794732031511
+      },
+      {
+        "executionId": "e4601877-10af-45c3-8820-3f840e9cd72e",
+        "chatSessionId": "sess_aa116fe3-cc24-4048-8e7e-30904e1435cf",
+        "timestamp": 1794732075344
+      }
     ]
   }
 }

@@ -60,7 +60,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - [x] 9.2 `item.add`, `item.tick`.
   - [x] 9.3 `item.delete`, `item.restore`.
   - [x] 9.4 `item.claim`, `item.release`.
-  - [ ] 9.5 `item.move`.
+  - [x] 9.5 `item.move`.
   - [ ] 9.6 Generate `registry.gen.ts` with the existing scaffold hook; add a `*.props.test.ts` per op that calls `runOpProperties`.
   - Tests: `pnpm props` on all seven ops (convergence, replay, intent, no lost edit, idempotence, every vacuity class that these ops can reach); golden G01 to G19 now run and pass; `pnpm test` unit tests for `materialize` on G01; `op-lint` passes on every op file; mutants still all fail.
   - _Requirements: R8.1 to R8.3, R8.5, R10, R11, R12, R14_
