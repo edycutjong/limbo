@@ -21,7 +21,8 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statS
 import { dirname, join, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+// LIMBO_RUN_ROOT points the wrapper at a throwaway copy (the A/B runs); default is this repository.
+const ROOT = process.env.LIMBO_RUN_ROOT || join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const KIRO = process.env.KIRO_CLI || 'kiro-cli';
 const RUNAWAY_CREDITS = 10;
 
