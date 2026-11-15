@@ -56,6 +56,88 @@ describe('guard-shell', () => {
     expect(r.code).toBe(0);
     expect(rows().map((x) => x.result)).toEqual(['allow']);
   });
+
+  const DENIED_GIT = [
+    'stash', 'stash pop', 'checkout main', 'switch main', 'restore f', 'reset', 'reset --hard', 'clean -fd', 'add .', 'rm f',
+    'mv a b', 'merge x', 'rebase x', 'cherry-pick x', 'revert x', 'tag v1', 'branch feature', 'branch -D x', 'config user.name x',
+    'apply p.diff', 'am p.mbox', 'fetch', 'pull', 'clone u', 'worktree add ../w', 'submodule update', 'init', 'commit -m x',
+    'push origin main',
+  ];
+  it.each(DENIED_GIT)('denies git %s', (sub) => {
+    const r = run('guard-shell', shell(`git ${sub}`));
+    expect(r.code).toBe(2);
+    expect(r.err).toContain('git diff');
+    expect(r.err).toContain('git show HEAD:<path>');
+    expect(rows().map((x) => x.result)).toEqual(['deny']);
+  });
+  it.each([
+    'git -C . stash',
+    'git -c a.b=c checkout x',
+    '/usr/bin/git add .',
+    'echo ok && git stash pop',
+    'false || git reset',
+    'echo a; git add f',
+    'cat f | git apply',
+    'echo $(git stash)',
+    'echo "$(git checkout x)"',
+    'echo `git add .`',
+    'FOO=1 git add .',
+    'env FOO=1 git add .',
+    'env -u X git add .',
+    'sudo git clean -fd',
+    'sudo -u root git rm f',
+    'command git add .',
+    'xargs git rm',
+    'bash -c "git stash"',
+    "sh -c 'echo a && git add .'",
+    'eval git reset',
+    'git status\ngit stash',
+    'cat <<EOF\nhi\nEOF\ngit add .',
+    '(git stash)',
+  ])('denies real git command position: %s', (c) => {
+    expect(run('guard-shell', shell(c)).code).toBe(2);
+  });
+  it.each([
+    'git status',
+    'git status --short',
+    'git diff',
+    'git diff HEAD~1 -- f',
+    'git log --oneline -5',
+    'git show HEAD:kit/x.mjs',
+    'git ls-files',
+    'git rev-parse HEAD',
+    'git blame f',
+    'git grep foo',
+    'git branch',
+    'git -C . diff',
+    'git --no-pager log',
+    'git diff | head',
+    'git diff > /tmp/x.patch 2>&1',
+    'git show HEAD:f && git status',
+  ])('allows read-only %s', (c) => {
+    const r = run('guard-shell', shell(c));
+    expect(r.code).toBe(0);
+    expect(rows().map((x) => x.result)).toEqual(['allow']);
+  });
+  it.each([
+    "cat <<'EOF'\nrun git push and git stash\nEOF",
+    'cat <<EOF\ngit push origin main\nEOF',
+    'cat <<-EOF > notes.md\n\tgit commit -m x\n\tEOF',
+    'cat <<EOF | wc -l\ngit add .\nEOF\necho done',
+    'echo "git push"',
+    "echo 'git stash pop; git add .'",
+    'echo "run git push && git commit"',
+    'grep -n "git push" README.md',
+    'node -e "console.log(1)" # git push',
+    'echo "a" > f && echo hi',
+  ])('allows text that only mentions git: %s', (c) => {
+    const r = run('guard-shell', shell(c));
+    expect(r.code).toBe(0);
+    expect(rows().map((x) => x.result)).toEqual(['allow']);
+  });
+  it('keeps existing denials after a heredoc', () => {
+    expect(run('guard-shell', shell('cat <<EOF\nx\nEOF\ngh pr create')).code).toBe(2);
+  });
 });
 
 const INTENTS = JSON.stringify({ 'add-item': { intent: { kind: 'add-remove' } }, bump: { intent: { kind: 'delta' } } });
