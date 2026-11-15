@@ -335,6 +335,18 @@
         "chatSessionId": "sess_8a104c26-b233-4e03-930f-9ddf12990d1f",
         "timestamp": 1794732414970
       }
+    ],
+    "10. Full-tier evidence script": [
+      {
+        "executionId": "be20f510-f07a-4eb0-ad8d-b063b34b87ff",
+        "chatSessionId": "sess_d4d6b4e4-8bae-40bd-8ad9-a067f3353ab6",
+        "timestamp": 1794732525858
+      },
+      {
+        "executionId": "be20f510-f07a-4eb0-ad8d-b063b34b87ff",
+        "chatSessionId": "sess_d4d6b4e4-8bae-40bd-8ad9-a067f3353ab6",
+        "timestamp": 1794733032682
+      }
     ]
   }
 }

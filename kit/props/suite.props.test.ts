@@ -9,6 +9,7 @@ import type { OpDef } from '../../skeleton/src/core/types.ts';
 import { CONFLICT_CLASSES } from './arbitraries/index.ts';
 import { config } from './config.ts';
 import { runOpProperties, type RunOptions } from './run.ts';
+import { writeSidecar } from './sidecar.ts';
 import { MIN_SHARE, formatVacuity, measureVacuity, vacuityFailures } from './vacuity.ts';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -38,6 +39,7 @@ async function loadRegistry(): Promise<OpDef[]> {
 const defs = await loadRegistry();
 
 if (defs.length === 0) {
+  writeSidecar(null);
   describe('props suite', () => {
     it.skip('skipped:no-ops (no registered ops; not counted as passing)', () => {});
   });
@@ -55,6 +57,7 @@ if (defs.length === 0) {
 
   describe('vacuity guard', () => {
     const report = measureVacuity(defs, { gen, steps });
+    writeSidecar(report);
     const na = new Set(report.na);
     for (const c of CONFLICT_CLASSES) {
       if (na.has(c.name)) {

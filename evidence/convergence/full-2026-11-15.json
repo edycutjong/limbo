@@ -1,0 +1,55 @@
+{
+  "tier": "full",
+  "replicas": 3,
+  "orderings": 10000,
+  "seed": 20251031,
+  "passed": true,
+  "passesPerProperty": {
+    "convergence": 14,
+    "replay equivalence": 14,
+    "idempotence": 14,
+    "commutes": 14,
+    "no lost edit": 14,
+    "intent:create": 2,
+    "manifest": 14,
+    "intent:claim": 4,
+    "intent:life": 4,
+    "intent:move": 2,
+    "intent:set": 2
+  },
+  "failuresPerProperty": {
+    "convergence": 0,
+    "replay equivalence": 0,
+    "idempotence": 0,
+    "commutes": 0,
+    "no lost edit": 0,
+    "intent:create": 0,
+    "manifest": 0,
+    "intent:claim": 0,
+    "intent:life": 0,
+    "intent:move": 0,
+    "intent:set": 0
+  },
+  "vacuity": {
+    "runs": 10000,
+    "share": {
+      "delete-edit": 0.9996,
+      "restore-delete": 0.9991,
+      "keep-delete": 0.9807,
+      "claim-claim": 0.9779,
+      "claim-delete": 0.9987,
+      "move-move": 0.9794,
+      "move-same-gap": 0.917,
+      "move-delete": 0.9987,
+      "claim-release-claim": 0.6487
+    },
+    "na": [
+      "lww-equal",
+      "lww-different"
+    ]
+  },
+  "yjsVersion": "13.6.33",
+  "nodeVersion": "22.22.0",
+  "durationMs": 428034,
+  "date": "2026-11-15"
+}
