@@ -127,6 +127,18 @@
         "chatSessionId": "sess_0fc577a3-3445-4791-bca3-4ace9ff8ae54",
         "timestamp": 1794730449581
       }
+    ],
+    "5.3 `kit/props/intent/*.ts`: `set`, `delta`, `add-remove`, `max`, `claim`, `life`, `split`, `move`, each with an independent oracle.": [
+      {
+        "executionId": "fbdc99a2-b802-4daa-9e23-53fc29b6cd3d",
+        "chatSessionId": "sess_58b76656-a77d-466e-a23d-8e0d48e7844b",
+        "timestamp": 1794730478484
+      },
+      {
+        "executionId": "fbdc99a2-b802-4daa-9e23-53fc29b6cd3d",
+        "chatSessionId": "sess_58b76656-a77d-466e-a23d-8e0d48e7844b",
+        "timestamp": 1794730615042
+      }
     ]
   }
 }
