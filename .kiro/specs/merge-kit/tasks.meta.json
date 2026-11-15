@@ -115,6 +115,18 @@
         "chatSessionId": "sess_6aa6573b-23c8-4713-9551-15cdfeb83027",
         "timestamp": 1794730316105
       }
+    ],
+    "5.2 `kit/props/run.ts`: `runOpProperties(def)`; convergence, replay equivalence, idempotence, commutes, no lost edit, manifest check, shrunk failure message.": [
+      {
+        "executionId": "c867af9a-fbbc-4634-92f2-b66c1f7628ce",
+        "chatSessionId": "sess_0fc577a3-3445-4791-bca3-4ace9ff8ae54",
+        "timestamp": 1794730344351
+      },
+      {
+        "executionId": "c867af9a-fbbc-4634-92f2-b66c1f7628ce",
+        "chatSessionId": "sess_0fc577a3-3445-4791-bca3-4ace9ff8ae54",
+        "timestamp": 1794730449581
+      }
     ]
   }
 }
