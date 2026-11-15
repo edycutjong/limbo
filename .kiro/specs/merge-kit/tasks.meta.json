@@ -237,6 +237,25 @@
         "chatSessionId": "sess_c21ee848-d172-4f72-aa51-be19c55fdf31",
         "timestamp": 1794731473312
       }
+    ],
+    "8.2 `kit/props/mutants.props.test.ts`: each fixture must fail at least one property or golden history and name it.": [
+      {
+        "executionId": "7d38979c-78e5-457d-961d-5393e8459b83",
+        "chatSessionId": "sess_b156ec1c-414f-44d3-8ba4-fdf729650cf7",
+        "timestamp": 1794731504299
+      },
+      {
+        "executionId": "7d38979c-78e5-457d-961d-5393e8459b83",
+        "chatSessionId": "sess_b156ec1c-414f-44d3-8ba4-fdf729650cf7",
+        "timestamp": 1794731563951
+      }
+    ],
+    "8. Mutation fixtures and mutant test": [
+      {
+        "executionId": "7d38979c-78e5-457d-961d-5393e8459b83",
+        "chatSessionId": "sess_b156ec1c-414f-44d3-8ba4-fdf729650cf7",
+        "timestamp": 1794731563954
+      }
     ]
   }
 }
