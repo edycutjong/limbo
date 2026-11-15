@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Op, OpDef } from '../../skeleton/src/core/types.ts';
-import { classify, measureVacuity, vacuityFailures, vacuityReport } from './vacuity.ts';
+import { classify, measureVacuity, measureVacuityAsync, vacuityFailures, vacuityReport } from './vacuity.ts';
 import { checkManifest, checkRun, failingProperties, type RunOptions } from './run.ts';
 
 type S = { v?: number; n?: number; ticked?: boolean };
@@ -134,6 +134,17 @@ describe('vacuity guard', () => {
     const hot: RunOptions['gen'] = () => ({ target: 't', payload: { who: 'ann' } });
     const ok = measureVacuity([claim], { gen: hot, steps: { min: 8, max: 14 } }, 40);
     expect(vacuityFailures(ok)).toEqual([]);
+  });
+
+  it('measureVacuityAsync returns a report deep-equal to measureVacuity (and yields past 50 runs)', async () => {
+    const tick: OpDef = { name: 'item.tick', merge: 'causal-lww', intent: { kind: 'set', field: 'ticked' } };
+    const claim: OpDef = { name: 'item.claim', merge: 'claim-one', intent: { kind: 'claim' } };
+    const g: RunOptions['gen'] = (_d, rand) => ({ target: 't', payload: { ticked: rand.chance(0.5), who: 'ann' } });
+    const opts: RunOptions = { gen: g, steps: { min: 6, max: 10 } };
+    const sync = measureVacuity([tick, claim], opts, 120);
+    const async_ = await measureVacuityAsync([tick, claim], opts, 120);
+    expect(async_).toEqual(sync);
+    expect(sync.runs).toBe(120);
   });
 
   it('share is the fraction of runs containing the class', () => {

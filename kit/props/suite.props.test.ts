@@ -4,13 +4,13 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
-import { CONFLICT_CLASSES } from './arbitraries/index.ts';
+import { CONFLICT_CLASSES, applicableClasses } from './arbitraries/index.ts';
 import { config } from './config.ts';
 import { runOpProperties, type RunOptions } from './run.ts';
 import { writeSidecar } from './sidecar.ts';
-import { MIN_SHARE, formatVacuity, measureVacuity, vacuityFailures } from './vacuity.ts';
+import { MIN_SHARE, formatVacuity, measureVacuityAsync, vacuityFailures, type VacuityReport } from './vacuity.ts';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
@@ -56,9 +56,18 @@ if (defs.length === 0) {
   const steps = { min: 40, max: 80 };
 
   describe('vacuity guard', () => {
-    const report = measureVacuity(defs, { gen, steps });
-    writeSidecar(report);
-    const na = new Set(report.na);
+    // n/a classes depend only on the registered defs, so they are known at collection time.
+    const { na: naList } = applicableClasses(
+      defs.map((d) => d.name),
+      defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name),
+    );
+    const na = new Set(naList);
+    // The simulation runs in beforeAll (async, yielding) so no sync block outlives Vitest's worker RPC timeout.
+    let report!: VacuityReport;
+    beforeAll(async () => {
+      report = await measureVacuityAsync(defs, { gen, steps });
+      writeSidecar(report);
+    }, 30 * 60_000);
     for (const c of CONFLICT_CLASSES) {
       if (na.has(c.name)) {
         it.skip(`${c.name}: n/a (${c.anyLww ? 'no causal-lww op registered' : `op not registered: ${c.requires.join(', ')}`})`, () => {});

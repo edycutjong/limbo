@@ -125,8 +125,14 @@ export function formatVacuity(report: VacuityReport): string {
   return [`vacuity over ${report.runs} runs:`, ...lines, ...na].join('\n');
 }
 
-/** Simulate `runs` scripts over all registered defs and measure class shares. */
-export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, runs?: number): VacuityReport {
+/** Yield to the event loop every this many runs in the async variant. */
+const YIELD_EVERY = 50;
+
+/**
+ * The one shared implementation: a generator that simulates run by run and yields the run index
+ * after each run, then returns the report. Sync and async drivers differ only in when they pause.
+ */
+function* vacuityRuns(defs: readonly OpDef[], opts: RunOptions, runs?: number): Generator<number, VacuityReport, void> {
   const cfg = opts.config ?? defaultConfig;
   const n = runs ?? cfg.orderings;
   const range = opts.steps ?? { min: 2, max: 14 };
@@ -143,10 +149,34 @@ export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, ru
       ...(opts.gen ? { gen: opts.gen } : {}),
     });
     sets.push(classify(res.ops, lwwOps));
+    yield i + 1;
   }
   return vacuityReport(
     defs.map((d) => d.name),
     sets,
     lwwOps,
   );
+}
+
+/** Simulate `runs` scripts over all registered defs and measure class shares. */
+export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, runs?: number): VacuityReport {
+  const it = vacuityRuns(defs, opts, runs);
+  for (;;) {
+    const r = it.next();
+    if (r.done) return r.value;
+  }
+}
+
+/** Same loop, seeds and steps as `measureVacuity`, but yields to the event loop every 50 runs. */
+export async function measureVacuityAsync(
+  defs: readonly OpDef[],
+  opts: RunOptions = {},
+  runs?: number,
+): Promise<VacuityReport> {
+  const it = vacuityRuns(defs, opts, runs);
+  for (;;) {
+    const r = it.next();
+    if (r.done) return r.value;
+    if (r.value % YIELD_EVERY === 0) await new Promise<void>((res) => setImmediate(res));
+  }
 }
