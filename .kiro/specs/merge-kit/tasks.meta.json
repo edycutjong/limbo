@@ -316,6 +316,25 @@
         "chatSessionId": "sess_aa116fe3-cc24-4048-8e7e-30904e1435cf",
         "timestamp": 1794732075344
       }
+    ],
+    "9.6 Generate `registry.gen.ts` with the existing scaffold hook; add a `*.props.test.ts` per op that calls `runOpProperties`.": [
+      {
+        "executionId": "bc7d1fbd-f739-4fd3-9a13-c3adab5eafc3",
+        "chatSessionId": "sess_8a104c26-b233-4e03-930f-9ddf12990d1f",
+        "timestamp": 1794732362621
+      },
+      {
+        "executionId": "bc7d1fbd-f739-4fd3-9a13-c3adab5eafc3",
+        "chatSessionId": "sess_8a104c26-b233-4e03-930f-9ddf12990d1f",
+        "timestamp": 1794732414964
+      }
+    ],
+    "9. First BASECAMP ops (except rename)": [
+      {
+        "executionId": "bc7d1fbd-f739-4fd3-9a13-c3adab5eafc3",
+        "chatSessionId": "sess_8a104c26-b233-4e03-930f-9ddf12990d1f",
+        "timestamp": 1794732414970
+      }
     ]
   }
 }
