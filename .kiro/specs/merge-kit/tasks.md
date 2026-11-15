@@ -23,7 +23,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests (`skeleton/src/core/merges.test.ts`): hand-built op sets for each rule, each checked under all permutations and with duplicates (order independence, idempotence); equal concurrent values collapse; dominating write resolves; G05 shape gives twin; release-then-reclaim; units 2; deleted item has no winners.
   - _Requirements: R3, R4, R5, R6, R7_
 
-- [ ] 4. Simulator
+- [x] 4. Simulator
   - `simulate.ts`: script generation from registered `OpDef`s, per-replica skew via `withSkew`, random causal-consistent delivery, duplicates, trace. `explainTrace`.
   - Tests (`skeleton/src/core/simulate.test.ts`): same seed gives same trace; every delivery order is causal; some ops are delivered twice; `Date.now` and `performance.now` are restored after a throw; `explainTrace` names the first differing step on a hand-made divergent trace. Uses a stub `OpDef` set inside the test, since app ops do not exist yet.
   - _Requirements: R9_
