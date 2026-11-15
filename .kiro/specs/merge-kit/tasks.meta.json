@@ -371,6 +371,18 @@
         "chatSessionId": "sess_4e78e4dd-8724-41e4-a880-5110c66a3d9d",
         "timestamp": 1794733331326
       }
+    ],
+    "11.3 `e2e/offline-spike.spec.ts` as in R17.4 to R17.6.": [
+      {
+        "executionId": "c8c02289-31bc-4146-9112-d19151fd9fcf",
+        "chatSessionId": "sess_001e430d-ba8e-41d1-aee2-fe747eafb5df",
+        "timestamp": 1794733410176
+      },
+      {
+        "executionId": "c8c02289-31bc-4146-9112-d19151fd9fcf",
+        "chatSessionId": "sess_001e430d-ba8e-41d1-aee2-fe747eafb5df",
+        "timestamp": 1794733457959
+      }
     ]
   }
 }
