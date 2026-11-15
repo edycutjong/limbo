@@ -1,0 +1,25 @@
+{
+  "name": "limbo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "A local-first skeleton where every op declares its merge rule, plus a Kiro kit that blocks merges that diverge.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --project unit",
+    "props": "vitest run --project props",
+    "e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.59.1",
+    "@types/node": "^22.20.5",
+    "fast-check": "4.10.2",
+    "typescript": "~5.9.3",
+    "vitest": "^3.2.7"
+  }
+}

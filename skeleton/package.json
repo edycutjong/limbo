@@ -1,0 +1,15 @@
+{
+  "name": "@limbo/skeleton",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "fractional-indexing": "4.0.0",
+    "y-indexeddb": "9.0.12",
+    "yjs": "13.6.33"
+  }
+}

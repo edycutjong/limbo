@@ -1,0 +1,4 @@
+packages:
+  - skeleton
+  - apps/*
+  - kit
