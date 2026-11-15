@@ -1,0 +1,19 @@
+{
+  "item.add": { "kind": "create" },
+  "item.tick": { "kind": "set" },
+  "item.rename": { "kind": "set" },
+  "item.delete": { "kind": "life" },
+  "item.restore": { "kind": "life" },
+  "item.claim": { "kind": "claim" },
+  "item.release": { "kind": "claim" },
+  "item.move": { "kind": "move" },
+  "item.adjustQty": { "kind": "delta" },
+  "expense.add": { "kind": "split" },
+  "expense.setAmount": { "kind": "split" },
+  "expense.addMember": { "kind": "split" },
+  "sector.report": { "kind": "max" },
+  "sector.clear": { "kind": "max" },
+  "sector.count": { "kind": "set" },
+  "sector.need": { "kind": "add-remove" },
+  "sector.note": { "kind": "set" }
+}

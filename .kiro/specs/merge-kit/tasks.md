@@ -38,7 +38,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests: `kit/props/run.test.ts` (unit): config tiers and seed override; failure message has script, order, seed, trace; `classify` flags each class on a hand-made script; vacuity fails when a class share is under 50% (stub generator); intent modules pass on small correct fixture reducers for `delta`, `add-remove`, `max`, `split`.
   - _Requirements: R10, R11, R12_
 
-- [ ] 6. Intent manifest
+- [x] 6. Intent manifest
   - `kit/props/intents.json` with the 17 entries from R13.
   - Tests: `kit/props/manifest.test.ts`: the 17 names and kinds match exactly; every kind is a valid `Intent['kind']`; the harness fails an op with a wrong or missing entry.
   - _Requirements: R13, R10.6, R10.7_

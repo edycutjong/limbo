@@ -182,6 +182,18 @@
         "chatSessionId": "sess_c5ae1fb3-b395-479f-afeb-f7fb091307ab",
         "timestamp": 1794730919731
       }
+    ],
+    "6. Intent manifest": [
+      {
+        "executionId": "f32f41e1-aa16-46a1-bffd-8bb09ede3336",
+        "chatSessionId": "sess_7ccee71a-5703-48b7-84de-9997a1033048",
+        "timestamp": 1794730944748
+      },
+      {
+        "executionId": "f32f41e1-aa16-46a1-bffd-8bb09ede3336",
+        "chatSessionId": "sess_7ccee71a-5703-48b7-84de-9997a1033048",
+        "timestamp": 1794731000473
+      }
     ]
   }
 }

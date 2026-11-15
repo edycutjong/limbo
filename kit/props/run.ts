@@ -50,7 +50,10 @@ export function checkManifest(def: OpDef, manifest: Readonly<Record<string, Inte
   if (manifest === undefined) return `intents.json not found; op "${def.name}" has no manifest entry`;
   const entry = manifest[def.name];
   if (entry === undefined) return `op "${def.name}" is missing from intents.json`;
-  if (canonical(entry) !== canonical(def.intent)) {
+  // R13 maps op name to intent kind. An entry that also names a `field` must match it too.
+  const entryField = (entry as { field?: string }).field;
+  const defField = (def.intent as { field?: string }).field;
+  if (entry.kind !== def.intent.kind || (entryField !== undefined && entryField !== defField)) {
     return `op "${def.name}" declares intent ${canonical(def.intent)} but intents.json has ${canonical(entry)}`;
   }
   return true;
