@@ -347,6 +347,18 @@
         "chatSessionId": "sess_d4d6b4e4-8bae-40bd-8ad9-a067f3353ab6",
         "timestamp": 1794733032682
       }
+    ],
+    "11.1 `skeleton/src/sync/store.ts` (Yjs `Y.Map` + `y-indexeddb`), the only Yjs importer.": [
+      {
+        "executionId": "d1fd0537-ca98-48b9-9574-602a7e257f9c",
+        "chatSessionId": "sess_525cb7d1-be8d-4ff3-8e5b-2d94e0db0402",
+        "timestamp": 1794733118115
+      },
+      {
+        "executionId": "d1fd0537-ca98-48b9-9574-602a7e257f9c",
+        "chatSessionId": "sess_525cb7d1-be8d-4ff3-8e5b-2d94e0db0402",
+        "timestamp": 1794733172620
+      }
     ]
   }
 }
