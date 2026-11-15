@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except where later ops do not exist yet (then the suite reports `skipped:no-ops` for that part). Tests and properties are never weakened to pass.
 
-- [ ] 1. Kit hygiene: repo-relative ledger paths
+- [x] 1. Kit hygiene: repo-relative ledger paths
   - In `kit/hooks/lib.mjs`, add `rel(p)` and apply it to `target` and `detail` when the ledger entry is built.
   - Tests: new selftest cases in `kit/hooks/tests` (absolute path in, `./...` out; path outside root unchanged); all existing selftests stay green.
   - _Requirements: R18_

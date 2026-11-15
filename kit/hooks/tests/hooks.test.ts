@@ -165,6 +165,26 @@ describe('props hooks', () => {
   });
 });
 
+describe('ledger paths are repo-relative', () => {
+  it('rewrites an absolute path under the root to ./...', () => {
+    const r = run('op-lint', { ...sample('PostFileCreate'), hook_event_name: 'PostFileSave', cwd: tmp, file_path: join(tmp, 'apps/a/src/ops/x.op.ts') });
+    expect(r.code).toBe(0);
+    expect(rows()[0].target).toBe('./apps/a/src/ops/x.op.ts');
+  });
+  it('leaves a path outside the root unchanged', () => {
+    const outside = join(tmpdir(), 'elsewhere-limbo', 'y.op.ts');
+    run('op-lint', { ...sample('PostFileCreate'), hook_event_name: 'PostFileSave', cwd: tmp, file_path: outside });
+    expect(rows()[0].target).toBe(outside);
+  });
+  it('rewrites root paths inside detail', () => {
+    put('kit/props/intents.json', INTENTS);
+    put('apps/a/src/ops/bump.op.ts', goodOp.replace('(s) => s', '(s) => ({ t: Date.now() })'));
+    put('apps/a/src/ops/bump.props.test.ts', '');
+    run('op-lint', { ...sample('PostFileCreate'), hook_event_name: 'PostFileSave', cwd: tmp, file_path: join(tmp, 'apps/a/src/ops/bump.op.ts') });
+    expect(rows()[0].detail).not.toContain(tmp);
+  });
+});
+
 describe('other hooks and the one-line-per-run rule', () => {
   it('session-context prints ops and logs context', () => {
     put('apps/a/src/ops/bump.op.ts', goodOp);

@@ -9,6 +9,15 @@ export function root() {
   return resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 }
 
+// Repo-relative form of a path: the root prefix becomes `.`. Text outside the root is unchanged.
+export function rel(p) {
+  if (typeof p !== 'string') return p;
+  const r = root().replace(/\/+$/, '');
+  if (!r) return p;
+  const esc = r.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return p.replace(new RegExp(`${esc}(?=/|$|[^\\w.-])`, 'g'), '.');
+}
+
 export function readEvent() {
   try {
     const text = readFileSync(0, 'utf8');
@@ -36,6 +45,8 @@ export function log(row) {
     detail: null,
     ...row,
   };
+  line.target = rel(line.target);
+  line.detail = rel(line.detail);
   try {
     const p = hooksLogPath();
     mkdirSync(dirname(p), { recursive: true });
