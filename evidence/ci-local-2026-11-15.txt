@@ -1,4 +1,4 @@
-# Local CI run (GitHub Actions blocked by billing; HUMAN-TODO 8)
+# Local CI run (GitHub Actions on this private repo do not start: account billing / spending limit)
 commit: 6fef05bff0fd5017a29a59730fb96af93e724170
 date: 2026-11-15T09:54:08Z
 machine: Apple M1 Max, macOS 26.5.2

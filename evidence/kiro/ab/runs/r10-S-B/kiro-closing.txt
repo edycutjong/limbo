@@ -1,0 +1,45 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+I couldn't get `pnpm props` green from the op side. One property still fails, and the fix belongs in kit files you told me not to edit. `pnpm typecheck` and `pnpm test` are green (204/204). `pnpm props` has 172 passed, 2 skipped and 1 failed.
+
+**The failing property.** It is not in `apps/_ab`. It is the vacuity guard in `kit/props/suite.props.test.ts` (the assertion is at line 78):
+
+```
+× vacuity guard > claim-release-claim occurs in at least 50% of 500 runs
+  delete-edit: 99.8%  restore-delete: 99.2%  keep-delete: 93.0%  claim-claim: 96.0%
+  claim-delete: 99.4% move-move: 95.0%  move-same-gap: 85.2%  move-delete: 99.4%
+  claim-release-claim: 45.8%  lww-equal: 96.4%  lww-different: 99.0%
+"conflict class \"claim-release-claim\" occurred in 45.8% of 500 runs, under 50%; fix the generator, not the threshold"
+```
+
+There is no counterexample, because nothing in sector.report is wrong. Every sector.report property passes: convergence, replay equivalence, idempotence, commutes, no lost edit, `intent:max`, `intent:max-frontier` and manifest. All mutant and golden tests pass too.
+
+**Cause.** The vacuity guard runs one mixed simulation over every op in every app's `registry.gen.ts`. `simulate.ts` (around line 135) picks each step's op uniformly with `rand.pick(defs)`, and scripts are 40 to 80 steps. Registering sector.report as a 10th op means basecamp's claim and release ops get picked less often. The claim, then release, then claim-again chain on one replica now shows up in fewer runs and drops under the 50% bar. To confirm this, I emptied `apps/_ab/src/ops/registry.gen.ts` for one run. The guard then passed (11/11), and I restored the file afterwards (checked with `diff`). Any 10th op from any app would hit the same problem.
+
+**The conflict.** Nothing in the op or its `*.props.ts` controls op selection or the vacuity script length. The only fixes are in kit files:
+- Weight op selection in the guard's mixed generator or in `simulate`.
+- Lengthen the guard's `steps` in `suite.props.test.ts`.
+- Measure vacuity per app's registry instead of over all of them.
+
+Lowering `MIN_SHARE` would weaken the guard, so that's not an option. I can't reach 50% from the op side. Tuning sector.report's payload generator to use up random draws just shifts the seed by luck, so I didn't do it. A kit owner needs to choose one of the fixes above. Do you want me to hand this to the `limbo-kitsmith` agent?
+
+**What I changed.** I only edited `apps/_ab/src/ops/sector.report.props.ts`. I added the kit oracle (`kit/props/intent/max.ts`) next to the existing `intent:max-frontier` check, and removed nothing. Every `sector.report` counts as a level report and also as an observing clear of the reports it has seen, which is the R2.3 re-inspection. In `common.ts`, `sees` never counts a report as seeing itself. So the kit oracle works out to "highest severity among reports no other report has seen", which is the behaviour R2.2 to R2.4 describe. The kit oracle does work for this op, so I found no conflict with R2.3. The op file `sector.report.op.ts` needed no change and both checks pass against it.
+
+---
+
+Task 2 is not done, so I've left it `in_progress`. `sector.report` itself passes all its properties, but `pnpm props` still fails with 1 failure, 172 passed and 2 skipped. `pnpm typecheck` and `pnpm test` are green (204/204).
+
+**What fails:** the vacuity guard in `kit/props/suite.props.test.ts` (line 78). Its message is: `claim-release-claim occurred in 45.8% of 500 runs, under 50%; fix the generator, not the threshold`.
+
+**Why it fails:** the guard runs one mixed simulation over every op in every app's `registry.gen.ts`. `simulate.ts` (around line 135) picks ops uniformly. Adding `sector.report` as a 10th op makes basecamp's claim and release ops get picked less often, so that chain drops below the bar. The subagent emptied `apps/_ab/src/ops/registry.gen.ts` for one run, and the guard passed 11/11. It then restored the file and checked the restore with `diff`.
+
+**What the subagent changed:** only `apps/_ab/src/ops/sector.report.props.ts`. It added the kit's `max` oracle next to the custom `intent:max-frontier` check. Both pass, and nothing was removed or weakened. The op file needed no change.
+
+The fix has to go in kit files, which the op can't reach and which the rules say not to edit. The options are:
+1. Weight op selection in `simulate` or the guard's generator.
+2. Lengthen the guard's `steps`.
+3. Measure vacuity per app registry instead of across all of them.
+
+Lowering the 50% threshold would weaken the guard, so it's not an option.
+
+Do you want me to hand this to the `limbo-kitsmith` agent? If so, tell me which of the three fixes you prefer, or whether to let it choose.

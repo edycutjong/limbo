@@ -1,0 +1,33 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 1 is done and marked completed. `pnpm typecheck && pnpm test` passes (204 unit tests, 7 of them new). I did not run `pnpm props`. I did not start task 2.
+
+- **Files:** `apps/_ab/src/ops/item.adjustQty.op.ts` and `apps/_ab/src/ops/item.adjustQty.op.test.ts`.
+- **Op declaration:** merge `commutes`, intent `delta` on `qty`, matching its entry in `kit/props/intents.json`.
+- **Behavior:**
+  - `qty` is the sum of the applied `by` values, so concurrent +1s from two devices both count.
+  - Applying the same op id twice does nothing.
+  - `apply` ignores a `by` that is not a safe integer.
+  - The payload builder throws a `RangeError` for a non-integer `by`.
+- **Not added:** a `*.props.ts` property file. The design and task asked only for unit tests, and the `_ab` app has no registry.
+
+---
+
+Task 1's op is not what fails. All 6 of its own properties pass (`apps/_ab/src/ops/item.adjustQty.props.test.ts`). The failing check is the shared vacuity guard in `kit/props/suite.props.test.ts`:
+
+```
+× vacuity guard > claim-release-claim occurs in at least 50% of 500 runs
+  claim-release-claim: 46.6%  (every other class is 87–99.8%)
+```
+
+**Why it fails:** the vacuity guard builds one mixed script from every op in every `apps/*/src/ops/registry.gen.ts`. The scaffold hook registered `item.adjustQty` in `apps/_ab/src/ops/registry.gen.ts`. That added a ninth op to the eight BASECAMP ops. In the 40–80 step scripts, fewer steps now go to `item.claim` and `item.release`. So the claim → release → claim chain on one replica shows up in fewer runs, and its share fell just under 50%. I haven't run the suite without the `_ab` registry to confirm this. That's an inference from how the script is built.
+
+**What can't fix it:** no change to `item.adjustQty.op.ts` raises that share. The hook's other limits also rule out lowering the 50% threshold, skipping the class and reducing runs. The failure message itself says "fix the generator, not the threshold".
+
+**Real fixes:** both are in kit-owned files.
+- **Fix the vacuity generator** in `kit/props/suite.props.test.ts` or `kit/props/vacuity.ts`. For example, give each class its own mix of only the ops it needs, or weight claim/release so the chain occurs often enough. This keeps the guard as strict as it is now.
+- **Run the vacuity guard per app** instead of mixing ops from different apps into one script. `_ab` ops never meet BASECAMP ops in a real app, so the mixed script tests a case that can't happen.
+
+These go beyond task 1 and change the kit's gate files, which the project assigns to the `limbo-kitsmith` agent rather than the task executor. So I've stopped here. Task 1 stays marked completed, task 2 hasn't started, and I made no file changes while investigating.
+
+Should I send one of these fixes to `limbo-kitsmith`, and if so, which one?

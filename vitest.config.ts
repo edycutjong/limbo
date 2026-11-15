@@ -16,7 +16,8 @@ export default defineConfig({
         test: {
           name: 'props',
           include: ['**/*.props.test.ts'],
-          exclude: ['**/node_modules/**'],
+          // evidence/ holds archived A/B run files (copies of Kiro's tests); they are records, not suites.
+          exclude: ['**/node_modules/**', 'evidence/**'],
           setupFiles: ['kit/props/setup.ts'],
           testTimeout: 600_000,
         },

@@ -1,0 +1,26 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 1 of the ab spec is complete, and I've marked it completed in `tasks.md`. `item.adjustQty` is implemented in `apps/_ab/src/ops/item.adjustQty.op.ts`.
+
+- **Op design:** It declares `merge: 'commutes'` and `intent: {kind:'delta', field:'qty'}`, which matches `kit/props/intents.json`. The payload is a delta (`by`), so two offline "+1" taps add up to 2. A non-integer `by` throws instead of being dropped.
+- **Checks:** `pnpm typecheck` is clean, and `pnpm test` passes (12 files, 203 tests, 6 of them new). The 7 new property tests pass under `pnpm vitest run --project props apps/_ab`. I did not run the full `pnpm props`.
+- **Files:** The sub-agent added the op, a unit test file, and a props file with its test file, all in `apps/_ab/src/ops/`.
+- **Kit files:** The sub-agent first edited `kit/props/arbitraries/index.ts` by mistake and reverted it. `git diff` shows no change under `kit/`.
+
+I stopped here as you asked. Task 2 (`sector.report`) is now ready to run.
+
+---
+
+The fast-tier failure isn't a bug in `item.adjustQty`, and I haven't changed any files in response to it.
+
+**What fails:** `kit/props/suite.props.test.ts` fails one test, the vacuity guard `claim-release-claim`. It occurs in 45.8% of 500 runs, under the 50% minimum. The result is the same on every run. All the op properties pass, including the 7 for `item.adjustQty`.
+
+**Cause:** Registering `item.adjustQty` triggers it. When I temporarily removed the `apps/_ab` registry, `pnpm props` passed with 164 tests and 2 skipped. I restored the registry afterwards. With the op registered, the mixed-script generator in the vacuity guard picks from one more op. That lowers the chance of a chained claim, release, claim sequence on one replica.
+
+**Why I stopped:** The failure comes from the kit's generator, and the op can't change it. The test's own message says to fix the generator, not the threshold. `kit/props/arbitraries/` and `suite.props.test.ts` are kit-owned, and I don't want to edit them without your approval. I also won't lower the 50% threshold or `numRuns`, or skip the guard.
+
+**Options:**
+1. Have the kit's mixed-script generator weight claim and release ops so the class stays above 50% as more ops register. This is the right fix. It's a kit change, probably for the `limbo-kitsmith` agent.
+2. Lengthen the guard's scripts (`steps` is `{min: 40, max: 80}`). This is also a kit change, and it may only postpone the failure.
+
+Should I make the kit change, and if so, which option?

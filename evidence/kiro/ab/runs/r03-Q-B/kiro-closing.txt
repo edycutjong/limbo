@@ -1,0 +1,41 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 1 is blocked. `pnpm props` still fails, and the only fixes I can see are in `kit/`, which the constraints rule out.
+
+**Failure.** One test fails: `kit/props/suite.props.test.ts` > vacuity guard > `claim-release-claim occurs in at least 50% of 500 runs`. It measured 46.6%. Every other class is above 80%, and the other 170 props tests pass.
+
+**Cause.** The failure depends on `item.adjustQty` being registered.
+- I moved `apps/_ab/src/ops/registry.gen.ts` aside and reran `pnpm props`. All 12 files passed (164 passed, 2 skipped) and there was no `claim-release-claim` failure. I restored the file afterwards, and `git status` shows no leftover change.
+- The vacuity guard builds one mixed script from every registered op (`measureVacuityAsync(defs, ...)`). Registering `item.adjustQty` adds a 12th op to the basecamp ops already there. Each step then picks `item.claim` or `item.release` less often, so claim, release, claim on one claimant becomes rarer.
+- The op, its props and its registration are not at fault. The suite's `gen` forces every op onto target `t0`, and per-op `opts.gen` only produces payloads. Nothing in `apps/_ab` changes which op gets picked.
+
+**What would fix it.** Each of these is a change in `kit/`, which I did not make:
+1. Exclude `_ab` from the registry scan in `loadRegistry` in `kit/props/suite.props.test.ts`. `_ab` looks like a scratch app. This would also stop the guard from covering `item.adjustQty`.
+2. Reweight claim and release in the kit's mixed-script generator, or make the `claim-release-claim` generator chain claim → release → claim explicitly.
+3. Raise `steps` in `suite.props.test.ts`, which currently uses 40–80.
+
+Leaving `item.adjustQty` unregistered would pass, but it drops the op from the property suite, so I rejected it. Tell me which kit change you want. Option 2 fixes the cause and keeps the 50% threshold and `numRuns`.
+
+**Results with `item.adjustQty` registered:**
+- `pnpm typecheck`: passes.
+- `pnpm test`: 12 files, 202 tests, all pass.
+- `pnpm props`: exit 1. 11 files passed and 1 failed; 170 tests passed, 1 failed and 2 were skipped.
+
+The new files are `apps/_ab/src/ops/item.adjustQty.{op,test,props,props.test}.ts` and `registry.gen.ts`.
+
+---
+
+Task 1 is blocked and not marked complete. `pnpm props` still fails on the vacuity guard, and the only fixes are in `kit/`, which the hook and testing rules rule out.
+
+**What's done.** `item.adjustQty` is implemented with unit tests and properties. All 7 of its own properties pass. `pnpm typecheck` passes and `pnpm test` passes (202 tests).
+
+**What fails.** In `kit/props/suite.props.test.ts`, the vacuity guard requires the `claim-release-claim` sequence to occur in at least 50% of 500 runs. It measured 46.6%. Every other test passes (170 passed, 2 skipped).
+
+**Cause, now confirmed.** The sub-agent moved `apps/_ab/src/ops/registry.gen.ts` aside and reran `pnpm props`. Everything passed, and it then restored the file. The guard builds one mixed script from every registered op. Adding `item.adjustQty` as a 12th op means each step picks claim or release less often, so the sequence turns up less. Nothing in the op or in `apps/_ab` controls which op the guard picks, so the op can't be "fixed" to make this pass.
+
+**Decision for you.** Each option is a change in `kit/`:
+1. **Make the claim generator build claim → release → claim on purpose, or weight claim and release higher** (sub-agent's recommendation). This fixes the cause and keeps the 50% threshold and `numRuns`.
+2. **Exclude `_ab` from the registry scan** in `loadRegistry`. This is simpler, but the guard would no longer cover `item.adjustQty`.
+3. **Raise the script length**, which is currently 40–80 steps. This may not reliably clear 50%.
+
+Tell me which one, and whether a kit change is allowed under this spec. Then I'll dispatch it and finish task 1.

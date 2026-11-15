@@ -1,0 +1,76 @@
+
+> limbo@0.0.0 props:full <repo>
+> node kit/scripts/props-full.mjs
+
+
+ RUN  v3.2.7 <repo>
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > tick-toggle fails at least one property or golden history
+mutant tick-toggle: killed by intent:set
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > lww-wallclock fails at least one property or golden history
+mutant lww-wallclock: killed by convergence, replay equivalence, idempotence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > qty-read-modify-write fails at least one property or golden history
+mutant qty-read-modify-write: killed by intent:delta, commutes, convergence, replay equivalence, idempotence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > split-float fails at least one property or golden history
+mutant split-float: killed by intent:split, golden:G20
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > delete-wins fails at least one property or golden history
+mutant delete-wins: killed by intent:life
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > claim-both fails at least one property or golden history
+mutant claim-both: killed by intent:claim
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > claim-max-stamp fails at least one property or golden history
+mutant claim-max-stamp: killed by intent:claim
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > move-reinsert fails at least one property or golden history
+mutant move-reinsert: killed by intent:move, replay equivalence, idempotence, convergence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > severity-lww fails at least one property or golden history
+mutant severity-lww: killed by intent:max
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > split-first-member fails at least one property or golden history
+mutant split-first-member: killed by golden:G20
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > resolve-noop fails at least one property or golden history
+mutant resolve-noop: killed by intent:life
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > arrival-order fails at least one property or golden history
+mutant arrival-order: killed by convergence, replay equivalence, idempotence
+
+ ✓ |props| apps/basecamp/src/ops/item.add.props.test.ts (7 tests) 25156ms
+ ✓ |props| kit/props/golden.props.test.ts (21 tests | 2 skipped) 25ms
+ ✓ |props| kit/props/mutants.props.test.ts (15 tests) 26175ms
+   ✓ mutation fixtures > tick-toggle fails at least one property or golden history  1035ms
+   ✓ mutation fixtures > lww-wallclock fails at least one property or golden history  1713ms
+   ✓ mutation fixtures > qty-read-modify-write fails at least one property or golden history  1579ms
+   ✓ mutation fixtures > split-float fails at least one property or golden history  1586ms
+   ✓ mutation fixtures > delete-wins fails at least one property or golden history  3990ms
+   ✓ mutation fixtures > claim-both fails at least one property or golden history  3213ms
+   ✓ mutation fixtures > claim-max-stamp fails at least one property or golden history  3389ms
+   ✓ mutation fixtures > move-reinsert fails at least one property or golden history  1842ms
+   ✓ mutation fixtures > severity-lww fails at least one property or golden history  839ms
+   ✓ mutation fixtures > split-first-member fails at least one property or golden history  1107ms
+   ✓ mutation fixtures > resolve-noop fails at least one property or golden history  3102ms
+   ✓ mutation fixtures > arrival-order fails at least one property or golden history  934ms
+   ✓ mutation fixtures > arrival-order fails convergence (R15.4)  899ms
+   ✓ mutation fixtures > self-check: a correct copy of a fixture is reported as survived  944ms
+ ✓ |props| apps/basecamp/src/ops/item.move.props.test.ts (7 tests) 42210ms
+ ✓ |props| apps/basecamp/src/ops/item.release.props.test.ts (7 tests) 42459ms
+ ✓ |props| apps/basecamp/src/ops/item.tick.props.test.ts (7 tests) 42769ms
+ ✓ |props| apps/basecamp/src/ops/item.restore.props.test.ts (7 tests) 42901ms
+ ✓ |props| apps/basecamp/src/ops/item.delete.props.test.ts (7 tests) 43000ms
+ ✓ |props| apps/basecamp/src/ops/item.claim.props.test.ts (7 tests) 43358ms
+ ✓ |props| kit/props/suite.props.test.ts (60 tests) 500969ms
+
+ Test Files  10 passed (10)
+      Tests  143 passed | 2 skipped (145)
+   Start at  16:34:01
+   Duration  501.35s (transform 408ms, setup 82ms, collect 1.21s, tests 809.02s, environment 2ms, prepare 970ms)
+
+JSON report written to <tmp>
+props:full: wrote <repo>/evidence/convergence/full-2026-11-15.json
+exit 0

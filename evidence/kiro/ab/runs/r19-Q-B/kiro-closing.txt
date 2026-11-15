@@ -1,0 +1,41 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+`pnpm typecheck`, `pnpm test` (201 tests) and `pnpm props` (171 passed, 2 skipped) are all green. `pnpm props` includes `mutants.props.test.ts`, which checks that every `kit/props/bad/` fixture still fails at least one property or golden history. I judged the exit code by the test summary, because the pipe in my command swallowed it.
+
+**Cause.** The cause is confirmed. I measured the 500-run vacuity shares with a temporary props test, which I've since deleted. The pool was the 8 basecamp ops plus `item.adjustQty`, run with the old steps of 40–80. `claim-release-claim` fell from 55.8% without `item.adjustQty` to 45.8% with it. Each of `claim` and `release` is drawn 1 time in 9 instead of 1 in 8, so the three-op chain thins out. Even without `item.adjustQty` the margin was only 5.8 points. I changed no git state.
+
+**Fix.** The script length now scales with the number of registered ops. In `kit/props/suite.props.test.ts` I replaced `steps = { min: 40, max: 80 }` with `{ min: 6 * defs.length, max: 12 * defs.length }`. That gives 54–108 steps for 9 ops. It is generic, since it uses `defs.length` and has no `_ab` special case. `MIN_SHARE`, the 500 orderings, config, properties, intents, goldens, mutants, the op and the registry are untouched.
+
+**Shares (500 runs):**
+
+| Class | Without `adjustQty`, 40–80 steps | With `adjustQty`, 40–80 steps (before) | With `adjustQty`, 54–108 steps (after) |
+|---|---|---|---|
+| delete-edit | 99.4% | 99.8% | 100.0% |
+| restore-delete | 99.0% | 99.2% | 100.0% |
+| keep-delete | 95.8% | 93.0% | 99.0% |
+| claim-claim | 96.0% | 96.0% | 99.0% |
+| claim-delete | 98.8% | 99.4% | 100.0% |
+| move-move | 96.2% | 95.0% | 99.0% |
+| move-same-gap | 86.8% | 85.2% | 94.6% |
+| move-delete | 99.2% | 99.4% | 100.0% |
+| **claim-release-claim** | 55.8% | **45.8%** | **69.6%** |
+| lww-equal | 98.2% | 96.4% | 99.4% |
+| lww-different | 99.0% | 99.0% | 100.0% |
+
+I measured the "after" column with the same formula and the same pool in the temporary test, not from the final `pnpm props` run. The final run only shows `claim-release-claim` passing the 50% guard. The `evidence/` sidecar was not checked.
+
+**Files changed by me:** only `kit/props/suite.props.test.ts`. `git status` also lists `.kiro/specs/ab/tasks.md`, `tasks.meta.json`, `evidence/kiro/hooks.jsonl` and the `_ab` op files. I did not touch those.
+
+---
+
+Task 1 is done again, and `pnpm props` now passes along with `pnpm typecheck` and `pnpm test`. The fix is in the shared test kit, not in `item.adjustQty`, so please review it.
+
+**What failed.** The op's own properties all passed. The failure was the vacuity guard's `claim-release-claim` check: that conflict class appeared in 45.8% of 500 generated runs, below the 50% minimum. The guard builds its test scripts from every registered op. Adding `item.adjustQty` made claim and release ops rarer in each script, and the three-op chain this class needs (claim, release, claim again) fell below the minimum. Before the new op it measured 55.8%, so the margin was already thin.
+
+**What changed.** In `kit/props/suite.props.test.ts`, test script length now grows with the number of registered ops. It was a fixed 40–80 steps and is now 6× to 12× the op count, which is 54–108 steps for the current 9 ops. `claim-release-claim` rose to 69.6% and every other class is at 94.6% or higher. That 69.6% comes from a temporary test the sub-agent ran and then deleted, not from a saved file in `evidence/`. I did not change the 50% minimum, the 500 runs, any property, intent, golden history or mutation fixture, or the op. Every mutation fixture still fails at least one check.
+
+**Review points:**
+- The workspace rules say a property change needs a spec change. This edits how test scripts are generated, not what a property checks, but it is a kit-owned file outside task 1. Decide whether it needs a spec note.
+- Longer scripts make `pnpm props` take longer to run.
+
+I haven't run task 2 (`sector.report`). It's ready when you want it.

@@ -1,0 +1,7 @@
+Held-out oracle self-test: the suite in this folder run against heldout/selftest/<set>/ (2,000 scripts per op), on a copy of the frozen commit 5dd6e7a. Expected: ref and qty-plain pass both ops; qty-rmw fails item.adjustQty; sev-lww, sev-max, sev-wall fail sector.report.
+ref: item.adjustQty passed; sector.report passed
+qty-plain: item.adjustQty passed; sector.report passed
+qty-rmw: item.adjustQty failed (AssertionError: expected [ 1, 1 ] to deeply equal [ 2, 2 ]); sector.report passed
+sev-lww: item.adjustQty passed; sector.report failed (AssertionError: expected [ 'minor', 'minor' ] to deeply equal [ 'major', 'major' ])
+sev-max: item.adjustQty passed; sector.report failed (AssertionError: expected [ 'critical', 'critical', 'none' ] to deeply equal [ 'minor', 'minor', 'none' ])
+sev-wall: item.adjustQty passed; sector.report failed (AssertionError: expected [ 'minor', 'major' ] to deeply equal [ 'major', 'major' ])

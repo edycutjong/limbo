@@ -1,0 +1,25 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 2 is complete and marked completed in `tasks.md`. I didn't run task 1.
+
+`sector.report` is implemented in `apps/_ab/src/ops/`. The sub-agent reported `pnpm typecheck` clean and `pnpm test` passing (203 tests). It ran only this op's props file (7 tests), not the full `pnpm props`.
+
+- **Merge and intent:** the op declares `merge: 'commutes'` and the `max` intent on `severity`. The intent matches `kit/props/intents.json`.
+- **Behavior:**
+  - Concurrent reports show the more severe one.
+  - A report made after seeing earlier ones can lower the severity.
+  - A sector with no reports shows `none`.
+- **Files:** `sector.report.op.ts`, `sector.report.props.ts`, `sector.report.props.test.ts` and `sector.report.test.ts`.
+- **No registry:** I didn't create a `registry.gen.ts` for `_ab`, because none exists for that app.
+
+**Your decision:** the `max` intent checker needs an "observing clear" predicate. There is no separate clear op, so the props file treats every report as one. A report that covers earlier reports therefore supersedes them. If you'd rather have a dedicated `sector.clear` op, I can change it.
+
+---
+
+`pnpm props` now passes: 12 files, 171 tests, 2 skipped.
+
+**Cause:** the failing test was `claim-release-claim occurs in at least 50%` in `kit/props/suite.props.test.ts`, not a `sector.report` property. That suite runs the vacuity guard over every registered op at once. Registering `sector.report` (the `_ab` `registry.gen.ts` now exists) added a tenth op to the random mix. That left fewer claim and release steps per run, and the class dropped to 46.6%. I confirmed it passed with the `_ab` registry moved aside.
+
+**Fix:** I raised the vacuity script length in `kit/props/suite.props.test.ts` from `{ min: 40, max: 80 }` to `{ min: 60, max: 120 }`. I didn't change the 50% threshold, skip or weaken any property, or lower `numRuns`.
+
+**Caveat:** this is a kit-owned file, so I edited it outside the task's `apps/_ab` scope. Your kit steering may expect that change to come from the kit owner.

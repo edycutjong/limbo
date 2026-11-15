@@ -1,0 +1,30 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 2 is implemented. `pnpm typecheck` and `pnpm test` pass, with 201 tests including the 4 new unit tests. I also ran the `sector.report` props file (`pnpm vitest run --project props apps/_ab`), and all 7 properties pass. I did not run the full `pnpm props`. I didn't touch task 1.
+
+**Files (in `apps/_ab/src/ops/`):**
+- `sector.report.op.ts` is the op itself.
+  - It declares `merge: 'commutes'` and `intent: { kind: 'max', field: 'severity', order: [...SEVERITIES] }`, which matches `intents.json`.
+  - State keeps every report keyed by op id, so `apply` is idempotent and doesn't mutate its input.
+  - The shown severity is the highest severity among reports that no other report has seen (the causal frontier).
+  - Concurrent reports therefore show the more severe one (R2.2). A re-inspection that has seen the earlier reports replaces them and can lower the severity (R2.3).
+  - The result depends only on the set of reports, so every device with the same reports shows the same severity (R2.4). A sector never reported shows `none`.
+  - It exports `reportPayload` and `severityOf` as the design asks, and uses no clock or randomness.
+- `sector.report.test.ts` has the unit tests:
+  - a sector never reported
+  - concurrent reports in both orders
+  - lowering after re-inspection
+  - idempotence and no mutation of the input
+- `sector.report.props.ts` and `sector.report.props.test.ts` run the kit's `max` intent check. Every report also counts as a "clear" for the reports it has seen, which is how lowering gets tested.
+
+I used `merge: 'commutes'` because `Merge` has no max-join option and `causal-lww` would mean last-write-wins. The op linter then requires the `.props.test.ts`, which is included.
+
+---
+
+Task 2 is done and marked completed. I left task 1 (`item.adjustQty`) alone, as you asked.
+
+The sub-agent added `sector.report` in `apps/_ab/src/ops/`, with unit tests and a props test. `pnpm typecheck` and `pnpm test` pass, with 201 tests. The `sector.report` props file also passes (7 properties). I didn't run the full `pnpm props`.
+
+The op declares `merge: 'commutes'` and the `max` intent on `severity`, matching `intents.json`. Concurrent reports show the higher severity. A later report that has seen the earlier ones replaces them and can lower the severity.
+
+I used `commutes` because `Merge` has no max-join option, and `causal-lww` would mean last-write-wins. The op linter then requires the props test, and that test is included.

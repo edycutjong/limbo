@@ -1,0 +1,28 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+Task 1 of the ab spec is done and marked completed. The sub-agent implemented `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts`, with unit and property tests.
+
+- **Op:** it uses the `commutes` merge with a `delta` intent on `qty`, which matches `kit/props/intents.json`. Two concurrent +1 adjustments sum to 2 in either order.
+- **Checks that pass:** `pnpm typecheck` and `pnpm test` (202 tests). The new property test passed (7 tests) when run on `apps/_ab` alone.
+- **Check that fails:** `pnpm props` has one failure, the vacuity guard in `kit/props/suite.props.test.ts`. It reports the `claim-release-claim` class at 45.8% of 500 runs, below the 50% minimum. That class belongs to the claim ops, which this op doesn't touch. The sub-agent left the kit alone and didn't check whether the failure also happens without its files. Someone should check that before later tasks depend on a green `pnpm props`.
+
+Task 2 (`sector.report`) is now ready. I did not start it, since you asked for task 1 only.
+
+---
+
+The failure is real, and `item.adjustQty` causes it. The earlier report that it was unrelated was wrong. I haven't changed any code.
+
+I reran `pnpm props` twice:
+- **With `apps/_ab/src/ops/registry.gen.ts` moved aside:** 164 tests passed.
+- **With it in place:** one failure. The vacuity guard reports `claim-release-claim` below the 50% minimum, at 45.8% of 500 runs.
+
+**Cause:** `simulate.ts` picks each op uniformly with `rand.pick(defs)`. Registering `item.adjustQty` adds one more op to the pool, so any three-op chain like claim, release, claim becomes less likely. That is what lowers the share. The op itself passes all its own properties.
+
+**Why I can't fix this from the op:** nothing in the op or its `.props.ts` file affects how often other ops are picked. `suite.props.test.ts` overrides each op's target with `t0`, and `gen` only returns a target and payload. The only knobs that would fix it are in the kit, for example the script length in `suite.props.test.ts` (`steps` is currently 40 to 80). The failure message says to fix the generator, not the threshold. The kit is outside task 1, and you told me not to weaken properties, so I'm asking before touching it.
+
+Task 1 is marked completed, but `pnpm props` is red. You have three options:
+1. **Raise `steps` in the kit suite** (for example to 60–120). This keeps the 50% threshold and `numRuns`. It changes kit-owned code, so I'd run the whole suite after to check the other classes. I'd recommend this.
+2. **Give `claim-release-claim` a dedicated generator** in the kit's `conflictGen` or `suite.props.test.ts`. This is more work.
+3. **Leave it red for now** and have the kit owner fix it. Every new op will hit the same dilution.
+
+Tell me which option you want. For option 1 or 2, I'll also reopen task 1 until `pnpm props` is green.

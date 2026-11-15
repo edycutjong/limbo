@@ -1,0 +1,38 @@
+Kiro closing messages (last two substantial agent messages of the session, from the raw stream; paths made repo-relative).
+
+`pnpm props` still fails, and I did not fix it. The cause is in the kit's vacuity guard, not in `sector.report`, so I made no edits. I left the thresholds, `numRuns` and kit files alone.
+
+**Results**
+- `pnpm typecheck` passes.
+- `pnpm test` passes (12 files, 204 tests).
+- `pnpm props` has 1 failure among 173 tests. It is `kit/props/suite.props.test.ts`, "vacuity guard > claim-release-claim occurs in at least 50% of 500 runs", at 45.8%. Everything else passes, including all six `sector.report` properties, the basecamp op properties and `mutants.props.test.ts`. The truncated hook excerpt was cut off before this failure.
+
+**Cause**
+- **Without the `_ab` files:** I moved `registry.gen.ts` and the four `sector.report.*` files aside, so only basecamp's 10 ops were registered. `pnpm props` then passed twice (157 passed, 2 skipped). I restored the files afterwards and the tree is intact.
+- **With them:** the failing run has 11 ops.
+- **How `simulate.ts` picks ops:** it does `rand.pick(defs)` uniformly, at `skeleton/src/core/simulate.ts:135`, before it calls any per-op generator. Registering an 11th op therefore lowers the chance that each step is a claim or a release.
+- **Class needs both ops:** `claim-release-claim` needs `item.claim` and `item.release` chained on the same claimant.
+- **Measured shares:** a standalone `measureVacuity` run with the suite's generator and 40–80 steps gave 52.0% with basecamp alone and 50.2% with basecamp plus `sector.report`. The suite's own run gave 45.8% with the extra op. The margin over 50% was already thin.
+
+**Why I can't fix it in the `_ab` files**
+The op's generator runs only after the op has been picked, so it can't change how often claims and releases are chosen. The failure comes from adding any 11th op. `sector.report` and its props file are not at fault.
+
+**Decision for you:** one of the following has to change, and each needs your approval.
+- **Stepping or selection:** change the vacuity guard's `steps` (or `simulate.ts`'s selection) in `kit/props/suite.props.test.ts` so the class stays above 50% as ops are added.
+- **Per-app measurement:** have the guard measure each app's ops separately, so one app's ops don't dilute another's.
+
+Both change kit gate files, so I haven't touched them.
+
+---
+
+Task 2 is back at `in_progress`, and `pnpm props` still has one failure. I made no edits, because the fix would have to go in kit gate files.
+
+- **Failure:** the vacuity guard in `kit/props/suite.props.test.ts` reports `claim-release-claim` at 45.8% of 500 runs, under its 50% minimum. All six `sector.report` properties pass. `pnpm typecheck` and `pnpm test` also pass.
+- **Cause:** `simulate.ts` picks ops uniformly (line 135). Adding the 11th op, `sector.report`, lowers the chance that a step is a claim or a release. With basecamp's 10 ops alone, `pnpm props` passed twice. The margin was already thin: a standalone measurement gave 52.0% with basecamp alone and 50.2% with `sector.report` added.
+- **Why the op can't fix it:** its generator runs only after the op is picked, so it can't change how often claims and releases are chosen.
+
+Which fix should I make? Both change kit gate files.
+1. **Stepping or selection:** change the guard's `steps`, or `simulate.ts`'s op selection, so the class stays above 50% as ops are added.
+2. **Per-app measurement:** have the guard measure each app's ops separately, so one app's ops don't dilute another's. I'd lean toward this one, because it keeps the guard valid as more ops are added.
+
+I won't lower the threshold or `numRuns`. Tell me which option to use, and I'll mark task 2 completed once `pnpm props` is green.
