@@ -103,6 +103,18 @@
         "chatSessionId": "sess_bbff3c1e-4434-4e99-8e68-34dea608ea1f",
         "timestamp": 1794730245143
       }
+    ],
+    "5.1 `kit/props/config.ts` (tiers, seed, env override).": [
+      {
+        "executionId": "fccfe4bf-d941-4e95-9616-2b01040ff5f7",
+        "chatSessionId": "sess_6aa6573b-23c8-4713-9551-15cdfeb83027",
+        "timestamp": 1794730287849
+      },
+      {
+        "executionId": "fccfe4bf-d941-4e95-9616-2b01040ff5f7",
+        "chatSessionId": "sess_6aa6573b-23c8-4713-9551-15cdfeb83027",
+        "timestamp": 1794730316105
+      }
     ]
   }
 }

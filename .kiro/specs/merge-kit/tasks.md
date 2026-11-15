@@ -29,7 +29,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - _Requirements: R9_
 
 - [ ] 5. Property harness, intent properties, vacuity guard
-  - [ ] 5.1 `kit/props/config.ts` (tiers, seed, env override).
+  - [x] 5.1 `kit/props/config.ts` (tiers, seed, env override).
   - [ ] 5.2 `kit/props/run.ts`: `runOpProperties(def)`; convergence, replay equivalence, idempotence, commutes, no lost edit, manifest check, shrunk failure message.
   - [ ] 5.3 `kit/props/intent/*.ts`: `set`, `delta`, `add-remove`, `max`, `claim`, `life`, `split`, `move`, each with an independent oracle.
   - [ ] 5.4 `kit/props/arbitraries/`: conflict-template generators.
