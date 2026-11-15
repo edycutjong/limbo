@@ -383,6 +383,25 @@
         "chatSessionId": "sess_001e430d-ba8e-41d1-aee2-fe747eafb5df",
         "timestamp": 1794733457959
       }
+    ],
+    "11.4 `pnpm e2e:spike:10` and `evidence/e2e/spike-<date>.json`.": [
+      {
+        "executionId": "7cc97772-8e96-4d17-a879-e6ad0b614407",
+        "chatSessionId": "sess_6053e596-e580-4d2f-93fe-834cda8c757b",
+        "timestamp": 1794733534017
+      },
+      {
+        "executionId": "7cc97772-8e96-4d17-a879-e6ad0b614407",
+        "chatSessionId": "sess_6053e596-e580-4d2f-93fe-834cda8c757b",
+        "timestamp": 1794733569456
+      }
+    ],
+    "11. G1 two-context spike harness and e2e": [
+      {
+        "executionId": "7cc97772-8e96-4d17-a879-e6ad0b614407",
+        "chatSessionId": "sess_6053e596-e580-4d2f-93fe-834cda8c757b",
+        "timestamp": 1794733569459
+      }
     ]
   }
 }

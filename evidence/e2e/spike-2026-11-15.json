@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-15",
+  "spec": "e2e/offline-spike.spec.ts",
+  "repeatEach": 10,
+  "browser": "chromium",
+  "browserVersion": "147.0.7727.15",
+  "playwright": "1.59.1",
+  "node": "v22.22.0",
+  "runs": 10,
+  "passed": 10,
+  "failed": 0,
+  "durationsMs": [
+    1886,
+    1882,
+    1900,
+    1891,
+    1897,
+    1606,
+    1607,
+    1610,
+    1577,
+    1599
+  ],
+  "results": [
+    {
+      "repeat": 0,
+      "status": "passed",
+      "durationMs": 1886
+    },
+    {
+      "repeat": 1,
+      "status": "passed",
+      "durationMs": 1882
+    },
+    {
+      "repeat": 2,
+      "status": "passed",
+      "durationMs": 1900
+    },
+    {
+      "repeat": 3,
+      "status": "passed",
+      "durationMs": 1891
+    },
+    {
+      "repeat": 4,
+      "status": "passed",
+      "durationMs": 1897
+    },
+    {
+      "repeat": 5,
+      "status": "passed",
+      "durationMs": 1606
+    },
+    {
+      "repeat": 6,
+      "status": "passed",
+      "durationMs": 1607
+    },
+    {
+      "repeat": 7,
+      "status": "passed",
+      "durationMs": 1610
+    },
+    {
+      "repeat": 8,
+      "status": "passed",
+      "durationMs": 1577
+    },
+    {
+      "repeat": 9,
+      "status": "passed",
+      "durationMs": 1599
+    }
+  ],
+  "totalWallMs": 6921
+}
