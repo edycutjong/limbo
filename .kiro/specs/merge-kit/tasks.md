@@ -72,7 +72,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
 
 - [ ] 11. G1 two-context spike harness and e2e
   - [x] 11.1 `skeleton/src/sync/store.ts` (Yjs `Y.Map` + `y-indexeddb`), the only Yjs importer.
-  - [ ] 11.2 `e2e/spike/relay.mjs`, `index.html`, `main.ts`, Playwright `webServer` config, `window.limbo`.
+  - [x] 11.2 `e2e/spike/relay.mjs`, `index.html`, `main.ts`, Playwright `webServer` config, `window.limbo`.
   - [ ] 11.3 `e2e/offline-spike.spec.ts` as in R17.4 to R17.6.
   - [ ] 11.4 `pnpm e2e:spike:10` and `evidence/e2e/spike-<date>.json`.
   - Tests: `skeleton/src/sync/store.test.ts` (put, all, persistence round trip, duplicate id); a lint test that no file other than `store.ts` imports `yjs`; `pnpm e2e` (spike spec) passes; 10 repeats recorded in evidence.
