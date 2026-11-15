@@ -14,12 +14,12 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests (`skeleton/src/core/causal.test.ts`): stamp order by `l`, `r`, `n`, and `r` by code unit (`'B' < 'a'`, a non-BMP id case); `covers` and `concurrent` truth table; `createOp` sets `l`, `n`, `deps`; `canonical` sorts keys and rejects floats; buffer holds and releases out-of-order ops, ignores duplicates, `vv` stays contiguous; `allocKey` returns distinct keys for two replicas in one gap and loops on a prefix `right`.
   - _Requirements: R1, R2, R6.2, R6.3_
 
-- [ ] 3. Named merges
-  - [ ] 3.1 `merges.ts`: `causalLww`.
-  - [ ] 3.2 `resurrect`.
-  - [ ] 3.3 `claimOne`.
-  - [ ] 3.4 `orderedMove`.
-  - [ ] 3.5 Declare `sum-split` in `Merge`; no reducer.
+- [x] 3. Named merges
+  - [x] 3.1 `merges.ts`: `causalLww`.
+  - [x] 3.2 `resurrect`.
+  - [x] 3.3 `claimOne`.
+  - [x] 3.4 `orderedMove`.
+  - [x] 3.5 Declare `sum-split` in `Merge`; no reducer.
   - Tests (`skeleton/src/core/merges.test.ts`): hand-built op sets for each rule, each checked under all permutations and with duplicates (order independence, idempotence); equal concurrent values collapse; dominating write resolves; G05 shape gives twin; release-then-reclaim; units 2; deleted item has no winners.
   - _Requirements: R3, R4, R5, R6, R7_
 

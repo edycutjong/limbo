@@ -24,6 +24,73 @@
         "chatSessionId": "sess_bcae6c5e-ebca-4d8c-b0fd-dea66f7f246c",
         "timestamp": 1794729854092
       }
+    ],
+    "3.1 `merges.ts`: `causalLww`.": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794729905469
+      },
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794729947952
+      }
+    ],
+    "3.2 `resurrect`.": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794729951625
+      },
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794729996584
+      }
+    ],
+    "3.3 `claimOne`.": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794729999463
+      },
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730066456
+      }
+    ],
+    "3.4 `orderedMove`.": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730069296
+      },
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730110012
+      }
+    ],
+    "3.5 Declare `sum-split` in `Merge`; no reducer.": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730113079
+      },
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730131988
+      }
+    ],
+    "3. Named merges": [
+      {
+        "executionId": "ff1b87e9-f49a-454b-957e-624858da7e9a",
+        "chatSessionId": "sess_58f424fe-0290-472f-97dd-ad08be9064c1",
+        "timestamp": 1794730131990
+      }
     ]
   }
 }
