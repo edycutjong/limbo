@@ -50,7 +50,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - _Requirements: R14_
 
 - [ ] 8. Mutation fixtures and mutant test
-  - [ ] 8.1 Write the 12 fixtures in `kit/props/bad/`.
+  - [x] 8.1 Write the 12 fixtures in `kit/props/bad/`.
   - [ ] 8.2 `kit/props/mutants.props.test.ts`: each fixture must fail at least one property or golden history and name it.
   - Tests: the mutant test itself; plus a self-check that a deliberately correct fixture copy is reported as "survived" (so the test can fail).
   - _Requirements: R15_

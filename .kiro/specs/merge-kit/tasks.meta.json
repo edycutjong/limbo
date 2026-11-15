@@ -225,6 +225,18 @@
         "chatSessionId": "sess_73797d00-49d1-4c22-a2a5-3e2b50692909",
         "timestamp": 1794731241957
       }
+    ],
+    "8.1 Write the 12 fixtures in `kit/props/bad/`.": [
+      {
+        "executionId": "ab4f3653-f81e-4d46-89fb-62620dc35122",
+        "chatSessionId": "sess_c21ee848-d172-4f72-aa51-be19c55fdf31",
+        "timestamp": 1794731320694
+      },
+      {
+        "executionId": "ab4f3653-f81e-4d46-89fb-62620dc35122",
+        "chatSessionId": "sess_c21ee848-d172-4f72-aa51-be19c55fdf31",
+        "timestamp": 1794731473312
+      }
     ]
   }
 }
