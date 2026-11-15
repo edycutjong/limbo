@@ -4,7 +4,7 @@
 // headless Kiro spec-task session through kit/scripts/kiro-run.mjs, then held-out scoring from outside the copy.
 //
 // Usage: node kit/scripts/ab-run.mjs --frozen <sha> --heldout <dir> [--from 1] [--to 20] [--n 10000] [--budget 80]
-//        [--logdir <dir>] [--no-isolate]
+//        [--logdir <dir>] [--no-isolate] [--dry <reference-ops-dir>]
 //
 // Arms (PREREG §Arms): both copies drop evidence/ and .kiro/specs/merge-kit/ and get the identical fixture
 // (evidence/kiro/ab/fixture: apps/_ab + .kiro/specs/ab). Arm A also drops the treatment: .kiro/{steering,hooks,agents,
@@ -31,7 +31,7 @@ const to = Number(args.to ?? order.length);
 const N = String(args.n ?? 10000);
 const budget = Number(args.budget ?? 80);
 const logdir = args.logdir ?? join(MAIN, '.kiro-runs', 'ab');
-const runsFile = join(AB, 'runs.jsonl');
+const runsFile = args.dry ? join(logdir, 'dry-runs.jsonl') : join(AB, 'runs.jsonl');
 mkdirSync(logdir, { recursive: true });
 
 const KHOME = join(homedir(), '.kiro');
@@ -99,7 +99,8 @@ function oneRun({ k, op, arm }) {
 
   const label = `ab-${id}`;
   const started = Date.now();
-  const kr = spawnSync('node', [join(MAIN, 'kit/scripts/kiro-run.mjs'), '--agent', 'spec', '--prompt', prompt, '--spec', 'ab', '--task', String(o.task), '--label', label, '--timeout', '1500'], {
+  // --dry <dir>: mechanics check only (no Kiro session): drop a reference op from <dir> in and score it.
+  const kr = args.dry ? (cpSync(join(args.dry, o.file.split('/').pop()), join(C, o.file)), { stderr: 'dry run' }) : spawnSync('node', [join(MAIN, 'kit/scripts/kiro-run.mjs'), '--agent', 'spec', '--prompt', prompt, '--spec', 'ab', '--task', String(o.task), '--label', label, '--timeout', '1500'], {
     cwd: C, encoding: 'utf8', maxBuffer: 1 << 26, env: { ...process.env, LIMBO_RUN_ROOT: C, LIMBO_KIRO_LOGDIR: logdir },
   });
   const sessionLines = lines(join(C, 'evidence/kiro/sessions.jsonl'));
@@ -107,7 +108,7 @@ function oneRun({ k, op, arm }) {
   const hooks = lines(join(C, 'evidence/kiro/hooks.jsonl'));
 
   // Keep the run's record build-side (repo-relative paths only).
-  const out = join(AB, 'runs', id);
+  const out = args.dry ? join(logdir, 'dry', id) : join(AB, 'runs', id);
   mkdirSync(join(out, 'files'), { recursive: true });
   writeFileSync(join(out, 'session.json'), JSON.stringify(session, null, 2) + '\n');
   if (hooks.length) writeFileSync(join(out, 'hooks.jsonl'), hooks.join('\n') + '\n');
