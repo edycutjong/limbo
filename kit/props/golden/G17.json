@@ -1,0 +1,79 @@
+{
+  "name": "G17 move-vs-delete",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "s:2",
+      "op": "item.add",
+      "target": "y",
+      "payload": {
+        "name": "Tent",
+        "key": "a1",
+        "units": 1
+      },
+      "stamp": [
+        2,
+        "s",
+        2
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "a:1",
+      "op": "item.move",
+      "target": "x",
+      "payload": {
+        "key": "a2a1"
+      },
+      "stamp": [
+        3,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 2
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.delete",
+      "target": "x",
+      "payload": {},
+      "stamp": [
+        3,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 2
+      }
+    }
+  ],
+  "expect": {
+    "order": [
+      "y"
+    ],
+    "items": {
+      "x": {
+        "life": "deleted"
+      }
+    }
+  }
+}

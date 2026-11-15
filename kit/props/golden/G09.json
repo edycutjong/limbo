@@ -1,0 +1,47 @@
+{
+  "name": "G09 units-2",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 2
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "a:1",
+      "op": "item.claim",
+      "target": "x",
+      "payload": {
+        "who": "sari"
+      },
+      "stamp": [
+        2,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    }
+  ],
+  "expect": {
+    "items": {
+      "x": {
+        "winners": [
+          "sari"
+        ],
+        "losers": []
+      }
+    }
+  }
+}

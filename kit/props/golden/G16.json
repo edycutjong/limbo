@@ -1,0 +1,133 @@
+{
+  "name": "G16 two-moves-into-one-gap-then-between",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "s:2",
+      "op": "item.add",
+      "target": "y",
+      "payload": {
+        "name": "Tent",
+        "key": "a1",
+        "units": 1
+      },
+      "stamp": [
+        2,
+        "s",
+        2
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "s:3",
+      "op": "item.add",
+      "target": "z",
+      "payload": {
+        "name": "Gas",
+        "key": "a2",
+        "units": 1
+      },
+      "stamp": [
+        3,
+        "s",
+        3
+      ],
+      "deps": {
+        "s": 2
+      }
+    },
+    {
+      "id": "s:4",
+      "op": "item.add",
+      "target": "w",
+      "payload": {
+        "name": "Rope",
+        "key": "a3",
+        "units": 1
+      },
+      "stamp": [
+        4,
+        "s",
+        4
+      ],
+      "deps": {
+        "s": 3
+      }
+    },
+    {
+      "id": "a:1",
+      "op": "item.move",
+      "target": "z",
+      "payload": {
+        "key": "a0Va1"
+      },
+      "stamp": [
+        5,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 4
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.move",
+      "target": "w",
+      "payload": {
+        "key": "a0Vb1"
+      },
+      "stamp": [
+        5,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 4
+      }
+    },
+    {
+      "id": "a:2",
+      "op": "item.move",
+      "target": "y",
+      "payload": {
+        "key": "a0Vb0Va1"
+      },
+      "stamp": [
+        6,
+        "a",
+        2
+      ],
+      "deps": {
+        "s": 4,
+        "a": 1,
+        "b": 1
+      }
+    }
+  ],
+  "expect": {
+    "order": [
+      "x",
+      "z",
+      "y",
+      "w"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "G21 split-k0",
+  "pending": "sum-split reducer does not exist yet",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "expense.add",
+      "target": "e",
+      "payload": {
+        "label": "Gas",
+        "amountCents": 2500,
+        "payer": "sari",
+        "members": []
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    }
+  ],
+  "expect": {
+    "expenses": {
+      "e": {
+        "shares": {},
+        "unallocated": 2500
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "name": "G20 split-25-over-3",
+  "pending": "sum-split reducer does not exist yet",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "expense.add",
+      "target": "e",
+      "payload": {
+        "label": "Gas",
+        "amountCents": 2500,
+        "payer": "sari",
+        "members": [
+          "sari",
+          "budi",
+          "dewi"
+        ]
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    }
+  ],
+  "expect": {
+    "expenses": {
+      "e": {
+        "shares": {
+          "budi": 834,
+          "dewi": 833,
+          "sari": 833
+        }
+      }
+    }
+  }
+}

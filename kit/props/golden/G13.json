@@ -1,0 +1,61 @@
+{
+  "name": "G13 equal-ticks-collapse",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "a:1",
+      "op": "item.tick",
+      "target": "x",
+      "payload": {
+        "done": true
+      },
+      "stamp": [
+        2,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.tick",
+      "target": "x",
+      "payload": {
+        "done": true
+      },
+      "stamp": [
+        2,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    }
+  ],
+  "expect": {
+    "items": {
+      "x": {
+        "ticked": true,
+        "fieldTwins": []
+      }
+    }
+  }
+}

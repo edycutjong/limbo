@@ -1,0 +1,183 @@
+{
+  "name": "G01 seed-demo",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "s:2",
+      "op": "item.add",
+      "target": "y",
+      "payload": {
+        "name": "Tent",
+        "key": "a1",
+        "units": 1
+      },
+      "stamp": [
+        2,
+        "s",
+        2
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "s:3",
+      "op": "item.add",
+      "target": "z",
+      "payload": {
+        "name": "Gas",
+        "key": "a2",
+        "units": 1
+      },
+      "stamp": [
+        3,
+        "s",
+        3
+      ],
+      "deps": {
+        "s": 2
+      }
+    },
+    {
+      "id": "a:1",
+      "op": "item.tick",
+      "target": "x",
+      "payload": {
+        "done": true
+      },
+      "stamp": [
+        4,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 3
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.delete",
+      "target": "x",
+      "payload": {},
+      "stamp": [
+        4,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 3
+      }
+    },
+    {
+      "id": "a:2",
+      "op": "item.move",
+      "target": "z",
+      "payload": {
+        "key": "Zza1"
+      },
+      "stamp": [
+        5,
+        "a",
+        2
+      ],
+      "deps": {
+        "s": 3,
+        "a": 1
+      }
+    },
+    {
+      "id": "b:2",
+      "op": "item.add",
+      "target": "v",
+      "payload": {
+        "name": "Lantern",
+        "key": "a3b1",
+        "units": 1
+      },
+      "stamp": [
+        5,
+        "b",
+        2
+      ],
+      "deps": {
+        "s": 3,
+        "b": 1
+      }
+    },
+    {
+      "id": "a:3",
+      "op": "item.claim",
+      "target": "y",
+      "payload": {
+        "who": "sari"
+      },
+      "stamp": [
+        6,
+        "a",
+        3
+      ],
+      "deps": {
+        "s": 3,
+        "a": 2
+      }
+    },
+    {
+      "id": "b:3",
+      "op": "item.claim",
+      "target": "y",
+      "payload": {
+        "who": "budi"
+      },
+      "stamp": [
+        6,
+        "b",
+        3
+      ],
+      "deps": {
+        "s": 3,
+        "b": 2
+      }
+    }
+  ],
+  "expect": {
+    "order": [
+      "z",
+      "x",
+      "y",
+      "v"
+    ],
+    "items": {
+      "x": {
+        "life": "twin",
+        "ticked": true
+      },
+      "y": {
+        "life": "alive",
+        "winners": [
+          "sari"
+        ],
+        "losers": [
+          "budi"
+        ]
+      },
+      "v": {
+        "life": "alive"
+      }
+    }
+  }
+}

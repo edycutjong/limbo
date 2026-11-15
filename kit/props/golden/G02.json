@@ -1,0 +1,75 @@
+{
+  "name": "G02 keep-resolves-twin",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "a:1",
+      "op": "item.tick",
+      "target": "x",
+      "payload": {
+        "done": true
+      },
+      "stamp": [
+        2,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.delete",
+      "target": "x",
+      "payload": {},
+      "stamp": [
+        2,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "a:2",
+      "op": "item.restore",
+      "target": "x",
+      "payload": {},
+      "stamp": [
+        3,
+        "a",
+        2
+      ],
+      "deps": {
+        "s": 1,
+        "a": 1,
+        "b": 1
+      }
+    }
+  ],
+  "expect": {
+    "items": {
+      "x": {
+        "life": "alive",
+        "ticked": true
+      }
+    }
+  }
+}

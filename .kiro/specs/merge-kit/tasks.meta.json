@@ -194,6 +194,18 @@
         "chatSessionId": "sess_7ccee71a-5703-48b7-84de-9997a1033048",
         "timestamp": 1794731000473
       }
+    ],
+    "7.1 Write `kit/props/golden/G01..G21.json` from the brief, byte for byte on stamps, deps, keys, and `expect`.": [
+      {
+        "executionId": "e414505b-e35d-46d4-8866-f5f619f5e5c4",
+        "chatSessionId": "sess_0d3de11e-8abd-4916-a93b-0c6d6d10a7c7",
+        "timestamp": 1794731059302
+      },
+      {
+        "executionId": "e414505b-e35d-46d4-8866-f5f619f5e5c4",
+        "chatSessionId": "sess_0d3de11e-8abd-4916-a93b-0c6d6d10a7c7",
+        "timestamp": 1794731123739
+      }
     ]
   }
 }

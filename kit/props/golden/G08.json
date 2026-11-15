@@ -1,0 +1,82 @@
+{
+  "name": "G08 duplicate-claimant",
+  "ops": [
+    {
+      "id": "s:1",
+      "op": "item.add",
+      "target": "x",
+      "payload": {
+        "name": "Stove",
+        "key": "a0",
+        "units": 1
+      },
+      "stamp": [
+        1,
+        "s",
+        1
+      ],
+      "deps": {}
+    },
+    {
+      "id": "a:1",
+      "op": "item.claim",
+      "target": "x",
+      "payload": {
+        "who": "sari"
+      },
+      "stamp": [
+        2,
+        "a",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "b:1",
+      "op": "item.claim",
+      "target": "x",
+      "payload": {
+        "who": "sari"
+      },
+      "stamp": [
+        2,
+        "b",
+        1
+      ],
+      "deps": {
+        "s": 1
+      }
+    },
+    {
+      "id": "b:2",
+      "op": "item.claim",
+      "target": "x",
+      "payload": {
+        "who": "budi"
+      },
+      "stamp": [
+        3,
+        "b",
+        2
+      ],
+      "deps": {
+        "s": 1,
+        "b": 1
+      }
+    }
+  ],
+  "expect": {
+    "items": {
+      "x": {
+        "winners": [
+          "sari"
+        ],
+        "losers": [
+          "budi"
+        ]
+      }
+    }
+  }
+}
