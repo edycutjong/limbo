@@ -43,9 +43,9 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests: `kit/props/manifest.test.ts`: the 17 names and kinds match exactly; every kind is a valid `Intent['kind']`; the harness fails an op with a wrong or missing entry.
   - _Requirements: R13, R10.6, R10.7_
 
-- [ ] 7. Golden histories and runner
+- [x] 7. Golden histories and runner
   - [x] 7.1 Write `kit/props/golden/G01..G21.json` from the brief, byte for byte on stamps, deps, keys, and `expect`.
-  - [ ] 7.2 `kit/props/golden.props.test.ts`: own topological enumerator over every causal order, partial match; G20, G21 pending.
+  - [x] 7.2 `kit/props/golden.props.test.ts`: own topological enumerator over every causal order, partial match; G20, G21 pending.
   - Tests: the runner itself (G01 to G19 pass once task 9 ops exist; until then they report `skipped:no-ops`); a unit test that the enumerator yields the right order count for a 3-op diamond and dedups by applied set; a unit test that a pending file is skipped with a reason and never counted as passing.
   - _Requirements: R14_
 

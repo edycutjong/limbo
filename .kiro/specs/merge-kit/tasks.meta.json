@@ -206,6 +206,25 @@
         "chatSessionId": "sess_0d3de11e-8abd-4916-a93b-0c6d6d10a7c7",
         "timestamp": 1794731123739
       }
+    ],
+    "7.2 `kit/props/golden.props.test.ts`: own topological enumerator over every causal order, partial match; G20, G21 pending.": [
+      {
+        "executionId": "7988b360-974c-456d-b57e-af63840d4156",
+        "chatSessionId": "sess_73797d00-49d1-4c22-a2a5-3e2b50692909",
+        "timestamp": 1794731152621
+      },
+      {
+        "executionId": "7988b360-974c-456d-b57e-af63840d4156",
+        "chatSessionId": "sess_73797d00-49d1-4c22-a2a5-3e2b50692909",
+        "timestamp": 1794731241954
+      }
+    ],
+    "7. Golden histories and runner": [
+      {
+        "executionId": "7988b360-974c-456d-b57e-af63840d4156",
+        "chatSessionId": "sess_73797d00-49d1-4c22-a2a5-3e2b50692909",
+        "timestamp": 1794731241957
+      }
     ]
   }
 }
