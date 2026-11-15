@@ -17,6 +17,7 @@ export default defineConfig({
           name: 'props',
           include: ['**/*.props.test.ts'],
           exclude: ['**/node_modules/**'],
+          setupFiles: ['kit/props/setup.ts'],
           testTimeout: 600_000,
         },
       },
