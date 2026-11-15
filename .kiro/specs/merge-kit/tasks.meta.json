@@ -280,6 +280,18 @@
         "chatSessionId": "sess_a2988887-3cb7-45e1-a133-e1f19044b679",
         "timestamp": 1794731802058
       }
+    ],
+    "9.3 `item.delete`, `item.restore`.": [
+      {
+        "executionId": "34b78162-f422-45bb-9415-8ed7d778e435",
+        "chatSessionId": "sess_00c7b490-856f-41b7-93a9-af626f0c2fe4",
+        "timestamp": 1794731838093
+      },
+      {
+        "executionId": "34b78162-f422-45bb-9415-8ed7d778e435",
+        "chatSessionId": "sess_00c7b490-856f-41b7-93a9-af626f0c2fe4",
+        "timestamp": 1794731895534
+      }
     ]
   }
 }
