@@ -1,0 +1,105 @@
+{
+ "note": "Pre-registered run order. Q = item.adjustQty (task 1), S = sector.report (task 2). Per op the arms run A B B A A B B A A B (Q) and B A A B B A A B B A (S), interleaved Q S Q S ...",
+ "runs": [
+  {
+   "k": 1,
+   "op": "Q",
+   "arm": "A"
+  },
+  {
+   "k": 2,
+   "op": "S",
+   "arm": "B"
+  },
+  {
+   "k": 3,
+   "op": "Q",
+   "arm": "B"
+  },
+  {
+   "k": 4,
+   "op": "S",
+   "arm": "A"
+  },
+  {
+   "k": 5,
+   "op": "Q",
+   "arm": "B"
+  },
+  {
+   "k": 6,
+   "op": "S",
+   "arm": "A"
+  },
+  {
+   "k": 7,
+   "op": "Q",
+   "arm": "A"
+  },
+  {
+   "k": 8,
+   "op": "S",
+   "arm": "B"
+  },
+  {
+   "k": 9,
+   "op": "Q",
+   "arm": "A"
+  },
+  {
+   "k": 10,
+   "op": "S",
+   "arm": "B"
+  },
+  {
+   "k": 11,
+   "op": "Q",
+   "arm": "B"
+  },
+  {
+   "k": 12,
+   "op": "S",
+   "arm": "A"
+  },
+  {
+   "k": 13,
+   "op": "Q",
+   "arm": "B"
+  },
+  {
+   "k": 14,
+   "op": "S",
+   "arm": "A"
+  },
+  {
+   "k": 15,
+   "op": "Q",
+   "arm": "A"
+  },
+  {
+   "k": 16,
+   "op": "S",
+   "arm": "B"
+  },
+  {
+   "k": 17,
+   "op": "Q",
+   "arm": "A"
+  },
+  {
+   "k": 18,
+   "op": "S",
+   "arm": "B"
+  },
+  {
+   "k": 19,
+   "op": "Q",
+   "arm": "B"
+  },
+  {
+   "k": 20,
+   "op": "S",
+   "arm": "A"
+  }
+ ]
+}

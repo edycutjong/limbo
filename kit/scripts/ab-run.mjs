@@ -87,6 +87,7 @@ function oneRun({ k, op, arm }) {
   cpSync(join(AB, 'fixture'), C, { recursive: true });
   rmSync(join(C, 'evidence'), { recursive: true, force: true });
   rmSync(join(C, '.kiro/specs/merge-kit'), { recursive: true, force: true });
+  rmSync(join(C, 'kit/scripts/ab-run.mjs'), { force: true }); // this runner describes the scoring: neither arm sees it
   if (arm === 'A') {
     for (const d of ['.kiro/steering', '.kiro/hooks', '.kiro/agents', '.kiro/settings', 'kit']) rmSync(join(C, d), { recursive: true, force: true });
     const ops = join(C, 'apps/basecamp/src/ops');

@@ -1,0 +1,6 @@
+d2ee30ee389be59ae1f15ffd41673787ccd0f115b62ca536ca3ec9041de5917e  ./.kiro/specs/ab/design.md
+234104d8a7656501307e5f968f113fc2ba62cb38a86e308c4bdae0c985458c04  ./.kiro/specs/ab/requirements.md
+db94f4279a9e73a8e20b6522e2e5aebaa6cf3cd0e9fa482969fb7c4ffa6be851  ./.kiro/specs/ab/tasks.md
+690b58124129e24a918f87a1db1d24842f6486b642c68ae73295624227752701  ./apps/_ab/README.md
+6d6239bbbcbef50a01bd8b406d815942ab7f2966532bacf8a742fb246ece8e6c  ./apps/_ab/src/model.ts
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ./apps/_ab/src/ops/.gitkeep
