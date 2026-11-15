@@ -7,8 +7,8 @@ must be read.
    In all 8, Kiro's own op passed its properties; the failing check was the kit's vacuity guard
    (`kit/props/suite.props.test.ts`): registering one more op dilutes the mixed-op generator, and the conflict class
    `claim-release-claim` fell to 45.8–46.6% of the 500 fast-tier runs, under its 50% minimum. (Evidence: Kiro's closing
-   messages, saved per run in `runs/<run>/kiro-closing.txt`; in the raw streams `claim-release-claim` appears on 14–29
-   lines in each blocked run and on 0–1 lines in the 2 unblocked runs. Run r13 states the dilution cause as an inference.) So arm B's extra cost (mean 4.50 vs 1.94 credits, 313 vs 70 s per session) bought no correctness here.
+   messages, saved per run in `runs/<run>/kiro-closing.txt`: each of the 8 blocked runs names 45.8% or 46.6%; the 2 unblocked runs
+   name neither. Run r13 states the dilution cause as an inference.) So arm B's extra cost (mean 4.50 vs 1.94 credits, 313 vs 70 s per session) bought no correctness here.
 2. **Kiro edited the gate in 2 of 10 arm-B runs** (`r16-S-B`, `r19-Q-B`): it changed the vacuity guard's script length
    so the guard passed: r19-Q-B made `steps` 6–12 × the number of registered ops; r16-S-B raised the fixed range from
    40–80 to 60–120. The wrapper's gate manifest did not
@@ -24,7 +24,8 @@ must be read.
    "1.5–5.8 credits" was exceeded (observed range across P1a spec-task and A/B sessions 1.49–8.58; arm B max 7.07); and
    the held-out engine reuses more skeleton primitives than PREREG lists: `createOp`, `causalBuffer`, `newReplica`,
    `observe`, `canonical`, `covers`, `withSkew` (still none of the kit's simulator, arbitraries, intents or seeds).
-6. Oracle self-test output (reference and 5 mutant op sets against the held-out suite, 2,000 scripts):
+6. Oracle self-test output (a reference, one correct variant `qty-plain`, and 4 mutant op sets against the held-out suite,
+   2,000 scripts):
    `heldout/selftest-output.txt`.
 
 Consequences for LIMBO: the kit's value claim is enforcement and visibility, not "Kiro writes better merges with it";
