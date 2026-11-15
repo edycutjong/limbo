@@ -56,7 +56,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - _Requirements: R15_
 
 - [ ] 9. First BASECAMP ops (except rename)
-  - [ ] 9.1 `apps/basecamp/src/model.ts`: `Item`, `materialize(ops)`.
+  - [x] 9.1 `apps/basecamp/src/model.ts`: `Item`, `materialize(ops)`.
   - [ ] 9.2 `item.add`, `item.tick`.
   - [ ] 9.3 `item.delete`, `item.restore`.
   - [ ] 9.4 `item.claim`, `item.release`.
