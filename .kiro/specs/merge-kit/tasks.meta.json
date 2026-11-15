@@ -292,6 +292,18 @@
         "chatSessionId": "sess_00c7b490-856f-41b7-93a9-af626f0c2fe4",
         "timestamp": 1794731895534
       }
+    ],
+    "9.4 `item.claim`, `item.release`.": [
+      {
+        "executionId": "f1b1dc85-09b7-40e6-9d1e-7cf59a25ed76",
+        "chatSessionId": "sess_ba7cdbf2-2d93-4d74-8e5b-06c9bae4c1fc",
+        "timestamp": 1794731931558
+      },
+      {
+        "executionId": "f1b1dc85-09b7-40e6-9d1e-7cf59a25ed76",
+        "chatSessionId": "sess_ba7cdbf2-2d93-4d74-8e5b-06c9bae4c1fc",
+        "timestamp": 1794731992708
+      }
     ]
   }
 }

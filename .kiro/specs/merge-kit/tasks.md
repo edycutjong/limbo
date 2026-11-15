@@ -59,7 +59,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - [x] 9.1 `apps/basecamp/src/model.ts`: `Item`, `materialize(ops)`.
   - [x] 9.2 `item.add`, `item.tick`.
   - [x] 9.3 `item.delete`, `item.restore`.
-  - [ ] 9.4 `item.claim`, `item.release`.
+  - [x] 9.4 `item.claim`, `item.release`.
   - [ ] 9.5 `item.move`.
   - [ ] 9.6 Generate `registry.gen.ts` with the existing scaffold hook; add a `*.props.test.ts` per op that calls `runOpProperties`.
   - Tests: `pnpm props` on all seven ops (convergence, replay, intent, no lost edit, idempotence, every vacuity class that these ops can reach); golden G01 to G19 now run and pass; `pnpm test` unit tests for `materialize` on G01; `op-lint` passes on every op file; mutants still all fail.
