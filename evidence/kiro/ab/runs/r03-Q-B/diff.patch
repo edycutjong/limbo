@@ -1,0 +1,185 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..acd8820 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -1,6 +1,6 @@
+ # Tasks: two ops for the `_ab` app
+ 
+-- [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
++- [-] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+ - [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..5e5aa52
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,12 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.": [
++      {
++        "executionId": "d3a18771-6c30-4436-9ea2-220d5ba222c5",
++        "chatSessionId": "sess_58089f64-dc91-420a-86c3-c4165f8847b4",
++        "timestamp": 1794736817629
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/item.adjustQty.op.ts b/apps/_ab/src/ops/item.adjustQty.op.ts
+new file mode 100644
+index 0000000..d05dece
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.op.ts
+@@ -0,0 +1,48 @@
++// item.adjustQty: changes an item's quantity by a whole-number delta (never writes the quantity itself).
++// Intent: two people each adding one canister offline must both count; qty = sum of every adjustment.
++// Merge: commutes. State keeps each adjustment by op id and sums them, so order and duplicates cannot change it.
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++
++export interface AdjustQtyPayload {
++  by: number;
++}
++
++export interface AdjustQtyState {
++  /** item id -> (op id -> delta). */
++  adjustments?: Record<string, Record<string, number>>;
++}
++
++/** Payload for "change `itemId` by `by`". The delta does not depend on the quantity this device shows. */
++export function adjustQtyPayload(_state: unknown, _itemId: string, by: number): AdjustQtyPayload {
++  if (!Number.isSafeInteger(by)) throw new Error(`item.adjustQty: by must be a whole number, got ${by}`);
++  return { by };
++}
++
++/** The quantity this device shows: the sum of every adjustment applied to the item (0 if none). */
++export function qtyOf(state: unknown, itemId: string): number {
++  const adj = (state as AdjustQtyState).adjustments?.[itemId];
++  let sum = 0;
++  if (adj !== undefined) for (const by of Object.values(adj)) sum += by;
++  return sum;
++}
++
++const def: OpDef<AdjustQtyState, AdjustQtyPayload> = {
++  name: 'item.adjustQty',
++  merge: 'commutes',
++  intent: { kind: 'delta', field: 'qty' },
++  apply(s, op: Op<AdjustQtyPayload>) {
++    const adjustments = s.adjustments ?? {};
++    return {
++      ...s,
++      adjustments: { ...adjustments, [op.target]: { ...(adjustments[op.target] ?? {}), [op.id]: op.payload.by } },
++    };
++  },
++  invariant(s) {
++    for (const [t, adj] of Object.entries(s.adjustments ?? {})) {
++      for (const [id, by] of Object.entries(adj)) if (!Number.isSafeInteger(by)) return `adjustment ${id} on ${t} is not a whole number`;
++    }
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
+diff --git a/apps/_ab/src/ops/item.adjustQty.props.test.ts b/apps/_ab/src/ops/item.adjustQty.props.test.ts
+new file mode 100644
+index 0000000..ecb9ea9
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.props.test.ts
+@@ -0,0 +1,5 @@
++import def from './item.adjustQty.op.ts';
++import { opts } from './item.adjustQty.props.ts';
++import { runOpProperties } from '../../../../kit/props/run.ts';
++
++runOpProperties(def, opts);
+diff --git a/apps/_ab/src/ops/item.adjustQty.props.ts b/apps/_ab/src/ops/item.adjustQty.props.ts
+new file mode 100644
+index 0000000..37d0661
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.props.ts
+@@ -0,0 +1,17 @@
++// Properties for item.adjustQty: generator and the kit `delta` intent oracle on `qty`.
++import { deltaIntent } from '../../../../kit/props/intent/index.ts';
++import type { RunOptions } from '../../../../kit/props/run.ts';
++import { qtyOf, type AdjustQtyPayload } from './item.adjustQty.op.ts';
++
++export const opts: RunOptions = {
++  gen: (_def, rand) => ({
++    target: rand.chance(0.5) ? 'i1' : 'i2',
++    payload: { by: rand.int(7) - 3 } satisfies AdjustQtyPayload,
++  }),
++  checks: [
++    deltaIntent({
++      delta: (o) => (o.op === 'item.adjustQty' ? (o.payload as AdjustQtyPayload).by : undefined),
++      read: (s, target) => qtyOf(s, target),
++    }),
++  ],
++};
+diff --git a/apps/_ab/src/ops/item.adjustQty.test.ts b/apps/_ab/src/ops/item.adjustQty.test.ts
+new file mode 100644
+index 0000000..a47e978
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.test.ts
+@@ -0,0 +1,50 @@
++import { describe, expect, it } from 'vitest';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import def, { adjustQtyPayload, qtyOf } from './item.adjustQty.op.ts';
++
++const mk = (r: string, n: number, target: string, by: number): Op => ({
++  id: `${r}:${n}`,
++  op: 'item.adjustQty',
++  target,
++  payload: adjustQtyPayload({}, target, by),
++  stamp: { l: n, r, n },
++  deps: {},
++});
++
++describe('item.adjustQty', () => {
++  it('shows 0 for an item never adjusted (R1.3)', () => {
++    expect(qtyOf({}, 'i1')).toBe(0);
++  });
++
++  it('two concurrent +1 adjustments count twice, in either order (R1.2, R1.3)', () => {
++    const a = mk('a', 1, 'i1', 1);
++    const b = mk('b', 1, 'i1', 1);
++    const ab = def.apply!(def.apply!({}, a), b);
++    const ba = def.apply!(def.apply!({}, b), a);
++    expect(qtyOf(ab, 'i1')).toBe(2);
++    expect(ab).toEqual(ba);
++  });
++
++  it('supports negative adjustments and keeps items separate (R1.1)', () => {
++    let s: unknown = {};
++    s = def.apply!(s, mk('a', 1, 'i1', 3));
++    s = def.apply!(s, mk('a', 2, 'i1', -1));
++    s = def.apply!(s, mk('a', 3, 'i2', 5));
++    expect(qtyOf(s, 'i1')).toBe(2);
++    expect(qtyOf(s, 'i2')).toBe(5);
++  });
++
++  it('is idempotent and does not mutate its input', () => {
++    const op = mk('a', 1, 'i1', 4);
++    const s0 = {};
++    const s1 = def.apply!(s0, op);
++    expect(s0).toEqual({});
++    expect(def.apply!(s1, op)).toEqual(s1);
++    expect(qtyOf(def.apply!(s1, op), 'i1')).toBe(4);
++  });
++
++  it('rejects a non-whole-number adjustment', () => {
++    expect(() => adjustQtyPayload({}, 'i1', 1.5)).toThrow();
++    expect(() => adjustQtyPayload({}, 'i1', NaN)).toThrow();
++  });
++});
+diff --git a/apps/_ab/src/ops/registry.gen.ts b/apps/_ab/src/ops/registry.gen.ts
+new file mode 100644
+index 0000000..740726d
+--- /dev/null
++++ b/apps/_ab/src/ops/registry.gen.ts
+@@ -0,0 +1,4 @@
++// generated by kit/hooks/op-scaffold.mjs — do not edit
++import itemAdjustQty from './item.adjustQty.op.ts';
++
++export const ops = [itemAdjustQty];

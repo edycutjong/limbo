@@ -1,0 +1,17 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.": [
+      {
+        "executionId": "1cf5acc4-2159-461d-9500-33a8fff28d1f",
+        "chatSessionId": "sess_9da59659-3866-4864-8346-edf056c491f2",
+        "timestamp": 1794737883025
+      },
+      {
+        "executionId": "1cf5acc4-2159-461d-9500-33a8fff28d1f",
+        "chatSessionId": "sess_9da59659-3866-4864-8346-edf056c491f2",
+        "timestamp": 1794737925837
+      }
+    ]
+  }
+}

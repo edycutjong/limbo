@@ -1,0 +1,190 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..f292d78 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -3,6 +3,6 @@
+ - [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+-- [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
++- [x] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R2.1, R2.2, R2.3, R2.4_
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..95c8764
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,17 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.": [
++      {
++        "executionId": "6c9c550f-653d-4610-be66-b67ea3963e67",
++        "chatSessionId": "sess_b1055cd8-63b7-4def-a307-f65a542d0d89",
++        "timestamp": 1794739031848
++      },
++      {
++        "executionId": "6c9c550f-653d-4610-be66-b67ea3963e67",
++        "chatSessionId": "sess_b1055cd8-63b7-4def-a307-f65a542d0d89",
++        "timestamp": 1794739088459
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/sector.report.op.test.ts b/apps/_ab/src/ops/sector.report.op.test.ts
+new file mode 100644
+index 0000000..755dea9
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.op.test.ts
+@@ -0,0 +1,85 @@
++import { describe, expect, it } from 'vitest';
++import { causalBuffer, createOp, newReplica, observe } from '../../../../skeleton/src/core/causal.ts';
++import { simulate } from '../../../../skeleton/src/core/simulate.ts';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import { SEVERITIES, type Severity } from '../model.ts';
++import def, { reportPayload, severityOf } from './sector.report.op.ts';
++
++const make = (r: string) => {
++  const rep = newReplica(r);
++  const buf = causalBuffer(rep.vv);
++  return {
++    report(state: unknown, sector: string, sev: Severity): Op {
++      return createOp(rep, def, sector, reportPayload(state, sector, sev));
++    },
++    receive(op: Op) {
++      for (const a of buf.offer(op)) observe(rep, a);
++    },
++  };
++};
++const run = (ops: Op[]) => ops.reduce((s, o) => def.apply!(s, o), {} as unknown);
++
++describe('sector.report', () => {
++  it('shows none for a sector never reported', () => {
++    expect(severityOf({}, 'x')).toBe('none');
++  });
++
++  it('shows a single report', () => {
++    const a = make('a');
++    expect(severityOf(run([a.report({}, 's', 'major')]), 's')).toBe('major');
++  });
++
++  it('concurrent reports show the more severe, in either order', () => {
++    const a = make('a');
++    const b = make('b');
++    const x = a.report({}, 's', 'minor');
++    const y = b.report({}, 's', 'critical');
++    expect(severityOf(run([x, y]), 's')).toBe('critical');
++    expect(severityOf(run([y, x]), 's')).toBe('critical');
++  });
++
++  it('a re-inspection that saw the earlier report may lower it', () => {
++    const a = make('a');
++    const b = make('b');
++    const x = a.report({}, 's', 'critical');
++    b.receive(x);
++    const y = b.report({}, 's', 'minor');
++    expect(severityOf(run([x, y]), 's')).toBe('minor');
++    expect(severityOf(run([y, x]), 's')).toBe('minor');
++  });
++
++  it('a concurrent lower report does not hide a higher one after a re-inspection', () => {
++    const a = make('a');
++    const b = make('b');
++    const c = make('c');
++    const x = a.report({}, 's', 'critical');
++    b.receive(x);
++    const lowered = b.report({}, 's', 'minor');
++    const other = c.report({}, 's', 'major'); // concurrent with both
++    expect(severityOf(run([x, lowered, other]), 's')).toBe('major');
++    expect(severityOf(run([other, x, lowered]), 's')).toBe('major');
++  });
++
++  it('ignores duplicates and does not mutate its input', () => {
++    const a = make('a');
++    const x = a.report({}, 's', 'minor');
++    const s1 = def.apply!({}, x);
++    const snap = JSON.stringify(s1);
++    const s2 = def.apply!(s1, x);
++    expect(JSON.stringify(s1)).toBe(snap);
++    expect(severityOf(s2, 's')).toBe('minor');
++  });
++
++  it('replicas converge under random concurrency, reordering and duplicates', () => {
++    for (let seed = 1; seed <= 60; seed++) {
++      const res = simulate({
++        defs: [def],
++        replicas: 3,
++        seed,
++        steps: 14,
++        gen: (_d, rand) => ({ target: rand.pick(['s1', 's2']), payload: reportPayload({}, 's', rand.pick(SEVERITIES)) }),
++      });
++      expect(new Set(Object.values(res.states)).size).toBe(1);
++    }
++  });
++});
+diff --git a/apps/_ab/src/ops/sector.report.op.ts b/apps/_ab/src/ops/sector.report.op.ts
+new file mode 100644
+index 0000000..ad3aaae
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.op.ts
+@@ -0,0 +1,57 @@
++// sector.report: "this sector's damage is <severity>."
++// Intent: a report made without knowing of another never lowers it (concurrent reports show the more severe);
++// a re-inspection that has seen the earlier reports may lower it.
++// Merge: causal-lww with a max tie-break on the frontier. State keeps every report by op id and re-derives the value:
++// the frontier is the reports no other report covers, and the severity is the most severe frontier report.
++// Re-derivation reads no arrival order, so order and duplicates cannot change the result.
++import { covers } from '../../../../skeleton/src/core/causal.ts';
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++import { SEVERITIES, type Severity } from '../model.ts';
++
++export interface ReportPayload {
++  severity: Severity;
++}
++
++export interface ReportState {
++  sectors?: Record<string, Record<string, Op<ReportPayload>>>;
++}
++
++const rank = (s: Severity): number => SEVERITIES.indexOf(s);
++
++function derive(reports: Record<string, Op<ReportPayload>>): Severity {
++  const all = Object.values(reports);
++  const frontier = all.filter((w) => !all.some((o) => o !== w && covers(o, w)));
++  let best: Severity = 'none';
++  for (const w of frontier) if (rank(w.payload.severity) > rank(best)) best = w.payload.severity;
++  return best;
++}
++
++const def: OpDef<ReportState, ReportPayload> = {
++  name: 'sector.report',
++  merge: 'causal-lww',
++  intent: { kind: 'max', field: 'severity', order: [...SEVERITIES] },
++  apply(s, op: Op<ReportPayload>) {
++    if (!SEVERITIES.includes(op.payload.severity)) return s;
++    const reports = { ...(s.sectors?.[op.target] ?? {}), [op.id]: op };
++    return { ...s, sectors: { ...(s.sectors ?? {}), [op.target]: reports } };
++  },
++  invariant(s) {
++    for (const [t, reports] of Object.entries(s.sectors ?? {}))
++      for (const w of Object.values(reports))
++        if (!SEVERITIES.includes(w.payload.severity)) return `report ${w.id} on ${t} has an unknown severity`;
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
++
++export function reportPayload(_state: unknown, _sectorId: string, severity: Severity): unknown {
++  if (!SEVERITIES.includes(severity)) throw new Error(`unknown severity ${String(severity)}`);
++  const payload: ReportPayload = { severity };
++  return payload;
++}
++
++export function severityOf(state: unknown, sectorId: string): Severity {
++  const reports = (state as ReportState).sectors?.[sectorId];
++  return reports ? derive(reports) : 'none';
++}

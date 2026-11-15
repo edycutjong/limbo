@@ -1,0 +1,175 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..f292d78 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -3,6 +3,6 @@
+ - [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+-- [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
++- [x] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R2.1, R2.2, R2.3, R2.4_
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..1b66c25
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,17 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.": [
++      {
++        "executionId": "13b66db4-f43a-4d22-9ec1-cd11b9f8ef12",
++        "chatSessionId": "sess_9262ef4a-46a9-49a7-8bef-a9d9cbffb1e4",
++        "timestamp": 1794737719157
++      },
++      {
++        "executionId": "13b66db4-f43a-4d22-9ec1-cd11b9f8ef12",
++        "chatSessionId": "sess_9262ef4a-46a9-49a7-8bef-a9d9cbffb1e4",
++        "timestamp": 1794737806438
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/sector.report.op.ts b/apps/_ab/src/ops/sector.report.op.ts
+new file mode 100644
+index 0000000..77ed095
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.op.ts
+@@ -0,0 +1,56 @@
++// sector.report: a damage report for a sector.
++// Intent: a report made without seeing another never lowers it (concurrent reports show the more severe); a report
++// made after seeing the earlier ones replaces them and may lower the severity (re-inspection after repairs).
++// Merge: commutes. State keeps every report by op id; the shown severity is the highest severity among reports that
++// no other report has seen (the causal frontier). A pure function of the set of reports, so order and duplicates
++// cannot change it.
++import { SEVERITIES, type Severity } from '../model.ts';
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++
++export interface ReportPayload {
++  severity: Severity;
++}
++
++export interface SectorState {
++  reports?: Record<string, Record<string, Op<ReportPayload>>>;
++}
++
++const rank = (s: Severity): number => SEVERITIES.indexOf(s);
++const covers = (x: Op, y: Op): boolean => (x.deps[y.stamp.r] ?? 0) >= y.stamp.n;
++
++function shown(writes: Record<string, Op<ReportPayload>> | undefined): Severity {
++  const all = Object.values(writes ?? {});
++  let best: Severity = 'none';
++  for (const w of all) {
++    if (all.some((o) => o !== w && covers(o, w))) continue;
++    if (rank(w.payload.severity) > rank(best)) best = w.payload.severity;
++  }
++  return best;
++}
++
++const def: OpDef<SectorState, ReportPayload> = {
++  name: 'sector.report',
++  merge: 'commutes',
++  intent: { kind: 'max', field: 'severity', order: [...SEVERITIES] },
++  apply(s, op) {
++    const cur = s.reports?.[op.target] ?? {};
++    return { ...s, reports: { ...(s.reports ?? {}), [op.target]: { ...cur, [op.id]: op } } };
++  },
++  invariant(s) {
++    for (const [t, ws] of Object.entries(s.reports ?? {}))
++      for (const w of Object.values(ws)) if (rank(w.payload.severity) < 0) return `sector ${t}: unknown severity in ${w.id}`;
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
++
++/** Payload for "report `severity` for `sectorId`". Severity is absolute, so it needs no read of the current state. */
++export function reportPayload(_state: unknown, _sectorId: string, severity: Severity): unknown {
++  return { severity } satisfies ReportPayload;
++}
++
++/** The severity this device shows; `none` for a sector never reported. */
++export function severityOf(state: unknown, sectorId: string): Severity {
++  return shown((state as SectorState).reports?.[sectorId]);
++}
+diff --git a/apps/_ab/src/ops/sector.report.props.test.ts b/apps/_ab/src/ops/sector.report.props.test.ts
+new file mode 100644
+index 0000000..0115b51
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.props.test.ts
+@@ -0,0 +1,5 @@
++import def from './sector.report.op.ts';
++import { opts } from './sector.report.props.ts';
++import { runOpProperties } from '../../../../kit/props/run.ts';
++
++runOpProperties(def, opts);
+diff --git a/apps/_ab/src/ops/sector.report.props.ts b/apps/_ab/src/ops/sector.report.props.ts
+new file mode 100644
+index 0000000..5a172b7
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.props.ts
+@@ -0,0 +1,23 @@
++// Properties for sector.report: generator and the kit `max` intent oracle.
++// Every report also acts as a clear for the reports it has seen (a later-seen report may lower the severity).
++import { conflictGen } from '../../../../kit/props/arbitraries/index.ts';
++import { maxIntent } from '../../../../kit/props/intent/index.ts';
++import type { RunOptions } from '../../../../kit/props/run.ts';
++import { SEVERITIES } from '../model.ts';
++import { severityOf, type ReportPayload } from './sector.report.op.ts';
++
++export const opts: RunOptions = {
++  gen: conflictGen({
++    payloads: {
++      'sector.report': (rand): ReportPayload => ({ severity: rand.pick(SEVERITIES) }),
++    },
++  }),
++  checks: [
++    maxIntent({
++      order: SEVERITIES,
++      report: (o) => (o.op === 'sector.report' ? (o.payload as ReportPayload).severity : undefined),
++      isClear: (o) => o.op === 'sector.report',
++      read: (s, target) => (s.reports?.[target] === undefined ? undefined : severityOf(s, target)),
++    }),
++  ],
++};
+diff --git a/apps/_ab/src/ops/sector.report.test.ts b/apps/_ab/src/ops/sector.report.test.ts
+new file mode 100644
+index 0000000..44998fd
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.test.ts
+@@ -0,0 +1,31 @@
++import { describe, expect, it } from 'vitest';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import def, { reportPayload, severityOf } from './sector.report.op.ts';
++import type { Severity } from '../model.ts';
++
++let l = 0;
++const mk = (r: string, n: number, severity: Severity, deps: Record<string, number> = {}): Op =>
++  ({ id: `${r}:${n}`, op: 'sector.report', target: 's1', payload: reportPayload({}, 's1', severity), stamp: { l: ++l, r, n }, deps });
++const run = (ops: Op[]) => ops.reduce((s, o) => def.apply!(s, o), {} as unknown);
++
++describe('sector.report', () => {
++  it('shows none for a never-reported sector', () => expect(severityOf({}, 's1')).toBe('none'));
++  it('concurrent reports show the more severe, in either order', () => {
++    const a = mk('a', 1, 'critical');
++    const b = mk('b', 1, 'minor');
++    expect(severityOf(run([a, b]), 's1')).toBe('critical');
++    expect(severityOf(run([b, a]), 's1')).toBe('critical');
++  });
++  it('a re-inspection that saw the earlier report may lower it', () => {
++    const a = mk('a', 1, 'critical');
++    const b = mk('b', 1, 'minor', { a: 1 });
++    expect(severityOf(run([a, b]), 's1')).toBe('minor');
++  });
++  it('apply is idempotent and does not mutate its input', () => {
++    const a = mk('a', 1, 'major');
++    const s0 = {};
++    const s1 = def.apply!(s0, a);
++    expect(s0).toEqual({});
++    expect(def.apply!(s1, a)).toEqual(s1);
++  });
++});

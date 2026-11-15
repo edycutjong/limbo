@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-15T10:32:57.517Z",
+  "actor": "kiro",
+  "session_id": "sess_adecac42-e588-454b-ad30-cd64873e6cb6",
+  "surface": "kiro-cli chat --v3 --no-interactive (headless)",
+  "agent": "spec",
+  "model_reported": "auto",
+  "kiro_cli_version": "kiro-cli 3.3.0",
+  "spec": "ab",
+  "task": "2",
+  "prompt_file": "evidence/kiro/prompts/ab-task-2.md",
+  "credits_delta": 1.9185,
+  "attempts": 1,
+  "hooks_fired": {},
+  "hook_updates_in_stream": 0,
+  "stop_blocks": 0,
+  "steering_loaded": [],
+  "files_changed": [
+    ".kiro/specs/ab/tasks.md",
+    ".kiro/specs/ab/tasks.meta.json",
+    "apps/_ab/src/ops/sector.report.op.test.ts",
+    "apps/_ab/src/ops/sector.report.op.ts"
+  ],
+  "gate_manifest_ok": true,
+  "gate_changed": [],
+  "outcome": "done",
+  "wall_s": 70,
+  "run_logs": [
+    "ab-r12-S-A.jsonl"
+  ]
+}

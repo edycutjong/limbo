@@ -1,0 +1,132 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..752ed2f 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -1,6 +1,6 @@
+ # Tasks: two ops for the `_ab` app
+ 
+-- [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
++- [x] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+ - [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..2597549
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,17 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.": [
++      {
++        "executionId": "1cf5acc4-2159-461d-9500-33a8fff28d1f",
++        "chatSessionId": "sess_9da59659-3866-4864-8346-edf056c491f2",
++        "timestamp": 1794737883025
++      },
++      {
++        "executionId": "1cf5acc4-2159-461d-9500-33a8fff28d1f",
++        "chatSessionId": "sess_9da59659-3866-4864-8346-edf056c491f2",
++        "timestamp": 1794737925837
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/item.adjustQty.op.test.ts b/apps/_ab/src/ops/item.adjustQty.op.test.ts
+new file mode 100644
+index 0000000..8f1f5df
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.op.test.ts
+@@ -0,0 +1,38 @@
++import { describe, expect, it } from 'vitest';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import def, { adjustQtyPayload, qtyOf } from './item.adjustQty.op.ts';
++
++function mk(r: string, n: number, target: string, by: number): Op {
++  return { id: `${r}:${n}`, op: 'item.adjustQty', target, payload: adjustQtyPayload({}, target, by), stamp: { l: n, r, n }, deps: {} };
++}
++const run = (ops: Op[]) => ops.reduce((s, o) => def.apply!(s, o), {} as unknown);
++
++describe('item.adjustQty', () => {
++  it('shows 0 for a never-adjusted item', () => {
++    expect(qtyOf({}, 'a')).toBe(0);
++  });
++
++  it('applies up and down adjustments', () => {
++    expect(qtyOf(run([mk('A', 1, 'a', 3), mk('A', 2, 'a', 1), mk('A', 3, 'a', -2)]), 'a')).toBe(2);
++  });
++
++  it('keeps concurrent +1 taps from two devices', () => {
++    const x = mk('A', 1, 'a', 1);
++    const y = mk('B', 1, 'a', 1);
++    expect(qtyOf(run([x, y]), 'a')).toBe(2);
++    expect(qtyOf(run([y, x]), 'a')).toBe(2);
++  });
++
++  it('ignores a redelivered op and does not mutate input', () => {
++    const x = mk('A', 1, 'a', 1);
++    const s1 = run([x]);
++    const snap = JSON.stringify(s1);
++    const s2 = def.apply!(s1, x);
++    expect(JSON.stringify(s1)).toBe(snap);
++    expect(qtyOf(s2, 'a')).toBe(1);
++  });
++
++  it('rejects fractional deltas', () => {
++    expect(() => adjustQtyPayload({}, 'a', 0.5)).toThrow();
++  });
++});
+diff --git a/apps/_ab/src/ops/item.adjustQty.op.ts b/apps/_ab/src/ops/item.adjustQty.op.ts
+new file mode 100644
+index 0000000..b810781
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.op.ts
+@@ -0,0 +1,46 @@
++// item.adjustQty: changes an item's quantity by a whole-number delta (never sets an absolute value).
++// Intent: every adjustment counts; two offline "+1" taps become +2 after sync.
++// Merge: commutes. State keeps each delta by op id and the quantity is their sum, so order and duplicates cannot change it.
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++
++export interface AdjustQtyPayload {
++  by: number;
++}
++
++export interface AdjustQtyState {
++  adjustments?: Record<string, Record<string, number>>;
++}
++
++const def: OpDef<AdjustQtyState, AdjustQtyPayload> = {
++  name: 'item.adjustQty',
++  merge: 'commutes',
++  intent: { kind: 'delta', field: 'qty' },
++  apply(s, op: Op<AdjustQtyPayload>) {
++    const cur = s.adjustments?.[op.target] ?? {};
++    return {
++      ...s,
++      adjustments: { ...(s.adjustments ?? {}), [op.target]: { ...cur, [op.id]: op.payload.by } },
++    };
++  },
++  invariant(s) {
++    for (const [t, v] of Object.entries(s.adjustments ?? {})) {
++      for (const [id, by] of Object.entries(v)) if (!Number.isInteger(by)) return `target ${t} has a non-integer delta in ${id}`;
++    }
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
++
++/** Payload for "change the quantity of `itemId` by `by`". The delta does not depend on the current state. */
++export function adjustQtyPayload(_state: unknown, _itemId: string, by: number): unknown {
++  if (!Number.isInteger(by)) throw new Error(`adjustQty needs a whole number, got ${by}`);
++  const payload: AdjustQtyPayload = { by };
++  return payload;
++}
++
++/** The quantity this device shows: the sum of all received adjustments; 0 if never adjusted. */
++export function qtyOf(state: unknown, itemId: string): number {
++  const deltas = (state as AdjustQtyState).adjustments?.[itemId] ?? {};
++  return Object.values(deltas).reduce((a, b) => a + b, 0);
++}

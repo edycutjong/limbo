@@ -91,6 +91,8 @@ Pre-registered internal bin: ${results.class} (internal only; judge-facing copy 
 |---|---|---|---|---|---|---|---|---|
 ${rows.map((r) => `| ${r.k} | ${r.id} | ${r.fail ? 'FAIL' : 'pass'} | ${r.op_file_exists ? 'yes' : 'no'} | ${r.typecheck ? 'ok' : 'fail'} | ${r.heldout.passed ? 'pass' : 'fail'} | ${r.stop_blocks} | ${r.credits_delta} | ${r.heldout.passed ? '' : r.heldout.msg.replace(/\|/g, '/').slice(0, 140)} |`).join('\n')}
 
+Observations beyond the pre-registered measures (read them before quoting arm B's Stop blocks): \`observations.md\`.
+
 Raw: \`runs.jsonl\`, \`runs/<run>/\` (session row, hook rows, Kiro's files, diff, score), held-out suite in \`heldout/\`.
 `;
 writeFileSync(join(AB, 'summary.md'), md);

@@ -1,0 +1,193 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..f292d78 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -3,6 +3,6 @@
+ - [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+-- [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
++- [x] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R2.1, R2.2, R2.3, R2.4_
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..e9e57c9
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,17 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.": [
++      {
++        "executionId": "56c2450a-2fbd-4571-a0ad-762fd62b6f65",
++        "chatSessionId": "sess_6f2e02bc-fb4a-4046-893b-95c4454929e1",
++        "timestamp": 1794740142575
++      },
++      {
++        "executionId": "56c2450a-2fbd-4571-a0ad-762fd62b6f65",
++        "chatSessionId": "sess_6f2e02bc-fb4a-4046-893b-95c4454929e1",
++        "timestamp": 1794740196996
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/sector.report.op.test.ts b/apps/_ab/src/ops/sector.report.op.test.ts
+new file mode 100644
+index 0000000..c3304fb
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.op.test.ts
+@@ -0,0 +1,90 @@
++import fc from 'fast-check';
++import { describe, expect, it } from 'vitest';
++import { createOp, newReplica, observe, type Replica } from '../../../../skeleton/src/core/causal.ts';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import { SEVERITIES, type Severity } from '../model.ts';
++import def, { reportPayload, severityOf } from './sector.report.op.ts';
++
++const apply = (s: unknown, op: Op) => def.apply!(s, op);
++const fold = (ops: Op[]) => ops.reduce<unknown>(apply, {});
++
++function report(r: ReturnType<typeof newReplica>, sev: Severity, sector = 's1', state: unknown = {}): Op {
++  return createOp(r, def, sector, reportPayload(state, sector, sev));
++}
++/** Deliver op to replica: update its Lamport clock and version vector. */
++function receive(r: ReturnType<typeof newReplica>, op: Op): void {
++  observe(r, op);
++  r.vv[op.stamp.r] = Math.max(r.vv[op.stamp.r] ?? 0, op.stamp.n);
++}
++
++describe('sector.report', () => {
++  it('shows none for a never-reported sector', () => {
++    expect(severityOf({}, 's1')).toBe('none');
++  });
++
++  it('a single report sets the severity', () => {
++    const a = newReplica('a');
++    expect(severityOf(fold([report(a, 'major')]), 's1')).toBe('major');
++  });
++
++  it('concurrent reports show the more severe, in either order', () => {
++    const a = newReplica('a');
++    const b = newReplica('b');
++    const x = report(a, 'critical');
++    const y = report(b, 'minor');
++    expect(severityOf(fold([x, y]), 's1')).toBe('critical');
++    expect(severityOf(fold([y, x]), 's1')).toBe('critical');
++  });
++
++  it('a re-inspection that saw the earlier report can lower it', () => {
++    const a = newReplica('a');
++    const b = newReplica('b');
++    const x = report(a, 'critical');
++    receive(b, x);
++    const y = report(b, 'minor');
++    expect(severityOf(fold([x, y]), 's1')).toBe('minor');
++    expect(severityOf(fold([y, x]), 's1')).toBe('minor');
++  });
++
++  it('a lowering report stays concurrent-max with an unseen report', () => {
++    const a = newReplica('a');
++    const b = newReplica('b');
++    const c = newReplica('c');
++    const x = report(a, 'critical');
++    receive(b, x);
++    const y = report(b, 'minor'); // lowers x
++    const z = report(c, 'major'); // concurrent with both
++    expect(severityOf(fold([x, y, z]), 's1')).toBe('major');
++  });
++
++  it('sectors are independent and apply does not mutate its input', () => {
++    const a = newReplica('a');
++    const s0 = {};
++    const s1 = apply(s0, report(a, 'major', 's1'));
++    expect(s0).toEqual({});
++    const s2 = apply(s1, report(a, 'minor', 's2'));
++    expect(severityOf(s2, 's1')).toBe('major');
++    expect(severityOf(s2, 's2')).toBe('minor');
++  });
++
++  it('property: any delivery order (with duplicates) gives the same severity', () => {
++    const sev = fc.constantFrom(...SEVERITIES);
++    fc.assert(
++      fc.property(
++        fc.array(fc.record({ r: fc.constantFrom('a', 'b', 'c'), sev, seen: fc.array(fc.nat(7), { maxLength: 3 }) }), { minLength: 1, maxLength: 8 }),
++        fc.integer(),
++        (specs, seed) => {
++          const reps: Record<string, Replica> = {};
++          const ops: Op[] = [];
++          for (const sp of specs) {
++            const rep = (reps[sp.r] ??= newReplica(sp.r));
++            for (const i of sp.seen) if (ops[i] !== undefined) receive(rep, ops[i]!);
++            ops.push(report(rep, sp.sev));
++          }
++          const shuffled = [...ops, ...ops].map((o, i) => ({ o, k: Math.sin(seed + i * 7919) })).sort((p, q) => p.k - q.k).map((p) => p.o);
++          expect(severityOf(fold(shuffled), 's1')).toBe(severityOf(fold(ops), 's1'));
++        },
++      ),
++    );
++  });
++});
+diff --git a/apps/_ab/src/ops/sector.report.op.ts b/apps/_ab/src/ops/sector.report.op.ts
+new file mode 100644
+index 0000000..0948268
+--- /dev/null
++++ b/apps/_ab/src/ops/sector.report.op.ts
+@@ -0,0 +1,55 @@
++// sector.report: reports the damage severity of a sector.
++// Intent: a report made without knowledge of another never lowers it (concurrent reports show the more severe);
++// a re-inspection that has seen the earlier reports may lower it.
++// Merge: causal-lww with a max resolution. State keeps every report by op id; the shown value is the most severe
++// among the frontier (reports no other report covers), so order and duplicates cannot change it.
++import { covers } from '../../../../skeleton/src/core/causal.ts';
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++import { SEVERITIES, type Severity } from '../model.ts';
++
++export interface ReportPayload {
++  severity: Severity;
++}
++
++export interface ReportState {
++  reports?: Record<string, Record<string, Op<ReportPayload>>>;
++}
++
++const rank = (s: Severity): number => SEVERITIES.indexOf(s);
++
++function resolve(writes: Record<string, Op<ReportPayload>>): Severity {
++  const all = Object.values(writes);
++  let best: Severity = 'none';
++  for (const w of all) {
++    if (all.some((o) => o !== w && covers(o, w))) continue; // superseded by a report that had seen it
++    if (rank(w.payload.severity) > rank(best)) best = w.payload.severity;
++  }
++  return best;
++}
++
++const def: OpDef<ReportState, ReportPayload> = {
++  name: 'sector.report',
++  merge: 'causal-lww',
++  intent: { kind: 'max', field: 'severity', order: [...SEVERITIES] },
++  apply(s, op: Op<ReportPayload>) {
++    const writes = { ...(s.reports?.[op.target] ?? {}), [op.id]: op };
++    return { ...s, reports: { ...(s.reports ?? {}), [op.target]: writes } };
++  },
++  invariant(s) {
++    for (const [t, ws] of Object.entries(s.reports ?? {}))
++      for (const w of Object.values(ws)) if (!SEVERITIES.includes(w.payload.severity)) return `report ${w.id} on ${t} has unknown severity`;
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
++
++export function reportPayload(_state: unknown, _sectorId: string, severity: Severity): unknown {
++  if (!SEVERITIES.includes(severity)) throw new Error(`unknown severity: ${String(severity)}`);
++  return { severity } satisfies ReportPayload;
++}
++
++export function severityOf(state: unknown, sectorId: string): Severity {
++  const writes = (state as ReportState).reports?.[sectorId];
++  return writes === undefined ? 'none' : resolve(writes);
++}

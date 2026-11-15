@@ -1,0 +1,143 @@
+diff --git a/.kiro/specs/ab/tasks.md b/.kiro/specs/ab/tasks.md
+index 47fb9e3..752ed2f 100644
+--- a/.kiro/specs/ab/tasks.md
++++ b/.kiro/specs/ab/tasks.md
+@@ -1,6 +1,6 @@
+ # Tasks: two ops for the `_ab` app
+ 
+-- [ ] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
++- [x] 1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.
+   - `pnpm typecheck && pnpm test` green.
+   - _Requirements: R1.1, R1.2, R1.3_
+ - [ ] 2. Implement `sector.report` in `apps/_ab/src/ops/sector.report.op.ts` per the design, with tests.
+diff --git a/.kiro/specs/ab/tasks.meta.json b/.kiro/specs/ab/tasks.meta.json
+new file mode 100644
+index 0000000..c520022
+--- /dev/null
++++ b/.kiro/specs/ab/tasks.meta.json
+@@ -0,0 +1,17 @@
++{
++  "pbtResults": {},
++  "executionHistory": {
++    "1. Implement `item.adjustQty` in `apps/_ab/src/ops/item.adjustQty.op.ts` per the design, with tests.": [
++      {
++        "executionId": "297c171c-7914-49be-847b-5bd404ce325e",
++        "chatSessionId": "sess_c7520ffb-df6e-4c65-96b0-66f0a619e579",
++        "timestamp": 1794737641358
++      },
++      {
++        "executionId": "297c171c-7914-49be-847b-5bd404ce325e",
++        "chatSessionId": "sess_c7520ffb-df6e-4c65-96b0-66f0a619e579",
++        "timestamp": 1794737692400
++      }
++    ]
++  }
++}
+\ No newline at end of file
+diff --git a/apps/_ab/src/ops/item.adjustQty.op.test.ts b/apps/_ab/src/ops/item.adjustQty.op.test.ts
+new file mode 100644
+index 0000000..fc30353
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.op.test.ts
+@@ -0,0 +1,50 @@
++import { describe, expect, it } from 'vitest';
++import fc from 'fast-check';
++import type { Op } from '../../../../skeleton/src/core/types.ts';
++import def, { adjustQtyPayload, qtyOf } from './item.adjustQty.op.ts';
++
++const mk = (r: string, n: number, target: string, by: number): Op => ({
++  id: `${r}:${n}`,
++  op: 'item.adjustQty',
++  target,
++  payload: adjustQtyPayload({}, target, by),
++  stamp: { l: n, r, n },
++  deps: {},
++});
++const run = (ops: Op[]) => ops.reduce<unknown>((s, o) => def.apply!(s, o), {});
++
++describe('item.adjustQty', () => {
++  it('shows 0 for a never-adjusted item', () => {
++    expect(qtyOf({}, 'a')).toBe(0);
++  });
++
++  it('adjusts up and down', () => {
++    expect(qtyOf(run([mk('A', 1, 'a', 3), mk('A', 2, 'a', 1), mk('A', 3, 'a', -2)]), 'a')).toBe(2);
++  });
++
++  it('keeps concurrent +1s from two devices', () => {
++    expect(qtyOf(run([mk('A', 1, 'a', 1), mk('B', 1, 'a', 1)]), 'a')).toBe(2);
++  });
++
++  it('does not mutate its input and ignores a redelivered op', () => {
++    const s0 = run([mk('A', 1, 'a', 1)]);
++    const snap = JSON.stringify(s0);
++    const s1 = def.apply!(s0, mk('B', 1, 'a', 1));
++    expect(JSON.stringify(s0)).toBe(snap);
++    expect(qtyOf(def.apply!(s1, mk('B', 1, 'a', 1)), 'a')).toBe(2);
++  });
++
++  it('rejects non-integer adjustments', () => {
++    expect(() => adjustQtyPayload({}, 'a', 1.5)).toThrow();
++  });
++
++  it('converges in any order', () => {
++    fc.assert(
++      fc.property(fc.array(fc.integer({ min: -5, max: 5 }), { maxLength: 8 }), (bys) => {
++        const ops = bys.map((b, i) => mk(i % 2 ? 'A' : 'B', i + 1, 'a', b));
++        expect(qtyOf(run([...ops].reverse()), 'a')).toBe(qtyOf(run(ops), 'a'));
++        expect(qtyOf(run(ops), 'a')).toBe(bys.reduce((a, b) => a + b, 0));
++      }),
++    );
++  });
++});
+diff --git a/apps/_ab/src/ops/item.adjustQty.op.ts b/apps/_ab/src/ops/item.adjustQty.op.ts
+new file mode 100644
+index 0000000..1d0efee
+--- /dev/null
++++ b/apps/_ab/src/ops/item.adjustQty.op.ts
+@@ -0,0 +1,45 @@
++// item.adjustQty: changes an item's quantity by a whole-number delta (never sets an absolute value).
++// Intent: two people tapping "+1" offline must both count, so adjustments add up instead of overwriting each other.
++// Merge: commutes. State keeps each delta by op id and the quantity is their sum, so order and duplicates cannot change it.
++import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
++
++export interface AdjustQtyPayload {
++  by: number;
++}
++
++export interface AdjustQtyState {
++  adjustments?: Record<string, Record<string, number>>;
++}
++
++const def: OpDef<AdjustQtyState, AdjustQtyPayload> = {
++  name: 'item.adjustQty',
++  merge: 'commutes',
++  intent: { kind: 'delta', field: 'qty' },
++  apply(s, op: Op<AdjustQtyPayload>) {
++    const cur = s.adjustments?.[op.target] ?? {};
++    return {
++      ...s,
++      adjustments: { ...(s.adjustments ?? {}), [op.target]: { ...cur, [op.id]: op.payload.by } },
++    };
++  },
++  invariant(s) {
++    for (const [t, v] of Object.entries(s.adjustments ?? {})) {
++      for (const [id, by] of Object.entries(v)) if (!Number.isInteger(by)) return `adjustment ${id} on ${t} is not a whole number`;
++    }
++    return true;
++  },
++};
++
++export default def as unknown as OpDef;
++
++/** Payload for "change the quantity of `itemId` by `by`". The change is relative, so the state is not needed. */
++export function adjustQtyPayload(_state: unknown, _itemId: string, by: number): unknown {
++  if (!Number.isInteger(by)) throw new Error(`item.adjustQty: "by" must be a whole number, got ${by}`);
++  return { by } satisfies AdjustQtyPayload;
++}
++
++/** The quantity this device shows: the sum of all adjustments received for the item; 0 if never adjusted. */
++export function qtyOf(state: unknown, itemId: string): number {
++  const v = (state as AdjustQtyState).adjustments?.[itemId];
++  return v ? Object.values(v).reduce((a, b) => a + b, 0) : 0;
++}

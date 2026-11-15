@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-15T10:48:24.341Z",
+  "actor": "kiro",
+  "session_id": "sess_13d83a25-f75f-4860-abe2-1302b8aa1bb7",
+  "surface": "kiro-cli chat --v3 --no-interactive (headless)",
+  "agent": "spec",
+  "model_reported": "auto",
+  "kiro_cli_version": "kiro-cli 3.3.0",
+  "spec": "ab",
+  "task": "2",
+  "prompt_file": "evidence/kiro/prompts/ab-task-2.md",
+  "credits_delta": 2.8945,
+  "attempts": 1,
+  "hooks_fired": {
+    "PreToolUse": 6,
+    "PreTaskExec": 1,
+    "PostTaskExec": 1,
+    "Stop": 1
+  },
+  "hook_updates_in_stream": 0,
+  "stop_blocks": 0,
+  "steering_loaded": [
+    ".kiro/steering/local-first.md",
+    ".kiro/steering/product.md",
+    ".kiro/steering/structure.md",
+    ".kiro/steering/tech.md",
+    ".kiro/steering/ops-guide.md",
+    ".kiro/steering/testing.md"
+  ],
+  "files_changed": [
+    ".kiro/specs/ab/tasks.md",
+    ".kiro/specs/ab/tasks.meta.json",
+    "apps/_ab/src/ops/sector.report.op.ts",
+    "apps/_ab/src/ops/sector.report.props.test.ts",
+    "apps/_ab/src/ops/sector.report.props.ts",
+    "apps/_ab/src/ops/sector.report.test.ts"
+  ],
+  "gate_manifest_ok": true,
+  "gate_changed": [],
+  "outcome": "done",
+  "wall_s": 183,
+  "run_logs": [
+    "ab-r18-S-B.jsonl"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-15T10:55:24.229Z",
+  "actor": "kiro",
+  "session_id": "sess_87970b14-972c-48d4-b85a-599d2b2ee644",
+  "surface": "kiro-cli chat --v3 --no-interactive (headless)",
+  "agent": "spec",
+  "model_reported": "auto",
+  "kiro_cli_version": "kiro-cli 3.3.0",
+  "spec": "ab",
+  "task": "1",
+  "prompt_file": "evidence/kiro/prompts/ab-task-1.md",
+  "credits_delta": 6.0568,
+  "attempts": 1,
+  "hooks_fired": {
+    "PreToolUse": 12,
+    "PreTaskExec": 2,
+    "PostFileCreate": 1,
+    "PostFileSave": 1,
+    "PostTaskExec": 2,
+    "Stop": 1
+  },
+  "hook_updates_in_stream": 0,
+  "stop_blocks": 1,
+  "steering_loaded": [
+    ".kiro/steering/local-first.md",
+    ".kiro/steering/product.md",
+    ".kiro/steering/structure.md",
+    ".kiro/steering/tech.md",
+    ".kiro/steering/ops-guide.md",
+    ".kiro/steering/testing.md"
+  ],
+  "files_changed": [
+    ".kiro/specs/ab/tasks.md",
+    "kit/props/suite.props.test.ts",
+    ".kiro/specs/ab/tasks.meta.json",
+    "apps/_ab/src/ops/item.adjustQty.op.ts",
+    "apps/_ab/src/ops/item.adjustQty.props.test.ts",
+    "apps/_ab/src/ops/item.adjustQty.props.ts",
+    "apps/_ab/src/ops/item.adjustQty.test.ts",
+    "apps/_ab/src/ops/registry.gen.ts"
+  ],
+  "gate_manifest_ok": true,
+  "gate_changed": [],
+  "outcome": "done",
+  "wall_s": 415,
+  "run_logs": [
+    "ab-r19-Q-B.jsonl"
+  ]
+}
