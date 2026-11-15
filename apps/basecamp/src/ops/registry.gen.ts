@@ -4,7 +4,8 @@ import itemClaim from './item.claim.op.ts';
 import itemDelete from './item.delete.op.ts';
 import itemMove from './item.move.op.ts';
 import itemRelease from './item.release.op.ts';
+import itemRename from './item.rename.op.ts';
 import itemRestore from './item.restore.op.ts';
 import itemTick from './item.tick.op.ts';
 
-export const ops = [itemAdd, itemClaim, itemDelete, itemMove, itemRelease, itemRestore, itemTick];
+export const ops = [itemAdd, itemClaim, itemDelete, itemMove, itemRelease, itemRename, itemRestore, itemTick];

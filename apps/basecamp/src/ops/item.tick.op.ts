@@ -18,11 +18,10 @@ const def: OpDef<TickState, TickPayload> = {
   merge: 'causal-lww',
   intent: { kind: 'set', field: 'ticked' },
   apply(s, op: Op<TickPayload>) {
-    const cur = s.ticks?.[op.target] as { writes: Record<string, Op<TickPayload>>; ticked: boolean; at?: number } | undefined;
+    const cur = s.ticks?.[op.target];
     const writes = { ...(cur?.writes ?? {}), [op.id]: op };
-    const at = Date.now();
-    if (cur?.at !== undefined && cur.at > at) return { ...s, ticks: { ...(s.ticks ?? {}), [op.target]: { ...cur, writes } } };
-    return { ...s, ticks: { ...(s.ticks ?? {}), [op.target]: { writes, ticked: op.payload.ticked === true, at } } };
+    const ticked = causalLww(Object.values(writes)).value?.ticked === true;
+    return { ...s, ticks: { ...(s.ticks ?? {}), [op.target]: { writes, ticked } } };
   },
   invariant(s) {
     for (const [t, v] of Object.entries(s.ticks ?? {})) {

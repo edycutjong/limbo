@@ -78,7 +78,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - Tests: `skeleton/src/sync/store.test.ts` (put, all, persistence round trip, duplicate id); a lint test that no file other than `store.ts` imports `yjs`; `pnpm e2e` (spike spec) passes; 10 repeats recorded in evidence.
   - _Requirements: R17_
 
-- [ ] 12. LAST: `item.rename`
+- [x] 12. LAST: `item.rename`
   - Only this: `apps/basecamp/src/ops/item.rename.op.ts` (`causal-lww` on `name`, intent set, payload `{name}`), its `*.props.test.ts`, and the regenerated registry. Nothing else changes.
   - Tests: `pnpm props` including the `set` intent and the concurrent equal/different value vacuity classes on `name`; `op-lint`; intent matches `intents.json`; `pnpm typecheck && pnpm test && pnpm props` green.
   - _Requirements: R8.4, R8.5_
