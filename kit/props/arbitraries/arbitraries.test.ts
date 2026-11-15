@@ -27,4 +27,10 @@ describe('conflict-template generators', () => {
     expect(applicable.length + na.length).toBe(CONFLICT_CLASSES.length);
     expect(CONFLICT_CLASSES.length).toBe(11);
   });
+
+  it('applies the lww classes for item.tick and for any causal-lww op name', () => {
+    expect(applicableClasses(['item.tick']).applicable).toEqual(['lww-equal', 'lww-different']);
+    expect(applicableClasses(['x.write'], ['x.write']).applicable).toEqual(['lww-equal', 'lww-different']);
+    expect(applicableClasses(['item.claim'], []).na).toEqual(expect.arrayContaining(['lww-equal', 'lww-different']));
+  });
 });

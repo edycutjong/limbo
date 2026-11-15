@@ -95,6 +95,27 @@ describe('vacuity guard', () => {
     );
     has([mk('a', 1, 1, 'item.rename', 'x', { name: 'S' }), mk('b', 1, 1, 'item.rename', 'x', { name: 'S' })], 'lww-equal');
     has([mk('a', 1, 1, 'item.rename', 'x', { name: 'S' }), mk('b', 1, 1, 'item.rename', 'x', { name: 'T' })], 'lww-different');
+    has([mk('a', 1, 1, 'item.tick', 'x', { ticked: true }), mk('b', 1, 1, 'item.tick', 'x', { ticked: true })], 'lww-equal');
+    has([mk('a', 1, 1, 'item.tick', 'x', { ticked: true }), mk('b', 1, 1, 'item.tick', 'x', { ticked: false })], 'lww-different');
+  });
+
+  it('lww classes need concurrent same-op writes on one target, and honour the lww op set', () => {
+    const t = (r: string, tgt: string, v: boolean, deps = {}, l = 1) => mk(r, 1, l, 'item.tick', tgt, { ticked: v }, deps);
+    expect(classify([t('a', 'x', true), t('b', 'y', false)]).size).toBe(0); // other target
+    expect(classify([t('a', 'x', true), t('b', 'x', false, { a: 1 }, 2)]).size).toBe(0); // ordered
+    expect(classify([t('a', 'x', true), mk('b', 1, 1, 'item.rename', 'x', { name: 'S' })]).size).toBe(0); // different field
+    expect(classify([t('a', 'x', true), t('b', 'x', true)], new Set(['item.rename'])).size).toBe(0); // not causal-lww
+  });
+
+  it('lww classes apply whenever a registered op is causal-lww, and measure item.tick pairs', () => {
+    const tick: OpDef = { name: 'item.tick', merge: 'causal-lww', intent: { kind: 'set', field: 'ticked' } };
+    const claim: OpDef = { name: 'item.claim', merge: 'claim-one', intent: { kind: 'claim' } };
+    expect(vacuityReport(['item.claim'], [], []).na).toEqual(expect.arrayContaining(['lww-equal', 'lww-different']));
+    const g: RunOptions['gen'] = (_d, rand) => ({ target: 't', payload: { ticked: rand.chance(0.5) } });
+    const rep = measureVacuity([tick, claim], { gen: g, steps: { min: 20, max: 30 } }, 40);
+    expect(rep.applicable).toEqual(expect.arrayContaining(['lww-equal', 'lww-different']));
+    expect(rep.share['lww-equal']).toBeGreaterThan(0.5);
+    expect(rep.share['lww-different']).toBeGreaterThan(0.5);
   });
 
   it('does not flag causally ordered ops as conflicts', () => {

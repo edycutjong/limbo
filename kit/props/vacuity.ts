@@ -11,6 +11,9 @@ import type { RunOptions } from './run.ts';
 export const MIN_SHARE = 0.5;
 
 /** Ops that write item content (requirements glossary: Edit), minus restore which has its own classes. */
+/** Op names assumed `causal-lww` when the caller does not pass the registered defs. */
+const DEFAULT_LWW: ReadonlySet<string> = new Set(['item.rename', 'item.tick']);
+
 const EDITS = new Set(['item.tick', 'item.rename', 'item.claim']);
 
 function conc(a: Op, b: Op): boolean {
@@ -28,7 +31,7 @@ function gapOf(o: Op): string | undefined {
 const who = (o: Op): unknown => (o.payload as { who?: unknown } | null)?.who;
 
 /** Scan a script (the ops of one run) and return the R12.3 classes it contains. */
-export function classify(script: readonly Op[]): Set<string> {
+export function classify(script: readonly Op[], lwwOps: ReadonlySet<string> = DEFAULT_LWW): Set<string> {
   const found = new Set<string>();
   const by = (name: string): Op[] => script.filter((o) => o.op === name);
   const dels = by('item.delete');
@@ -36,7 +39,7 @@ export function classify(script: readonly Op[]): Set<string> {
   const claims = by('item.claim');
   const releases = by('item.release');
   const moves = by('item.move');
-  const renames = by('item.rename');
+  const lwws = script.filter((o) => lwwOps.has(o.op));
   const edits = script.filter((o) => EDITS.has(o.op));
 
   if (dels.some((d) => edits.some((e) => conc(d, e)))) found.add('delete-edit');
@@ -74,9 +77,10 @@ export function classify(script: readonly Op[]): Set<string> {
   ) {
     found.add('claim-release-claim');
   }
-  for (const a of renames) {
-    for (const b of renames) {
-      if (a.id >= b.id || !conc(a, b)) continue;
+  // Concurrent writes to one field (same op name) of one item, by any causal-lww op.
+  for (const a of lwws) {
+    for (const b of lwws) {
+      if (a.id >= b.id || a.op !== b.op || !conc(a, b)) continue;
       found.add(canonical(a.payload) === canonical(b.payload) ? 'lww-equal' : 'lww-different');
     }
   }
@@ -93,8 +97,12 @@ export interface VacuityReport {
 }
 
 /** Share per class over a list of per-run class sets. Unregistered classes are `n/a`. */
-export function vacuityReport(registered: Iterable<string>, runs: readonly ReadonlySet<string>[]): VacuityReport {
-  const { applicable, na } = applicableClasses(registered);
+export function vacuityReport(
+  registered: Iterable<string>,
+  runs: readonly ReadonlySet<string>[],
+  lwwOps?: Iterable<string>,
+): VacuityReport {
+  const { applicable, na } = applicableClasses(registered, lwwOps);
   const share: Record<string, number> = {};
   for (const c of applicable) share[c] = runs.length === 0 ? 0 : runs.filter((r) => r.has(c)).length / runs.length;
   return { runs: runs.length, share, applicable, na };
@@ -123,6 +131,7 @@ export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, ru
   const n = runs ?? cfg.orderings;
   const range = opts.steps ?? { min: 2, max: 14 };
   const init = opts.init ?? (() => ({}));
+  const lwwOps = new Set(defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name));
   const sets: Set<string>[] = [];
   for (let i = 0; i < n; i++) {
     const res = simulate({
@@ -133,10 +142,11 @@ export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, ru
       init,
       ...(opts.gen ? { gen: opts.gen } : {}),
     });
-    sets.push(classify(res.ops));
+    sets.push(classify(res.ops, lwwOps));
   }
   return vacuityReport(
     defs.map((d) => d.name),
     sets,
+    lwwOps,
   );
 }

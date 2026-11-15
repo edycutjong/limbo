@@ -61,7 +61,7 @@ if (defs.length === 0) {
     const na = new Set(report.na);
     for (const c of CONFLICT_CLASSES) {
       if (na.has(c.name)) {
-        it.skip(`${c.name}: n/a (op not registered: ${c.requires.join(', ')})`, () => {});
+        it.skip(`${c.name}: n/a (${c.anyLww ? 'no causal-lww op registered' : `op not registered: ${c.requires.join(', ')}`})`, () => {});
         continue;
       }
       it(`${c.name} occurs in at least ${MIN_SHARE * 100}% of ${config.orderings} runs`, () => {

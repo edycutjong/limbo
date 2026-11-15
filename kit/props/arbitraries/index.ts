@@ -12,6 +12,8 @@ export interface ConflictClass {
   name: string;
   /** Op names that must all be registered, else the class is `n/a` (R12.5). */
   requires: readonly string[];
+  /** Applies whenever at least one registered op declares `merge: 'causal-lww'` (`requires` is then empty). */
+  anyLww?: true;
 }
 
 /** The eleven classes of R12.3, with the BASECAMP ops each needs. */
@@ -25,16 +27,26 @@ export const CONFLICT_CLASSES: readonly ConflictClass[] = [
   { name: 'move-same-gap', requires: ['item.move'] },
   { name: 'move-delete', requires: ['item.move', 'item.delete'] },
   { name: 'claim-release-claim', requires: ['item.claim', 'item.release'] },
-  { name: 'lww-equal', requires: ['item.rename'] },
-  { name: 'lww-different', requires: ['item.rename'] },
+  { name: 'lww-equal', requires: [], anyLww: true },
+  { name: 'lww-different', requires: [], anyLww: true },
 ];
 
-/** Classes whose ops are all registered; the others are `n/a`. */
-export function applicableClasses(registered: Iterable<string>): { applicable: string[]; na: string[] } {
+/** BASECAMP ops known to be `causal-lww`; used when the caller passes no merge information. */
+const KNOWN_LWW = ['item.rename', 'item.tick'];
+
+/**
+ * Classes whose ops are all registered; the others are `n/a`. The lww classes apply when any registered op
+ * is `causal-lww`: `lwwOps` names those ops (default: the known BASECAMP ones that are registered).
+ */
+export function applicableClasses(
+  registered: Iterable<string>,
+  lwwOps?: Iterable<string>,
+): { applicable: string[]; na: string[] } {
   const have = new Set(registered);
+  const lww = new Set(lwwOps ?? KNOWN_LWW.filter((n) => have.has(n)));
   const applicable: string[] = [];
   const na: string[] = [];
-  for (const c of CONFLICT_CLASSES) (c.requires.every((r) => have.has(r)) ? applicable : na).push(c.name);
+  for (const c of CONFLICT_CLASSES) ((c.anyLww ? lww.size > 0 : c.requires.every((r) => have.has(r))) ? applicable : na).push(c.name);
   return { applicable, na };
 }
 
