@@ -22,7 +22,7 @@
       "op": "item.tick",
       "target": "x",
       "payload": {
-        "done": true
+        "ticked": true
       },
       "stamp": [
         2,
@@ -38,7 +38,7 @@
       "op": "item.tick",
       "target": "x",
       "payload": {
-        "done": true
+        "ticked": true
       },
       "stamp": [
         2,

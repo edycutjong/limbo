@@ -40,7 +40,7 @@
       "op": "item.tick",
       "target": "y",
       "payload": {
-        "done": true
+        "ticked": true
       },
       "stamp": [
         3,

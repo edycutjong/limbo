@@ -82,7 +82,7 @@ export function conflictGen(spec: ConflictGenSpec = {}): (def: OpDef, rand: Rand
 
 /** Payload builders for BASECAMP-shaped ops, keyed by op name. Apps may extend or replace them. */
 export const basecampPayloads: Readonly<Record<string, (rand: Rand, ctx: GenCtx) => unknown>> = {
-  'item.tick': (_r, c) => ({ done: c.pick([true, false]) }),
+  'item.tick': (_r, c) => ({ ticked: c.pick([true, false]) }),
   'item.rename': (_r, c) => ({ name: c.pick(['Stove', 'Tent'], ['Stove', 'Tent', 'Gas', 'Rope', 'Lantern']) }),
   'item.claim': (_r, c) => ({ who: c.pick(['ann', 'bo'], ['ann', 'bo', 'cy', 'di']) }),
   'item.release': (_r, c) => ({ who: c.pick(['ann', 'bo'], ['ann', 'bo', 'cy', 'di']) }),

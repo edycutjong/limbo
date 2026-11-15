@@ -42,8 +42,8 @@ describe('intents.json (R13)', () => {
   });
 
   it('harness accepts a matching op and fails a wrong or missing entry (R10.6, R10.7)', () => {
-    expect(checkManifest(def('item.tick', { kind: 'set', field: 'done' }), manifest)).toBe(true);
-    expect(checkManifest(def('item.tick', { kind: 'delta', field: 'done' }), manifest)).toMatch(/declares intent/);
+    expect(checkManifest(def('item.tick', { kind: 'set', field: 'ticked' }), manifest)).toBe(true);
+    expect(checkManifest(def('item.tick', { kind: 'delta', field: 'ticked' }), manifest)).toMatch(/declares intent/);
     expect(checkManifest(def('item.unknown', { kind: 'set', field: 'x' }), manifest)).toMatch(/missing from intents.json/);
   });
 });

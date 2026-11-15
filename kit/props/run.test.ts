@@ -74,7 +74,7 @@ const mk = (r: string, n: number, l: number, op: string, target: string, payload
 describe('vacuity guard', () => {
   it('classify flags each class on a hand-made script', () => {
     const has = (ops: Op[], c: string) => expect(classify(ops).has(c), c).toBe(true);
-    has([mk('a', 1, 1, 'item.delete', 'x', {}), mk('b', 1, 1, 'item.tick', 'x', { done: true })], 'delete-edit');
+    has([mk('a', 1, 1, 'item.delete', 'x', {}), mk('b', 1, 1, 'item.tick', 'x', { ticked: true })], 'delete-edit');
     has([mk('a', 1, 1, 'item.delete', 'x', {}), mk('b', 1, 1, 'item.restore', 'x', {})], 'restore-delete');
     has(
       [mk('a', 1, 1, 'item.delete', 'x', {}), mk('b', 1, 1, 'item.delete', 'x', {}), mk('c', 1, 2, 'item.restore', 'x', {}, { a: 1 })],
