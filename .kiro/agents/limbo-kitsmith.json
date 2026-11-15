@@ -1,0 +1,39 @@
+{
+  "name": "limbo-kitsmith",
+  "description": "Authors the LIMBO kit: steering, hooks, agents, property harness, golden histories, mutation fixtures. Never writes product code.",
+  "prompt": "file://./prompts/limbo-kitsmith.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": false,
+  "includePowers": false,
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git *", "gh *", "vercel *", "npm publish*", "pnpm publish*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "shell",
+        "match": ["pnpm *", "node *", "npx vitest *", "npx playwright *", "npx tsc *"],
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_write",
+        "match": [".kiro/**", "kit/**"],
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_write",
+        "match": ["skeleton/**", "apps/**", "evidence/**"],
+        "effect": "deny"
+      }
+    ]
+  }
+}

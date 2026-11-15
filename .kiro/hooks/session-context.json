@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "session-context",
+      "description": "Print registered ops and the last properties result at session start.",
+      "trigger": "SessionStart",
+      "timeout": 10,
+      "action": { "type": "command", "command": "node kit/hooks/session-context.mjs" }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "props-after-task",
+      "description": "Run fast-tier properties after a spec task. Never blocks.",
+      "trigger": "PostTaskExec",
+      "timeout": 120,
+      "action": { "type": "command", "command": "node kit/hooks/props-after-task.mjs" }
+    }
+  ]
+}

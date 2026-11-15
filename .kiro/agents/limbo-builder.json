@@ -1,0 +1,39 @@
+{
+  "name": "limbo-builder",
+  "description": "Builds LIMBO ops and views in the skeleton and apps. Never edits the gate files.",
+  "prompt": "file://./prompts/limbo-builder.md",
+  "tools": [
+    "read",
+    "write",
+    "shell"
+  ],
+  "resources": [
+    "file://.kiro/steering/**/*.md"
+  ],
+  "includeMcpJson": false,
+  "includePowers": false,
+  "permissions": {
+    "rules": [
+      {
+        "capability": "shell",
+        "match": ["git *", "gh *", "vercel *", "npm publish*", "pnpm publish*"],
+        "effect": "deny"
+      },
+      {
+        "capability": "shell",
+        "match": ["pnpm *", "node *", "npx vitest *", "npx playwright *", "npx tsc *"],
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_write",
+        "match": ["skeleton/**", "apps/**", "e2e/**", "kit/props/arbitraries/**"],
+        "effect": "allow"
+      },
+      {
+        "capability": "fs_write",
+        "match": [".kiro/hooks/**", ".kiro/agents/**", "kit/hooks/**", "kit/props/intent/**", "kit/props/bad/**", "kit/props/golden/**", "kit/props/intents.json", "kit/props/run.ts", "kit/props/config.ts", "skeleton/src/core/simulate.ts", "kit/mcp/**", "evidence/**"],
+        "effect": "deny"
+      }
+    ]
+  }
+}

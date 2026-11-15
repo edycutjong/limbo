@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "mcp-log",
+      "description": "Log limbo-convergence MCP tool calls and whether they passed.",
+      "trigger": "PostToolUse", "matcher": "@limbo-convergence",
+      "timeout": 10,
+      "action": { "type": "command", "command": "node kit/hooks/mcp-log.mjs" }
+    }
+  ]
+}

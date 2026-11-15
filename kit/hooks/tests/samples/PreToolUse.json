@@ -1,0 +1,1 @@
+{"session_id":"sess_1ce507c8-51d0-44f9-9417-6d224f2f30bc","hook_event_name":"PreToolUse","cwd":"/repo","tool_name":"execute_bash","tool_input":{"command":"printf 'two' > second.txt","description":"Create second.txt containing the word two","cwd":null,"run_in_background":false,"timeout":null}}

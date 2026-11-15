@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "task-start",
+      "description": "Log the spec and task about to run.",
+      "trigger": "PreTaskExec",
+      "timeout": 10,
+      "action": { "type": "command", "command": "node kit/hooks/task-start.mjs" }
+    }
+  ]
+}

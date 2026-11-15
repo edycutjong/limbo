@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "op-lint",
+      "description": "Static check of an op file: banned tokens, declared merge and intent, manifest match.",
+      "trigger": "PostFileSave", "matcher": "(^|/)ops/[^/]+\\.op\\.ts$",
+      "timeout": 30,
+      "action": { "type": "command", "command": "node kit/hooks/op-lint.mjs" }
+    }
+  ]
+}

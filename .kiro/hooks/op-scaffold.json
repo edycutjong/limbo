@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "op-scaffold",
+      "description": "Create the props test and regenerate registry.gen.ts for a new op file.",
+      "trigger": "PostFileCreate", "matcher": "(^|/)ops/[^/]+\\.op\\.ts$",
+      "timeout": 30,
+      "action": { "type": "command", "command": "node kit/hooks/op-scaffold.mjs" }
+    }
+  ]
+}

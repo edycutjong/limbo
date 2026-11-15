@@ -1,0 +1,12 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "stop-gate",
+      "description": "Block the agent from stopping while fast-tier properties fail (max 3 blocks per session).",
+      "trigger": "Stop",
+      "timeout": 120,
+      "action": { "type": "command", "command": "node kit/hooks/stop-gate.mjs" }
+    }
+  ]
+}
