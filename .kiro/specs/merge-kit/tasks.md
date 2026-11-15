@@ -33,7 +33,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except wh
   - [x] 5.2 `kit/props/run.ts`: `runOpProperties(def)`; convergence, replay equivalence, idempotence, commutes, no lost edit, manifest check, shrunk failure message.
   - [x] 5.3 `kit/props/intent/*.ts`: `set`, `delta`, `add-remove`, `max`, `claim`, `life`, `split`, `move`, each with an independent oracle.
   - [x] 5.4 `kit/props/arbitraries/`: conflict-template generators.
-  - [ ] 5.5 Vacuity guard: `classify`, per-class share, `n/a` for unregistered ops.
+  - [x] 5.5 Vacuity guard: `classify`, per-class share, `n/a` for unregistered ops.
   - [ ] 5.6 `kit/props/suite.props.test.ts` over the registry.
   - Tests: `kit/props/run.test.ts` (unit): config tiers and seed override; failure message has script, order, seed, trace; `classify` flags each class on a hand-made script; vacuity fails when a class share is under 50% (stub generator); intent modules pass on small correct fixture reducers for `delta`, `add-remove`, `max`, `split`.
   - _Requirements: R10, R11, R12_

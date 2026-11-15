@@ -151,6 +151,18 @@
         "chatSessionId": "sess_35358f11-9671-436b-a8ac-6959479fb2a0",
         "timestamp": 1794730712859
       }
+    ],
+    "5.5 Vacuity guard: `classify`, per-class share, `n/a` for unregistered ops.": [
+      {
+        "executionId": "007b3848-b377-478e-af58-f9c824c0ba5b",
+        "chatSessionId": "sess_f88b7646-46e0-4a78-b64f-562e503ef4de",
+        "timestamp": 1794730741452
+      },
+      {
+        "executionId": "007b3848-b377-478e-af58-f9c824c0ba5b",
+        "chatSessionId": "sess_f88b7646-46e0-4a78-b64f-562e503ef4de",
+        "timestamp": 1794730841326
+      }
     ]
   }
 }
