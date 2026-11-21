@@ -1,8 +1,8 @@
 import { act, cleanup, screen, waitFor, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setMedia } from '../../../skeleton/src/limbo/test/setup.ts';
 import type { Pair } from '../../../skeleton/src/sync/pair.ts';
-import { boot } from './main.tsx';
+import { boot, withReplicas } from './main.tsx';
 import { SEED_ITEMS } from './seed.ts';
 import type { State } from './model.ts';
 
@@ -19,6 +19,8 @@ async function mount(reload: () => void = () => undefined): Promise<Pair<State>>
   pair = p;
   return p;
 }
+
+beforeEach(() => history.replaceState(null, '', '/'));
 
 afterEach(async () => {
   cleanup();
@@ -56,6 +58,7 @@ describe('app assembly', () => {
 
   it('shows the tagline and a single layout below 640 px', async () => {
     setMedia({ narrow: true });
+    history.replaceState(null, '', '/?replicas=1');
     await mount();
     expect(screen.getByText('For people whose shared list breaks when the signal does.')).toBeTruthy();
     expect(document.querySelector('.limbo-single')).toBeTruthy();
@@ -81,5 +84,27 @@ describe('app assembly', () => {
     const left = (await indexedDB.databases()).map((d) => d.name);
     expect(left).not.toContain('limbo:basecamp:a');
     expect(left).not.toContain('limbo:basecamp:b');
+  });
+
+  it('with no replicas param on a phone, both cards and Cut link render', async () => {
+    setMedia({ narrow: true });
+    await mount();
+    expect(document.querySelectorAll('[data-replica]').length).toBe(2);
+    expect(screen.getByRole('button', { name: /Cut link/ })).toBeTruthy();
+  });
+});
+
+describe('withReplicas', () => {
+  it('adds replicas=2 when absent', () => {
+    expect(withReplicas('')).toBe('?replicas=2');
+  });
+  it('keeps replicas=1 and replicas=2', () => {
+    expect(withReplicas('?replicas=1')).toBe('?replicas=1');
+    expect(withReplicas('?replicas=2')).toBe('?replicas=2');
+  });
+  it('keeps other params', () => {
+    const p = new URLSearchParams(withReplicas('?x=y'));
+    expect(p.get('x')).toBe('y');
+    expect(p.get('replicas')).toBe('2');
   });
 });

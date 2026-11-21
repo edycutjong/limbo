@@ -1,9 +1,9 @@
 import { act, cleanup, screen, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setMedia } from '../../../skeleton/src/limbo/test/setup.ts';
 import type { Pair } from '../../../skeleton/src/sync/pair.ts';
 import type { Op } from '../../../skeleton/src/core/types.ts';
-import { boot } from './main.tsx';
+import { boot, withReplicas } from './main.tsx';
 import type { State } from './model.ts';
 
 let pair: Pair<State> | undefined;
@@ -19,6 +19,8 @@ async function mount(o: { reload?: () => void; seedOps?: readonly Op[] } = {}): 
   pair = p;
   return p;
 }
+
+beforeEach(() => history.replaceState(null, '', '/'));
 
 afterEach(async () => {
   cleanup();
@@ -56,6 +58,7 @@ describe('app assembly', () => {
 
   it('shows a single layout below 640 px', async () => {
     setMedia({ narrow: true });
+    history.replaceState(null, '', '/?replicas=1');
     await mount();
     expect(document.querySelector('.limbo-single')).toBeTruthy();
     expect(document.querySelectorAll('[data-replica]').length).toBe(1);
@@ -88,5 +91,27 @@ describe('app assembly', () => {
     setMedia({ narrow: false });
     await mount({ seedOps: [] });
     expect(screen.getAllByText('No sectors reported yet. Tap a sector to report.').length).toBeGreaterThan(0);
+  });
+
+  it('with no replicas param on a phone, both cards and Cut link render', async () => {
+    setMedia({ narrow: true });
+    await mount();
+    expect(document.querySelectorAll('[data-replica]').length).toBe(2);
+    expect(screen.getByRole('button', { name: /Cut link/ })).toBeTruthy();
+  });
+});
+
+describe('withReplicas', () => {
+  it('adds replicas=2 when absent', () => {
+    expect(withReplicas('')).toBe('?replicas=2');
+  });
+  it('keeps replicas=1 and replicas=2', () => {
+    expect(withReplicas('?replicas=1')).toBe('?replicas=1');
+    expect(withReplicas('?replicas=2')).toBe('?replicas=2');
+  });
+  it('keeps other params', () => {
+    const p = new URLSearchParams(withReplicas('?x=y'));
+    expect(p.get('x')).toBe('y');
+    expect(p.get('replicas')).toBe('2');
   });
 });

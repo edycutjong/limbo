@@ -96,6 +96,18 @@
         "chatSessionId": "sess_8c6d8cf7-2552-4e25-9b16-dba487da039f",
         "timestamp": 1795277619352
       }
+    ],
+    "9. Phones: stacked pair by default": [
+      {
+        "executionId": "4f43805f-2a3b-4ab4-978c-2312fb39b62e",
+        "chatSessionId": "sess_aa22bce9-631c-451b-8a1a-ebbd3f8d974c",
+        "timestamp": 1795277799332
+      },
+      {
+        "executionId": "4f43805f-2a3b-4ab4-978c-2312fb39b62e",
+        "chatSessionId": "sess_aa22bce9-631c-451b-8a1a-ebbd3f8d974c",
+        "timestamp": 1795277919206
+      }
     ]
   }
 }

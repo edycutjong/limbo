@@ -17,6 +17,13 @@ import '../../../skeleton/src/limbo/tokens.css';
 import '../../controls.css';
 import '../app.css';
 
+/** Default the pair to two replicas: a phone shows the stacked pair unless `replicas` is given. */
+export function withReplicas(search: string): string {
+  const params = new URLSearchParams(search);
+  if (!params.has('replicas')) params.set('replicas', '2');
+  return `?${params.toString()}`;
+}
+
 export const TAGLINE = 'For people whose shared list breaks when the signal does.';
 
 /** Root component. Without a pair it shows the heading and tagline only. */
@@ -30,6 +37,7 @@ export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): 
         {p.pair && (
           <LimboShell pair={p.pair} defs={config.defs} describeConflicts={config.describeConflicts}>
             <ReplicaPair
+              search={withReplicas(typeof location === 'undefined' ? '' : location.search)}
               pair={p.pair}
               names={{
                 a: displayName(config.members.a.member).toUpperCase(),

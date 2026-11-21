@@ -46,7 +46,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `skeleton/src/limbo/fog-veil.test.ts` parses the veil percentages from `tokens.css` and requires `--ink` contrast ≥ 4.5:1 over the composited veil on `--card` and on `--bg`; asserts no `url(`, no `animation` on `.limbo-fog-veil` outside the existing `limbo-drain` rule; `fog.test.tsx` and `motion.test.tsx` unchanged and green.
   - _Requirements: R4.1 to R4.6, R6.2_
 
-- [ ] 9. Phones: stacked pair by default
+- [x] 9. Phones: stacked pair by default
   - Add `withReplicas(search)` to each app's `main.tsx` and pass it as `ReplicaPair`'s `search`. Add the pair, solo bar, overflow and caption rules to `controls.css` per design section 8.
   - Tests: unit tests of `withReplicas` in both apps (no param gives `replicas=2`; `1` and `2` are kept; other params are kept). `app.test.tsx` of each app: with no `replicas` param, both `[data-replica]` cards render and the "Cut link" button is present. Skeleton `pair-view.test.tsx` and `single.test.tsx` are unchanged. Reason for the commit: the apps now default to two replicas on phones so the first screen shows Cut link, fog, wisps and twins.
   - _Requirements: R5.1 to R5.5_

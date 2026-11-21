@@ -201,3 +201,10 @@ button.ui-chip { cursor: pointer; }
   font-size: 12px;
   line-height: 1.35;
 }
+
+/* Phones: stacked pair by default (R5) */
+.limbo-pair > * { min-width: 0; }
+.limbo-bar { position: static; margin-top: 16px; }
+.limbo-single { padding-bottom: 16px; }
+pre, .limbo-inspector { overflow-x: auto; max-width: 100%; }
+.limbo-cord-caption { text-align: center; text-wrap: balance; }

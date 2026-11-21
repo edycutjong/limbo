@@ -18,6 +18,13 @@ import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx
 import { registerShell } from '../../offline-shell.ts';
 import '../app.css';
 
+/** Default the pair to two replicas: a phone shows the stacked pair unless `replicas` is given. */
+export function withReplicas(search: string): string {
+  const params = new URLSearchParams(search);
+  if (!params.has('replicas')) params.set('replicas', '2');
+  return `?${params.toString()}`;
+}
+
 export const TAGLINE = 'For small teams who fill the same form when the signal is gone.';
 export const DEMO_CHIP = 'DEMO DATA';
 export const DEMO_NOTE = 'Demonstration data shape — not used in the field';
@@ -37,6 +44,7 @@ export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): 
       {p.pair && (
         <LimboShell pair={p.pair} defs={config.defs} describeConflicts={config.describeConflicts}>
           <ReplicaPair
+            search={withReplicas(typeof location === 'undefined' ? '' : location.search)}
             pair={p.pair}
             names={{
               a: displayName(config.members.a.member).toUpperCase(),
