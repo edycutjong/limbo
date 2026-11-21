@@ -29,7 +29,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`fog.test.tsx`, `chip.test.tsx`): cut → full fog with label "Offline" and the content wrapper desaturated; `connecting` also full; restore before settle → haze `Syncing n…` with `n = unacked + behind`; after settle → none; buffered-only → no fog and chip `Syncing…`; the veil has `pointer-events: none` and `aria-hidden`; all five chip strings exactly; `stalledOwn > 0` adds "waiting for an earlier edit that was not saved"; every state has a word and an icon.
   - _Requirements: R3, R8, R18.4_
 
-- [ ] 6. Wisps and crossing wisps
+- [x] 6. Wisps and crossing wisps
   - `marks.tsx`: `Wisps` with cap 12, exact counter and plate caption; crossing wisps from `crossing.seq`/`k`.
   - Tests (`wisps.test.tsx`): cut and add 3 → 3 wisps and counter `3` equal to `view.unacked`; 14 edits → 12 wisps and `14`; `unacked = 0` → nothing; restore and settle → `k` crossing wisps equal to the exchange crossing count; a no-op resend produces none; `k > 12` caps at 12; reduced motion renders the counter and no crossing wisps.
   - _Requirements: R4, R5, R15.2_

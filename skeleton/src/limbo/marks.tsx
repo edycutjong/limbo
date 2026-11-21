@@ -1,5 +1,5 @@
 // Presentation marks bound to `useLimbo`: Fog and StatusChip. They display derived state and compute nothing of their own.
-import type { ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { useLimbo, type Id } from './shell.tsx';
 
 export type FogMode = 'full' | 'haze' | 'none';
@@ -58,5 +58,41 @@ export function StatusChip(p: { id: Id }): ReactNode {
       )}
       {stalled > 0 && <span className="limbo-chip-line">waiting for an earlier edit that was not saved</span>}
     </span>
+  );
+}
+
+const CAP = 12;
+
+/** Queued-op wisps (cap 12), the exact counter, the plate caption, and crossing wisps for the latest crossing. */
+export function Wisps(p: { id: Id; plate: number | string }): ReactNode {
+  const { view, crossing, motion } = useLimbo(p.id);
+  const [gone, setGone] = useState(0);
+  const full = motion === 'full';
+  const n = view.unacked;
+  const cross = full && crossing.k > 0 && crossing.seq > gone ? Math.min(crossing.k, CAP) : 0;
+  return (
+    <div className="limbo-wisps" data-count={n}>
+      {full && n > 0 && (
+        <span className="limbo-wisp-row" aria-hidden="true">
+          {Array.from({ length: Math.min(n, CAP) }, (_, i) => (
+            <span key={i} className="wisp" />
+          ))}
+        </span>
+      )}
+      {n > 0 && <output className="wisp-count">{n}</output>}
+      {n > 0 && <span className="limbo-plate">{`PLATE ${p.plate} · ${n} WAITING`}</span>}
+      {cross > 0 && (
+        <span className="limbo-cross-row" aria-hidden="true" data-seq={crossing.seq} key={crossing.seq}>
+          {Array.from({ length: cross }, (_, i) => (
+            <span
+              key={i}
+              className="wisp wisp-cross"
+              style={{ '--i': i } as CSSProperties}
+              onAnimationEnd={i === cross - 1 ? () => setGone(crossing.seq) : undefined}
+            />
+          ))}
+        </span>
+      )}
+    </div>
   );
 }
