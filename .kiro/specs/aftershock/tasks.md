@@ -50,7 +50,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`conflicts.test.ts`): each row of the table; `twinCount === describeConflicts.length`; severity and needs produce nothing; ids are stable and equal on two replicas built from the same ops in different orders; ordering by (target, rule, id).
   - _Requirements: R5_
 
-- [ ] 10. Seed
+- [x] 10. Seed
   - `src/seed.ts` per R2 and design §7 with `makeSeedOps`.
   - Tests (`seed.test.ts`): materialized values of R2.7 (10 reported, 8 safe, B2 and E3 damaged, totals, needs, `C3` absent, zero twins); 18 ops, all by `seed`, counters 1..18; byte-identical on two builds; sha256 of the canonical JSON equals a recorded constant (print it).
   - _Requirements: R2_
