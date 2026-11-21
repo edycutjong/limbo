@@ -1,5 +1,5 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -272,11 +272,40 @@ describe('server: check_lint', () => {
     expect(r.structuredContent).toMatchObject({ pass: true, result: 'pass', exit: 0, violations: [] });
   }, 30_000);
 
-  it('returns the hook pass for a non-op file', async () => {
+  it('a non-op file is an error result with pass false, not the hook pass', async () => {
     const d = tempRoot();
     writeFileSync(join(d, 'readme.md'), 'hi');
-    const r = await call(await lintClient(d), 'check_lint', { file: 'readme.md' });
-    expect(r.structuredContent).toMatchObject({ pass: true, detail: 'not an op file' });
+    writeFileSync(join(d, 'ops', 'x.ts'), 'export {};');
+    writeFileSync(join(d, 'ops', 'x.op.tsx'), 'export {};');
+    mkdirSync(join(d, 'other'), { recursive: true });
+    writeFileSync(join(d, 'other', 'x.op.ts'), 'export {};');
+    const c = await lintClient(d);
+    for (const f of ['readme.md', 'ops/x.ts', 'ops/x.op.tsx', 'other/x.op.ts']) {
+      const r = await call(c, 'check_lint', { file: f });
+      expect(r.isError, f).toBe(true);
+      expect(r.structuredContent, f).toMatchObject({ pass: false, error: { code: 'not-an-op-file' } });
+    }
+  }, 30_000);
+
+  it('a missing file and an outside path carry pass false', async () => {
+    const d = tempRoot();
+    const c = await lintClient(d);
+    expect((await call(c, 'check_lint', { file: 'ops/none.op.ts' })).structuredContent).toMatchObject({ pass: false });
+    expect((await call(c, 'check_lint', { file: '../../etc/passwd' })).structuredContent).toMatchObject({ pass: false });
+  });
+
+  it('a symlink to an op file is linted by its real path; a symlink to a non-op file is rejected', async () => {
+    const d = tempRoot();
+    writeFileSync(join(d, 'ops', 'x.op.ts'), opSrc('x.good', 'op.payload'));
+    writeFileSync(join(d, 'notes.md'), 'hi');
+    symlinkSync(join(d, 'ops', 'x.op.ts'), join(d, 'link.ts'));
+    symlinkSync(join(d, 'notes.md'), join(d, 'ops', 'y.op.ts'));
+    const c = await lintClient(d);
+    const bad = await call(c, 'check_lint', { file: 'ops/y.op.ts' });
+    expect(bad.structuredContent).toMatchObject({ pass: false, error: { code: 'not-an-op-file' } });
+    const viaLink = await call(c, 'check_lint', { file: 'link.ts' });
+    expect(viaLink.structuredContent).toMatchObject({ pass: true, result: 'pass' });
+    expect(String(viaLink.structuredContent!.target)).toMatch(/ops\/x\.op\.ts$/);
   }, 30_000);
 
   it('rejects paths outside the root and missing files without running the hook', async () => {

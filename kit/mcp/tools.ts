@@ -16,8 +16,17 @@ export const MAX_ORDERINGS = 5000;
 export const DEFAULT_ORDERINGS = 500;
 export const SOFT_DEADLINE_MS = 50_000;
 export const KILL_MS = 58_000;
+/** After SIGTERM, a job that is still alive gets this long before SIGKILL. */
+export const KILL_GRACE_MS = 2_000;
+/** Cap on captured stdout and on captured stderr, each. Exceeding it fails the job. */
+export const MAX_OUTPUT_BYTES = 1024 * 1024;
+/** Bounds for explain_trace counterexample inputs; `steps` follows the harness range (default 2..14, tests use up to 30). */
+export const MAX_TRACE_STEPS = 30;
 
 /** The hook script is the only lint implementation. It ships with the kit, next to this file. */
+/** Same pattern as `OP_FILE_RE` in `kit/hooks/lib.mjs` (a .mjs file with no types here). */
+const OP_FILE_RE = /(^|\/)ops\/[^/]+\.op\.ts$/;
+
 const HOOK_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', 'hooks', 'op-lint.mjs');
 
 export type RunJob = (spec: JobSpec, signal: AbortSignal) => Promise<JobReply>;
@@ -48,34 +57,84 @@ function err(code: string, message: string, valid?: string[]): ToolResult {
   return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data, isError: true };
 }
 
-/** Default job runner: one fresh `node` child per call. */
-export function spawnJob(root: string): RunJob {
+/** An error result that also says `pass: false`, for tools whose callers read `pass`. */
+function notOk(code: string, message: string): ToolResult {
+  const r = err(code, message);
+  r.structuredContent = { pass: false, ...r.structuredContent };
+  r.content = [{ type: 'text', text: JSON.stringify(r.structuredContent, null, 2) }];
+  return r;
+}
+
+export interface SpawnOptions {
+  /** Wait between SIGTERM and SIGKILL once the signal aborts. */
+  graceMs?: number;
+  /** Cap on captured stdout and on captured stderr, each. */
+  maxBytes?: number;
+}
+
+/** Default job runner: one fresh `node` child per call. Abort sends SIGTERM, then SIGKILL after the grace. */
+export function spawnJob(root: string, o: SpawnOptions = {}): RunJob {
+  const graceMs = o.graceMs ?? KILL_GRACE_MS;
+  const maxBytes = o.maxBytes ?? MAX_OUTPUT_BYTES;
   return (spec, signal) =>
     new Promise<JobReply>((resolve) => {
       const child = spawn(process.execPath, [join(root, 'kit', 'mcp', 'job-main.mjs')], {
         cwd: root,
         stdio: ['pipe', 'pipe', 'pipe'],
-        signal,
       });
       let out = '';
       let errText = '';
+      let outBytes = 0;
+      let errBytes = 0;
+      let settled = false;
+      let exited = false;
+      let escalate: NodeJS.Timeout | undefined;
+      const finish = (r: JobReply): void => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener('abort', stop);
+        resolve(r);
+      };
       const crashed = (why: string): JobReply => ({
         ok: false,
         error: { code: 'job-crashed', message: `${why}${errText ? `: ${errText.split('\n').slice(0, 5).join(' | ')}` : ''}` },
       });
-      child.stdout.on('data', (d: Buffer) => (out += d.toString()));
+      function stop(): void {
+        if (exited) return;
+        child.kill('SIGTERM');
+        escalate ??= setTimeout(() => {
+          if (!exited) child.kill('SIGKILL');
+        }, graceMs);
+      }
+      const tooBig = (which: string): void => {
+        stop();
+        finish({ ok: false, error: { code: 'output-too-large', message: `job ${which} exceeded ${maxBytes} bytes and the job was stopped` } });
+      };
+      if (signal.aborted) stop();
+      else signal.addEventListener('abort', stop, { once: true });
+      child.stdout.on('data', (d: Buffer) => {
+        if (settled) return;
+        outBytes += d.length;
+        if (outBytes > maxBytes) return tooBig('stdout');
+        out += d.toString();
+      });
       child.stderr.on('data', (d: Buffer) => {
+        if (settled) return;
+        errBytes += d.length;
+        if (errBytes > maxBytes) return tooBig('stderr');
         errText += d.toString();
         process.stderr.write(d);
       });
-      child.on('error', (e) => resolve(crashed(e.message)));
+      child.on('error', (e) => finish(crashed(e.message)));
       child.on('close', (code) => {
+        exited = true;
+        clearTimeout(escalate);
         const line = out.split('\n').filter((l) => l.trim() !== '').pop();
-        if (line === undefined) return resolve(crashed(`job exited with code ${String(code)} and no reply`));
+        if (line === undefined) return finish(crashed(`job exited with code ${String(code)} and no reply`));
         try {
-          resolve(JSON.parse(line) as JobReply);
+          finish(JSON.parse(line) as JobReply);
         } catch {
-          resolve(crashed('job reply was not JSON'));
+          finish(crashed('job reply was not JSON'));
         }
       });
       child.stdin.on('error', () => undefined);
@@ -236,6 +295,16 @@ export function createServer(opts: ServerOptions): McpServer {
     guarded('explain_trace', async (a: { app: string; op: string; counterexample: Extract<JobSpec, { job: 'explain_trace' }>['counterexample'] }) => {
       const bad = badApp(a.app);
       if (bad) return bad;
+      const ce = a.counterexample;
+      if (!Number.isInteger(ce.steps) || ce.steps < 0 || ce.steps > MAX_TRACE_STEPS) {
+        return err('bad-argument', `counterexample.steps must be an integer from 0 to ${MAX_TRACE_STEPS}, got ${ce.steps}`);
+      }
+      if (!Number.isInteger(ce.replicas) || ce.replicas < 2 || ce.replicas > 5) {
+        return err('bad-argument', `counterexample.replicas must be an integer from 2 to 5, got ${ce.replicas}`);
+      }
+      if (!Number.isSafeInteger(ce.seed)) {
+        return err('bad-argument', `counterexample.seed must be an integer, got ${ce.seed}`);
+      }
       return reply(await call({ job: 'explain_trace', root, app: a.app, op: a.op, counterexample: a.counterexample }));
     }),
   );
@@ -252,12 +321,16 @@ export function createServer(opts: ServerOptions): McpServer {
         const r = relative(root, p);
         return r === '..' || r.startsWith(`..${sep}`) || isAbsolute(r);
       };
-      if (outside(abs)) return err('file-outside-root', `file "${file}" is outside the workspace root`);
-      if (!existsSync(abs)) return err('file-not-found', `file "${file}" does not exist`);
+      if (outside(abs)) return notOk('file-outside-root', `file "${file}" is outside the workspace root`);
+      if (!existsSync(abs)) return notOk('file-not-found', `file "${file}" does not exist`);
       const realRoot = realpathSync(root);
       const realRel = relative(realRoot, realpathSync(abs));
       if (realRel === '..' || realRel.startsWith(`..${sep}`) || isAbsolute(realRel)) {
-        return err('file-outside-root', `file "${file}" is outside the workspace root`);
+        return notOk('file-outside-root', `file "${file}" is outside the workspace root`);
+      }
+      const real = realpathSync(abs);
+      if (!OP_FILE_RE.test(real.split(sep).join('/'))) {
+        return notOk('not-an-op-file', `file "${file}" is not an op file (expected ops/<name>.op.ts)`);
       }
       const dir = mkdtempSync(join(tmpdir(), 'limbo-lint-'));
       const ledger = join(dir, 'hooks.jsonl');
@@ -268,14 +341,19 @@ export function createServer(opts: ServerOptions): McpServer {
             stdio: ['pipe', 'pipe', 'pipe'],
             env: { ...process.env, LIMBO_ROOT: root, LIMBO_HOOKS_LOG: ledger },
             timeout: 20_000,
+            killSignal: 'SIGKILL',
           });
           let stderr = '';
           child.stdout.on('data', () => undefined);
-          child.stderr.on('data', (d: Buffer) => (stderr += d.toString()));
+          child.stderr.on('data', (d: Buffer) => {
+            if (stderr.length > MAX_OUTPUT_BYTES) return;
+            stderr += d.toString();
+            if (stderr.length > MAX_OUTPUT_BYTES) child.kill('SIGKILL');
+          });
           child.on('error', (e) => res({ exit: null, stderr: e.message }));
           child.on('close', (code) => res({ exit: code, stderr }));
           child.stdin.on('error', () => undefined);
-          child.stdin.end(JSON.stringify({ file_path: abs, cwd: root }));
+          child.stdin.end(JSON.stringify({ file_path: real, cwd: root }));
         });
         let row: { result?: string; target?: string | null; detail?: string | null } | undefined;
         try {

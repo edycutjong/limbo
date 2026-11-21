@@ -27,6 +27,25 @@ export function readEvent() {
   }
 }
 
+// Strict variant for guard hooks: an unreadable, empty, malformed or non-object event is an error, not `{}`.
+export function readEventStrict() {
+  let text;
+  try {
+    text = readFileSync(0, 'utf8');
+  } catch (e) {
+    return { event: {}, error: `cannot read the event: ${e && e.message ? e.message : e}` };
+  }
+  if (!text.trim()) return { event: {}, error: 'empty event' };
+  let ev;
+  try {
+    ev = JSON.parse(text);
+  } catch {
+    return { event: {}, error: 'malformed event JSON' };
+  }
+  if (ev === null || typeof ev !== 'object' || Array.isArray(ev)) return { event: {}, error: 'event is not a JSON object' };
+  return { event: ev, error: null };
+}
+
 export function hooksLogPath() {
   return process.env.LIMBO_HOOKS_LOG || join(root(), 'evidence', 'kiro', 'hooks.jsonl');
 }
@@ -58,15 +77,28 @@ export function log(row) {
 
 // Wrap a hook body: logs exactly one line, even on error, and exits per the body's return.
 // body(event) returns { result, target?, task?, detail?, exit? }.
-export function runHook(hook, trigger, body) {
+// `opts.failClosed` (guard hooks): a bad event or an exception in the body denies with exit 2.
+// Logging-only hooks keep the default: a bad event becomes `{}` and an exception exits 0.
+export function runHook(hook, trigger, body, opts = {}) {
   const start = Date.now();
-  const event = readEvent();
+  let event;
+  let eventError = null;
+  if (opts.failClosed) ({ event, error: eventError } = readEventStrict());
+  else event = readEvent();
   const session_id = event.session_id ?? process.env.KIRO_SESSION_ID ?? null;
+  const deny = (why) => {
+    try { process.stderr.write(`${hook}: denied (fail closed): ${why}\n`); } catch { /* stderr gone */ }
+    return { result: 'deny', detail: `fail closed: ${why}`, exit: 2 };
+  };
   let out;
-  try {
-    out = body(event) ?? { result: 'pass' };
-  } catch (e) {
-    out = { result: 'error', detail: String(e && e.message ? e.message : e), exit: 0 };
+  if (eventError) out = deny(eventError);
+  else {
+    try {
+      out = body(event) ?? { result: 'pass' };
+    } catch (e) {
+      const why = String(e && e.message ? e.message : e);
+      out = opts.failClosed ? deny(`internal error: ${why}`) : { result: 'error', detail: why, exit: 0 };
+    }
   }
   log({
     hook,
