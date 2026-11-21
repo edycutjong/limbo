@@ -36,6 +36,18 @@
         "chatSessionId": "sess_381f70ff-c0ba-4842-902c-7897d29e9dc6",
         "timestamp": 1795238560097
       }
+    ],
+    "4. Replica persistence, incarnations, reload": [
+      {
+        "executionId": "ea5f403e-e53c-40bd-938a-4e9715796fa2",
+        "chatSessionId": "sess_c53fc0ed-7716-444e-852e-0994a89e1ddb",
+        "timestamp": 1795238662083
+      },
+      {
+        "executionId": "ea5f403e-e53c-40bd-938a-4e9715796fa2",
+        "chatSessionId": "sess_c53fc0ed-7716-444e-852e-0994a89e1ddb",
+        "timestamp": 1795238758242
+      }
     ]
   }
 }

@@ -46,9 +46,9 @@ describe('replica', () => {
   it('a local op changes state and vv', async () => {
     const r = await make('a');
     const op = r.local('delta', 't', 2);
-    expect(op.id).toBe('a:1');
+    expect(op.id).toBe('a#1:1');
     expect(r.state()).toEqual({ v: undefined, n: 2 });
-    expect(r.vv()).toEqual({ a: 1 });
+    expect(r.vv()).toEqual({ 'a#1': 1 });
     expect(r.applied()).toEqual([op]);
   });
 
@@ -139,7 +139,7 @@ describe('replica', () => {
     const { store, puts } = spyStore();
     const r = await make('a', makeSeedOps(defs, [{ name: 'set', target: 't', payload: 's' }]), store);
     const op = r.local('set', 't', 'mine');
-    expect(puts).toEqual(['a:1']);
+    expect(puts).toEqual(['a#1:1']);
     expect(op.deps).toEqual({ seed: 1 });
     expect(op.stamp.l).toBe(2);
     expect(r.state().v).toBe('mine');
@@ -156,9 +156,9 @@ describe('replica', () => {
     expect(calls).toBe(2);
     r.receive([o1!]); // duplicate: no change
     expect(calls).toBe(2);
-    expect(r.saved('b:1')).toBe(false);
+    expect(r.saved('b#1:1')).toBe(false);
     await new Promise((res) => setTimeout(res, 20));
-    expect(r.saved('b:1')).toBe(true);
+    expect(r.saved('b#1:1')).toBe(true);
     expect(r.saved('p:2')).toBe(true);
     const before = calls;
     off();

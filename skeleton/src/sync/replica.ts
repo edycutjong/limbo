@@ -1,6 +1,6 @@
 // The replica runtime: applies local and received ops in causal order, so `materialize`
 // always sees a causally closed op set. No wall clock, randomness or locale in any path here.
-import { causalBuffer, createOp, newReplica, observe } from '../core/causal.ts';
+import { canonical, causalBuffer, createOp, newReplica, observe } from '../core/causal.ts';
 import type { Op, OpDef, VV } from '../core/types.ts';
 import type { OpStore } from './store.ts';
 
@@ -47,6 +47,10 @@ export interface Replica<S> {
   saved(id: string): boolean;
   /** The last 50 rejections. */
   rejected(): Rejection[];
+  /** Held ops from an earlier incarnation of this replica whose own-namespace predecessor is neither applied nor held. */
+  stalledOwn(): number;
+  /** The last peer `vv` seen in a hello or ack; persisted in the store meta. */
+  peerAck: { get(peer: string): VV; set(peer: string, vv: VV): void };
   subscribe(fn: () => void): () => void;
   close(): void;
 }
@@ -67,6 +71,13 @@ export function makeSeedOps(
   });
 }
 
+/** FNV-1a over the canonical seed ops: a version tag, not a security hash. */
+function seedHash(ops: readonly Op[]): string {
+  let h = 0x811c9dc5;
+  for (const c of canonical(ops)) h = Math.imul(h ^ c.charCodeAt(0), 0x01000193) >>> 0;
+  return h.toString(16);
+}
+
 function malformed(op: Op): boolean {
   const st = op?.stamp;
   return (
@@ -84,8 +95,18 @@ function malformed(op: Op): boolean {
 export async function createReplica<S>(cfg: ReplicaConfig<S>): Promise<Replica<S>> {
   const { store, defs, replicaId } = cfg;
   await store.ready;
+  const meta = store.meta.read();
+  const seedVersion = seedHash(cfg.seedOps);
+  if (meta.seedVersion !== undefined && meta.seedVersion !== seedVersion) {
+    throw Object.assign(new Error('seed-version-changed'), { name: 'seed-version-changed' });
+  }
+  // The incarnation write is confirmed before the replica exists, so no op precedes it.
+  const k = (meta.k ?? 0) + 1;
+  await store.meta.write({ replicaId, k, seedVersion });
+  const ns = `${replicaId}#${k}`;
+  const ackMap: Record<string, VV> = { ...(meta.peerAckVV ?? {}) };
   const byName = new Map(defs.map((d) => [d.name, d] as const));
-  const core = newReplica(replicaId);
+  const core = newReplica(ns);
   const buf = causalBuffer(core.vv);
   const applied: Op[] = [];
   const savedIds = new Set<string>();
@@ -125,9 +146,17 @@ export async function createReplica<S>(cfg: ReplicaConfig<S>): Promise<Replica<S
   // Seed ops apply first and are never written to the store.
   for (const op of cfg.seedOps) for (const a of buf.offer(op)) apply(a);
 
+  // Stored ops: the Lamport counter starts at the maximum l; ops that cannot apply stay held.
+  const stored = store.all();
+  for (const op of stored) {
+    observe(core, op);
+    savedIds.add(op.id);
+  }
+  for (const op of stored) for (const a of buf.offer(op)) apply(a);
+
   return {
     id: replicaId,
-    ns: replicaId,
+    ns,
     local(name, target, payload) {
       const def = byName.get(name);
       if (!def) throw new Error(`unknown op: ${name}`);
@@ -174,6 +203,23 @@ export async function createReplica<S>(cfg: ReplicaConfig<S>): Promise<Replica<S
     log: () => [...applied, ...buf.held()],
     applied: () => [...applied],
     buffered: () => buf.held(),
+    stalledOwn() {
+      const held = buf.held();
+      const ids = new Set(held.map((h) => h.id));
+      return held.filter(
+        (h) =>
+          h.stamp.r.startsWith(`${replicaId}#`) &&
+          h.stamp.r !== ns &&
+          !ids.has(`${h.stamp.r}:${(core.vv[h.stamp.r] ?? 0) + 1}`),
+      ).length;
+    },
+    peerAck: {
+      get: (peer) => ({ ...(ackMap[peer] ?? {}) }),
+      set(peer, vv) {
+        ackMap[peer] = { ...vv };
+        store.meta.write({ peerAckVV: { ...ackMap } }).catch(() => undefined); // need not be awaited (R4.9)
+      },
+    },
     saved: (id) => savedIds.has(id),
     rejected: () => [...rejections],
     subscribe(fn) {

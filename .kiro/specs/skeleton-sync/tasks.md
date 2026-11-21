@@ -18,7 +18,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`replica.test.ts`, a stub def set with a `set` op and a `delta` op, plus one BASECAMP check): local op changes state; out-of-order receive is buffered then applied; duplicate ignored and not in `applied`; unknown op rejected, logged, and never reaches the store; malformed id rejected; `local` with an unknown name throws; two replicas built from the same `seedOps` have equal seed ops and states; `vv` omits held ops; subscribers fire once per change.
   - _Requirements: R1, R2.1, R2.2, R2.4, R3_
 
-- [ ] 4. Replica persistence, incarnations, reload
+- [x] 4. Replica persistence, incarnations, reload
   - `replica.ts`: awaited incarnation write before the first op, dot namespace `<id>#<k>`, Lamport start, stored-op redelivery, `saved`, `stalledOwn`, `peerAck`, `seed-version-changed`. Store failure recorded as `store-failed`.
   - Tests (`replica.persist.test.ts`, `fake-indexeddb`): reload restores state, log and the unacked inputs; `k` increments per load; a faulty store that drops one write, then reload and new ops, never reuses a dot and the new op has a distinct namespace; `stalledOwn > 0` after reload with a missing predecessor and returns to 0 when a peer supplies it; `saved(id)` is false until `put` resolves and stays false on failure; an op received with a missing dependency, reload, then re-delivery of the dependency applies it with no `vv` entry for the held op in between; seed version mismatch rejects.
   - _Requirements: R2.3, R4, R5_
