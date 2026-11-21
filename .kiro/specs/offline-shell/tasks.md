@@ -25,7 +25,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`shell.test.ts`): `prod: false` calls `register` zero times; a `nav` without `serviceWorker` calls it zero times; `prod: true` calls `register('./sw.js', { scope: './' })` once; a rejected `register` calls `warn` once and resolves. The existing `app-shell.test.tsx`, `app.test.tsx` and scene tests still pass (Vitest has `PROD` false).
   - _Requirements: R3.1, R3.2, R3.4, R1.5_
 
-- [ ] 5. Production exposure and size check
+- [x] 5. Production exposure and size check
   - Extend each `build.test.ts` so the built `main` bundle still contains no `window.limbo` after the worker was added, and `sw.js` contains no `limbo` global and no origin other than relative paths (scan for `http://` and `https://` in `sw.js`, allowing only the Workbox library's own source comments if present; list any match in the test as an allow-list entry with a reason).
   - Measure the skeleton count with the command in `evidence/budget-basecamp-baseline.md` and confirm it equals the recorded figures (`skeleton/` untouched). Write the result to `evidence/offline-shell/skeleton-unchanged.md`.
   - _Requirements: R3.3, R1.6, R7.1, R7.3_

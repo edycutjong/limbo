@@ -106,3 +106,21 @@ it('README states demonstration data and no field use', () => {
   expect(readme).toMatch(/no field use is claimed/i);
   expect(readme).toMatch(/measured, property-tested/);
 });
+
+it('the main bundle has no window.limbo and sw.js has no limbo global and no absolute origin', () => {
+  execFileSync('pnpm', ['--filter', '@limbo/aftershock', 'build'], { stdio: 'pipe', env: prodEnv });
+  const assets = resolve(dist, 'assets');
+  const mains = readdirSync(assets).filter((f) => /^index-.*\.js$/.test(f));
+  expect(mains.length).toBe(1);
+  const main = readFileSync(join(assets, mains[0]!), 'utf8');
+  expect(main.length).toBeGreaterThan(1000);
+  expect(main.includes('window.limbo')).toBe(false);
+  const sw = readFileSync(resolve(dist, 'sw.js'), 'utf8');
+  expect(/limbo/i.test(sw), 'sw.js names limbo').toBe(false);
+  // Allow-list for absolute URLs in sw.js. Measured: none. sw.js itself holds only relative paths.
+  // The one library URL (https://bit.ly/wb-precache) sits in workbox-*.js, a console.warn message that is never fetched.
+  const allowed: { match: string; reason: string }[] = [];
+  let scan = sw;
+  for (const a of allowed) scan = scan.split(a.match).join('');
+  expect(/https?:\/\//.test(scan), 'absolute origin in sw.js').toBe(false);
+}, 120_000);
