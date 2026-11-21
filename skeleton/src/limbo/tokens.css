@@ -70,7 +70,10 @@
 @media (prefers-reduced-motion: reduce) {
   .limbo-root *,
   .limbo-root *::before,
-  .limbo-root *::after {
+  .limbo-root *::after,
+  .limbo-shell *,
+  .limbo-shell *::before,
+  .limbo-shell *::after {
     animation: none !important;
     transition: none !important;
   }
@@ -79,6 +82,8 @@
 /* Twin: one row; the ghost sits behind at 70%, the caption, rule and actions stay at 100% */
 .limbo-twin { position: relative; }
 .limbo-twin-label { font-size: 11px; letter-spacing: .08em; color: var(--twin); }
+.limbo-twin-enter .limbo-twin-ghost { animation: limbo-twin-in 250ms ease-out; }
+@keyframes limbo-twin-in { from { transform: translate(0, 0); opacity: 0; } }
 .limbo-twin-leaving .limbo-twin-ghost { animation: limbo-twin-out 250ms ease-in forwards; }
 @keyframes limbo-twin-out { to { transform: translate(0, 0); opacity: 0; } }
 
@@ -103,3 +108,15 @@
 /* Single-replica layout: the bar is fixed, the content leaves room for it */
 .limbo-single { padding-bottom: 72px; }
 .limbo-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 8px; padding: 8px; background: var(--card); border-top: 1px solid var(--rule); }
+
+/* Motion (R14). Classes are added by the components only while data-motion="full". */
+.limbo-fog { position: relative; }
+.limbo-fog-veil { position: absolute; inset: 0; background: var(--before); opacity: .25; }
+.limbo-drain .limbo-fog-veil { animation: limbo-drain 600ms ease-out; }
+@keyframes limbo-drain { from { opacity: 0; } }
+.limbo-lift { animation: limbo-lift 900ms ease-in-out; }
+@keyframes limbo-lift { from { filter: saturate(.25) contrast(.9); } to { filter: none; } }
+.limbo-wisp-row, .limbo-cross-row { display: inline-flex; gap: 4px; }
+.wisp { width: 8px; height: 8px; border-radius: 50%; background: var(--developing); }
+.wisp-cross { animation: limbo-cross 550ms ease-in-out both; animation-delay: calc(var(--i, 0) * 50ms); }
+@keyframes limbo-cross { from { transform: translateX(-24px); opacity: 0; } 50% { opacity: 1; } to { transform: translateX(24px); opacity: 0; } }

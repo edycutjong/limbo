@@ -1,5 +1,5 @@
 // Presentation marks bound to `useLimbo`: Fog and StatusChip. They display derived state and compute nothing of their own.
-import { useState, type CSSProperties, type ReactNode } from 'react';
+import { useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useLimbo, type Id } from './shell.tsx';
 
 export type FogMode = 'full' | 'haze' | 'none';
@@ -9,11 +9,15 @@ const SVG = { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke:
 
 /** Wraps one replica's content. Full fog while the link is not up; haze while syncing; nothing otherwise. */
 export function Fog(p: { id: Id; children?: ReactNode }): ReactNode {
-  const { view } = useLimbo(p.id);
+  const { view, motion } = useLimbo(p.id);
   const n = view.unacked + view.behind;
   const mode: FogMode = view.axis === 'FOGGED' ? 'full' : view.axis === 'DEVELOPING' && n > 0 ? 'haze' : 'none';
+  const fogged = useRef(false);
+  if (mode !== 'none') fogged.current = true;
+  // The one place Fog's animation class is chosen: drain on full fog, lift once fog has cleared. Never under reduced motion.
+  const anim = motion !== 'full' ? '' : mode === 'full' ? ' limbo-drain' : mode === 'none' && fogged.current ? ' limbo-lift' : '';
   return (
-    <div className="limbo-fog" data-fog={mode}>
+    <div className={`limbo-fog${anim}`} data-fog={mode}>
       <div className="limbo-fog-content" style={mode === 'full' ? { filter: 'saturate(.25) contrast(.9)' } : undefined}>
         {p.children}
       </div>

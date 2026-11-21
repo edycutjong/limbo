@@ -69,7 +69,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`shuffle.test.ts`, `shuffle-test.test.tsx`): 1,000 orderings of a converging stub op set print `1,000 / 1,000 orderings → same state` using the count the runner returned (a runner that returns 640 prints 640); golden line appears only when op ids equal the golden ids and the state matches, and is absent after an edit; a deliberately non-commutative stub `materialize` (read-modify-write) yields `k of N disagree` with `k > 0` and a trace that `explainTrace` produced; the shrunk set is no larger than the input and still disagrees; the caption says it replays the ops on screen; "Running…" and cancel show while pending; a runner error shows an error line and no pass; text contains no "proven" or "guaranteed".
   - _Requirements: R12_
 
-- [ ] 14. Motion and reduced-motion sweep
+- [x] 14. Motion and reduced-motion sweep
   - Review each component so classes come from one place and depend on `data-motion`. Fill in the keyframes and durations in `tokens.css`.
   - Tests (`motion.test.tsx`): with `full`, the drain-in class appears on cut, the lift class on LIVE, crossing wisps carry `--i` stagger values, the twin carries its enter class, FIXED carries its scale-in class; with `reduce`, none of these classes or inline animation styles exist for the same scenario while every label and number is still present; `tokens.css` contains the `prefers-reduced-motion: reduce` rule and the durations 600 ms, 900 ms, 250 ms, 2 s, 400 to 700 ms.
   - _Requirements: R14, R15_

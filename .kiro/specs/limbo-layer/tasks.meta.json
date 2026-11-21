@@ -156,6 +156,18 @@
         "chatSessionId": "sess_7dace72d-fb59-4fed-9d59-92309bff16c9",
         "timestamp": 1795243352732
       }
+    ],
+    "14. Motion and reduced-motion sweep": [
+      {
+        "executionId": "61d4b2a5-3594-4ce5-8584-6ecd6d9068b4",
+        "chatSessionId": "sess_2b0c8a48-02b3-4a74-939c-c381dbce3715",
+        "timestamp": 1795243449065
+      },
+      {
+        "executionId": "61d4b2a5-3594-4ce5-8584-6ecd6d9068b4",
+        "chatSessionId": "sess_2b0c8a48-02b3-4a74-939c-c381dbce3715",
+        "timestamp": 1795243620828
+      }
     ]
   }
 }
