@@ -7,6 +7,7 @@
   "exports": {
     "./limbo": "./src/limbo/index.ts",
     "./limbo/tokens.css": "./src/limbo/tokens.css",
+    "./dev-relay-link": "./src/sync/dev-relay-link.ts",
     ".": "./src/index.ts"
   },
   "peerDependencies": {

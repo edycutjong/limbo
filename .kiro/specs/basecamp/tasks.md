@@ -89,7 +89,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Test (`lake-scene.test.tsx`, real `createPair`, manual `settle()`): R10.1 to R10.9 asserted on the DOM text, in order: fog and "Offline", `1 WAITING` and tent gone on B, `2 WAITING` and "Yours? waiting" on both, haze "Syncing 2…" before `settle()`, both lists equal after, tent twin and stove lines of R10.5 and R10.6, Keep and OK, deep-equal canonical states, zero twins, FIXED, Inspector order (2 resolves, then 4 partition ops, with merge, `l·r·n` and deps), Conflicts list of two resolved twins, shuffle test line and golden line. Manual edits (no button) give the same result.
   - _Requirements: R10, R11_
 
-- [ ] 18. `DevRelayLink` (skeleton, dev/test only)
+- [x] 18. `DevRelayLink` (skeleton, dev/test only)
   - `skeleton/src/sync/dev-relay-link.ts` per design §9; `skeleton/package.json` subpath `./dev-relay-link`. Record the new measured skeleton total and report it (R1.3).
   - Tests (`dev-relay-link.test.ts` with a fake `fetch` over an in-memory relay): ops cross only while up; a failed POST leaves `unacked` unchanged and the retry works after the next `up`; duplicates change nothing; the session reads `down` while fetch rejects and `up` after; the link skips ops authored by its own replica; source scan: no `BroadcastChannel`, `SharedWorker`, `Date.now`, `Math.random`, React or DOM import.
   - _Requirements: R14.1 to R14.5, R14.8, R1.3_
