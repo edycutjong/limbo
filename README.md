@@ -13,12 +13,12 @@ kit (steering, hooks, custom agents, specs) under which Kiro built the skeleton 
 > grid; demo data only), live at https://basecamp.limbo.edycu.dev and https://aftershock.limbo.edycu.dev. The cross-device relay is
 > not built: two replicas sync through the in-page simulated link, or through a dev-only test relay in the e2e suite.
 
-## Try it locally (about 2 minutes)
+## Try it locally
 ```
 pnpm install
 pnpm --filter @limbo/basecamp dev        # http://localhost:5174
 ```
-On a desktop-width window you get two replicas side by side: **Replica A — Sari** and **Replica B — Budi**.
+On a desktop-width window you get two replicas side by side: **REPLICA A — Sari** and **REPLICA B — Budi**.
 1. Press **Cut link** on the cord between them. Both cards fog over; the cord is labelled as a simulated link, because DevTools
    "offline" does not cut it.
 2. Press **Play the lake scene** (or do it by hand): Sari ticks the tent while Budi deletes it, and both claim the last stove.
@@ -32,16 +32,18 @@ On a desktop-width window you get two replicas side by side: **Replica A — Sar
 **Reset demo** returns the pair to the seed. `?replicas=1` shows a single replica.
 
 ## Evidence
-- Full property tier: 3 replicas × 10,000 random orderings, seed 20251031, every property passing —
-  [`evidence/convergence/full-2026-11-21.json`](evidence/convergence/full-2026-11-21.json) (log beside it).
+- Full property tier (both apps' ops, after the latest fixes): 3 replicas × 10,000 random orderings, seed 20251031, every property
+  passing, with the measured conflict-class share per app —
+  [`evidence/convergence/full-2026-11-22.json`](evidence/convergence/full-2026-11-22.json) (log beside it).
 - Offline e2e: the lake-scene test (one page, the pair view) and the two-browser-context test (a real partition through a dev-only
   test relay, then convergence) each passed 10 of 10 repeats —
   [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); fresh-clone runs (before and after
   the Inspector bugfix) —
   [`evidence/e2e/fresh-clone-2026-11-21.txt`](evidence/e2e/fresh-clone-2026-11-21.txt).
 - How much of the product code Kiro wrote: [`evidence/kiro/share.json`](evidence/kiro/share.json) (commits touching `skeleton/` or
-  `apps/` that carry a `Kiro-Session` trailer). Every Kiro session: [`evidence/kiro/sessions.jsonl`](evidence/kiro/sessions.jsonl);
-  every hook fire: [`evidence/kiro/hooks.jsonl`](evidence/kiro/hooks.jsonl).
+  `apps/` that carry a `Kiro-Session` trailer). The session ledger (one row per Kiro run through `kit/scripts/kiro-run.mjs`, plus `claude-direct` rows for direct edits):
+  [`evidence/kiro/sessions.jsonl`](evidence/kiro/sessions.jsonl); the hook log (each hook script appends one row per fire):
+  [`evidence/kiro/hooks.jsonl`](evidence/kiro/hooks.jsonl).
 
 Offline claims are provisional. No CRDT can stop two offline people from claiming the last stove; LIMBO's declared rule picks one
 claimant deterministically when they reconnect, and the other sees a twin naming the winner.
