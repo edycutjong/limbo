@@ -4,9 +4,10 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as fc from 'fast-check';
 import { canonical, causalBuffer, compareStamp, concurrent } from '../../skeleton/src/core/causal.ts';
 import { explainTrace, simulate, type Rand, type SimResult } from '../../skeleton/src/core/simulate.ts';
-import type { Intent, Op, OpDef } from '../../skeleton/src/core/types.ts';
+import type { Intent, Op, OpDef, Stamp, VV } from '../../skeleton/src/core/types.ts';
 import { config as defaultConfig, type PropsConfig } from './config.ts';
 
 export const MANIFEST_PATH = join(dirname(fileURLToPath(import.meta.url)), 'intents.json');
@@ -203,4 +204,133 @@ export function failingProperties(def: OpDef, opts: RunOptions = {}, numRuns?: n
     for (const f of checkRun(def, (cfg.seed + i) >>> 0, steps, opts)) names.add(f.property);
   }
   return [...names];
+}
+
+export interface FuzzParams {
+  orderings: number;
+  replicas: number;
+  seed: number;
+  /** Stop starting runs after this many ms (sets `truncated`). */
+  deadlineMs?: number;
+}
+
+export interface Counterexample {
+  property: string;
+  reason: string;
+  /** Simulation seed (replay input). */
+  seed: number;
+  steps: number;
+  replicas: number;
+  script: { id: string; op: string; target: string; payload: unknown; stamp: Stamp; deps: VV }[];
+  /** Replica -> op ids in delivery order, duplicates included. */
+  deliveries: Record<string, string[]>;
+}
+
+export interface FuzzResult {
+  pass: boolean;
+  runs: number;
+  seed: number;
+  truncated: boolean;
+  vacuity: { concurrentShare: number; minShare: number; vacuous: boolean };
+  counterexample?: Counterexample;
+  warning?: string;
+}
+
+/** Same bar as the kit's vacuity guard. */
+const MIN_CONCURRENT_SHARE = 0.5;
+
+function hasConcurrentPair(ops: readonly Op[]): boolean {
+  for (let i = 0; i < ops.length; i++) {
+    for (let j = i + 1; j < ops.length; j++) {
+      if (ops[i]!.target === ops[j]!.target && concurrent(ops[i]!, ops[j]!)) return true;
+    }
+  }
+  return false;
+}
+
+function counterexampleOf(def: OpDef, opts: RunOptions, cfgSeed: number, simSeed: number, steps: number, replicas: number): Counterexample | undefined {
+  const { res, failures } = runOnce(def, simSeed, steps, { ...opts, config: { ...(opts.config ?? defaultConfig), replicas, seed: cfgSeed } });
+  const f = failures[0];
+  if (f === undefined) return undefined;
+  return {
+    property: f.property,
+    reason: f.reason,
+    seed: res.seed,
+    steps,
+    replicas,
+    script: res.ops.map((o) => ({ id: o.id, op: o.op, target: o.target, payload: o.payload, stamp: o.stamp, deps: o.deps })),
+    deliveries: res.orders,
+  };
+}
+
+/**
+ * Fuzz one op: the same loop as `runOpProperties`, with `orderings`, `replicas` and `seed` as inputs.
+ * `pass` does not depend on vacuity; the share is reported with a warning instead.
+ */
+export function fuzz(def: OpDef, opts: RunOptions, p: FuzzParams): FuzzResult {
+  const base = opts.config ?? defaultConfig;
+  const cfg: PropsConfig = { ...base, replicas: p.replicas, seed: p.seed, orderings: p.orderings };
+  const vac = (counted: number, executed: number): FuzzResult['vacuity'] => {
+    const share = executed === 0 ? 0 : counted / executed;
+    return { concurrentShare: share, minShare: MIN_CONCURRENT_SHARE, vacuous: share < MIN_CONCURRENT_SHARE };
+  };
+  const warn = (v: FuzzResult['vacuity']): { warning?: string } =>
+    v.vacuous ? { warning: `only ${(v.concurrentShare * 100).toFixed(0)}% of runs had concurrent ops on one target; a pass says little` } : {};
+
+  const m = checkManifest(def, opts.manifest ?? loadManifest());
+  if (m !== true) {
+    const v = vac(0, 0);
+    return {
+      pass: false,
+      runs: 0,
+      seed: p.seed,
+      truncated: false,
+      vacuity: v,
+      counterexample: { property: 'manifest', reason: m, seed: 0, steps: 0, replicas: p.replicas, script: [], deliveries: {} },
+    };
+  }
+
+  const range = opts.steps ?? { min: 2, max: 14 };
+  const arb = fc.record({
+    seed: fc.integer({ min: 0, max: 0x7fffffff }),
+    steps: fc.integer({ min: range.min, max: range.max }),
+  });
+  let executed = 0;
+  let counted = 0;
+  let failedOnce = false;
+  const result = fc.check(
+    fc.property(arb, ({ seed, steps }) => {
+      const { res, failures } = runOnce(def, seed, steps, { ...opts, config: cfg });
+      if (!failedOnce) {
+        executed++;
+        if (hasConcurrentPair(res.ops)) counted++;
+      }
+      const f = failures[0];
+      if (f !== undefined) {
+        failedOnce = true;
+        throw new Error(f.reason);
+      }
+    }),
+    {
+      numRuns: p.orderings,
+      seed: p.seed,
+      endOnFailure: false,
+      ...(p.deadlineMs !== undefined ? { interruptAfterTimeLimit: p.deadlineMs, markInterruptAsFailure: false } : {}),
+    },
+  );
+  const v = vac(counted, executed);
+  if (!result.failed) {
+    return { pass: true, runs: executed, seed: p.seed, truncated: result.interrupted, vacuity: v, ...warn(v) };
+  }
+  const shrunk = result.counterexample?.[0] as { seed: number; steps: number } | undefined;
+  const ce = shrunk ? counterexampleOf(def, opts, p.seed, shrunk.seed, shrunk.steps, p.replicas) : undefined;
+  return {
+    pass: false,
+    runs: executed,
+    seed: p.seed,
+    truncated: result.interrupted,
+    vacuity: v,
+    ...(ce ? { counterexample: ce } : {}),
+    ...warn(v),
+  };
 }

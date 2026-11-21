@@ -10,7 +10,7 @@ Each task ends with `pnpm -s typecheck && pnpm -s test && pnpm -s props` green. 
   - Add `kit/props/engine.ts` to `GATE_FILES` in `kit/scripts/gate-list.mjs`. Rewrite the manifest with `node kit/scripts/gate-integrity.mjs --write` only after the suite is green.
   - _Requirements: R2.1, R2.2, R2.5, R10.5_
 
-- [ ] 2. `fuzz()` in the engine
+- [x] 2. `fuzz()` in the engine
   - Add `FuzzParams`, `FuzzResult`, `Counterexample`, `fuzz(def, opts, params)` to `engine.ts` as designed: manifest check, `fc.check` over `{seed, steps}` with `numRuns`, `seed`, `interruptAfterTimeLimit`, concurrent-share counter, shrunk counterexample rebuilt by one `runOnce`.
   - Tests (`engine.test.ts`): a good registered op (`item.tick`, 100 orderings) gives `pass: true`, `runs: 100`, `concurrentShare` in (0, 1]; fixtures `tick-toggle` (`intent:set`) and `lww-wallclock` (`convergence` or `intent:set`) give `pass: false` with a counterexample; the same inputs give an equal result; `deadlineMs: 1` gives `truncated: true` with fewer runs; the counterexample replayed through `simulate()` reproduces its `script` and `deliveries`; with the wall-clock fixture the replayed final states differ between replicas.
   - Confirm `runOpProperties` still registers the same property names (existing `run.test.ts` unchanged and green).
