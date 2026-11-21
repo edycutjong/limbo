@@ -23,7 +23,7 @@ const out = [];
 const results = [];
 let unit = { passed: 0, skipped: 0 };
 let coverage = {};
-let e2e = { passed: 0 };
+let e2e = { passed: 0, skipped: 0 };
 for (const [name, cmd] of steps) {
   const t0 = Date.now();
   const r = spawnSync('bash', ['-c', cmd], { encoding: 'utf8', maxBuffer: 1 << 28, env: { ...process.env, CI: '1' } });
@@ -42,7 +42,8 @@ for (const [name, cmd] of steps) {
   }
   if (name === 'Stage 4 e2e') {
     const m = text.match(/(\d+) passed/);
-    if (m) e2e = { passed: Number(m[1]) };
+    const k = text.match(/(\d+) skipped/);
+    if (m) e2e = { passed: Number(m[1]), skipped: k ? Number(k[1]) : 0 };
   }
 }
 

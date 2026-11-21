@@ -1,5 +1,7 @@
 name: release
 
+# Follows the system recipe: a release is cut from commit messages on every push to main. Nothing deploys from here (deploys are done by
+# hand from the Vercel CLI), so a tag never ships code by itself; CI status is shown separately on the commit.
 on:
   push:
     branches: ["main"]
@@ -32,9 +34,10 @@ jobs:
           fi
 
           BUMP=none
-          echo "$LOG" | grep -qE '^(feat|fix|perf)(\(.+\))?!:|BREAKING CHANGE:' && BUMP=major
-          [ "$BUMP" = none ] && echo "$LOG" | grep -qE '^feat(\(.+\))?:'        && BUMP=minor
-          [ "$BUMP" = none ] && echo "$LOG" | grep -qE '^(fix|perf)(\(.+\))?:'  && BUMP=patch
+          # here-strings, not `echo | grep -q`: grep -q exits early and pipefail would turn the SIGPIPE into a false negative
+          grep -qE '^(feat|fix|perf)(\(.+\))?!:|BREAKING CHANGE:' <<< "$LOG" && BUMP=major
+          [ "$BUMP" = none ] && grep -qE '^feat(\(.+\))?:' <<< "$LOG"        && BUMP=minor
+          [ "$BUMP" = none ] && grep -qE '^(fix|perf)(\(.+\))?:' <<< "$LOG"  && BUMP=patch
           if [ "$BUMP" = none ]; then
             echo "No releasable commits since ${LAST:-the beginning}."
             echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0

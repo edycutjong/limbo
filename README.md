@@ -82,10 +82,10 @@ picks one claimant deterministically when they reconnect, and the other person i
 - `apps/basecamp/` and `apps/aftershock/` are the two apps. Each supplies five things: a model, ops, a seed script, views, a config
   ([`docs/ADOPT.md`](docs/ADOPT.md)). AFTERSHOCK's own spec changed 0 files under `skeleton/` (later UI polish touched skeleton CSS and markup for both apps).
 - Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evidence/lean.json): skeleton = **24 production files,
-  2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines), 16 exported values** from its public `index.ts`, 34 test files
+  2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines), 15 exported values** from its public `index.ts` (plus type-only exports), 34 test files
   beside them. The spec first set a budget of 1,800 lines; the owner restated it to 2,400 on 2026-11-21 when the Limbo layer landed.
   We are inside the restated budget and over the original one.
-  BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,465 lines.
+  BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,464 lines.
 
 Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the local store, fast-check, Vitest, Playwright.
 
@@ -96,7 +96,7 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 [`evidence/kiro/tally.json`](evidence/kiro/tally.json)); none are typed by hand.
 
 - **Ledger:** 202 rows in `sessions.jsonl`: 188 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 659.11 credits) and 14
-  `claude-direct` rows for edits made outside Kiro. 173 of the Kiro sessions executed a spec task across 11 specs; 12 more were kit-revision sessions.
+  `claude-direct` rows for edits made outside Kiro. 173 of the Kiro sessions belong to one of 11 specs (159 ran a numbered task, 11 authored a spec, 3 were follow-ups); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
 - **Kiro share:** 111 of 119 product commits (`skeleton/` or `apps/`) carry a `Kiro-Session` trailer, **93.28%**
   ([`share.json`](evidence/kiro/share.json)). The 8 others are listed there, with subjects.
 - **Hooks:** 1,770 logged fires across 8 hooks and 8 triggers: PreToolUse 1,226, Stop 184, PreTaskExec 147, PostTaskExec 139,
@@ -112,7 +112,7 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 | `hooks/props-after-task` | Run the property suite after each task | 139 |
 | `hooks/stop-gate` | Block "done" while fast-tier properties fail | 184 checks, 2 blocks |
 | `hooks/mcp-log` + the `limbo-convergence` MCP server (`kit/mcp/`, wired to `agents/limbo-builder` and `settings/mcp.json`) | `list_ops`, `fuzz_op`, `check_lint` (`explain_trace` unused) | 8 calls from one Kiro session (4 `fuzz_op`, 2 `list_ops`, 2 `check_lint`, across 4 ops in both apps) |
-| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 spec-task sessions |
+| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 sessions across the specs (159 numbered tasks) |
 
 **A/B pilot: no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
 0 to 28%) in both arms, Fisher exact p = 1 (pre-registered before run 1, `PREREG.md`). So we claim nothing about the kit improving
@@ -130,7 +130,7 @@ Per Kiro's docs, Spec Correctness is IDE-only; the project `.kiro/` files use th
 ### The number
 <a id="the-number"></a>
 **10,000 random orderings of 3 replicas, 0 divergences**, across every op of both apps (seed 20251031, Yjs 13.6.33, Node 22.22.0, all
-36 convergence passes and the intent properties green, 11 conflict classes each exercised in 58% to 100% of runs).
+36 convergence passes and the intent properties green, 11 conflict classes each exercised in 58% to 99.9% of runs).
 [`evidence/convergence/full-2026-11-22.json`](evidence/convergence/full-2026-11-22.json) (log beside it). Reproduce: `pnpm props:full`
 (about 22 minutes). Offline e2e on BASECAMP: the lake-scene test and the two-browser-context test (a real partition through a dev-only relay)
 passed 10 of 10 repeats, [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); live e2e against both deployed URLs

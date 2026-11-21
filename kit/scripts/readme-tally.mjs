@@ -29,7 +29,11 @@ const tally = {
   sessions_total: sessions.length,
   kiro_sessions: kiro.length,
   claude_direct_rows: sessions.length - kiro.length,
-  kiro_executed_spec_tasks: tasks.length,
+  kiro_executed_spec_tasks: tasks.length, // legacy name: every Kiro session tied to one of the spec dirs (see the split below)
+  spec_sessions_numbered_task: tasks.filter((s) => /^\d+$/.test(String(s.task))).length,
+  spec_sessions_authoring: tasks.filter((s) => s.task === 'spec').length,
+  spec_sessions_other: tasks.filter((s) => !/^\d+$/.test(String(s.task)) && s.task !== 'spec').length,
+  bootstrap_sessions: kiro.length - tasks.length - kitRevisions,
   spec_dirs: specDirs.size,
   kit_revision_sessions: kitRevisions,
   specs,
@@ -66,7 +70,8 @@ const lean = {
   skeleton_ts_loc_nonblank: ts.reduce((a, f) => a + loc(f), 0),
   skeleton_ts_loc_noncomment: ts.reduce((a, f) => a + code(f), 0),
   skeleton_test_files: files.filter(isTest).length,
-  index_exports: (readFileSync('skeleton/src/index.ts', 'utf8').match(/\bexport\b/g) || []).length,
+  // exported value names (type-only exports excluded): `export { a, b }` counts 2, `export const x` counts 1
+  index_exports: readFileSync('skeleton/src/index.ts', 'utf8').split('\n').reduce((n, l) => (/^export \{/.test(l) ? n + l.slice(l.indexOf('{') + 1, l.indexOf('}')).split(',').filter((x) => x.trim()).length : /^export const /.test(l) ? n + 1 : n), 0),
   files_by_dir: ts.reduce((o, f) => bump(o, relative('skeleton/src', f).split('/')[0]), {}),
 };
 for (const app of ['basecamp', 'aftershock']) {
