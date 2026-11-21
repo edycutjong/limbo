@@ -1,0 +1,8 @@
+/* Shared control styles for both apps. Imported after tokens.css. */
+body { --ui-dur: 120ms; --ui-ease: ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  body *,
+  body *::before,
+  body *::after { transition: none !important; animation: none !important; }
+}

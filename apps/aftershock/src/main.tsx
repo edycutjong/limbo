@@ -4,6 +4,7 @@ import { canonical } from '../../../skeleton/src/core/causal.ts';
 import type { Op } from '../../../skeleton/src/core/types.ts';
 import { LimboShell, ReplicaPair, type Id } from '../../../skeleton/src/limbo/index.ts';
 import '../../../skeleton/src/limbo/tokens.css';
+import '../../controls.css';
 import { createPair, type Pair } from '../../../skeleton/src/sync/pair.ts';
 import { deleteStore } from '../../../skeleton/src/sync/store.ts';
 import * as config from '../app.config.ts';

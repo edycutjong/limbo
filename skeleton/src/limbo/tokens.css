@@ -120,3 +120,6 @@
 .wisp { width: 8px; height: 8px; border-radius: 50%; background: var(--developing); }
 .wisp-cross { animation: limbo-cross 550ms ease-in-out both; animation-delay: calc(var(--i, 0) * 50ms); }
 @keyframes limbo-cross { from { transform: translateX(-24px); opacity: 0; } 50% { opacity: 1; } to { transform: translateX(24px); opacity: 0; } }
+
+/* Keyboard focus ring (ui-polish R7.1): the one shared rule. */
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }

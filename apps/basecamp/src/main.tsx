@@ -13,6 +13,7 @@ import { ReplicaBody } from './views/ReplicaBody.tsx';
 import { ShuffleSection } from './views/ShuffleSection.tsx';
 import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
 import { registerShell } from '../../offline-shell.ts';
+import '../../controls.css';
 import '../app.css';
 
 export const TAGLINE = 'For people whose shared list breaks when the signal does.';

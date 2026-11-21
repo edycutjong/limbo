@@ -188,6 +188,7 @@ Filled in by each task. Format: file, lines before → after (non-blank, non-com
 | `skeleton/src/limbo/twin.tsx` | (task 6) | R2 stage wrapper |
 | `skeleton/src/limbo/marks.tsx` | (task 7) | R3 wisps markup |
 | `skeleton/src/limbo/tokens.css` | CSS, not counted | R2, R3, R4, R7 |
+| `skeleton/src/limbo/tokens.css` (task 2) | CSS, not counted; +2 lines at end (`:focus-visible` rule), `:root` untouched | R7.1 |
 
 Budget (limit 30 files, 2,400 lines): baseline recorded in task 1 in `evidence/ui-polish/baseline.md`; final in task 12. The expected delta is about +4 lines.
 
