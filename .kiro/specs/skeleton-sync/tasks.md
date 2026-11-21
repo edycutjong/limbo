@@ -7,7 +7,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`status.test.ts`): table over link state and `unacked`, `behind`, `buffered` for the axis (fog only when down or connecting; haze only with unacked, behind, or a held op); both conflict values; chip strings exactly (`Live`, `Offline — 3 waiting`, `Syncing 2…`, `Live · 1 conflict`, `Syncing 2… · 1 conflict`, plural, `Offline`); `nextFixed` fires once per qualifying transition and not from `DEVELOPING` alone, hides on leaving either axis; exchange log excludes duplicates by construction, keeps the last 3, closes on settle and not on chunk count, records name, merge, stamp, deps; `countUnacked` skips seed and peer-authored ops; `countBehind` counts a buffered dot once.
   - _Requirements: R10, R11, R12, R13_
 
-- [ ] 2. Store: confirmed writes, meta, delete
+- [x] 2. Store: confirmed writes, meta, delete
   - First, a spike test in `store.test.ts` that shows `put` resolves only after the update is readable from a fresh connection (`fake-indexeddb`). If the ordering assumption in the design fails, use the second-object-store fallback and note it in the design.
   - `skeleton/src/sync/store.ts`: `put` returns `Promise<void>`, `meta.read` and `meta.write`, `deleteStore`, memory-only path. Keep it the only importer of `yjs` and `y-indexeddb`. Keep the existing `OpStore` callers compiling.
   - Tests: meta round-trip across close and reopen; `deleteStore` removes the log and meta; a second `put` of the same id is a no-op; no-IndexedDB path resolves.
