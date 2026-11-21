@@ -30,7 +30,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Measure the skeleton count with the command in `evidence/budget-basecamp-baseline.md` and confirm it equals the recorded figures (`skeleton/` untouched). Write the result to `evidence/offline-shell/skeleton-unchanged.md`.
   - _Requirements: R3.3, R1.6, R7.1, R7.3_
 
-- [ ] 6. Playwright config: production previews
+- [x] 6. Playwright config: production previews
   - Add to `playwright.config.ts` the projects `basecamp-shell` (port 5177), `aftershock-shell` (port 5178) and `live`, the custom `app` option, and the two preview `webServer` entries (build then `vite preview --port <p> --strictPort`, `reuseExistingServer: false`). Existing projects, ports and servers stay as they are.
   - Add a placeholder-free smoke case: `e2e/offline-shell.spec.ts` loads `/` per app and expects the `h1` (BASECAMP or AFTERSHOCK). This proves the previews start.
   - Add the root script `"e2e:live": "playwright test --project=live"` to `package.json`.

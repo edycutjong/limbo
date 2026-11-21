@@ -15,6 +15,7 @@
     "props": "vitest run --project props",
     "props:full": "node kit/scripts/props-full.mjs",
     "e2e": "playwright test",
+    "e2e:live": "playwright test --project=live",
     "share": "node kit/scripts/kiro-share.mjs",
     "gate": "node kit/scripts/gate-integrity.mjs",
     "e2e:spike:10": "node kit/scripts/e2e-spike-10.mjs"
