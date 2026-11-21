@@ -105,7 +105,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`devrelay.test.tsx`, fake fetch over an in-memory relay): the solo page shows `[data-status]`, a `[data-sector]` line for a reported sector, and `window.limbo` with `report`, `count`, `note`; two solo replicas over one fake relay converge on C3 `unsafe` with both counts.
   - _Requirements: R14_
 
-- [ ] 21. Production build check and wording scan
+- [x] 21. Production build check and wording scan
   - Unit test spawns `vite build` and asserts the built `dist/` text contains none of `devrelay`, `DevRelayLink`, `window.limbo`, `localhost:5175`, `https://`. A unit test scans the app's non-test sources, `index.html`, `app.css` and `README.md` for "proven", "guaranteed" and for any field-use claim wording, and for colour literals outside tokens. Check the README states demonstration data and no field use.
   - _Requirements: R1.5, R8.6, R8.8, R16_
 
