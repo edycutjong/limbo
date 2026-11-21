@@ -1,0 +1,63 @@
+{
+  "tier": "full",
+  "replicas": 3,
+  "orderings": 10000,
+  "seed": 20251031,
+  "passed": true,
+  "passesPerProperty": {
+    "convergence": 36,
+    "replay equivalence": 36,
+    "idempotence": 36,
+    "raw idempotence": 36,
+    "commutes": 36,
+    "no lost edit": 36,
+    "intent:max": 4,
+    "manifest": 36,
+    "intent:set": 10,
+    "intent:add-remove": 8,
+    "intent:split": 8,
+    "intent:create": 2,
+    "intent:claim": 4,
+    "intent:life": 4,
+    "intent:move": 2
+  },
+  "failuresPerProperty": {
+    "convergence": 0,
+    "replay equivalence": 0,
+    "idempotence": 0,
+    "raw idempotence": 0,
+    "commutes": 0,
+    "no lost edit": 0,
+    "intent:max": 0,
+    "manifest": 0,
+    "intent:set": 0,
+    "intent:add-remove": 0,
+    "intent:split": 0,
+    "intent:create": 0,
+    "intent:claim": 0,
+    "intent:life": 0,
+    "intent:move": 0
+  },
+  "vacuity": {
+    "runs": 10000,
+    "share": {
+      "lww-equal": 0.9987,
+      "lww-different": 0.9994
+    },
+    "na": [
+      "delete-edit",
+      "restore-delete",
+      "keep-delete",
+      "claim-claim",
+      "claim-delete",
+      "move-move",
+      "move-same-gap",
+      "move-delete",
+      "claim-release-claim"
+    ]
+  },
+  "yjsVersion": "13.6.33",
+  "nodeVersion": "22.22.0",
+  "durationMs": 1187406,
+  "date": "2026-11-22"
+}
