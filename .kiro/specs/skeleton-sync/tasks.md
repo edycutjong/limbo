@@ -34,7 +34,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`link.chaos.test.ts`): with a fixed seed the delivery order is repeatable; across several fixed seeds both replicas converge to deep-equal canonical states after offline edits on both sides; no message is dropped or duplicated by chaos; the message count stays bounded.
   - _Requirements: R8_
 
-- [ ] 7. Pair harness and sync view
+- [x] 7. Pair harness and sync view
   - `skeleton/src/sync/pair.ts`: `createPair`, `cut`, `restore`, `settle` (with a pump cap), `view`, `exchanges`, `stats`, `close`.
   - Tests (`pair.test.ts`): edits on both sides while cut give `FOGGED` and `unacked` equal to each side's op count, `behind` 0 and the chip `Offline — N waiting`; after restore the view passes through `connecting` and `DEVELOPING`, then reaches `LIVE`; a conflicting edit gives `CONFLICT` and the chip with the conflict count; `FIXED` fires once after a partition or a returned conflict and not at start; the exchange holds the partition-era ops with their declared merge names and counts no duplicate; a reload of one replica mid-session leaves no false ack (peerAckVV drops, ops re-sent).
   - _Requirements: R10, R11, R12, R13, R15_
