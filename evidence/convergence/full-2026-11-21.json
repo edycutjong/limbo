@@ -5,17 +5,19 @@
   "seed": 20251031,
   "passed": true,
   "passesPerProperty": {
-    "convergence": 16,
-    "replay equivalence": 16,
-    "idempotence": 16,
-    "commutes": 16,
-    "no lost edit": 16,
+    "convergence": 24,
+    "replay equivalence": 24,
+    "idempotence": 24,
+    "commutes": 24,
+    "no lost edit": 24,
+    "intent:split": 8,
+    "manifest": 24,
+    "intent:add-remove": 4,
+    "intent:set": 6,
     "intent:create": 2,
-    "manifest": 16,
     "intent:claim": 4,
     "intent:life": 4,
-    "intent:move": 2,
-    "intent:set": 4
+    "intent:move": 2
   },
   "failuresPerProperty": {
     "convergence": 0,
@@ -23,32 +25,34 @@
     "idempotence": 0,
     "commutes": 0,
     "no lost edit": 0,
-    "intent:create": 0,
+    "intent:split": 0,
     "manifest": 0,
+    "intent:add-remove": 0,
+    "intent:set": 0,
+    "intent:create": 0,
     "intent:claim": 0,
     "intent:life": 0,
-    "intent:move": 0,
-    "intent:set": 0
+    "intent:move": 0
   },
   "vacuity": {
     "runs": 10000,
     "share": {
-      "delete-edit": 0.992,
-      "restore-delete": 0.9527,
-      "keep-delete": 0.7603,
-      "claim-claim": 0.9864,
-      "claim-delete": 0.9885,
-      "move-move": 0.8201,
-      "move-same-gap": 0.7123,
-      "move-delete": 0.9501,
-      "claim-release-claim": 0.7518,
-      "lww-equal": 0.877,
-      "lww-different": 0.9046
+      "delete-edit": 0.9857,
+      "restore-delete": 0.9226,
+      "keep-delete": 0.6658,
+      "claim-claim": 0.9558,
+      "claim-delete": 0.9729,
+      "move-move": 0.7601,
+      "move-same-gap": 0.6536,
+      "move-delete": 0.9229,
+      "claim-release-claim": 0.6717,
+      "lww-equal": 0.8867,
+      "lww-different": 0.9549
     },
     "na": []
   },
   "yjsVersion": "13.6.33",
   "nodeVersion": "22.22.0",
-  "durationMs": 310933,
+  "durationMs": 515646,
   "date": "2026-11-21"
 }

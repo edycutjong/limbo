@@ -16,3 +16,14 @@ xargs cat < /tmp/files.txt | awk 'BEGIN{b=0} { l=$0; sub(/^[ \t]+/,"",l); if(b){
 ```
 
 Note: the provisional budget in `.kiro/steering/tech.md` is 1,800 lines; this baseline is above it. Later tasks report their delta against this file.
+
+## Final measurement (task 22, 2026-11-21)
+
+Same command, same scope.
+
+| Measure | Baseline | Final |
+| --- | --- | --- |
+| Files | 20 | 21 |
+| Non-blank, non-comment lines | 2020 | 2137 |
+
+The delta (+1 file, +117 lines) comes from `sumSplit` in `merges.ts` and `sync/dev-relay-link.ts`. Both the baseline and the final figure exceed the provisional 1,800-line budget in `.kiro/steering/tech.md`.

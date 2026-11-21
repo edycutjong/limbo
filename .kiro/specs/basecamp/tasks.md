@@ -109,7 +109,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Run `pnpm e2e`; save the output under `evidence/e2e/`. Run the (a) and (b) tests ten times and record the pass count in `evidence/e2e/` (a flaky test is a failing test; fix the wait, not the assertion).
   - _Requirements: R14, R15.3 to R15.6_
 
-- [ ] 22. Final verification
+- [x] 22. Final verification
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`, then `pnpm props:full` (10,000 orderings). Save the full-tier output under `evidence/convergence/`. Record the final skeleton file count and line count next to the baseline (R1.3).
   - Check the README of `apps/basecamp/` for wording ("measured, property-tested") and that every number on a page comes from `evidence/`.
   - _Requirements: R1.3, R16, R12, R13.6_
