@@ -98,11 +98,11 @@ export function ItemRow(p: ItemRowProps): ReactNode {
   };
 
   return (
-    <li className="bc-row" data-limbo-row data-item={item.id} tabIndex={0} onKeyDown={onKeyDown}>
+    <li className="bc-row" data-limbo-row data-item={item.id} data-ticked={item.ticked} tabIndex={0} onKeyDown={onKeyDown}>
       <button
         ref={handle}
         type="button"
-        className="bc-handle"
+        className="bc-handle ui-btn"
         aria-label={`Move ${item.name}`}
         style={{ ...TARGET, touchAction: 'none' }}
         onKeyDown={onHandleKey}
@@ -112,6 +112,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
       </button>
       <input
         type="checkbox"
+        className="bc-tick ui-check"
         aria-label={`Tick ${item.name}`}
         style={TARGET}
         checked={item.ticked}
@@ -124,6 +125,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
       ) : (
         <input
           type="text"
+          className="ui-input"
           aria-label={`Rename ${item.name}`}
           style={TARGET}
           autoFocus
@@ -141,6 +143,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
       <span className="bc-menu">
         <button
           type="button"
+          className="ui-btn"
           aria-label={`More actions for ${item.name}`}
           aria-expanded={menu}
           style={TARGET}
@@ -152,6 +155,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
           <span role="group" aria-label={`Actions for ${item.name}`}>
             <button
               type="button"
+              className="ui-btn ui-btn--quiet"
               style={TARGET}
               onClick={() => {
                 setMenu(false);
@@ -162,6 +166,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
             </button>
             <button
               type="button"
+              className="ui-btn ui-btn--quiet"
               style={TARGET}
               onClick={() => {
                 setMenu(false);

@@ -19,7 +19,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `apps/controls.test.ts` reads the sheet and checks that it has no `#` colour literal, no `url(`, no `@import` of a network address, every `transition` uses `var(--ui-dur)`, and every state of R1.5 has a selector.
   - _Requirements: R1.5, R1.7, R6.5, R7.3_
 
-- [ ] 4. BASECAMP tokens and item rows
+- [x] 4. BASECAMP tokens and item rows
   - `apps/basecamp/src/main.tsx` imports `tokens.css` before `app.css` and `../../controls.css`. Write `body` and `h1` rules in `app.css` (`h1` gets `limbo-title`).
   - `ItemRow.tsx`: add `data-ticked`, the `ui-check` hooks on the tick input, `ui-btn` on the handle and overflow button, `ui-btn--quiet` on menu items. Grid layout, drawn tick with check mark and strike-through, two-line layout at 390 px. `.bc-twin-row` is `display: block`.
   - Tests: `ItemRow.test.tsx` gains `data-ticked` true and false; `build.test.ts` (or `app-shell.test.tsx`) checks that the built CSS contains the font-face rules of the tokens. Existing ItemRow, Reorder and ItemTwins tests unchanged.

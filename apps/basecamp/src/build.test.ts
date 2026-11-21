@@ -70,3 +70,16 @@ it('the main bundle has no window.limbo and sw.js has no limbo global and no abs
   for (const a of allowed) scan = scan.split(a.match).join('');
   expect(/https?:\/\//.test(scan), 'absolute origin in sw.js').toBe(false);
 }, 120_000);
+
+it('the built CSS carries the font-face rules of the tokens', () => {
+  execFileSync('pnpm', ['--filter', '@limbo/basecamp', 'build'], { stdio: 'pipe', env: prodEnv });
+  const assets = resolve(dist, 'assets');
+  const css = readdirSync(assets)
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => readFileSync(join(assets, f), 'utf8'))
+    .join('\n');
+  expect(css).toContain('@font-face');
+  for (const family of ['Old Standard TT', 'Atkinson Hyperlegible Next', 'DM Mono']) {
+    expect(css.includes(`font-family:${family}`) || css.includes(`font-family: ${family}`) || css.includes(`font-family:"${family}"`), family).toBe(true);
+  }
+}, 120_000);

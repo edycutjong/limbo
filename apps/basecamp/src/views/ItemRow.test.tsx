@@ -38,6 +38,13 @@ afterEach(async () => {
 });
 
 describe('ItemRow', () => {
+  it('data-ticked follows item.ticked', async () => {
+    await mount();
+    expect(row('a', 'cooler').getAttribute('data-ticked')).toBe('false');
+    await click(within(row('a', 'cooler')).getByLabelText('Tick Cooler'));
+    expect(row('a', 'cooler').getAttribute('data-ticked')).toBe('true');
+  });
+
   it('tick sets true then false (explicit values)', async () => {
     const p = await mount();
     const box = within(row('a', 'cooler')).getByLabelText('Tick Cooler') as HTMLInputElement;

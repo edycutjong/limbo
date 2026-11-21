@@ -36,6 +36,18 @@
         "chatSessionId": "sess_9502adc4-4ec7-4962-a281-8de7cd90660f",
         "timestamp": 1795276133122
       }
+    ],
+    "4. BASECAMP tokens and item rows": [
+      {
+        "executionId": "7df8af52-5c54-4edd-b81d-2e482f3c5af9",
+        "chatSessionId": "sess_f691ee6d-d0f9-4e89-850f-7466db214cf1",
+        "timestamp": 1795276314260
+      },
+      {
+        "executionId": "7df8af52-5c54-4edd-b81d-2e482f3c5af9",
+        "chatSessionId": "sess_f691ee6d-d0f9-4e89-850f-7466db214cf1",
+        "timestamp": 1795276470706
+      }
     ]
   }
 }

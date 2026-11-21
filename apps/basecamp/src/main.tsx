@@ -13,6 +13,7 @@ import { ReplicaBody } from './views/ReplicaBody.tsx';
 import { ShuffleSection } from './views/ShuffleSection.tsx';
 import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
 import { registerShell } from '../../offline-shell.ts';
+import '../../../skeleton/src/limbo/tokens.css';
 import '../../controls.css';
 import '../app.css';
 
@@ -24,7 +25,7 @@ export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): 
   return (
     <ScriptedContext.Provider value={scripted}>
       <main className="bc-shell">
-        <h1>BASECAMP</h1>
+        <h1 className="limbo-title">BASECAMP</h1>
         <p>{TAGLINE}</p>
         {p.pair && (
           <LimboShell pair={p.pair} defs={config.defs} describeConflicts={config.describeConflicts}>
