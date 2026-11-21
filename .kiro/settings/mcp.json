@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "limbo-convergence": {
+      "command": "node",
+      "args": ["kit/mcp/server.mjs"]
+    }
+  }
+}

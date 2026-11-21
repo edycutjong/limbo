@@ -5,8 +5,21 @@
   "tools": [
     "read",
     "write",
-    "shell"
+    "shell",
+    "@limbo-convergence"
   ],
+  "allowedTools": [
+    "@limbo-convergence/list_ops",
+    "@limbo-convergence/fuzz_op",
+    "@limbo-convergence/explain_trace",
+    "@limbo-convergence/check_lint"
+  ],
+  "mcpServers": {
+    "limbo-convergence": {
+      "command": "node",
+      "args": ["kit/mcp/server.mjs"]
+    }
+  },
   "resources": [
     "file://.kiro/steering/**/*.md"
   ],
