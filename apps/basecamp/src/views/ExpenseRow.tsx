@@ -53,7 +53,7 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
             <span data-share style={NUM}>
               {formatCents(e.shares[m] ?? 0)}
             </span>{' '}
-            <button type="button" style={TARGET} aria-label={`Remove ${displayName(m)}`} onClick={() => act.removeExpenseMember(replica, e.id, m)}>
+            <button type="button" className="ui-btn ui-btn--quiet" style={TARGET} aria-label={`Remove ${displayName(m)}`} onClick={() => act.removeExpenseMember(replica, e.id, m)}>
               Remove
             </button>
           </li>
@@ -65,6 +65,7 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
       <p className="bc-rule">Shares: sum-split. Whole cents, split evenly; the first members by id take the extra cents.</p>
       <form className="bc-expense-amount" onSubmit={submit}>
         <input
+          className="ui-input"
           type="text"
           inputMode="decimal"
           aria-label={`Amount for ${e.label}`}
@@ -73,21 +74,21 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
           value={text}
           onChange={(ev) => setText(ev.target.value)}
         />
-        <button type="submit" style={TARGET}>
+        <button type="submit" className="ui-btn" style={TARGET}>
           Set amount
         </button>
         {error !== null && <span role="alert" className="bc-error">{error}</span>}
       </form>
       {absent.length > 0 && (
         <div className="bc-expense-add">
-          <select aria-label={`Member to add to ${e.label}`} style={TARGET} value={toAdd} onChange={(ev) => setPick(ev.target.value)}>
+          <select className="ui-input" aria-label={`Member to add to ${e.label}`} style={TARGET} value={toAdd} onChange={(ev) => setPick(ev.target.value)}>
             {absent.map((m) => (
               <option key={m} value={m}>
                 {displayName(m)}
               </option>
             ))}
           </select>
-          <button type="button" style={TARGET} onClick={() => toAdd !== '' && act.addExpenseMember(replica, e.id, toAdd)}>
+          <button type="button" className="ui-btn" style={TARGET} onClick={() => toAdd !== '' && act.addExpenseMember(replica, e.id, toAdd)}>
             Add member
           </button>
         </div>
@@ -98,7 +99,7 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
   const [v1, v2] = e.values;
   if (v1 !== undefined && v2 !== undefined) {
     return (
-      <li className="bc-expense bc-twin-row" data-expense={e.id}>
+      <li className="bc-expense ui-card bc-twin-row" data-expense={e.id}>
         <Twin
           replica={id}
           id={`${e.id}:amount`}
@@ -107,7 +108,7 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
           caption={`TWIN · ${author(v1.by)} set this to ${formatCents(v1.value)} while ${author(v2.by)} set it to ${formatCents(v2.value)}`}
           rule="causal-lww"
           actions={e.values.map((v) => (
-            <button key={v.value} type="button" style={TARGET} onClick={() => act.setAmount(replica, e.id, v.value)}>
+            <button key={v.value} type="button" className="ui-btn" style={TARGET} onClick={() => act.setAmount(replica, e.id, v.value)}>
               {formatCents(v.value)}
             </button>
           ))}
@@ -116,7 +117,7 @@ export function ExpenseRow(p: ExpenseRowProps): ReactNode {
     );
   }
   return (
-    <li className="bc-expense" data-expense={e.id}>
+    <li className="bc-expense ui-card" data-expense={e.id}>
       {body}
     </li>
   );

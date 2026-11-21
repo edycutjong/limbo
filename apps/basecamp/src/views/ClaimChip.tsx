@@ -26,12 +26,12 @@ export function ClaimChip(p: ClaimChipProps): ReactNode {
 
   const who = winners.map((c) => displayName(c.who)).join(', ');
   const stop = isWinner && !p.queued && (
-    <button type="button" style={TARGET} onClick={p.onRelease}>
+    <button type="button" className="ui-chip" style={TARGET} onClick={p.onRelease}>
       Stop bringing it
     </button>
   );
   const claim = (
-    <button type="button" style={TARGET} onClick={p.onClaim}>
+    <button type="button" className="ui-chip" style={TARGET} onClick={p.onClaim}>
       I'll bring it
     </button>
   );

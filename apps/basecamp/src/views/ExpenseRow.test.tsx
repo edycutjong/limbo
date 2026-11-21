@@ -1,4 +1,6 @@
 import { act, cleanup, fireEvent, within } from '@testing-library/react';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { Pair } from '../../../../skeleton/src/sync/pair.ts';
 import * as actions from '../actions.ts';
@@ -114,5 +116,17 @@ describe('ExpenseRow', () => {
     const cells = Array.from(exp('a', 'gas-snacks').querySelectorAll<HTMLElement>('[data-share], [data-amount]'));
     expect(cells).toHaveLength(4);
     for (const s of cells) expect(s.style.fontVariantNumeric).toBe('tabular-nums');
+  });
+
+  it('expenses render as bullet-free cards and Remove keeps its name and quiet class', async () => {
+    await mount();
+    const css = readFileSync(resolve(process.cwd(), 'apps/basecamp/app.css'), 'utf8');
+    expect(css).toMatch(/\.bc-expenses\s*\{[^}]*list-style:\s*none/);
+    expect(css).toMatch(/\.bc-shares\s*\{[^}]*flex-wrap:\s*wrap[^}]*list-style:\s*none|\.bc-shares\s*\{[^}]*list-style:\s*none[^}]*flex-wrap:\s*wrap/);
+    expect(css).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    expect(exp('a', 'campsite').classList.contains('ui-card')).toBe(true);
+    const remove = within(exp('a', 'campsite')).getByRole('button', { name: 'Remove Dewi' });
+    expect(remove.classList.contains('ui-btn--quiet')).toBe(true);
+    expect(remove.textContent).toBe('Remove');
   });
 });

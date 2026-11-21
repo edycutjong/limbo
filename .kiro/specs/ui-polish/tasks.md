@@ -25,7 +25,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `ItemRow.test.tsx` gains `data-ticked` true and false; `build.test.ts` (or `app-shell.test.tsx`) checks that the built CSS contains the font-face rules of the tokens. Existing ItemRow, Reorder and ItemTwins tests unchanged.
   - _Requirements: R1.1 to R1.5, R1.7_
 
-- [ ] 5. BASECAMP expenses, add form, claim chip
+- [x] 5. BASECAMP expenses, add form, claim chip
   - `ExpenseRow.tsx`, `AddItem.tsx`, `ClaimChip.tsx`: class names only (`ui-card`, `ui-btn`, `ui-btn--quiet` for Remove, `ui-input`, `ui-chip`). `app.css`: expenses as a bullet-free card list, amount in tabular numerals, shares in a wrapping row.
   - Tests: `ExpenseRow.test.tsx` checks the list has no bullet class (`list-style` via the sheet test) and that Remove keeps its accessible name. Existing assertions unchanged.
   - _Requirements: R1.5, R1.6, R1.7_

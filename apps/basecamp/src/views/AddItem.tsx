@@ -14,6 +14,7 @@ export function AddItem(p: { onAdd(name: string): void }): ReactNode {
   return (
     <form className="bc-add" onSubmit={submit}>
       <input
+        className="ui-input"
         type="text"
         aria-label="Add an item"
         placeholder="Add an item"
@@ -21,7 +22,7 @@ export function AddItem(p: { onAdd(name: string): void }): ReactNode {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <button type="submit" style={TARGET}>
+      <button type="submit" className="ui-btn" style={TARGET}>
         Add
       </button>
     </form>

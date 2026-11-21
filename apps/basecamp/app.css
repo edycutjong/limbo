@@ -91,3 +91,22 @@ input[type="checkbox"].ui-check.bc-tick:disabled::before { border-style: dashed;
 .bc-claim { display: inline-flex; align-items: center; gap: 0.5rem; }
 .bc-add { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .bc-add input { flex: 1; }
+/* Expenses: bullet-free card list. */
+.bc-expenses { list-style: none; display: grid; gap: 12px; }
+.bc-expense { list-style: none; }
+.bc-expense-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.bc-expense-head [data-amount] {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+.bc-shares {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+}
+.bc-share { display: inline-flex; align-items: center; gap: 8px; list-style: none; }
+.bc-share [data-share] { font-variant-numeric: tabular-nums; }
+.bc-expense-amount, .bc-expense-add { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
