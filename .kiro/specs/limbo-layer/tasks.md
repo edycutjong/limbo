@@ -59,7 +59,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`single.test.tsx`): narrow media → single; `?replicas=2` overrides narrow; `?replicas=1` overrides wide; the bar has the three controls, Add calls `onAdd`, "Try two replicas" switches to the pair layout; fog, chip and wisps follow replica `a` while the peer is headless; Inspector lever cuts and restores.
   - _Requirements: R11_
 
-- [ ] 12. Keyboard
+- [x] 12. Keyboard
   - `shell.tsx`: root `keydown` for `L`, `I`, ArrowUp/ArrowDown over `[data-limbo-row]`; suppression in form fields and with modifiers. Document the `data-limbo-row` convention for Space and Delete in a comment block.
   - Tests (`keys.test.tsx`): `L` cuts then restores in the pair and in the single layout; `I` opens and closes the drawer; arrows move focus across rows; typing `l` or `i` in an input does nothing; Ctrl+L does nothing; a stub row bound by the test to Space and Delete works with the convention.
   - _Requirements: R16_

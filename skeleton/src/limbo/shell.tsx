@@ -1,5 +1,5 @@
 // LimboShell and useLimbo: the one place the layer reads sync state. It only displays what `Pair` derives.
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from 'react';
 import type { Op, OpDef } from '../core/types.ts';
 import type { Session } from '../sync/link.ts';
 import type { Pair, PairView } from '../sync/pair.ts';
@@ -39,8 +39,45 @@ interface Ctx {
 }
 const LimboCtx = createContext<Ctx | null>(null);
 
-// Keys (shell root): L cuts/restores, I toggles the Inspector, ArrowUp/Down move focus across
-// `[data-limbo-row]`. Space (tick) and Delete belong to the app's rows: mark each row `data-limbo-row`.
+/*
+ * Keys (one `keydown` listener on the shell root, so focus must be inside the shell):
+ *   L          cut the link while it is up, restore it while it is down.
+ *   I          toggle the Inspector drawer (clicks its opener button).
+ *   ArrowUp/Down  move focus across `[data-limbo-row]` elements in DOM order.
+ * Ignored when the event comes from input, textarea, select or contenteditable, or when
+ * Ctrl, Meta or Alt is held.
+ *
+ * The `data-limbo-row` convention (Space and Delete are app-owned, R16.5): mark each app row
+ * `data-limbo-row` (the Twin row already is). A row that is not naturally focusable gets
+ * tabindex="-1" on first arrow use. The app binds Space (tick) and Delete (delete) with its own
+ * `onKeyDown` on that row, calling its own ops. The layer never implements them.
+ */
+const FIELD = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])';
+
+function onShellKey(e: KeyboardEvent<HTMLElement>, pair: Pair<any>): void {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target as Element | null;
+  if (t && typeof t.closest === 'function' && t.closest(FIELD)) return;
+  const root = e.currentTarget;
+  if (e.key === 'l' || e.key === 'L') {
+    e.preventDefault();
+    if (pair.view('a').link === 'down') pair.restore();
+    else pair.cut();
+  } else if (e.key === 'i' || e.key === 'I') {
+    e.preventDefault();
+    root.querySelector<HTMLElement>('button[aria-haspopup="dialog"]')?.click();
+  } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    const rows = Array.from(root.querySelectorAll<HTMLElement>('[data-limbo-row]'));
+    if (rows.length === 0) return;
+    e.preventDefault();
+    const at = rows.findIndex((r) => r === document.activeElement || r.contains(document.activeElement));
+    const down = e.key === 'ArrowDown';
+    const next = at < 0 ? (down ? 0 : rows.length - 1) : Math.min(rows.length - 1, Math.max(0, at + (down ? 1 : -1)));
+    const row = rows[next]!;
+    if (!row.hasAttribute('tabindex') && !row.matches('button, [href], input, select, textarea')) row.setAttribute('tabindex', '-1');
+    row.focus();
+  }
+}
 
 export function LimboShell(p: {
   pair: Pair<any>;
@@ -63,7 +100,7 @@ export function LimboShell(p: {
   const ctx = useMemo(() => ({ pair: p.pair, defs: p.defs, describe, motion }), [p.pair, p.defs, describe, motion]);
   return (
     <LimboCtx.Provider value={ctx}>
-      <div className="limbo-shell" data-motion={motion}>
+      <div className="limbo-shell" data-motion={motion} onKeyDown={(e) => onShellKey(e, p.pair)}>
         {p.children}
       </div>
     </LimboCtx.Provider>
