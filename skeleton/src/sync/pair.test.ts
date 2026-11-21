@@ -208,6 +208,27 @@ describe('pair harness', () => {
     p.close();
   });
 
+  it('an exchange stays open while a side holds a buffered op and settles once the missing op arrives', async () => {
+    const p = await make();
+    const z = (n: number): Op => ({ id: `seed:${n}`, op: 'delta', target: 't', payload: 1, stamp: { l: 5 + n, r: 'seed', n }, deps: n > 1 ? { seed: n - 1 } : {} });
+    p.a.receive([z(2)]); // held: its predecessor is missing
+    expect(p.view('a').buffered).toBe(1);
+    p.cut();
+    p.a.local('delta', 't', 1);
+    p.restore();
+    await p.settle();
+    expect(p.view('a')).toMatchObject({ unacked: 0, behind: 0, buffered: 1 });
+    expect(p.view('b')).toMatchObject({ unacked: 0, behind: 0 });
+    expect(p.exchanges().open.length).toBeGreaterThan(0);
+    expect(p.exchanges().last).toHaveLength(0);
+    p.a.receive([z(1)]);
+    await p.settle();
+    expect(p.view('a').buffered).toBe(0);
+    expect(p.exchanges().open).toEqual([]);
+    expect(p.exchanges().last.length).toBeGreaterThan(0);
+    p.close();
+  });
+
   it('crossing records carry id and target', async () => {
     const p = await make();
     p.cut();

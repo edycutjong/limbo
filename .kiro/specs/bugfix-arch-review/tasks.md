@@ -27,7 +27,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D2 2.1 to 2.4, 2.7, 2.9; Unchanged 1, 2, 9, 14_
 
-- [ ] 4. D4: haze and settle follow the derived state
+- [x] 4. D4: haze and settle follow the derived state
   - Failing tests first: in `skeleton/src/limbo/fog.test.tsx`, a replica holding only a buffered op (the `chip.test.tsx` pattern) has `buffered === 1`, `unacked + behind === 0`, `data-fog="haze"` and label `Syncing…`. In `skeleton/src/sync/pair.test.ts`, an exchange stays open while a side holds a buffered op and settles into `last` once the missing op arrives. Run and record the failures (today: `none`, and an early settle).
   - Fix: `skeleton/src/limbo/marks.tsx` (mode follows the axis; label `Syncing N…` or `Syncing…`) and the `log.settle(...)` argument in `skeleton/src/sync/pair.ts` (add both `buffered` counts).
   - Confirm unchanged: `fog.test.tsx` "haze reads Syncing n…", `chip.test.tsx` (five strings and icons), `status.test.ts`, wisps tests, reduced-motion Fog tests, `pair-view.test.tsx`.

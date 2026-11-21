@@ -67,7 +67,7 @@ describe('Fog', () => {
     pair.close();
   });
 
-  it('buffered-only gives no fog', async () => {
+  it('buffered-only gives haze labelled Syncing…, following the chip axis', async () => {
     const pair = await makeStubPair();
     const { container } = renderApp(pair, ui);
     // a peer-authored op whose predecessor never arrived: held, not unacked, not behind
@@ -76,7 +76,9 @@ describe('Fog', () => {
     });
     const v = pair.view('a');
     expect([v.unacked, v.behind, v.buffered]).toEqual([0, 0, 1]);
-    expect(mode(container)).toBe('none');
+    expect(v.axis).toBe('DEVELOPING');
+    expect(mode(container)).toBe('haze');
+    expect(label(container)).toBe('Syncing…');
     pair.close();
   });
 });

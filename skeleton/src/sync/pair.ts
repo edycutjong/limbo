@@ -99,7 +99,7 @@ export async function createPair<S>(cfg: PairConfig<S>): Promise<Pair<S>> {
     tick('a');
     tick('b');
     const [va, vb] = [derive('a'), derive('b')];
-    log.settle(va.unacked + va.behind + vb.unacked + vb.behind === 0);
+    log.settle(va.unacked + va.behind + va.buffered + vb.unacked + vb.behind + vb.buffered === 0);
   };
 
   // The first connect is not an event: FIXED and the exchange log start after it.

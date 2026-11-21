@@ -11,7 +11,7 @@ const SVG = { width: 14, height: 14, viewBox: '0 0 16 16', fill: 'none', stroke:
 export function Fog(p: { id: Id; children?: ReactNode }): ReactNode {
   const { view, motion } = useLimbo(p.id);
   const n = view.unacked + view.behind;
-  const mode: FogMode = view.axis === 'FOGGED' ? 'full' : view.axis === 'DEVELOPING' && n > 0 ? 'haze' : 'none';
+  const mode: FogMode = view.axis === 'FOGGED' ? 'full' : view.axis === 'DEVELOPING' ? 'haze' : 'none';
   const fogged = useRef(false);
   if (mode !== 'none') fogged.current = true;
   // The one place Fog's animation class is chosen: drain on full fog, lift once fog has cleared. Never under reduced motion.
@@ -24,7 +24,7 @@ export function Fog(p: { id: Id; children?: ReactNode }): ReactNode {
       {mode !== 'none' && <div className="limbo-fog-veil" aria-hidden="true" style={NO_POINTER} />}
       {mode !== 'none' && (
         <span className="limbo-fog-label" data-fog-label={mode} aria-hidden="true" style={NO_POINTER}>
-          {mode === 'full' ? 'Offline' : `Syncing ${n}…`}
+          {mode === 'full' ? 'Offline' : n > 0 ? `Syncing ${n}…` : 'Syncing…'}
         </span>
       )}
     </div>
