@@ -42,7 +42,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D5 5.1 to 5.5; Unchanged 8, 16_
 
-- [ ] 6. D1 (part 1): shared identity helper
+- [x] 6. D1 (part 1): shared identity helper
   - Failing tests first: `apps/pair-identity.test.ts` expects `acquirePairIdentity(app, opts)` to default to `sessionStorage`, to pass `navigator.locks` only when defined, to pass `location.search` (so `?reset=1` wipes before open), and to call the id generator only inside `acquireIdentity`. Run and record the failure (the file does not exist).
   - Add `apps/pair-identity.ts` exporting `IdentityOptions` and `acquirePairIdentity`; the default id generator uses `crypto.getRandomValues` (hex). It is the only place in the apps that draws a random value.
   - Confirm `skeleton/src/sync/identity.test.ts` and `skeleton/src/index.test.ts` pass unchanged.
