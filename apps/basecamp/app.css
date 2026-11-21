@@ -1,0 +1,9 @@
+/* Layout only. Colours come from the limbo tokens. */
+body {
+  margin: 0;
+}
+.bc-shell {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}

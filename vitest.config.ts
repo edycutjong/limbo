@@ -15,7 +15,7 @@ export default defineConfig({
       {
         test: {
           name: 'limbo',
-          include: ['skeleton/src/**/*.test.tsx'],
+          include: ['skeleton/src/**/*.test.tsx', 'apps/*/src/**/*.test.tsx'],
           environment: 'jsdom',
           setupFiles: ['skeleton/src/limbo/test/setup.ts'],
         },

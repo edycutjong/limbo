@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e tasks (20, 21) also end with `pnpm e2e` green. Tests, properties, hooks and the vacuity guard are never weakened, skipped, or run with a lower `numRuns`. IF a property fails, THEN fix the op. Do not run git. Op files are created as `*.op.ts` so the hooks scaffold `*.props.test.ts` and `registry.gen.ts`; never hand-edit `registry.gen.ts`. After a task that touches `skeleton/`, record the measured non-test line and file count (R1.3). Wording: "measured, property-tested".
 
-- [ ] 1. Tooling and app shell
+- [x] 1. Tooling and app shell
   - `tsconfig.json` `include`: add `apps/*/src/**/*.tsx` and `apps/*/*.ts`. `vitest.config.ts` `limbo` project `include`: add `apps/*/src/**/*.test.tsx` (nothing else changes). `apps/basecamp/package.json`: dependencies `react`, `react-dom` (19), scripts `dev`, `build`, `preview` (`vite`, `vite build`, `vite preview`), dev dependency `vite`. Add `apps/basecamp/index.html`, `vite.config.ts` (static `dist/`, port 5174), a minimal `src/main.tsx` that renders the tagline, and `app.css`.
   - Record the skeleton baseline (file count and non-blank, non-comment lines, excluding tests and `limbo/test/`) in `evidence/budget-basecamp-baseline.md`, with the command used.
   - Tests: `app-shell.test.tsx` renders `main`'s root component and finds the `h1` and the line "For people whose shared list breaks when the signal does."; `pnpm --filter @limbo/basecamp build` produces `dist/index.html`.

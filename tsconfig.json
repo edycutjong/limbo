@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["skeleton/src/**/*.ts", "skeleton/src/**/*.tsx", "apps/*/src/**/*.ts", "kit/props/**/*.ts", "e2e/**/*.ts", "*.config.ts"]
+  "include": ["skeleton/src/**/*.ts", "skeleton/src/**/*.tsx", "apps/*/src/**/*.ts", "apps/*/src/**/*.tsx", "apps/*/*.ts", "kit/props/**/*.ts", "e2e/**/*.ts", "*.config.ts"]
 }
