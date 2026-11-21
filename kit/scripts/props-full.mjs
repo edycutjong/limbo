@@ -22,7 +22,8 @@ export function evidenceFileName(date) {
 /**
  * Compose the evidence object from vitest's JSON report and the suite sidecar.
  * Per-property counts group the `op <name>` tests by test title (convergence, idempotence, ...).
- * Vacuity share per class comes from the sidecar; classes whose ops are not registered are listed as `n/a`.
+ * The sidecar holds one vacuity report per app. `share` takes each class from the app that registers its ops,
+ * `byApp` keeps every report, and `na` lists only classes that no app registers.
  */
 export function composeEvidence({ report, sidecar, yjsVersion, nodeVersion, durationMs, date }) {
   const properties = {};
@@ -35,7 +36,22 @@ export function composeEvidence({ report, sidecar, yjsVersion, nodeVersion, dura
       else row.skipped++;
     }
   }
-  const v = sidecar.vacuity;
+  const byApp = sidecar.apps ?? {};
+  const names = Object.keys(byApp).sort();
+  let vacuity;
+  if (names.length === 0) {
+    vacuity = { runs: 0, share: {}, na: [], byApp: {}, note: 'no registered ops' };
+  } else {
+    const share = {};
+    for (const name of names) {
+      for (const c of byApp[name].applicable ?? Object.keys(byApp[name].share)) {
+        if (!(c in share)) share[c] = byApp[name].share[c]; // first app (by name) that registers the class
+      }
+    }
+    // A class is n/a only when every app lists it as n/a.
+    const na = byApp[names[0]].na.filter((c) => names.every((n) => byApp[n].na.includes(c)));
+    vacuity = { runs: Math.max(...names.map((n) => byApp[n].runs)), share, na, byApp };
+  }
   return {
     tier: sidecar.config.tier,
     replicas: sidecar.config.replicas,
@@ -44,7 +60,7 @@ export function composeEvidence({ report, sidecar, yjsVersion, nodeVersion, dura
     passed: report.success === true,
     passesPerProperty: Object.fromEntries(Object.entries(properties).map(([k, r]) => [k, r.passed])),
     failuresPerProperty: Object.fromEntries(Object.entries(properties).map(([k, r]) => [k, r.failed])),
-    vacuity: v === null ? { runs: 0, share: {}, na: [], note: 'no registered ops' } : { runs: v.runs, share: v.share, na: v.na },
+    vacuity,
     yjsVersion,
     nodeVersion,
     durationMs,
@@ -56,6 +72,7 @@ function main() {
   const tmp = mkdtempSync(join(tmpdir(), 'limbo-props-full-'));
   const reportPath = join(tmp, 'report.json');
   const sidecarPath = join(tmp, 'sidecar.json');
+  writeFileSync(sidecarPath, ''); // each app's sweep merges its report into this file
   const started = performance.now();
   const r = spawnSync('pnpm', ['exec', 'vitest', 'run', '--project', 'props', '--reporter=default', '--reporter=json', `--outputFile.json=${reportPath}`], {
     cwd: ROOT,
@@ -63,7 +80,7 @@ function main() {
     env: { ...process.env, LIMBO_PROPS_TIER: 'full', LIMBO_PROPS_SIDECAR: sidecarPath },
   });
   const durationMs = Math.round(performance.now() - started);
-  if (!existsSync(reportPath) || !existsSync(sidecarPath)) {
+  if (!existsSync(reportPath) || readFileSync(sidecarPath, 'utf8').trim() === '') {
     console.error('props:full: vitest produced no report or sidecar; no evidence written');
     rmSync(tmp, { recursive: true, force: true });
     process.exit(r.status || 1);

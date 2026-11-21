@@ -97,7 +97,7 @@
     "kit/props/mixed.test.ts": "daffbd5ce298f575527fdbf93488239bbed69b9743839db3382e67da109f33ec",
     "kit/props/mixed.ts": "2c44b6a3d5aa6794acfd7ff2730ec667f07bef477262d16cb31a94291a992075",
     "kit/props/run.ts": "132c11d77af1fcf5102cb4f02e4ed73e5fdb47770128fcab22c916fac73183b4",
-    "kit/props/suite.props.test.ts": "64f717ef118fc8b826b3739a330c4879ea30c71870883cc9783177363d5d8b3a",
+    "kit/props/suite.props.test.ts": "6dd918e0d23b8ebf88df665856f0ece5b3084a4591f2cee507b39b0b5a076826",
     "kit/props/vacuity.scaling.test.ts": "9ddd1bf0cd057e5bdacf7840217bfea0fb319d28d22c17fbce0759233dff764f",
     "kit/props/vacuity.ts": "6dad2b6cca44ff8f4c5dd3daacf04b9efd1bcf634536a7ac417ed6a337762232",
     "kit/scripts/gate-integrity.mjs": "08bf155b6412b8900e16ed4c0935b9334275a4041c2867690a7ee8b1cb92377f",

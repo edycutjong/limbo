@@ -52,7 +52,7 @@ const apps = await loadRegistry();
 const defs = apps.flatMap((a) => a.defs);
 
 if (defs.length === 0) {
-  writeSidecar(null);
+  writeSidecar(null, null);
   describe('props suite', () => {
     it.skip('skipped:no-ops (no registered ops; not counted as passing)', () => {});
   });
@@ -62,7 +62,6 @@ if (defs.length === 0) {
   // Mixed scripts: every registered op of one app on a few hot targets, each op's payload from its own generator.
   // One sweep per app feeds both the mixed properties and the vacuity guard, so the guard measures the checked runs.
   const gen = mixedGen(optsByOp);
-  const sidecarDone = { value: false };
 
   for (const { app, defs: appDefs, hook } of apps) {
     const runs: MixedRun[] = [];
@@ -74,10 +73,7 @@ if (defs.length === 0) {
         if ((i + 1) % 25 === 0) await new Promise<void>((res) => setImmediate(res));
       }
       report = mixedReport(appDefs, runs.map((r) => r.classes));
-      if (!sidecarDone.value) {
-        sidecarDone.value = true;
-        writeSidecar(report);
-      }
+      writeSidecar(app, report);
     })();
 
     describe(`mixed ${app}`, () => {
