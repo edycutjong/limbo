@@ -80,6 +80,7 @@ function seedHash(ops: readonly Op[]): string {
 
 function malformed(op: Op): boolean {
   const st = op?.stamp;
+  const deps: unknown = op?.deps;
   return (
     typeof op?.id !== 'string' ||
     typeof st !== 'object' ||
@@ -88,7 +89,14 @@ function malformed(op: Op): boolean {
     !Number.isInteger(st.l) ||
     !Number.isInteger(st.n) ||
     st.n < 1 ||
-    op.id !== `${st.r}:${st.n}`
+    op.id !== `${st.r}:${st.n}` ||
+    typeof op.target !== 'string' ||
+    typeof op.op !== 'string' ||
+    op.payload === undefined ||
+    typeof deps !== 'object' ||
+    deps === null ||
+    Array.isArray(deps) ||
+    Object.values(deps).some((n) => !Number.isSafeInteger(n) || (n as number) < 0)
   );
 }
 
@@ -147,7 +155,11 @@ export async function createReplica<S>(cfg: ReplicaConfig<S>): Promise<Replica<S
   for (const op of cfg.seedOps) for (const a of buf.offer(op)) apply(a);
 
   // Stored ops: the Lamport counter starts at the maximum l; ops that cannot apply stay held.
-  const stored = store.all();
+  const stored: Op[] = [];
+  for (const op of store.all()) {
+    if (malformed(op)) reject({ id: String((op as { id?: unknown })?.id), reason: 'malformed' });
+    else stored.push(op);
+  }
   for (const op of stored) {
     observe(core, op);
     savedIds.add(op.id);

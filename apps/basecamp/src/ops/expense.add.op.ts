@@ -15,7 +15,7 @@ const def: OpDef<ExpenseAddState, AddPayload> = {
   merge: 'commutes',
   intent: { kind: 'split' },
   apply(s, op: Op<AddPayload>) {
-    return { ...s, adds: { ...(s.adds ?? {}), [op.id]: { target: op.target, ...op.payload, op } } };
+    return { ...s, adds: { ...(s.adds ?? {}), [op.id]: { ...op.payload, target: op.target, op } } };
   },
   invariant(s) {
     for (const [id, a] of Object.entries(s.adds ?? {})) {

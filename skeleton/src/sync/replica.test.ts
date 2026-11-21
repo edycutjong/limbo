@@ -109,6 +109,54 @@ describe('replica', () => {
     expect(r.log()).toEqual([]);
   });
 
+  it('rejects bad deps, target, op and payload as malformed without throwing or persisting', async () => {
+    const { store, puts } = spyStore();
+    const r = await make('b', [], store);
+    const base = peerOps()[0]!;
+    const bad = (i: number, patch: Record<string, unknown>): Op => ({ ...base, id: `p:${i}`, stamp: { ...base.stamp, n: i }, ...patch }) as Op;
+    const ops = [
+      bad(1, { deps: null }),
+      bad(2, { deps: { x: 1.5 } }),
+      bad(3, { deps: { x: -1 } }),
+      bad(4, { deps: [] }),
+      bad(5, { target: 7 }),
+      bad(6, { op: 7 }),
+      bad(7, { payload: undefined }),
+    ];
+    let res: ReturnType<typeof r.receive> | undefined;
+    expect(() => (res = r.receive(ops))).not.toThrow();
+    expect(res!.rejected).toEqual(ops.map((o) => ({ id: o.id, reason: 'malformed' })));
+    expect(res!.applied).toEqual([]);
+    expect(r.log()).toEqual([]);
+    expect(puts).toEqual([]);
+  });
+
+  it('accepts valid ops: deps {}, payload {} and null, and a seed op', async () => {
+    const r = await make('b');
+    const base = peerOps()[0]!;
+    const mk = (n: number, payload: unknown, deps: Record<string, number> = {}): Op =>
+      ({ ...base, id: `q:${n}`, stamp: { l: n, r: 'q', n }, payload, deps }) as Op;
+    const res = r.receive([mk(1, {}), mk(2, null, { q: 1 }), mk(3, 'x', { q: 2, z: 0 })]);
+    expect(res.rejected).toEqual([]);
+    expect(res.applied.map((o) => o.id)).toEqual(['q:1', 'q:2', 'q:3']);
+    const seed = makeSeedOps(defs, [{ name: 'set', target: 't', payload: 's' }]);
+    const r2 = await make('c');
+    expect(r2.receive(seed).rejected).toEqual([]);
+    expect(r2.applied()).toEqual(seed);
+  });
+
+  it('starts with a bad stored op: applies the valid one and records the bad one', async () => {
+    const inner = openStore('stored-bad');
+    const good = peerOps()[0]!;
+    const badOp = { ...good, id: 'z:1', stamp: { l: 1, r: 'z', n: 1 }, deps: null } as unknown as Op;
+    const store: OpStore = { ...inner, all: () => [good, badOp] };
+    const r = await make('a', [], store);
+    expect(r.applied().map((o) => o.id)).toEqual([good.id]);
+    expect(r.rejected()).toEqual([{ id: 'z:1', reason: 'malformed' }]);
+    expect(r.saved('z:1')).toBe(false);
+    expect(r.saved(good.id)).toBe(true);
+  });
+
   it('keeps only the last 50 rejections', async () => {
     const r = await make('b');
     const base = peerOps()[0]!;

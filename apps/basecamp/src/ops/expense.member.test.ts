@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { canonical, concurrent, covers } from '../../../../skeleton/src/core/causal.ts';
 import { simulate } from '../../../../skeleton/src/core/simulate.ts';
 import type { Op, OpDef } from '../../../../skeleton/src/core/types.ts';
+import expenseAdd from './expense.add.op.ts';
 import addMember from './expense.addMember.op.ts';
 import removeMember from './expense.removeMember.op.ts';
 import type { MemberOpsState, MemberPayload } from './expense.state.ts';
@@ -16,6 +17,15 @@ const fold = (ops: Op<MemberPayload>[]): MemberOpsState => {
   for (const o of ops) s = (o.op === 'expense.addMember' ? addMember : removeMember).apply!(s, o) as MemberOpsState;
   return s;
 };
+
+describe('expense.add envelope', () => {
+  it('a payload field named target cannot override the envelope target', () => {
+    const payload = { target: 'evil', label: 'x', amountCents: 100, payer: 'a', members: ['a'] };
+    const op = { id: 'a:1', op: 'expense.add', target: 'e1', payload, stamp: { l: 1, r: 'a', n: 1 }, deps: {} } as Op;
+    const s = expenseAdd.apply!({}, op) as { adds: Record<string, { target: string }> };
+    expect(s.adds[op.id]!.target).toBe(op.target);
+  });
+});
 
 describe('expense member ops', () => {
   it('a concurrent add and remove of the same member keeps the member, in either order', () => {
