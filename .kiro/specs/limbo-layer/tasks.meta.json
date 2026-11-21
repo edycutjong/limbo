@@ -120,6 +120,18 @@
         "chatSessionId": "sess_80bf268e-926b-44c0-abd7-c74e3e2d4229",
         "timestamp": 1795242718546
       }
+    ],
+    "11. Single-replica layout and bottom bar": [
+      {
+        "executionId": "15098431-74a5-4028-9090-807244c5d7d5",
+        "chatSessionId": "sess_bdb8b55c-f113-41c4-8cd6-6c42ec66a4f3",
+        "timestamp": 1795242816964
+      },
+      {
+        "executionId": "15098431-74a5-4028-9090-807244c5d7d5",
+        "chatSessionId": "sess_bdb8b55c-f113-41c4-8cd6-6c42ec66a4f3",
+        "timestamp": 1795242938865
+      }
     ]
   }
 }

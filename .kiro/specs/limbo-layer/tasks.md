@@ -54,7 +54,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`pair-view.test.tsx`): lever reads "Cut link"/"Restore link" from `view('a').link` and calls `pair.cut()`/`pair.restore()`; both cards fogged while cut; caption text exact; **Reset demo** calls `onReset` and nothing else; each card has exactly one `aria-live="polite"`; stylesheet text contains the 1024 px and 640 px breakpoints; lever and buttons have a 44 px min size in CSS.
   - _Requirements: R10, R17.1, R18.3_
 
-- [ ] 11. Single-replica layout and bottom bar
+- [x] 11. Single-replica layout and bottom bar
   - `pair-view.tsx`: mode from `matchMedia` and `?replicas=1|2` (injectable `search`), replica `a` card only, bottom bar (Add, Inspector, "Try two replicas"), lever in the Inspector Link section.
   - Tests (`single.test.tsx`): narrow media → single; `?replicas=2` overrides narrow; `?replicas=1` overrides wide; the bar has the three controls, Add calls `onAdd`, "Try two replicas" switches to the pair layout; fog, chip and wisps follow replica `a` while the peer is headless; Inspector lever cuts and restores.
   - _Requirements: R11_

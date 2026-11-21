@@ -60,7 +60,7 @@ function Table(p: { rows: Row[]; empty: string; label: string }): ReactNode {
 
 const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
-export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boolean): void }): ReactNode {
+export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boolean): void; lever?: ReactNode }): ReactNode {
   const { view, replica, session, queued, exchanges, conflicts, resolved } = useLimbo(p.id);
   const defs = useDefs();
   const [inner, setInner] = useState(false);
@@ -123,6 +123,7 @@ export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boole
             <h3>Link</h3>
             <p>Link: {view.link}</p>
             <p>Peer: {session.peerId() ?? 'none yet'}</p>
+            {p.lever}
           </section>
           <section aria-label="Queued ops">
             <h3>Queued ops</h3>

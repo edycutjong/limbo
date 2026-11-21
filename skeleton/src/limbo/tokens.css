@@ -99,3 +99,7 @@
 @media (min-width: 640px) and (max-width: 1023px) { .limbo-pair { grid-template-columns: 1fr; } }
 @media (min-width: 1024px) { .limbo-pair { grid-template-columns: 1fr auto 1fr; align-items: start; } .limbo-reset { grid-column: 1 / -1; } }
 .limbo-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Single-replica layout: the bar is fixed, the content leaves room for it */
+.limbo-single { padding-bottom: 72px; }
+.limbo-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-around; gap: 8px; padding: 8px; background: var(--card); border-top: 1px solid var(--rule); }
