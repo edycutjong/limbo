@@ -1,0 +1,8 @@
+{"ts":"2026-11-21T18:19:01.799Z","tool":"list_ops","app":"basecamp","op":null,"pass":null,"runs":null,"ms":113}
+{"ts":"2026-11-21T18:19:01.990Z","tool":"list_ops","app":"aftershock","op":null,"pass":null,"runs":null,"ms":93}
+{"ts":"2026-11-21T18:19:02.827Z","tool":"fuzz_op","app":"basecamp","op":"item.add","pass":true,"runs":500,"ms":363}
+{"ts":"2026-11-21T18:19:03.552Z","tool":"fuzz_op","app":"basecamp","op":"item.move","pass":true,"runs":500,"ms":555}
+{"ts":"2026-11-21T18:19:04.336Z","tool":"check_lint","app":null,"op":null,"pass":true,"runs":null,"ms":36}
+{"ts":"2026-11-21T18:19:04.483Z","tool":"fuzz_op","app":"basecamp","op":"expense.add","pass":true,"runs":500,"ms":983}
+{"ts":"2026-11-21T18:19:04.598Z","tool":"fuzz_op","app":"aftershock","op":"sector.count","pass":true,"runs":500,"ms":551}
+{"ts":"2026-11-21T18:19:04.770Z","tool":"check_lint","app":null,"op":null,"pass":true,"runs":null,"ms":32}
