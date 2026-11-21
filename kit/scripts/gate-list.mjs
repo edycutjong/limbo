@@ -17,6 +17,7 @@ export const GATE_ROOTS = [
 export const GATE_FILES = [
   'kit/props/intents.json',
   'kit/props/run.ts',
+  'kit/props/engine.ts',
   'kit/props/config.ts',
   'kit/props/suite.props.test.ts',
   'kit/props/mixed.ts',
