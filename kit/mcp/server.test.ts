@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, describe, expect, it } from 'vitest';
 import { fixtures } from '../props/bad/index.ts';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
 import type { Counterexample, RunOptions } from '../props/engine.ts';
@@ -13,6 +13,17 @@ import { runJobInProcess, type JobOverrides, type JobSpec } from './job.ts';
 import { createServer, type RunJob } from './tools.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+// R9.5: tests never write the real ledger. Children spawned by tests inherit this too.
+const testLedgerDir = mkdtempSync(join(tmpdir(), 'limbo-mcp-ledger-'));
+process.env.LIMBO_MCP_LOG = join(testLedgerDir, 'mcp-calls.jsonl');
+const realMcpLedger = join(root, 'evidence', 'kiro', 'mcp-calls.jsonl');
+const realMcpBefore = existsSync(realMcpLedger) ? readFileSync(realMcpLedger, 'utf8') : null;
+afterAll(() => {
+  const after = existsSync(realMcpLedger) ? readFileSync(realMcpLedger, 'utf8') : null;
+  rmSync(testLedgerDir, { recursive: true, force: true });
+  expect(after).toBe(realMcpBefore);
+});
 
 function fixtureDefs(): JobOverrides {
   const defs: Record<string, { def: OpDef; opts: RunOptions }> = {};
@@ -277,4 +288,79 @@ describe('server: check_lint', () => {
     expect(missing.structuredContent!.error.code).toBe('file-not-found');
     expect(ledgerLines()).toBe(before);
   });
+});
+
+describe('server: evidence ledger', () => {
+  const dirs: string[] = [];
+  afterEach(() => {
+    for (const d of dirs.splice(0)) rmSync(d, { recursive: true, force: true });
+  });
+
+  async function withLedger(logPath: string, runJob?: RunJob): Promise<Client> {
+    const server = createServer({ root, logPath, ...(runJob ? { runJob } : {}) });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await Promise.all([server.connect(a), client.connect(b)]);
+    clients.push(client);
+    return client;
+  }
+  const tempDir = (): string => {
+    const d = mkdtempSync(join(tmpdir(), 'limbo-ledger-test-'));
+    dirs.push(d);
+    return d;
+  };
+
+  it('appends one well-typed line per call, including a failing one', async () => {
+    const log = join(tempDir(), 'sub', 'mcp-calls.jsonl');
+    const c = await withLedger(log, inProcess);
+    const tick = nameOf('tick-toggle');
+    const fuzz = await call(c, 'fuzz_op', { app: 'basecamp', op: tick, orderings: 20 });
+    const ce = fuzz.structuredContent!.counterexample;
+    await call(c, 'list_ops', { app: 'basecamp' });
+    await call(c, 'explain_trace', { app: 'basecamp', op: tick, counterexample: ce });
+    await call(c, 'check_lint', { file: 'kit/mcp/tools.ts' });
+    await call(c, 'list_ops', { app: 'nope' });
+
+    const rows = readFileSync(log, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l) as Record<string, unknown>);
+    expect(rows).toHaveLength(5);
+    for (const r of rows) {
+      expect(Object.keys(r).sort()).toEqual(['app', 'ms', 'op', 'pass', 'runs', 'tool', 'ts']);
+      expect(typeof r.ts).toBe('string');
+      expect(Number.isNaN(Date.parse(r.ts as string))).toBe(false);
+      expect(typeof r.tool).toBe('string');
+      expect(typeof r.ms).toBe('number');
+      expect(r.app === null || typeof r.app === 'string').toBe(true);
+      expect(r.op === null || typeof r.op === 'string').toBe(true);
+      expect(r.pass === null || typeof r.pass === 'boolean').toBe(true);
+      expect(r.runs === null || typeof r.runs === 'number').toBe(true);
+    }
+    expect(rows.map((r) => r.tool)).toEqual(['fuzz_op', 'list_ops', 'explain_trace', 'check_lint', 'list_ops']);
+    expect(rows[0]).toMatchObject({ app: 'basecamp', op: tick, pass: false });
+    expect(typeof rows[0]!.runs).toBe('number');
+    expect(rows[1]).toMatchObject({ app: 'basecamp', op: null, pass: null, runs: null });
+    expect(rows[2]).toMatchObject({ pass: null, runs: null });
+    expect(rows[3]).toMatchObject({ app: null, op: null, runs: null });
+    expect(rows[4]).toMatchObject({ app: 'nope', pass: null, runs: null });
+  }, 60_000);
+
+  it('records pass and runs for a passing fuzz_op', async () => {
+    const log = join(tempDir(), 'mcp-calls.jsonl');
+    const c = await withLedger(log, async () => ({ ok: true, result: { pass: true, runs: 7 } }));
+    await call(c, 'fuzz_op', { app: 'basecamp', op: 'item.tick', orderings: 7 });
+    const row = JSON.parse(readFileSync(log, 'utf8').trim()) as Record<string, unknown>;
+    expect(row).toMatchObject({ tool: 'fuzz_op', app: 'basecamp', op: 'item.tick', pass: true, runs: 7 });
+  });
+
+  it('an unwritable ledger path does not change the tool result', async () => {
+    const d = tempDir();
+    const blocker = join(d, 'file');
+    writeFileSync(blocker, 'x');
+    const good = await withLedger(join(d, 'ok.jsonl'), inProcess);
+    const bad = await withLedger(join(blocker, 'nested', 'mcp-calls.jsonl'), inProcess);
+    const args = { app: 'basecamp', op: nameOf('tick-toggle'), orderings: 20 };
+    const a = await call(good, 'fuzz_op', args);
+    const b = await call(bad, 'fuzz_op', args);
+    expect(b).toEqual(a);
+    expect(b.isError).toBeFalsy();
+  }, 60_000);
 });

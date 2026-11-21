@@ -3,7 +3,7 @@
 // so edited ops are never served from a module cache. Nothing here writes to stdout.
 // Convergence is measured, property-tested.
 import { spawn } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,7 +26,7 @@ export interface ServerOptions {
   root: string;
   /** Injection point for tests. The default spawns `node kit/mcp/job-main.mjs`. */
   runJob?: RunJob;
-  /** Evidence ledger path (written by the ledger task). */
+  /** Evidence ledger path. Defaults to `LIMBO_MCP_LOG`, then `<root>/evidence/kiro/mcp-calls.jsonl`. */
   logPath?: string;
   /** Hard kill for a job, in ms. */
   killMs?: number;
@@ -116,14 +116,45 @@ export function createServer(opts: ServerOptions): McpServer {
   const reply = (r: JobReply, extra: Record<string, unknown> = {}): ToolResult =>
     r.ok ? ok({ ...(r.result as Record<string, unknown>), ...extra }) : err(r.error.code, r.error.message, r.error.valid);
 
+  const ledgerPath = opts.logPath ?? process.env.LIMBO_MCP_LOG ?? join(root, 'evidence', 'kiro', 'mcp-calls.jsonl');
+
+  /** Append one evidence line. A write error goes to stderr and never changes the tool result. */
+  function appendLedger(row: Record<string, unknown>): void {
+    try {
+      mkdirSync(dirname(ledgerPath), { recursive: true });
+      appendFileSync(ledgerPath, `${JSON.stringify(row)}\n`);
+    } catch (e) {
+      process.stderr.write(`mcp-calls ledger: ${e instanceof Error ? e.message : String(e)}\n`);
+    }
+  }
+
+  const str = (v: unknown): string | null => (typeof v === 'string' ? v : null);
+
+  /** Wrap a handler: catch exceptions, and append exactly one ledger line in `finally`. */
   const guarded =
-    <A>(fn: (a: A) => Promise<ToolResult>) =>
+    <A extends object>(tool: string, fn: (a: A) => Promise<ToolResult>) =>
     async (a: A): Promise<ToolResult> => {
+      const t0 = performance.now();
+      const { app, op } = a as { app?: unknown; op?: unknown };
+      let out: ToolResult | undefined;
       try {
-        return await fn(a);
+        out = await fn(a);
       } catch (e) {
-        return err('job-crashed', e instanceof Error ? e.message : String(e));
+        out = err('job-crashed', e instanceof Error ? e.message : String(e));
+      } finally {
+        const sc = out?.structuredContent;
+        const failed = out === undefined || out.isError === true;
+        appendLedger({
+          ts: new Date().toISOString(),
+          tool,
+          app: str(app),
+          op: str(op),
+          pass: !failed && typeof sc?.pass === 'boolean' ? sc.pass : null,
+          runs: !failed && typeof sc?.runs === 'number' ? sc.runs : null,
+          ms: Math.round(performance.now() - t0),
+        });
       }
+      return out;
     };
 
   server.registerTool(
@@ -132,7 +163,7 @@ export function createServer(opts: ServerOptions): McpServer {
       description: 'List the registered ops of an app: name, merge rule, intent kind, props file.',
       inputSchema: { app: z.string().describe('basecamp or aftershock') },
     },
-    guarded(async ({ app }: { app: string }) => {
+    guarded('list_ops', async ({ app }: { app: string }) => {
       const bad = badApp(app);
       if (bad) return bad;
       return reply(await call({ job: 'list_ops', root, app }));
@@ -152,7 +183,7 @@ export function createServer(opts: ServerOptions): McpServer {
         seed: z.number().int().optional().describe('run seed, default is the harness seed'),
       },
     },
-    guarded(async (a: { app: string; op: string; orderings?: number; replicas?: number; seed?: number }) => {
+    guarded('fuzz_op', async (a: { app: string; op: string; orderings?: number; replicas?: number; seed?: number }) => {
       const bad = badApp(a.app);
       if (bad) return bad;
       if (a.replicas !== undefined && (!Number.isInteger(a.replicas) || a.replicas < 2 || a.replicas > 5)) {
@@ -202,7 +233,7 @@ export function createServer(opts: ServerOptions): McpServer {
         }),
       },
     },
-    guarded(async (a: { app: string; op: string; counterexample: Extract<JobSpec, { job: 'explain_trace' }>['counterexample'] }) => {
+    guarded('explain_trace', async (a: { app: string; op: string; counterexample: Extract<JobSpec, { job: 'explain_trace' }>['counterexample'] }) => {
       const bad = badApp(a.app);
       if (bad) return bad;
       return reply(await call({ job: 'explain_trace', root, app: a.app, op: a.op, counterexample: a.counterexample }));
@@ -215,7 +246,7 @@ export function createServer(opts: ServerOptions): McpServer {
       description: 'Run the op lint hook on one file.',
       inputSchema: { file: z.string().describe('path of an op file, relative to the repo root or absolute') },
     },
-    guarded(async ({ file }: { file: string }) => {
+    guarded('check_lint', async ({ file }: { file: string }) => {
       const abs = resolve(root, file);
       const outside = (p: string): boolean => {
         const r = relative(root, p);
