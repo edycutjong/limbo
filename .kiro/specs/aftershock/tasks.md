@@ -24,7 +24,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: the scaffolded props suite passes; the companion passes on the real ops and fails on `clearAll`; a hand-built example shows a clear that saw `unsafe` lowers the severity and a concurrent `unsafe` report does not get cleared.
   - _Requirements: R3.2, R3.3, R6.2, R6.3, R6.7_
 
-- [ ] 5. `sector.count` and `sector.note`
+- [x] 5. `sector.count` and `sector.note`
   - Create both ops (`causal-lww`, intent `set` on `count` and `note`) with state like `item.rename` (writes by op id, value re-derived) and invariants (integer 0..100000; string at most 280 characters). Write each `*.props.ts` with `setIntent`, a `targets` pool (`C3#sari`, `C3#budi`, `D1#sari`, `D1#budi` for counts) and small hot value pools so equal and different concurrent writes both occur.
   - Tests: scaffolded props suites pass; the vacuity guard finds `lww-equal` and `lww-different`; invariants reject a float, a negative, 100001 and a 281-character note.
   - _Requirements: R3.4, R3.6, R3.8, R3.9, R6.2, R6.5_
