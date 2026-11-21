@@ -114,7 +114,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Run `pnpm e2e`: the spike, BASECAMP and this test pass. Save the output under `evidence/aftershock/e2e/`.
   - _Requirements: R10, R11, R15.1, R15.2, R15.4, R15.5_
 
-- [ ] 23. E2E (b): two contexts through the dev relay
+- [x] 23. E2E (b): two contexts through the dev relay
   - Test (b) in the same spec per R15.3: `POST /reset`, two contexts at `?devrelay=http://localhost:5175&r=a|b`, `setOffline(true)` on both, A reports C3 damaged and counts 2, B reports C3 unsafe and counts 3, assert no edit crosses over several poll periods (each side's state and the relay log), `setOffline(false)`, wait on state equality, then canonical states deep-equal, C3 `unsafe` on both, counts sari 2 and budi 3 present.
   - Run `pnpm e2e`; save the output under `evidence/aftershock/e2e/`. Run (a) and (b) ten times and record the pass count there (fix the wait, not the assertion, if a run fails).
   - _Requirements: R14, R15.3 to R15.5_

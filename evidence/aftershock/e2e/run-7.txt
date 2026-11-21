@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ✓  1 [aftershock] › e2e/aftershock-offline.spec.ts:185:1 › survey scene in one page: manual edits (2.1s)
+  ✓  2 [aftershock] › e2e/aftershock-offline.spec.ts:191:1 › survey scene in one page: Play the survey scene (3.5s)
+  ✓  3 [aftershock] › e2e/aftershock-offline.spec.ts:218:1 › two contexts through the dev relay: partition, reconnect, converge (2.5s)
+
+  3 passed (17.3s)

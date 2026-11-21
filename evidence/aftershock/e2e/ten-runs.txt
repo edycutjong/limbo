@@ -1,0 +1,11 @@
+run 1: pass
+run 2: pass
+run 3: pass
+run 4: pass
+run 5: pass
+run 6: pass
+run 7: pass
+run 8: pass
+run 9: pass
+run 10: pass
+aftershock project (tests a x2, b), 10 runs: 10/10 passed (3 tests per run, 30/30)

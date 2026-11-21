@@ -193,3 +193,93 @@ test('survey scene in one page: Play the survey scene', async ({ browser }) => {
   await surveyScene(page, true);
   await close();
 });
+
+// AFTERSHOCK test (b), R14 and R15.3 to R15.5: two browser contexts, each a solo page over the dev relay.
+// `context.setOffline` is the partition. Waits are on state, never on fixed sleeps, except the one bounded
+// observation window that asserts nothing crosses while both are offline.
+
+const RELAY = 'http://localhost:5175';
+
+interface SoloDebug {
+  ready: Promise<void>;
+  state(): string;
+  queued(): unknown[];
+  report(sector: string, severity: string): unknown;
+  count(sector: string, n: number): unknown;
+}
+type SoloSector = { severity?: string; total: number; counts: { who: string; value: number }[] };
+const solo = (p: Page) => ({
+  state: (): Promise<string> => p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.state()),
+  queued: (): Promise<number> => p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.queued().length),
+  sectors: async (): Promise<Record<string, SoloSector>> =>
+    (JSON.parse(await p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.state())) as { sectors: Record<string, SoloSector> }).sectors,
+});
+
+test('two contexts through the dev relay: partition, reconnect, converge', async ({ browser, request }) => {
+  await request.post(`${RELAY}/reset`);
+  const ctxA = await browser.newContext();
+  const ctxB = await browser.newContext();
+  const pa = await ctxA.newPage();
+  const pb = await ctxB.newPage();
+  await pa.goto(`/?devrelay=${encodeURIComponent(RELAY)}&r=a`);
+  await pb.goto(`/?devrelay=${encodeURIComponent(RELAY)}&r=b`);
+  for (const p of [pa, pb]) await p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.ready);
+  const A = solo(pa);
+  const B = solo(pb);
+
+  // Both live and equal before the cut.
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toHaveText('Live', { timeout: 15_000 });
+  await expect.poll(async () => (await A.state()) === (await B.state())).toBe(true);
+  const seedA = await A.state();
+
+  // Partition both contexts. The link reads down once a poll fails.
+  await ctxA.setOffline(true);
+  await ctxB.setOffline(true);
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toHaveText(/Offline/, { timeout: 15_000 });
+
+  // A reports C3 damaged and counts 2; B reports C3 unsafe and counts 3.
+  await pa.evaluate(() => {
+    const l = (window as unknown as { limbo: SoloDebug }).limbo;
+    l.report('C3', 'damaged');
+    l.count('C3', 2);
+  });
+  await pb.evaluate(() => {
+    const l = (window as unknown as { limbo: SoloDebug }).limbo;
+    l.report('C3', 'unsafe');
+    l.count('C3', 3);
+  });
+  expect(await A.queued()).toBe(2);
+  expect(await B.queued()).toBe(2);
+
+  // Several poll periods with the link cut: no edit crosses, the relay log holds none of the new ops.
+  const midA = await A.state();
+  const midB = await B.state();
+  await pa.waitForTimeout(1_500);
+  expect(await A.state()).toBe(midA);
+  expect(await B.state()).toBe(midB);
+  expect((await A.sectors())['C3']?.severity).toBe('damaged');
+  expect((await B.sectors())['C3']?.severity).toBe('unsafe');
+  const relayLog = (await (await request.get(`${RELAY}/ops?since=0`)).json()) as { ops: { id: string }[] };
+  expect(relayLog.ops.filter((o) => /^(a|b)[#:]/.test(o.id))).toHaveLength(0);
+  expect(midA).not.toBe(seedA);
+
+  // Reconnect and wait on state, not on time.
+  await ctxA.setOffline(false);
+  await ctxB.setOffline(false);
+  await expect
+    .poll(async () => (await A.state()) === (await B.state()) && (await A.queued()) === 0 && (await B.queued()) === 0, {
+      timeout: 20_000,
+    })
+    .toBe(true);
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toContainText('Live', { timeout: 15_000 });
+
+  // Canonical states deep-equal; C3 unsafe on both; both counts present.
+  expect(JSON.parse(await A.state())).toEqual(JSON.parse(await B.state()));
+  for (const sectors of [await A.sectors(), await B.sectors()]) {
+    const c3 = sectors['C3']!;
+    expect(c3.severity).toBe('unsafe');
+    expect(c3.counts).toEqual(expect.arrayContaining([{ who: 'sari', value: 2 }, { who: 'budi', value: 3 }].map((c) => expect.objectContaining(c))));
+  }
+  await ctxA.close();
+  await ctxB.close();
+});
