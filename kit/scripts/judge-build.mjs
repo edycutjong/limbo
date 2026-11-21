@@ -28,7 +28,7 @@ const path = [
   ['Press <strong>Play the lake scene</strong>. Sari ticks the tent while Budi deletes it, and both claim the last stove.', 'Press **Play the lake scene**. Sari ticks the tent while Budi deletes it, and both claim the last stove.'],
   ['Press <strong>Restore link</strong>. The tent returns as a ghost <em>twin</em>; the stove goes to exactly one claimant on both replicas.', 'Press **Restore link**. The tent returns as a ghost _twin_; the stove goes to exactly one claimant on both replicas.'],
   ['Tap <strong>Keep</strong> on the twin and <strong>OK</strong> on the lost claim. The fog lifts and the <strong>FIXED</strong> stamp appears: both replicas hold the same list.', 'Tap **Keep** on the twin and **OK** on the lost claim. The fog lifts and the **FIXED** stamp appears: both replicas hold the same list.'],
-  [`Open <a href="${URLS.aftershock}">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note with <strong>Keep</strong> on the twin card.`, `Open [AFTERSHOCK](${URLS.aftershock}) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note with **Keep** on the twin card.`],
+  [`Open <a href="${URLS.aftershock}">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note by tapping either <strong>Keep … note</strong> button on the twin card.`, `Open [AFTERSHOCK](${URLS.aftershock}) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note by tapping either **Keep … note** button on the twin card.`],
   ['Optional: press <strong>Run shuffle test</strong> in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.', 'Optional: press **Run shuffle test** in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.'],
 ];
 
@@ -36,7 +36,7 @@ const receipts = [
   ['Convergence', `${n(conv.orderings)} random orderings of ${conv.replicas} replicas, ${failures} divergences across every op of both apps (seed ${conv.seed}); a measured, property-tested claim, not a proof`, 'evidence/convergence/full-2026-11-22.json'],
   ['Tests', `${n(ci.unit.passed)} unit, component and property tests pass (${ci.unit.skipped} skipped: the AFTERSHOCK rows for conflict classes it has no ops for), ${ci.e2e.passed} Playwright e2e tests pass (${ci.e2e.skipped} skipped: viewport-conditional phone checks)`, 'evidence/ci/latest.json'],
   ['Coverage', `${ci.coverage.lines}% lines, ${ci.coverage.branches}% branches, ${ci.coverage.functions}% functions on the skeleton and each app's domain modules (CI fails below 100%)`, 'evidence/ci/latest.json, vitest.config.ts'],
-  ['Kiro work', `${tally.kiro_sessions} Kiro sessions, ${tally.kiro_executed_spec_tasks} sessions across ${tally.spec_dirs} specs (${tally.spec_sessions_numbered_task} ran numbered tasks, ${tally.spec_sessions_authoring} authored a spec), ${n(tally.hook_fires_total)} hook fires, ${tally.credits_used} credits`, 'evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json'],
+  ['Kiro work', `${tally.kiro_sessions} Kiro sessions (build ledger; the A/B pilot sessions are logged separately), ${tally.kiro_executed_spec_tasks} sessions across ${tally.spec_dirs} specs (${tally.spec_sessions_numbered_task} ran numbered tasks, ${tally.spec_sessions_authoring} authored a spec), ${n(tally.hook_fires_total)} hook fires, ${tally.credits_used} credits`, 'evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json'],
   ['Kiro share', `${tally.kiro_product_commits} of ${tally.product_commits} product commits carry a Kiro-Session trailer (${pct(tally.kiro_share)}); the others are listed with their subjects`, 'evidence/kiro/share.json'],
 ];
 
@@ -55,7 +55,8 @@ const limits = [
   'No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op\'s declared rule picks one claimant deterministically and the other user sees a twin ghost.',
   'The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).',
   'AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.',
-  'Test tooling (vitest) carries advisory-level audit findings that need a major upgrade; shipped dependencies have no high or critical findings (pnpm audit --prod --audit-level=high).',
+  'GitHub Actions did not run on the private repo (account billing limit). The Stage 1 to 4 steps of the CI ran locally instead (evidence/ci/); Lighthouse and the Deploy Gate have only the workflow file behind them.',
+  'The full pnpm audit lists 2 critical and 7 moderate findings, all in test and build tooling (vitest and its helpers, a glob/minimatch chain under vite-plugin-pwa); fixing them needs a major upgrade (evidence/ci/audit-all.txt). Shipped dependencies have no high or critical findings (pnpm audit --prod --audit-level=high).',
 ];
 
 const kiro = [

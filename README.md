@@ -81,10 +81,11 @@ picks one claimant deterministically when they reconnect, and the other person i
   layer, fog, twin, inspector (`limbo/`).
 - `apps/basecamp/` and `apps/aftershock/` are the two apps. Each supplies five things: a model, ops, a seed script, views, a config
   ([`docs/ADOPT.md`](docs/ADOPT.md)). AFTERSHOCK's own spec changed 0 files under `skeleton/` (later UI polish touched skeleton CSS and markup for both apps).
-- Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evidence/lean.json): skeleton = **24 production files,
+- Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evidence/lean.json): skeleton = **24 production files (23 TS/TSX and 1 CSS),
   2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines), 15 exported values** from its public `index.ts` (plus type-only exports), 34 test files
-  beside them. The spec first set a budget of 1,800 lines; the owner restated it to 2,400 on 2026-11-21 when the Limbo layer landed.
-  We are inside the restated budget and over the original one.
+  beside them. The budget (30 files, 2,400 lines) counts non-blank, non-comment lines outside tests and `limbo/test/`; by that command (`evidence/budget-basecamp-baseline.md`)
+  the skeleton is 21 files and 2,189 lines, and the wider counts above also include comments and test helpers. The spec first set 1,800 lines; the owner
+  restated it to 2,400 on 2026-11-21 when the Limbo layer landed. We are inside the restated budget and over the original one.
   BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,464 lines.
 
 Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the local store, fast-check, Vitest, Playwright.
@@ -96,7 +97,7 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 [`evidence/kiro/tally.json`](evidence/kiro/tally.json)); none are typed by hand.
 
 - **Ledger:** 202 rows in `sessions.jsonl`: 188 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 659.11 credits) and 14
-  `claude-direct` rows for edits made outside Kiro. 173 of the Kiro sessions belong to one of 11 specs (159 ran a numbered task, 11 authored a spec, 3 were follow-ups); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
+  `claude-direct` rows for edits made outside Kiro (the build ledger; the 20 A/B pilot sessions, 64.31 credits, are logged separately in `evidence/kiro/ab/`). 173 of the Kiro sessions belong to one of 11 specs (155 ran a numbered task, 11 authored a spec, 7 were follow-ups (4 of them re-runs of an earlier task)); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
 - **Kiro share:** 111 of 119 product commits (`skeleton/` or `apps/`) carry a `Kiro-Session` trailer, **93.28%**
   ([`share.json`](evidence/kiro/share.json)). The 8 others are listed there, with subjects.
 - **Hooks:** 1,770 logged fires across 8 hooks and 8 triggers: PreToolUse 1,226, Stop 184, PreTaskExec 147, PostTaskExec 139,
@@ -112,7 +113,7 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 | `hooks/props-after-task` | Run the property suite after each task | 139 |
 | `hooks/stop-gate` | Block "done" while fast-tier properties fail | 184 checks, 2 blocks |
 | `hooks/mcp-log` + the `limbo-convergence` MCP server (`kit/mcp/`, wired to `agents/limbo-builder` and `settings/mcp.json`) | `list_ops`, `fuzz_op`, `check_lint` (`explain_trace` unused) | 8 calls from one Kiro session (4 `fuzz_op`, 2 `list_ops`, 2 `check_lint`, across 4 ops in both apps) |
-| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 sessions across the specs (159 numbered tasks) |
+| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 sessions across the specs (155 numbered tasks) |
 
 **A/B pilot: no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
 0 to 28%) in both arms, Fisher exact p = 1 (pre-registered before run 1, `PREREG.md`). So we claim nothing about the kit improving
@@ -121,7 +122,7 @@ and 2 of 10 kit-arm runs edited that guard to pass, a gate-integrity gap we then
 [`evidence/kiro/ab/summary.md`](evidence/kiro/ab/summary.md), [`observations.md`](evidence/kiro/ab/observations.md).
 
 **IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 151), which fires the spec task hooks and
-the Agent Stop hook. Spec Correctness (property-based) and the Agent Hooks panel are IDE-only features; we did not use them.
+the Agent Stop hook. Spec Correctness (property-based) is IDE-only and the Agent Hooks panel is IDE UI; we did not use either.
 Per Kiro's docs, Spec Correctness is IDE-only; the project `.kiro/` files use the same format in IDE and CLI.
 
 
@@ -154,8 +155,8 @@ in-page link, or through a dev-only test relay in the e2e suite.
   `pnpm typecheck` is clean. Steps and expected output: [`DEMO.md`](DEMO.md). The exclusions from the coverage gate (entry points, workers, views) and their
   reasons are in [`vitest.config.ts`](vitest.config.ts).
 - **CI:** [`ci.yml`](.github/workflows/ci.yml) has six stages: Quality, Security (gitleaks, `pnpm audit`), Build with a bundle budget, E2E, Performance
-  (Lighthouse, advisory) and a Deploy Gate; plus CodeQL, a semantic-release workflow and grouped monthly Dependabot with no major bumps. A check fails the build if
-  `/.kiro` is ignored or empty. GitHub Actions on this private repo did not start (account billing limit), so the same steps ran locally:
+  (Lighthouse, advisory) and a Deploy Gate; plus CodeQL, a conventional-commit release workflow and grouped monthly Dependabot with no major bumps. A check fails the build if
+  `/.kiro` is ignored or empty. GitHub Actions on this private repo did not start (account billing limit), so the Stage 1-4 steps ran locally (Lighthouse, the Deploy Gate, the `/judge` mirror check and the full advisory audit run only on GitHub Actions):
   [`evidence/ci/`](evidence/ci/) (`node kit/scripts/ci-local.mjs`).
 - **Built during the submission period.** First commit: 2026-11-15 (`git log --reverse`). The period opened 2026-10-30.
   **Pre-existing code: none.** Libraries: Yjs, y-indexeddb, React, Vite, vite-plugin-pwa, fast-check, Vitest, Playwright.
