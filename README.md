@@ -1,24 +1,60 @@
 # LIMBO
 
-When the connection dies, your app crosses over, keeps working on the other side, and comes back without silently losing an edit.
+When the connection dies, your app crosses over, keeps working on the other side, and comes back without silently losing an
+edit — a measured, property-tested claim, not a proof (see [Evidence](#evidence)).
 
-LIMBO is a Kiroween **Skeleton Crew** entry: a lean local-first skeleton where every operation declares how it merges, a `/.kiro`
-kit that makes Kiro block merge code that diverges when operations arrive in a different order, and two apps built from the one
-skeleton (`apps/basecamp`, `apps/aftershock`).
+For people whose shared list breaks when the signal does, and for the builders who need offline merges that do not diverge.
 
-> Work in progress. This README is a stub; numbers appear here only once `evidence/` holds the measured runs.
+LIMBO is a Kiroween **Skeleton Crew** entry: a local-first skeleton where every operation declares how it merges, plus a `/.kiro`
+kit (steering, hooks, custom agents, specs) under which Kiro built the skeleton and its apps.
 
-## Layout
-- `.kiro/` — steering, hooks, custom agents, specs (authored with Kiro)
-- `skeleton/` — the template: op layer, named merges, causal delivery, simulator
-- `apps/basecamp/`, `apps/aftershock/` — two distinct apps on the skeleton
-- `kit/` — hook scripts, property harness, Kiro run wrapper
-- `evidence/` — measured runs, Kiro session and hook ledgers
+> **Status (2026-11-21, interim README; the full one comes later).** Built so far: the skeleton and app 1, **BASECAMP**
+> (`apps/basecamp`). App 2, AFTERSHOCK (`apps/aftershock`), is a placeholder folder (README and `package.json` only). The
+> cross-device relay is not built: today two replicas sync through the in-page simulated link, or through a dev-only test relay
+> in the e2e suite.
 
-## Run
+## Try it locally (about 2 minutes)
 ```
 pnpm install
-pnpm typecheck && pnpm test
+pnpm --filter @limbo/basecamp dev        # http://localhost:5174
+```
+On a desktop-width window you get two replicas side by side: **Replica A — Sari** and **Replica B — Budi**.
+1. Press **Cut link** on the cord between them. Both cards fog over; the cord is labelled as a simulated link, because DevTools
+   "offline" does not cut it.
+2. Press **Play the lake scene** (or do it by hand): Sari ticks the tent while Budi deletes it, and both claim the last stove.
+   Each card counts its waiting edits.
+3. Press **Restore link**. The edits cross; the tent comes back as a ghost **twin** (rule `resurrect`), the stove goes to one
+   claimant on both replicas (rule `claim-one`), and the fog lifts once both sides agree.
+4. Tap **Keep** on the tent twin and **OK** on the lost claim. The **FIXED** stamp appears.
+5. Press **I** for the inspector: each op that crossed, its declared merge rule, its causal stamp and deps.
+6. **Run shuffle test** replays the ops on screen in random causal orders in your browser and prints the count it actually ran.
+
+**Reset demo** returns the pair to the seed. `?replicas=1` shows a single replica.
+
+## Evidence
+- Full property tier: 3 replicas × 10,000 random orderings, seed 20251031, every property passing —
+  [`evidence/convergence/full-2026-11-21.json`](evidence/convergence/full-2026-11-21.json) (log beside it).
+- Offline e2e (two browser contexts, a real partition, then convergence): (a) and (b) passed 10 of 10 repeats —
+  [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); a fresh-clone run —
+  [`evidence/e2e/fresh-clone-2026-11-21.txt`](evidence/e2e/fresh-clone-2026-11-21.txt).
+- How much of the product code Kiro wrote: [`evidence/kiro/share.json`](evidence/kiro/share.json) (commits touching `skeleton/` or
+  `apps/` that carry a `Kiro-Session` trailer). Every Kiro session: [`evidence/kiro/sessions.jsonl`](evidence/kiro/sessions.jsonl);
+  every hook fire: [`evidence/kiro/hooks.jsonl`](evidence/kiro/hooks.jsonl).
+
+Offline claims are provisional. No CRDT can stop two offline people from claiming the last stove; LIMBO's declared rule picks one
+claimant deterministically when they reconnect, and the other sees a twin naming the winner.
+
+## Layout
+- `.kiro/` — steering, hooks, custom agents, specs (authored by Kiro; never gitignored)
+- `skeleton/` — the template: op layer, named merges, causal delivery, replica + sync, the Limbo visual layer
+- `apps/basecamp/` — app 1; `apps/aftershock/` — app 2 (placeholder)
+- `kit/` — hook scripts, property harness, Kiro run wrapper, gate-integrity check
+- `e2e/` — Playwright offline tests · `evidence/` — measured runs and the Kiro ledgers
+
+## Checks
+```
+pnpm typecheck && pnpm test && pnpm props && pnpm e2e
+pnpm props:full     # 10,000 orderings
 ```
 
 License: MIT.
