@@ -4,6 +4,25 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     passWithNoTests: true,
+    // 100% thresholds on the domain code: the skeleton and each app's op, model and action modules. Every exclusion has a reason.
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: 'coverage',
+      reporter: ['text-summary', 'json-summary', 'json', 'lcov'],
+      include: ['skeleton/src/**/*.{ts,tsx}', 'apps/*/src/**/*.{ts,tsx}'],
+      exclude: [
+        '**/*.test.{ts,tsx}', // tests
+        'skeleton/src/limbo/test/**', // test harness helpers
+        '**/*.props.ts', // property definitions: inputs to the props project, not product logic (the ops they test are covered)
+        '**/env.d.ts', // type declarations only
+        'apps/*/src/main.tsx', // browser entry: service worker, relay and DOM mount, covered by the Playwright e2e
+        'apps/*/src/shuffle.worker.ts', // Web Worker entry: runs only in a real browser worker, covered by the e2e shuffle test
+        'apps/*/src/shuffle-runner.ts', // Worker bridge: needs a real Worker, covered by the e2e shuffle test
+        'apps/*/src/devrelay.ts', // dev-only relay glue, stripped from production builds (asserted by build.test.ts) and used by the e2e
+        'apps/*/src/views/**', // React views: covered by jsdom component tests and the Playwright e2e, not held to a unit threshold
+      ],
+      thresholds: { lines: 100, statements: 100, functions: 100, branches: 100 },
+    },
     projects: [
       {
         test: {
