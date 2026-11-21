@@ -9,7 +9,8 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 import { afterAll, afterEach, describe, expect, it } from 'vitest';
 import { fixtures } from '../props/bad/index.ts';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
-import type { Counterexample, RunOptions } from '../props/engine.ts';
+import { failingProperties, runOnce, type Counterexample, type RunOptions } from '../props/engine.ts';
+import { config as defaultConfig } from '../props/config.ts';
 import { runJobInProcess, type JobOverrides, type JobSpec } from './job.ts';
 import { createServer, type RunJob } from './tools.ts';
 
@@ -423,4 +424,42 @@ describe('server: stdio spawn and cwd', () => {
     expect(here.errors).toEqual([]);
     expect(there.errors).toEqual([]);
   }, 60_000);
+});
+
+describe('server: mutation check through fuzz_op', () => {
+  const withDef = fixtures.filter((f) => f.def);
+  const goldenOnly = withDef.filter((f) => f.expectFails.every((p) => p.startsWith('golden:')));
+  const checked = withDef.filter((f) => !goldenOnly.includes(f));
+
+  it('lists the fixtures skipped because only a golden history fails them', () => {
+    console.info(`mutation check skipped (golden only): ${goldenOnly.map((f) => f.name).join(', ') || 'none'}`);
+    expect(checked.length + goldenOnly.length).toBe(withDef.length);
+    expect(checked.length).toBeGreaterThan(0);
+  });
+
+  for (const f of checked) {
+    it(`fuzz_op fails fixture ${f.name} on an expected property`, async () => {
+      const def = f.def!;
+      // Fixtures share def names (f.claim, f.life), so each gets its own single-entry override.
+      const job: RunJob = (spec) =>
+        runJobInProcess(spec, {
+          defs: { [def.name]: { def, opts: { ...f.opts, manifest: { [def.name]: def.intent } } } },
+        });
+      const c = await connect(job);
+      const r = await call(c, 'fuzz_op', { app: 'basecamp', op: def.name, orderings: 200, replicas: 3, seed: 20251031 });
+      expect(r.isError).toBeFalsy();
+      expect(r.structuredContent!.pass).toBe(false);
+      // fuzz_op reports the first failing property of the counterexample. Replay it to list every failing
+      // property, then require the fixture's expected property among them.
+      const ce = r.structuredContent!.counterexample as Counterexample;
+      const opts: RunOptions = { ...f.opts, manifest: { [def.name]: def.intent }, config: { ...defaultConfig, replicas: ce.replicas, seed: 20251031 } };
+      const failing = runOnce(def, ce.seed, ce.steps, opts).failures.map((x) => x.property);
+      expect(failing).toContain(ce.property);
+      // The shrunk counterexample can fail a different property than the one the fixture is named for
+      // (arrival-order shrinks to a run where only replay equivalence fails). The expected property must
+      // still fail over the same fuzz range, as the kit's mutation check measures it.
+      const overRange = failingProperties(def, { ...opts, config: { ...defaultConfig, replicas: 3, seed: 20251031 } }, 200);
+      expect(overRange.filter((n) => f.expectFails.includes(n)).length).toBeGreaterThan(0);
+    }, 60_000);
+  }
 });
