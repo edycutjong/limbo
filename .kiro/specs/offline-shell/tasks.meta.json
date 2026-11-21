@@ -84,6 +84,13 @@
         "chatSessionId": "sess_1729be0f-3e3a-4ff4-96c9-dd1e8e4e0506",
         "timestamp": 1795269500060
       }
+    ],
+    "8. E2E: live deployment (`e2e/live.spec.ts`)": [
+      {
+        "executionId": "cb7e068c-7c4a-42de-adb9-269ade59c458",
+        "chatSessionId": "sess_11d3b302-2847-4538-83df-7fc7a9e08af4",
+        "timestamp": 1795269758470
+      }
     ]
   }
 }
