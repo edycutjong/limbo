@@ -34,3 +34,7 @@ Measured after the basecamp spec: 21 files, 2,137 non-blank, non-comment TS/TSX 
 1,800 lines was exceeded at 2,020 (before the basecamp spec) and at 2,137 (after it). The owner raised the budget to 30 files and
 2,400 lines (`.kiro/steering/tech.md`) instead of trimming working code. (Appended by the orchestrator; the Kiro kitsmith session
 that applied the steering change cannot write under `evidence/`.)
+
+## After bugfix-inspector-resolved task 2
+
+Same command, same scope: 21 files, 2,142 non-blank, non-comment lines (+5 in `skeleton/src/limbo/shell.tsx`). No new file or export. Within the 30-file, 2,400-line budget.
