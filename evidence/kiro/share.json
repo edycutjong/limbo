@@ -1,9 +1,13 @@
 {
-  "generated_from": "425b2cbb9bcc0de672037881e5dee742bf533618",
-  "product_commits": 112,
-  "kiro_commits": 105,
-  "share": 0.9375,
+  "generated_from": "c01d03cbf3be8ea06cef9b17764bc33f6d56c0ef",
+  "product_commits": 119,
+  "kiro_commits": 111,
+  "share": 0.9328,
   "claude_direct_commits": [
+    {
+      "sha": "db909ff09d1a5097ea27ab73b1ff76c27ea679f2",
+      "subject": "test: close the last branch gap in the simulator (dead deps fallback), re-hash the gate manifest (claude-direct, one line)"
+    },
     {
       "sha": "4191fe71d7668b9130aaa26cd40e103e28502253",
       "subject": "fix(ui): lever block first and sticky on stacked pair layouts (QA round 3; claude-direct ledger row), live e2e record 6/6"

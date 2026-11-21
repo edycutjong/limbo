@@ -20,10 +20,10 @@ No setup, no keys, no cloning.
 | What | Number | Source |
 |---|---|---|
 | Convergence | 10,000 random orderings of 3 replicas, 0 divergences across every op of both apps (seed 20251031); a measured, property-tested claim, not a proof | `evidence/convergence/full-2026-11-22.json` |
-| Tests | 0 unit, component and property tests pass (0 skipped: the full-tier suites), 0 Playwright e2e tests pass | `evidence/ci/latest.json` |
+| Tests | 1,393 unit, component and property tests pass (9 skipped: the full-tier suites), 24 Playwright e2e tests pass | `evidence/ci/latest.json` |
 | Coverage | 100% lines, 100% branches, 100% functions on the skeleton and each app's domain modules (CI fails below 100%) | `evidence/ci/latest.json, vitest.config.ts` |
 | Kiro work | 188 Kiro sessions, 173 spec tasks executed by Kiro across 11 specs, 1,770 hook fires, 659.11 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
-| Kiro share | 105 of 112 product commits carry a Kiro-Session trailer (93.75%); the rest are logged as claude-direct | `evidence/kiro/share.json` |
+| Kiro share | 111 of 119 product commits carry a Kiro-Session trailer (93.28%); the rest are logged as claude-direct | `evidence/kiro/share.json` |
 
 ## Where Kiro did the work
 
