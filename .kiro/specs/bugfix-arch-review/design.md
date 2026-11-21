@@ -243,4 +243,27 @@ Every existing `inspector.test.tsx` case, including "keeps a resolved conflict u
 
 ## Skeleton changes
 
-(Filled in by the last task: each skeleton file touched, its line delta, and the measured totals.)
+Measured in task 8 with the command in `evidence/budget-basecamp-baseline.md` (same scope). `evidence/bugfix-arch-review/final.md` was not written: this session does not have owner permission to write under `evidence/`, so the record is here.
+
+| Measure | Before (bugfix-inspector-resolved task 2) | After | Limit |
+| --- | --- | --- | --- |
+| Files | 21 | 21 | 30 |
+| Non-blank, non-comment TS/TSX lines | 2,142 | 2,194 (+52) | 2,400 |
+| Value exports (`skeleton/src/index.ts`) | 15 | 15 | 15 |
+
+`skeleton/src/index.test.ts` passes unchanged ("exports exactly the 15 expected value names").
+
+Skeleton files touched (per the design table): `core/causal.ts` (D2, now 123 lines), `core/merges.ts` (D2, comment only, 114), `sync/replica.ts` (D3, 215), `sync/pair.ts` (D4, 128), `limbo/marks.tsx` (D4, 107), `limbo/inspector.tsx` (D5, 194). Per-file line deltas were not measured: no pre-change copies exist and git was not used. Only the +52 total is measured. `limbo/shell.tsx` (184) was not touched by this spec.
+
+Measured test counts (task 8):
+
+| Command | Result |
+| --- | --- |
+| `pnpm typecheck` | clean |
+| `pnpm test` | 91 files, 760 tests passed |
+| `pnpm props` | 22 files, 357 passed, 9 skipped (366). The 9 skips are the suite's by-design "n/a" cases (`kit/props/suite.props.test.ts`), not skips added by this spec. Goldens: `golden.props.test.ts` 21 tests passed (G01 to G21). Mutation fixtures all killed. |
+| `pnpm e2e` | 22 passed, 8 skipped (the 6 `live` tests and 2 desktop "Cut link" cases skip by config), 0 failed |
+
+No property file or `kit/**` file was edited in this task.
+
+Greps (apps and skeleton, outside tests): the banned-name pattern hits only `apps/pair-identity.ts:13` (`crypto.getRandomValues`) as new, plus the existing `skeleton/src/core/simulate.ts` clock shift and a comment in `shuffle-test.tsx`. No hit in an op file, `replica.ts`, `causal.ts` or `merges.ts`. App names in the skeleton outside tests: no hit (only the word "item" in two `merges.ts` doc comments).

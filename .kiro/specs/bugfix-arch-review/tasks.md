@@ -57,7 +57,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D1 1.1 to 1.10; Unchanged 8, 9, 12, 13_
 
-- [ ] 8. Cross-cutting pass and records
+- [x] 8. Cross-cutting pass and records
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`. If `pnpm e2e` exceeds the session time, report it as not run, never as passed.
   - Grep the apps and skeleton for `Date.now|new Date|performance.now|Math.random|randomUUID|toLocale|BroadcastChannel|SharedWorker`: the only new hit is `apps/pair-identity.ts` (`crypto.getRandomValues`), and none is in an op file, `replica.ts`, `causal.ts` or `merges.ts`. Grep the skeleton for app names outside tests: no new hit.
   - Re-measure the skeleton budget with the command in `evidence/budget-basecamp-baseline.md`; confirm at most 30 files, 2,400 lines and 15 exports, and that `skeleton/src/index.test.ts` passes unchanged. If a limit is passed, stop and report.
