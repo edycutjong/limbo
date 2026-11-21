@@ -54,7 +54,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`scene.test.ts`, over a real `createPair` with a manual scheduler): after the four edits and a restore, the stove claims both have `l = 17` and different `r`, the winner is `sari`, the op ids are `a#1:1`, `a#1:2`, `b#1:1`, `b#1:2`, the resolves are `a#1:3` and `b#1:3`; the golden `state` strings equal the canonical `materialize` of their ops in several shuffled orders; the stated expectations (tent alive and ticked, stove won by `sari`, zero twins) are asserted field by field.
   - _Requirements: R10.3, R10.6, R12.2, R12.4, R12.5_
 
-- [ ] 11. App assembly and `ReplicaBody`
+- [x] 11. App assembly and `ReplicaBody`
   - `app.config.ts`, `main.tsx`: `createPair` with the seed, `LimboShell`, `ReplicaPair` (`names`, `plate` 1 and 2, `onReset` using `deleteStore` then reload), `ReplicaBody` skeleton, `window.limbo` behind the dev/test guard, `?replicas` handled by the layer.
   - Tests (`app.test.tsx`, jsdom, fake-indexeddb): both cards render the seeded list in the seed order; both chips read "Live"; the single layout shows below 640 px; `window.limbo` exists in test and the production check is in task 19; Reset demo deletes both databases and calls reload (injected).
   - _Requirements: R1.1, R13.1, R13.4, R13.5, R13.7, R9.1_
