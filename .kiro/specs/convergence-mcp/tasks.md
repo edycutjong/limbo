@@ -32,7 +32,7 @@ Each task ends with `pnpm -s typecheck && pnpm -s test && pnpm -s props` green. 
   - Run `node kit/mcp/job-main.mjs` by hand with a `list_ops` spec from `/tmp` and confirm one JSON line.
   - _Requirements: R3.1 to R3.3, R3.4 (job side), R4.5, R6.1 to R6.5, R8.5, R8.6_
 
-- [ ] 5. Server: `list_ops`, `fuzz_op`, `explain_trace`
+- [x] 5. Server: `list_ops`, `fuzz_op`, `explain_trace`
   - Create `kit/mcp/tools.ts` (`createServer({root, runJob?, logPath?, killMs?})`) and `kit/mcp/server.mjs` (root from `import.meta.url`, `StdioServerTransport`).
   - `tools.ts`: zod input schemas (`app` as string, validated in the handler for the R3.4 message), `orderings` clamp with `requested` and `clamped`, `replicas` 2..5 check, default `runJob` spawning `node kit/mcp/job-main.mjs` with `cwd = root`, soft deadline 50,000 ms passed to the job, hard kill at `killMs` (58,000), structured errors, every handler in `try/catch`, results as `content` text plus `structuredContent` (`pass` at the top level for `fuzz_op`), stdout untouched.
   - Tests (`kit/mcp/server.test.ts`, in-memory transport with `createServer`): the four tools are listed; `list_ops` real child; unknown app message names both apps; `fuzz_op` with an injected in-process job on `tick-toggle` and `lww-wallclock` fixtures returns counterexamples; same call twice is equal; `explain_trace` on the returned counterexample names the first differing step; stale counterexample is a structured error; `orderings: 99999` reaches the job as 5000 with `clamped: true, requested: 99999`; `replicas: 1` and `replicas: 6` are `bad-argument`; an injected job that never resolves returns `timeout` with `killMs: 200`; an injected job that throws returns `job-crashed` and the server still answers the next call.
