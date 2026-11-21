@@ -9,6 +9,7 @@ import { AddItem } from './AddItem.tsx';
 import { ExpenseRow } from './ExpenseRow.tsx';
 import { ItemRow } from './ItemRow.tsx';
 import { ItemTwins } from './ItemTwins.tsx';
+import { useScripted } from './ScenePanel.tsx';
 
 export function ReplicaBody(p: { id: Id }): ReactNode {
   const { replica: raw, queued } = useLimbo(p.id);
@@ -16,6 +17,8 @@ export function ReplicaBody(p: { id: Id }): ReactNode {
   const replica = raw as Replica<State>;
   const s = replica.state();
   const me = act.memberOf(replica);
+  const scripted = useScripted().ids;
+  const log = replica.log();
   return (
     <div className="bc-body">
       <AddItem onAdd={(name) => act.addItem(replica, name)} />
@@ -34,6 +37,7 @@ export function ReplicaBody(p: { id: Id }): ReactNode {
               row={(promoted) => (
                 <ItemRow
                   promoted={promoted}
+                  scripted={log.some((o) => o.target === id && scripted.has(o.id))}
                   index={index}
                   count={s.order.length}
                   onMove={(to) => act.moveItem(replica, id, to)}

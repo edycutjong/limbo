@@ -8,6 +8,7 @@ import * as config from '../app.config.ts';
 import { displayName } from './members.ts';
 import type { State } from './model.ts';
 import { createWorkerRunner } from './shuffle-runner.ts';
+import { ScenePanel, ScriptedContext, useScriptedState } from './views/ScenePanel.tsx';
 import { ReplicaBody } from './views/ReplicaBody.tsx';
 import { ShuffleSection } from './views/ShuffleSection.tsx';
 import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
@@ -16,24 +17,34 @@ import '../app.css';
 export const TAGLINE = 'For people whose shared list breaks when the signal does.';
 
 /** Root component. Without a pair it shows the heading and tagline only. */
-export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): ShuffleRunner }): ReactNode {
+export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): ShuffleRunner; sceneDelay?: number }): ReactNode {
+  const scripted = useScriptedState();
   return (
-    <main className="bc-shell">
-      <h1>BASECAMP</h1>
-      <p>{TAGLINE}</p>
-      {p.pair && (
-        <LimboShell pair={p.pair} defs={config.defs} describeConflicts={config.describeConflicts}>
-          <ReplicaPair
-            pair={p.pair}
-            names={{ a: displayName(config.members.a.member).toUpperCase(), b: displayName(config.members.b.member).toUpperCase() }}
-            plate={{ a: 1, b: 2 }}
-            onReset={p.onReset ?? (() => undefined)}
-            renderReplica={(id: Id) => <ReplicaBody id={id} />}
-          />
-          <ShuffleSection createRunner={p.createRunner ?? createWorkerRunner} goldens={config.goldens} />
-        </LimboShell>
-      )}
-    </main>
+    <ScriptedContext.Provider value={scripted}>
+      <main className="bc-shell">
+        <h1>BASECAMP</h1>
+        <p>{TAGLINE}</p>
+        {p.pair && (
+          <LimboShell pair={p.pair} defs={config.defs} describeConflicts={config.describeConflicts}>
+            <ReplicaPair
+              pair={p.pair}
+              names={{
+                a: displayName(config.members.a.member).toUpperCase(),
+                b: displayName(config.members.b.member).toUpperCase(),
+              }}
+              plate={{ a: 1, b: 2 }}
+              onReset={() => {
+                scripted.reset();
+                (p.onReset ?? (() => undefined))();
+              }}
+              renderReplica={(id: Id) => <ReplicaBody id={id} />}
+            />
+            <ScenePanel pair={p.pair} {...(p.sceneDelay === undefined ? {} : { delay: p.sceneDelay })} />
+            <ShuffleSection createRunner={p.createRunner ?? createWorkerRunner} goldens={config.goldens} />
+          </LimboShell>
+        )}
+      </main>
+    </ScriptedContext.Provider>
   );
 }
 

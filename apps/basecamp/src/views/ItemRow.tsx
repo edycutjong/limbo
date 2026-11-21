@@ -12,6 +12,8 @@ export interface ItemRowProps {
   me: string;
   queuedClaim: boolean;
   promoted?: boolean;
+  /** A scripted op changed this row (R11.3). */
+  scripted?: boolean;
   /** Position in the visible order and the number of visible rows. */
   index?: number;
   count?: number;
@@ -134,6 +136,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
           onBlur={commit}
         />
       )}
+      {p.scripted && <span className="bc-scripted">scripted edit</span>}
       <ClaimChip item={item} me={p.me} queued={p.queuedClaim} promoted={p.promoted === true} onClaim={p.onClaim} onRelease={p.onRelease} />
       <span className="bc-menu">
         <button

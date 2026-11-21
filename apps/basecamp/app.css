@@ -10,6 +10,8 @@ body {
 .bc-row { display: flex; align-items: center; gap: 0.5rem; list-style: none; }
 .bc-list, .bc-expenses { padding: 0; margin: 0; }
 .bc-name { flex: 1; }
+.bc-scripted { font-size: 0.75rem; opacity: 0.75; }
+.bc-scene { margin: 1rem 0; }
 .bc-claim { display: inline-flex; align-items: center; gap: 0.5rem; }
 .bc-add { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .bc-add input { flex: 1; }

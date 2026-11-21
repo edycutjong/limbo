@@ -84,7 +84,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: Inspector queued rows equal `view.unacked`; the shuffle test with an injected inline runner prints "1,000 / 1,000 orderings → same state" and, for the seed, "matches the specified result ✓"; after an extra edit no golden line prints; the worker file imports `runShuffle` and `materialize` and nothing else app-specific.
   - _Requirements: R10.8, R10.9, R12.1 to R12.3_
 
-- [ ] 17. ScenePanel and the lake scene in jsdom
+- [x] 17. ScenePanel and the lake scene in jsdom
   - `views/ScenePanel.tsx`: button shown while the link is down and the scene is unset; four scripted edits with an injectable delay (0 in tests); "scripted edit" tags; clears on link up; Reset clears the flag.
   - Test (`lake-scene.test.tsx`, real `createPair`, manual `settle()`): R10.1 to R10.9 asserted on the DOM text, in order: fog and "Offline", `1 WAITING` and tent gone on B, `2 WAITING` and "Yours? waiting" on both, haze "Syncing 2…" before `settle()`, both lists equal after, tent twin and stove lines of R10.5 and R10.6, Keep and OK, deep-equal canonical states, zero twins, FIXED, Inspector order (2 resolves, then 4 partition ops, with merge, `l·r·n` and deps), Conflicts list of two resolved twins, shuffle test line and golden line. Manual edits (no button) give the same result.
   - _Requirements: R10, R11_
