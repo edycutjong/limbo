@@ -16,7 +16,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except ta
   - Run `pnpm typecheck && pnpm test && pnpm props`. Record the skeleton line count with the command in `evidence/budget-basecamp-baseline.md`. If it passes 2,400 lines, 30 files or 15 exports, stop and report.
   - _Requirements: Expected Behavior 1 to 3; Unchanged Behavior 1, 2, 4 to 10_
 
-- [ ] 3. Regression pass on the layer and the app
+- [x] 3. Regression pass on the layer and the app
   - Confirm unchanged: the existing "keeps a resolved conflict until the next crossing, then drops it", `shell.test.tsx` (stable snapshot, unsubscribe, live-region sequence), chip, wisps, fog and Recent exchanges tests, and the rest of `lake-scene.test.tsx`. Fix any failure in the fix, never in the test.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: Unchanged Behavior 1 to 9_

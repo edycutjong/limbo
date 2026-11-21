@@ -24,6 +24,18 @@
         "chatSessionId": "sess_c2b90740-a420-4bf7-8e8f-524908e1b22a",
         "timestamp": 1795252991914
       }
+    ],
+    "3. Regression pass on the layer and the app": [
+      {
+        "executionId": "37f066fd-429b-4d60-951d-969798740322",
+        "chatSessionId": "sess_b220b0f0-07bf-4997-bbb4-44b5997bdd16",
+        "timestamp": 1795253127086
+      },
+      {
+        "executionId": "37f066fd-429b-4d60-951d-969798740322",
+        "chatSessionId": "sess_b220b0f0-07bf-4997-bbb4-44b5997bdd16",
+        "timestamp": 1795253192811
+      }
     ]
   }
 }
