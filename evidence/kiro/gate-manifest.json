@@ -24,6 +24,7 @@
     "kit/hooks/task-start.mjs": "5ae95e98cf140f02b7c97431d6538db30bf946838e5b7535c0c09e58f3991f2c",
     "kit/hooks/tests/gate-integrity.test.ts": "6baf6c531fd75197de456862d2365e5260cda8c89a2beddd8afb101219ee0003",
     "kit/hooks/tests/hooks.test.ts": "2f8423190c7a80ff9f7a89ff5dedf9cdba01e034bbf21e20193a425e3f8bcde9",
+    "kit/hooks/tests/kiro-share.test.ts": "2942c2e3435359ed2bb2731982fd98266e99918576726c27869b0d8a3d492b52",
     "kit/hooks/tests/samples/PostFileCreate.json": "08c714d036badf07bdd68f2f60391d525080823019e74e9288bd0af46990a3fb",
     "kit/hooks/tests/samples/PostTaskExec.json": "30defa1607e2092841cdc1e366d11eac34d35706497dfed31087c48e047eaa4b",
     "kit/hooks/tests/samples/PostToolUse.json": "0cedc87220c5e587abd746bd0ae88db911141b3aee4d7b691563c25a6782518f",
