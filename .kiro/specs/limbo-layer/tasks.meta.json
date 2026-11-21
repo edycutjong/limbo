@@ -36,6 +36,18 @@
         "chatSessionId": "sess_9770d288-b8f3-40bd-9ca3-a8cf0f99ee63",
         "timestamp": 1795240991366
       }
+    ],
+    "4. LimboShell, `useLimbo`, motion flag, live region": [
+      {
+        "executionId": "1ad78adb-f4a1-48e0-99d5-4989caf1151c",
+        "chatSessionId": "sess_26c4741e-4548-432d-af7f-a7fc10349934",
+        "timestamp": 1795241083825
+      },
+      {
+        "executionId": "1ad78adb-f4a1-48e0-99d5-4989caf1151c",
+        "chatSessionId": "sess_26c4741e-4548-432d-af7f-a7fc10349934",
+        "timestamp": 1795241249152
+      }
     ]
   }
 }

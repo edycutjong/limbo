@@ -19,7 +19,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`tokens.test.ts`, in `unit`): the `:root` block equals the R13.1 block; every text token pair in design §6 is at least 4.5:1 against `--bg` and `--card`; `--before` is not used as a `color:` value; no `https://` or `fonts.googleapis` in `skeleton/src/limbo`.
   - _Requirements: R13, R18.1, R18.2_
 
-- [ ] 4. LimboShell, `useLimbo`, motion flag, live region
+- [x] 4. LimboShell, `useLimbo`, motion flag, live region
   - `skeleton/src/limbo/shell.tsx`: `LimboShell`, `useLimbo`, the per-replica store (view, queued, exchanges, conflicts, crossing), `data-motion` from `matchMedia`, the live-region message reducer.
   - Tests (`shell.test.tsx`): throws outside the shell; one `view` read per change and a stable snapshot between changes; unmount removes the replica, session and `onCross` subscriptions; `data-motion` follows the media query and its change; a descriptor count that differs from `view.twins` still shows `view.twins` and warns once; live region says "Link cut. Edits will wait on this device." then "Link restored. Syncing…" then "n edits synced." once each and not again on re-render.
   - _Requirements: R1, R2, R15.3, R17_

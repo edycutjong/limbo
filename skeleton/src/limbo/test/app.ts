@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { createElement, type ReactNode } from 'react';
 import { claimOne, causalLww, resurrect, type ClaimPayload, type LifeOp } from '../../core/merges.ts';
 import type { Op, OpDef } from '../../core/types.ts';
+import { LimboShell } from '../shell.tsx';
 import { createPair, type Pair } from '../../sync/pair.ts';
 
 export const defs: OpDef[] = [
@@ -24,11 +25,12 @@ export interface Note {
 export interface StubState {
   notes: Note[];
 }
-/** A conflict a user should see. `kind` names the merge that surfaced it. */
+/** A conflict a user should see. `rule` names the merge that surfaced it. */
 export interface Descriptor {
   id: string;
-  kind: 'resurrect' | 'claim-one';
+  rule: 'resurrect' | 'claim-one';
   target: string;
+  caption: string;
 }
 
 const LIFE: Record<string, LifeOp['kind']> = {
@@ -62,8 +64,8 @@ export const twinCount = (s: StubState): number =>
 
 export function describeConflicts(s: StubState): Descriptor[] {
   return s.notes.flatMap((n): Descriptor[] => [
-    ...(n.life === 'twin' ? [{ id: `${n.id}:life`, kind: 'resurrect' as const, target: n.id }] : []),
-    ...n.losers.map((who) => ({ id: `${n.id}:claim:${who}`, kind: 'claim-one' as const, target: n.id })),
+    ...(n.life === 'twin' ? [{ id: `${n.id}:life`, rule: 'resurrect' as const, target: n.id, caption: 'Edited and deleted' }] : []),
+    ...n.losers.map((who) => ({ id: `${n.id}:claim:${who}`, rule: 'claim-one' as const, target: n.id, caption: `${who} also claimed` })),
   ]);
 }
 
@@ -80,8 +82,7 @@ export function makeStubPair(): Promise<Pair<StubState>> {
   });
 }
 
-/** Renders `ui` for a pair. Task 4 wraps this in `LimboShell`. */
+/** Renders `ui` inside a `LimboShell` for a pair. */
 export function renderApp(pair: Pair<StubState>, ui: ReactNode = null): ReturnType<typeof render> {
-  void pair;
-  return render(createElement('div', { 'data-testid': 'app' }, ui));
+  return render(createElement(LimboShell, { pair, defs, describeConflicts }, ui));
 }
