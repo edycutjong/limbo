@@ -7,6 +7,10 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   "dependencies": {
     "fractional-indexing": "4.0.0",
     "y-indexeddb": "9.0.12",

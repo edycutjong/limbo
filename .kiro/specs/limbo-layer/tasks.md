@@ -8,7 +8,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (extend `status.test.ts`, `pair.test.ts`): `unackedOps(...).length === countUnacked(...)` over the existing table; seed and peer-authored ops are skipped; `pair.queued(id).length === pair.view(id).unacked` while cut and after restore; crossing records carry `id` and `target`; `deliveryOrder` is exported and `simulate` output is unchanged for a fixed seed.
   - _Requirements: R21, R20.4, R1.1_
 
-- [ ] 2. Tooling for React component tests
+- [x] 2. Tooling for React component tests
   - Install `react`, `react-dom` (19) as skeleton peer dependencies; `@types/react`, `@types/react-dom`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/user-event`, `jsdom` as root dev dependencies. Add `skeleton/src/**/*.tsx` to `tsconfig.json` and `jsx: react-jsx`. Add the Vitest project `limbo` (`skeleton/src/**/*.test.tsx`, jsdom, setup file) and change the `test` script to `vitest run --project unit --project limbo`. Leave `unit` and `props` untouched.
   - `skeleton/src/limbo/test/setup.ts` (cleanup, `matchMedia` stub with a settable `reduce` flag, CSS stub) and `test/app.ts` (the stub app of design §8 and a `renderApp(pair)` helper).
   - Test (`test/harness.test.tsx`): a trivial component renders under jsdom; `createPair` over the stub app builds; one edit on `a` shows in `view('a').unacked` while cut.
