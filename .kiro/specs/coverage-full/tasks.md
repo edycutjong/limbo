@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnpm test:coverage` and `pnpm coverage:gaps` showing zero gaps for the files of that task. Tests and properties are never weakened, skipped, or run with a lower `numRuns`. Never edit `kit/`, `vitest.config.ts` thresholds or its `exclude` list. Each new test is named after the behaviour it pins and asserts an observable result. Dead code is removed only when behaviour is unchanged, and is recorded in `design.md` under `## Production changes`. Any `/* v8 ignore next */` needs a one-line reason and an entry under `## Ignored branches` (target: zero). Do not run git. Note the duration of each `pnpm test:coverage` run (limit: 3 minutes).
 
-- [ ] 1. Baseline
+- [x] 1. Baseline
   - Run `pnpm test:coverage`, then `pnpm coverage:gaps`. Fill `design.md` §7: gaps per directory (statement / branch / function), files with gaps, and the four summary percentages.
   - Classify each gap with the table in `design.md` §2 and note, per file, any branch that looks dead.
   - Write nothing else. No test or product file changes.

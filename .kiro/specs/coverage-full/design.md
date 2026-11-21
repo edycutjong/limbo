@@ -71,19 +71,91 @@ Target: zero. Format: `file:line, reason (same text as the comment)`.
 
 ## 7. Baseline
 
-Filled by Task 1 from `pnpm test:coverage` and `pnpm coverage:gaps`.
+Measured by Task 1 from `pnpm test:coverage` (exit 1, thresholds unmet as expected; 116 test files passed, 1289 tests passed, 9 skipped by existing tests) and `pnpm coverage:gaps` (103 gaps).
+
+Duration of `pnpm test:coverage`: 91.07 s vitest, 1:31.89 wall (limit 3 minutes).
 
 | Directory | Files with gaps | Gaps (statement / branch / function) |
 |---|---|---|
-| `skeleton/src/core` | | |
-| `skeleton/src/sync` | | |
-| `skeleton/src/limbo` | | |
-| `apps/basecamp/src` | | |
-| `apps/basecamp/src/ops` | | |
-| `apps/aftershock/src` (and `ops`) | | |
-| Total | 33 (expected) | 103 (expected) |
+| `skeleton/src/core` | 3 (`causal`, `merges`, `simulate`) | 1 / 8 / 1 |
+| `skeleton/src/sync` | 7 (`dev-relay-link`, `identity`, `inpage-link`, `link`, `replica`, `status`, `store`) | 0 / 14 / 5 |
+| `skeleton/src/limbo` | 7 (`inspector`, `marks`, `pair-view`, `shell`, `shuffle-test`, `shuffle`, `twin`) | 0 / 19 / 2 |
+| `apps/basecamp/src` | 4 (`actions`, `members`, `model`, `money`) | 0 / 12 / 0 |
+| `apps/basecamp/src/ops` | 9 (`expense.add.op`, `expense.setAmount.op`, `expense.state`, `item.add.op`, `item.claims`, `item.life`, `item.move.op`, `item.rename.op`, `item.tick.op`) | 0 / 29 / 0 |
+| `apps/aftershock/src` (and `ops`) | 4 (`model`, `ops/sector.count.op`, `ops/sector.note.op`, `ops/sector.state`) | 0 / 12 / 0 |
+| Total | 34 (measured; the requirements text says 33) | 1 / 94 / 8 = 103 |
 
-Summary numbers at baseline: lines, statements, functions, branches (expected 99.96 / 99.96 / 97.5 / 93.3).
+Summary numbers at baseline (measured):
+
+| Metric | Percent | Covered / total |
+|---|---|---|
+| Lines | 99.96 | 2680 / 2681 |
+| Statements | 99.96 | 2680 / 2681 |
+| Functions | 97.48 | 310 / 318 |
+| Branches | 93.28 | 1305 / 1399 |
+
+### Classification per file (table in section 2)
+
+Kinds: D = default (`??`), A = if/ternary arm, O = optional chain / short circuit, F = failure path (injected failure), U = uncalled function, X = candidate dead branch (to confirm by types or callers in the task).
+
+| File | Gap lines | Kind | Dead-branch note |
+|---|---|---|---|
+| `core/causal.ts` | 8 | A | none |
+| | 86 | D | X: `split('#')[0] ?? ''` always has element 0 (`split` never returns empty); only `noUncheckedIndexedAccess` needs it |
+| | 100 | A | array with `undefined` element (test it) |
+| | 105-106 | F | defensive throw on unsupported type (function, symbol, bigint); injected input test |
+| | 123 | D | X: `op.deps[r] ?? 0` where `r` comes from `Object.keys(op.deps)` |
+| `core/merges.ts` | 150 | A | none (equal keys tie-break by id, both arms testable) |
+| `core/simulate.ts` | 38 | U | `performance.now` override never called |
+| | 88 | D | X: `o.deps[r] ?? 0` with `r` from `Object.keys(o.deps)` |
+| | 123 | D | default `steps = 12` |
+| `sync/dev-relay-link.ts` | 15, 16 | D | defaults for fetch and pollMs |
+| | 40, 90 | F | `!res.ok` throw; injected fetch |
+| | 42 | A | `!active()` after fetch |
+| `sync/identity.ts` | 42, 61 | U | noop `release` initial values |
+| `sync/inpage-link.ts` | 91, 98 | A | `!up` / `up` early returns |
+| `sync/link.ts` | 33 | A | `!y` |
+| | 38 | A | stamp comparator `r` arm |
+| | 65 | A | `!link.isUp()` |
+| | 127 | D | `peerVV ?? {}`; X if `helloSeen` implies `peerVV` set |
+| `sync/replica.ts` | 69 | F | unknown op name throw |
+| `sync/status.ts` | 55 | D | X: `peerVV[r] ?? 0` with `r` from `Object.keys(peerVV)` (the `vv[r] ?? 0` side is reachable) |
+| | 101 | D | `merge ?? 'unknown'` for an op with no def |
+| `sync/store.ts` | 53, 54, 94 | U, F | `tx.onerror`, `tx.onabort`, `req.onerror` plus their `?? new Error` fallbacks; injected fake IndexedDB |
+| `limbo/inspector.tsx` | 100 | A | `!first \|\| !last` focus trap with no focusable |
+| | 102, 105 | A | shift-tab / tab wrap arms, focus outside drawer |
+| | 126 | D | `peerId() ?? 'none yet'` |
+| | 150 | A | arm inside mapped rows |
+| `limbo/marks.tsx` | 40 | A | `data-enter` false arm |
+| | 115 | U | `onAnimationEnd` |
+| `limbo/pair-view.tsx` | 57 | D, A | `p.search` absent and `location` undefined arm; X for `typeof location === 'undefined'` in jsdom (always defined) |
+| `limbo/shell.tsx` | 71 | A | no rows |
+| | 75 | A | focus move arms (`at < 0`, up, clamp) |
+| | 178 | A | `e.at ?? 0` and unresolved entries |
+| | 210 | F | `useDefs` outside `<LimboShell>` throw |
+| `limbo/shuffle-test.tsx` | 46 | A, F | non-Error rejection and stale token |
+| `limbo/shuffle.ts` | 41 | A | empty steps |
+| | 92 | A | `MAX_ATTEMPTS` break |
+| | 95 | A | `smaller.length` equals set or zero |
+| | 105, 106 | A | no disagreement found (no trace) |
+| `limbo/twin.tsx` | 22 | A | `done` reset |
+| | 28 | A | key not Enter, or target inside a button |
+| | 45 | U | `onAnimationEnd` when leaving |
+| `basecamp/actions.ts` | 24 | D | `memberOfReplica(r.id) ?? r.id` |
+| | 32 | A | `last === undefined` (empty list) |
+| `basecamp/members.ts` | 18, 22 | D | X: `split('#')[0] ?? x` is always defined |
+| | 26 | D | member with no display name |
+| `basecamp/model.ts` | 91 | A | stamp comparator `r` arm |
+| | 122, 208, 216 | D | X: `value?.x ?? first.payload.x` where the lww winner exists whenever `first` exists (writes include the create op); confirm in Task 5 |
+| | 223 | D | `EDIT_KIND[o.op] ?? 'add'` (edit op not in map) |
+| `basecamp/money.ts` | 12 | A | non-safe-integer returns null |
+| | 17 | F | `formatCents` bad amount throw |
+| `basecamp/ops/*.op.ts`, `item.*`, `expense.*` | listed in the gap output | D, A, F | `s.x ?? {}` defaults and `invariant` guards against corrupt state (type, range, shape); cover by feeding a corrupt state to `invariant` (injected failure). `item.move.op.ts:20` `value?.key ?? op.payload.key`: X, winner always exists because `writes` holds this op |
+| `aftershock/model.ts` | 37 | A | stamp comparator `r` arm |
+| | 71 | D | `r.value?.count ?? 0`; X if the lww result is never empty |
+| `aftershock/ops/sector.*` | see gap output | D, A | `invariant` guards on corrupt state; same method as basecamp ops |
+
+Dead-branch candidates (X) are only confirmed by the owning task, which then removes them and records them in section 5. Task 1 changed no file other than this section.
 
 ## 8. Final
 
