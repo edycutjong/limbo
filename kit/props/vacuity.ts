@@ -14,7 +14,7 @@ import { canonical, concurrent, covers } from '../../skeleton/src/core/causal.ts
 import { simulate } from '../../skeleton/src/core/simulate.ts';
 import type { Op, OpDef } from '../../skeleton/src/core/types.ts';
 import { CONFLICT_CLASSES, applicableClasses } from './arbitraries/index.ts';
-import { config as defaultConfig } from './config.ts';
+import { config as defaultConfig, type PropsConfig } from './config.ts';
 import type { RunOptions } from './run.ts';
 
 export const MIN_SHARE = 0.5;
@@ -154,38 +154,85 @@ export function formatVacuity(report: VacuityReport): string {
 /** Yield to the event loop every this many runs in the async variant. */
 const YIELD_EVERY = 50;
 
+/** Hot targets of the mixed scripts: few, and `t0` three times as likely, so ops of different kinds collide on one item. */
+export const HOT_TARGETS: readonly string[] = ['t0', 't0', 't0', 't1'];
+/** Mixed scripts are long: a class such as claim-release-claim needs three causally chained ops on one replica. */
+export const MIXED_STEPS = { min: 40, max: 80 } as const;
+/** Every UNIFORM_EVERY-th run draws uniformly from all registered ops, so ops outside the classes are still checked. */
+export const UNIFORM_EVERY = 5;
+
+/** Run `i` draws from every registered op when true, else from the class ops (plus the create ops). */
+export const isUniformRun = (i: number): boolean => i % UNIFORM_EVERY === UNIFORM_EVERY - 1;
+
 /**
- * The one shared implementation: a generator that simulates run by run and yields the run index
- * after each run, then returns the report. Sync and async drivers differ only in when they pause.
+ * Defs run `i` draws from. Class-weighted runs use the class ops plus the `create` ops (without a create,
+ * app-level folds ignore the item); an op in no class has weight 0 there. Pure function of the defs.
  */
-function* vacuityRuns(defs: readonly OpDef[], opts: RunOptions, runs?: number): Generator<number, VacuityReport, void> {
-  const cfg = opts.config ?? defaultConfig;
-  const n = runs ?? cfg.orderings;
-  const range = opts.steps ?? { min: 2, max: 14 };
-  const init = opts.init ?? (() => ({}));
-  const lwwOps = new Set(defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name));
-  const pool = classOps(defs);
-  const sets: Set<string>[] = [];
-  for (let i = 0; i < n; i++) {
-    const res = simulate({
-      defs: pool,
-      replicas: cfg.replicas,
-      seed: (cfg.seed + i) >>> 0,
-      steps: range.min + (i % (range.max - range.min + 1)),
-      init,
-      ...(opts.gen ? { gen: opts.gen } : {}),
-    });
-    sets.push(classify(res.ops, lwwOps));
-    yield i + 1;
-  }
+export function mixedPool(defs: readonly OpDef[], i: number): OpDef[] {
+  if (isUniformRun(i)) return [...defs];
+  const pool = new Set(classOps(defs));
+  for (const d of defs) if (d.intent.kind === 'create') pool.add(d);
+  const picked = defs.filter((d) => pool.has(d));
+  // A chain class (`boost`) draws its ops that many extra times; the draw is uniform over this list.
+  const extra = CONFLICT_CLASSES.flatMap((c) => (c.boost ? picked.filter((d) => c.requires.includes(d.name)).flatMap((d) => Array<OpDef>(c.boost!).fill(d)) : []));
+  return [...picked, ...extra];
+}
+
+/** Per-op payload generators (from each op's own `*.props.ts`), every op placed on one of the hot targets. */
+export function mixedGen(optsByOp: ReadonlyMap<string, RunOptions>): NonNullable<RunOptions['gen']> {
+  return (def, rand) => {
+    const g = optsByOp.get(def.name)?.gen ?? (() => ({ target: HOT_TARGETS[0]!, payload: {} }));
+    return { ...g(def, rand), target: rand.pick(HOT_TARGETS) };
+  };
+}
+
+/** Script length of run `i`. */
+export const mixedSteps = (i: number): number => MIXED_STEPS.min + (i % (MIXED_STEPS.max - MIXED_STEPS.min + 1));
+
+/** Simulation seed of run `i`. */
+export const mixedSeed = (cfg: PropsConfig, i: number): number => (cfg.seed + i) >>> 0;
+
+/** The one simulation of mixed run `i`; the property sweep and the vacuity guard both call it. */
+export function simulateMixed(
+  defs: readonly OpDef[],
+  gen: NonNullable<RunOptions['gen']>,
+  cfg: PropsConfig,
+  i: number,
+  steps: number = mixedSteps(i),
+  init: () => unknown = () => ({}),
+) {
+  // `apply` is not read by mixed runs (the app fold is), so it is stripped to keep the simulation cheap.
+  const pool = mixedPool(defs, i).map((d) => ({ ...d, apply: undefined }) as OpDef);
+  return simulate({ defs: pool, replicas: cfg.replicas, seed: mixedSeed(cfg, i), steps, init, gen });
+}
+
+export function lwwNamesOf(defs: readonly OpDef[]): Set<string> {
+  return new Set(defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name));
+}
+
+/** Report over the per-run class sets of the mixed runs. */
+export function mixedReport(defs: readonly OpDef[], sets: readonly ReadonlySet<string>[]): VacuityReport {
   return vacuityReport(
     defs.map((d) => d.name),
     sets,
-    lwwOps,
+    lwwNamesOf(defs),
   );
 }
 
-/** Simulate `runs` scripts over all registered defs and measure class shares. */
+function* vacuityRuns(defs: readonly OpDef[], opts: RunOptions, runs?: number): Generator<number, VacuityReport, void> {
+  const cfg = opts.config ?? defaultConfig;
+  const n = runs ?? cfg.orderings;
+  const gen = opts.gen ?? mixedGen(new Map());
+  const lwwOps = lwwNamesOf(defs);
+  const sets: Set<string>[] = [];
+  for (let i = 0; i < n; i++) {
+    sets.push(classify(simulateMixed(defs, gen, cfg, i, mixedSteps(i), opts.init).ops, lwwOps));
+    yield i + 1;
+  }
+  return mixedReport(defs, sets);
+}
+
+/** Measure class shares over the mixed runs (same seeds, generator and step range as the checked runs). */
 export function measureVacuity(defs: readonly OpDef[], opts: RunOptions = {}, runs?: number): VacuityReport {
   const it = vacuityRuns(defs, opts, runs);
   for (;;) {

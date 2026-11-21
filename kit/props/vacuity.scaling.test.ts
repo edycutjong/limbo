@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
 import { loadConfig } from './config.ts';
 import type { RunOptions } from './run.ts';
-import { MIN_SHARE, formatVacuity, measureVacuity, vacuityFailures } from './vacuity.ts';
+import { MIN_SHARE, formatVacuity, measureVacuity, mixedGen, vacuityFailures } from './vacuity.ts';
 
 const OPS_DIR = join(import.meta.dirname, '..', '..', 'apps', 'basecamp', 'src', 'ops');
 const registry = (await import(pathToFileURL(join(OPS_DIR, 'registry.gen.ts')).href)) as { ops: OpDef[] };
@@ -26,16 +26,13 @@ const dummies: OpDef[] = [1, 2, 3, 4].map((i) => ({
   apply: (s: unknown) => s,
 }));
 
-// Same generator and step range as suite.props.test.ts.
-const gen: NonNullable<RunOptions['gen']> = (def, rand) => {
-  const g = optsByOp.get(def.name)?.gen ?? (() => ({ target: 't0', payload: {} }));
-  return { ...g(def, rand), target: 't0' };
-};
+// Same generator and step range as the mixed property runs in suite.props.test.ts.
+const gen = mixedGen(optsByOp);
 
 describe('vacuity scaling', () => {
   it('keeps every applicable class at or above MIN_SHARE with 4 unrelated ops registered', () => {
     const cfg = loadConfig({ ...process.env, LIMBO_PROPS_TIER: 'fast' });
-    const report = measureVacuity([...base, ...dummies], { gen, steps: { min: 40, max: 80 }, config: cfg });
+    const report = measureVacuity([...base, ...dummies], { gen, config: cfg });
     expect(report.applicable.length).toBeGreaterThan(0);
     expect(vacuityFailures(report, MIN_SHARE), formatVacuity(report)).toEqual([]);
   }, 600_000);

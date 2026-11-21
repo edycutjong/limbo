@@ -19,6 +19,8 @@ export const GATE_FILES = [
   'kit/props/run.ts',
   'kit/props/config.ts',
   'kit/props/suite.props.test.ts',
+  'kit/props/mixed.ts',
+  'kit/props/mixed.test.ts',
   'kit/props/vacuity.ts',
   'kit/props/vacuity.scaling.test.ts',
   'skeleton/src/core/simulate.ts',

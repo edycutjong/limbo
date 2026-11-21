@@ -14,6 +14,8 @@ export interface ConflictClass {
   requires: readonly string[];
   /** Applies whenever at least one registered op declares `merge: 'causal-lww'` (`requires` is then empty). */
   anyLww?: true;
+  /** Extra draw weight (mixed scripts) for this class's ops: a chain needs several of them on one replica. */
+  boost?: number;
 }
 
 /** The eleven classes of R12.3, with the BASECAMP ops each needs. */
@@ -26,7 +28,7 @@ export const CONFLICT_CLASSES: readonly ConflictClass[] = [
   { name: 'move-move', requires: ['item.move'] },
   { name: 'move-same-gap', requires: ['item.move'] },
   { name: 'move-delete', requires: ['item.move', 'item.delete'] },
-  { name: 'claim-release-claim', requires: ['item.claim', 'item.release'] },
+  { name: 'claim-release-claim', requires: ['item.claim', 'item.release'], boost: 2 },
   { name: 'lww-equal', requires: [], anyLww: true },
   { name: 'lww-different', requires: [], anyLww: true },
 ];
