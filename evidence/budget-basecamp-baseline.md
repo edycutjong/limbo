@@ -27,3 +27,10 @@ Same command, same scope.
 | Non-blank, non-comment lines | 2020 | 2137 |
 
 The delta (+1 file, +117 lines) comes from `sumSplit` in `merges.ts` and `sync/dev-relay-link.ts`. Both the baseline and the final figure exceed the provisional 1,800-line budget in `.kiro/steering/tech.md`.
+
+## Owner decision 2026-11-21
+
+Measured after the basecamp spec: 21 files, 2,137 non-blank, non-comment TS/TSX lines (command above). The provisional budget of
+1,800 lines was exceeded at 2,020 (before the basecamp spec) and at 2,137 (after it). The owner raised the budget to 30 files and
+2,400 lines (`.kiro/steering/tech.md`) instead of trimming working code. (Appended by the orchestrator; the Kiro kitsmith session
+that applied the steering change cannot write under `evidence/`.)

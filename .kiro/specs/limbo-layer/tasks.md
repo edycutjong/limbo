@@ -74,8 +74,9 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`motion.test.tsx`): with `full`, the drain-in class appears on cut, the lift class on LIVE, crossing wisps carry `--i` stagger values, the twin carries its enter class, FIXED carries its scale-in class; with `reduce`, none of these classes or inline animation styles exist for the same scenario while every label and number is still present; `tokens.css` contains the `prefers-reduced-motion: reduce` rule and the durations 600 ms, 900 ms, 250 ms, 2 s, 400 to 700 ms.
   - _Requirements: R14, R15_
 
-- [-] 15. Entry, budget measure, evidence
+- [x] 15. Entry, budget measure, evidence
   - `skeleton/src/limbo/index.ts`: export `LimboShell`, `useLimbo`, `Fog`, `Wisps`, `Twin`, `FixedStamp`, `StatusChip`, `Inspector`, `ReplicaPair`, `ShuffleTest`, `runShuffle` and types. Add the `./limbo` subpath to `skeleton/package.json` `exports`, plus `./limbo/tokens.css`.
   - Tests (`limbo/index.test.ts`, `unit`): the entry exports exactly those names; `skeleton/src/index.ts` still has 15 value exports and imports no React; no file in `skeleton/src` imports `yjs` except `store.ts`.
   - Measure file count, non-test TS/TSX lines and exports. Write the measured numbers to `evidence/skeleton-budget.json` only if the project already keeps budget evidence; otherwise report them in the task result. If the total is over budget, stop and report; do not raise it.
   - _Requirements: R20, R1.4_
+  - Result: measured 21 files and 2,137 non-blank, non-comment TS/TSX lines, over the provisional 1,800. The owner raised the budget to 30 files and 2,400 lines on 2026-11-21 instead of trimming working code (see `evidence/budget-basecamp-baseline.md`). Within the new budget; no code changed.

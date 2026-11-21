@@ -19,6 +19,8 @@ inclusion: always
 | `pnpm props` | `props` project (property tests) |
 | `pnpm e2e` | Playwright two-context tests |
 
-## Skeleton budget (provisional)
+## Skeleton budget
 
-At most 30 files, 1,800 TS/TSX lines (excluding tests, CSS, tokens), and 15 exports.
+At most 30 files and 2,400 TS/TSX lines (non-blank, non-comment; tests and `limbo/test/` excluded; measured with the command in `evidence/budget-basecamp-baseline.md`), and 15 exports.
+
+History: the provisional 1,800 was exceeded at 2,020 (before the basecamp spec) and 2,137 (after it), and was raised by the owner on 2026-11-21 rather than trimming working code.
