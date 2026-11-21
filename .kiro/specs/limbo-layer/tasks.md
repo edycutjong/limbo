@@ -34,7 +34,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`wisps.test.tsx`): cut and add 3 → 3 wisps and counter `3` equal to `view.unacked`; 14 edits → 12 wisps and `14`; `unacked = 0` → nothing; restore and settle → `k` crossing wisps equal to the exchange crossing count; a no-op resend produces none; `k > 12` caps at 12; reduced motion renders the counter and no crossing wisps.
   - _Requirements: R4, R5, R15.2_
 
-- [ ] 7. Twin
+- [x] 7. Twin
   - `skeleton/src/limbo/twin.tsx`: generic `Twin` shell (row, ghost layer, TWIN label, caption, rule line, actions, Enter on first action, leaving state).
   - Tests (`twin.test.tsx`, stub app resurrect conflict and claim-one loser): after a real conflict the twin renders on the same row (no second `[data-limbo-row]`); ghost is `aria-hidden` and offset 6 px; caption and buttons are not in the faded layer; rule line names the merge; `Enter` triggers the first button; after resolve the twin is gone and a resolved or superseded conflict is never shown; with reduced motion no leaving class.
   - _Requirements: R6, R15.2, R16.4_

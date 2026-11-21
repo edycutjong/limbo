@@ -75,3 +75,9 @@
     transition: none !important;
   }
 }
+
+/* Twin: one row; the ghost sits behind at 70%, the caption, rule and actions stay at 100% */
+.limbo-twin { position: relative; }
+.limbo-twin-label { font-size: 11px; letter-spacing: .08em; color: var(--twin); }
+.limbo-twin-leaving .limbo-twin-ghost { animation: limbo-twin-out 250ms ease-in forwards; }
+@keyframes limbo-twin-out { to { transform: translate(0, 0); opacity: 0; } }
