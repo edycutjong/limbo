@@ -94,7 +94,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`dev-relay-link.test.ts` with a fake `fetch` over an in-memory relay): ops cross only while up; a failed POST leaves `unacked` unchanged and the retry works after the next `up`; duplicates change nothing; the session reads `down` while fetch rejects and `up` after; the link skips ops authored by its own replica; source scan: no `BroadcastChannel`, `SharedWorker`, `Date.now`, `Math.random`, React or DOM import.
   - _Requirements: R14.1 to R14.5, R14.8, R1.3_
 
-- [ ] 19. Solo page and production build check
+- [x] 19. Solo page and production build check
   - `apps/basecamp/src/devrelay.ts` and the guarded dynamic import in `main.tsx` (R14.6, R14.7).
   - Tests: unit test spawns `vite build` and asserts the built `dist/` text contains none of `devrelay`, `DevRelayLink`, `window.limbo`, `localhost:5175`, `https://fonts`; a jsdom test mounts the solo page with a fake fetch and finds the list, the status line and `window.limbo`.
   - _Requirements: R13.6, R13.8, R14.6, R14.7, R1.5_
