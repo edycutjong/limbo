@@ -213,7 +213,26 @@ const KEYWORDS = new Set(['!', '{', 'if', 'then', 'else', 'elif', 'while', 'unti
 const SHELLS = /^(sh|bash|zsh|dash|ksh)$/;
 const MAX_DEPTH = 4;
 
-// Remove env assignments, shell keywords and wrapper commands (sudo, env, command, nohup, time, exec, nice, xargs).
+// Runner wrappers whose remaining words are the real command: timeout, stdbuf, npx and friends,
+// `pnpm exec|dlx`, `npm exec`, `yarn dlx|exec`. Returns how many words to drop, which options take an
+// argument, and whether a duration follows the options. Null when `t` is not such a wrapper.
+function runnerArgs(cmd, t) {
+  const pkgOpts = /^(-p|--package|-c|--call|--node-arg)$/;
+  if (cmd === 'timeout') return { skip: 1, argOpts: /^(-k|-s|--kill-after|--signal)$/, duration: true };
+  if (cmd === 'stdbuf') return { skip: 1, argOpts: /^(-i|-o|-e|--input|--output|--error)$/, duration: false };
+  if (['npx', 'pnpx', 'bunx'].includes(cmd)) return { skip: 1, argOpts: pkgOpts, duration: false };
+  const sub = t[1];
+  if (cmd === 'pnpm' && (sub === 'exec' || sub === 'dlx')) {
+    return { skip: 2, argOpts: /^(-p|--package|-F|--filter|-C|--dir)$/, duration: false };
+  }
+  if (cmd === 'npm' && sub === 'exec') return { skip: 2, argOpts: pkgOpts, duration: false };
+  if (cmd === 'yarn' && (sub === 'dlx' || sub === 'exec')) {
+    return { skip: 2, argOpts: /^(-p|--package)$/, duration: false };
+  }
+  return null;
+}
+
+// Remove env assignments, shell keywords and wrapper commands (sudo, env, command, nohup, time, exec, nice, xargs, runners).
 function stripPrefixes(t) {
   t = [...t];
   const ARG_OPTS = { sudo: /^-[ughpCDRTU]$/, env: /^-[uCS]$/, nice: /^-n$/, xargs: /^-[InPLdEs]$/ };
@@ -221,6 +240,16 @@ function stripPrefixes(t) {
     while (t.length && (/^[A-Za-z_]\w*=/.test(t[0]) || KEYWORDS.has(t[0]))) t.shift();
     if (!t.length) return t;
     const cmd = base(t[0]);
+    const runner = runnerArgs(cmd, t);
+    if (runner) {
+      t.splice(0, runner.skip);
+      while (t.length && t[0].startsWith('-')) {
+        const o = t.shift();
+        if (runner.argOpts.test(o)) t.shift();
+      }
+      if (runner.duration && t.length) t.shift();
+      continue;
+    }
     if (!['sudo', 'env', 'command', 'nohup', 'time', 'exec', 'builtin', 'nice', 'xargs'].includes(cmd)) return t;
     t.shift();
     while (t.length && (t[0].startsWith('-') || (cmd === 'env' && /^[A-Za-z_]\w*=/.test(t[0])))) {

@@ -57,6 +57,45 @@ describe('guard-shell', () => {
     expect(rows().map((x) => x.result)).toEqual(['allow']);
   });
 
+  it.each([
+    'timeout 5 git commit -m x',
+    'timeout -k 2 -s KILL 5 git push',
+    'pnpm exec npm publish',
+    'pnpm dlx vercel',
+    'npx vercel --prod',
+    'npx --yes vercel',
+    'npx -y -p vercel vercel --prod',
+    'npm exec -- vercel',
+    'npm exec -p vercel vercel',
+    'pnpx vercel',
+    'yarn dlx vercel',
+    'yarn exec git push',
+    'bunx vercel',
+    'stdbuf -oL git commit -m x',
+    'stdbuf -o L -e 0 git push',
+    'nice -n 5 git push',
+    '{ git commit -m x; }',
+    'timeout 5 npx pnpm exec gh pr create',
+  ])('denies wrapped %s', (c) => {
+    const r = run('guard-shell', shell(c));
+    expect(r.code).toBe(2);
+    expect(rows().map((x) => x.result)).toEqual(['deny']);
+  });
+  it.each([
+    'npx vitest run',
+    'npx tsc --noEmit',
+    'npx playwright test',
+    'pnpm exec vitest run',
+    'timeout 30 pnpm test',
+    'git diff',
+    'timeout 5 git status',
+    'npx -y -p typescript tsc --noEmit',
+  ])('allows wrapped %s', (c) => {
+    const r = run('guard-shell', shell(c));
+    expect(r.code).toBe(0);
+    expect(rows().map((x) => x.result)).toEqual(['allow']);
+  });
+
   const DENIED_GIT = [
     'stash', 'stash pop', 'checkout main', 'switch main', 'restore f', 'reset', 'reset --hard', 'clean -fd', 'add .', 'rm f',
     'mv a b', 'merge x', 'rebase x', 'cherry-pick x', 'revert x', 'tag v1', 'branch feature', 'branch -D x', 'config user.name x',
