@@ -70,7 +70,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`app.test.tsx`, jsdom, fake-indexeddb): both cards render; both chips read "Live"; the single layout shows below 640 px; `window.limbo` exists in test; Reset demo deletes `limbo:aftershock:a` and `limbo:aftershock:b` and calls an injected reload; with no seed ops the empty state "No sectors reported yet. Tap a sector to report." shows.
   - _Requirements: R1.1, R7.8, R8.1, R8.3 to R8.5, R8.7_
 
-- [ ] 14. `SectorGrid`
+- [x] 14. `SectorGrid`
   - `views/SectorGrid.tsx`: 6 × 4 grid, headers, glyph and word per cell, totals, roving tabindex, arrow, Home, End, Enter and Space handling, selection callback, accessible names, 44 px cells, `data-sector`.
   - Tests: the seed shows 10 cells with a word and 14 `NO REPORT` cells; B2 and E3 read `DAMAGED`, A1 reads `SAFE` and a total of 2; arrows move focus and stop at the edges; Home and End; Enter and Space select and create no op; typing in a text input does not select; each cell's `aria-label` follows R17.3; only one cell has `tabindex="0"`.
   - _Requirements: R7.1, R7.2, R7.10, R17.1, R17.3_

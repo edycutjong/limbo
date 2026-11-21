@@ -22,6 +22,51 @@ body {
   font-family: var(--font-data);
   font-size: 0.75rem;
 }
+.as-grid {
+  display: grid;
+  gap: 2px;
+}
+.as-grid-row {
+  display: grid;
+  grid-template-columns: 1.5rem repeat(6, minmax(44px, 1fr));
+  gap: 2px;
+}
+.as-grid-head {
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+  text-align: center;
+  align-self: center;
+}
+.as-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 2px;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  font-size: 0.625rem;
+  cursor: pointer;
+}
+.as-cell[aria-selected='true'] {
+  outline: 2px solid var(--twin);
+}
+.as-cell:focus-visible {
+  outline: 2px solid var(--ink);
+}
+.as-cell[data-severity='unsafe'] {
+  border-color: var(--after);
+}
+.as-cell[data-severity='damaged'] {
+  border-color: var(--developing);
+}
+.as-cell-id,
+.as-cell-total {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
 .as-body {
   display: grid;
   gap: 0.5rem;
