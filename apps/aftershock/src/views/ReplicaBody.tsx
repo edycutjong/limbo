@@ -4,6 +4,7 @@ import { Inspector, useLimbo, type Id } from '../../../../skeleton/src/limbo/ind
 import type { Op } from '../../../../skeleton/src/core/types.ts';
 import type { Replica } from '../../../../skeleton/src/sync/replica.ts';
 import type { State } from '../model.ts';
+import { ReportForm } from './ReportForm.tsx';
 import { SectorCard } from './SectorCard.tsx';
 import { SectorGrid } from './SectorGrid.tsx';
 import { useScripted } from './ScenePanel.tsx';
@@ -42,6 +43,7 @@ export function ReplicaBody(p: { id: Id; selected?: string | undefined }): React
           <SectorTwins id={p.id} replica={replica as Replica<State>} sector={s.sectors[selected]} />
         </SectorCard>
       )}
+      {selected && <ReportForm key={selected} replica={replica as Replica<State>} id={selected} sector={s.sectors[selected]} />}
       <Inspector id={p.id} open={inspector} onOpenChange={setInspector} />
     </div>
   );

@@ -257,6 +257,18 @@
         "chatSessionId": "sess_7bc3eb98-77a5-4aed-8d00-d5667bfff1d2",
         "timestamp": 1795262647714
       }
+    ],
+    "22. E2E (a): the survey scene in one page": [
+      {
+        "executionId": "53f9bb9a-3238-4390-a567-026cee54e4d5",
+        "chatSessionId": "sess_742b23c3-8520-4f11-afcf-c1efbceacb09",
+        "timestamp": 1795262845133
+      },
+      {
+        "executionId": "53f9bb9a-3238-4390-a567-026cee54e4d5",
+        "chatSessionId": "sess_742b23c3-8520-4f11-afcf-c1efbceacb09",
+        "timestamp": 1795263073608
+      }
     ]
   }
 }

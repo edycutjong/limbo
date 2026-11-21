@@ -1,0 +1,14 @@
+
+> limbo@0.0.0 e2e /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> playwright test
+
+
+Running 5 tests using 1 worker
+
+  ✓  1 [spike] › e2e/offline-spike.spec.ts:10:1 › two offline replicas converge after reconnect (1.6s)
+  ✓  2 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.2s)
+  ✓  3 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  4 [aftershock] › e2e/aftershock-offline.spec.ts:185:1 › survey scene in one page: manual edits (1.8s)
+  ✓  5 [aftershock] › e2e/aftershock-offline.spec.ts:191:1 › survey scene in one page: Play the survey scene (3.5s)
+
+  5 passed (19.0s)

@@ -9,8 +9,14 @@ export default defineConfig({
   projects: [
     { name: 'spike', testMatch: 'offline-spike.spec.ts', use: { baseURL: 'http://localhost:5173' } },
     { name: 'basecamp', testMatch: 'basecamp-offline.spec.ts', use: { baseURL: 'http://localhost:5174' } },
+    { name: 'aftershock', testMatch: 'aftershock-offline.spec.ts', use: { baseURL: 'http://localhost:5176' } },
   ],
   webServer: [
+    {
+      command: 'pnpm exec vite apps/aftershock --port 5176 --strictPort',
+      url: 'http://localhost:5176/',
+      reuseExistingServer: !process.env.CI,
+    },
     {
       command: 'pnpm exec vite e2e/spike --port 5173 --strictPort',
       url: 'http://localhost:5173/',
