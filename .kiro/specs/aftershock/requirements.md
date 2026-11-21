@@ -99,7 +99,7 @@ Every op is a `*.op.ts` with one op per file, a `*.props.ts` and the scaffolded 
 4. Pair view shall be the default at 640 px and wider. A single replica shall show below 640 px. `?replicas=1` and `?replicas=2` shall override the width.
 5. WHEN the page loads in a dev or test build, `window.limbo` shall expose `ready` (a promise), `state(a|b)` (canonical JSON of the materialized state), `ops(a|b)`, `view(a|b)`, `queued(a|b)`, and `pair`.
 6. A production build shall not define `window.limbo` and shall not contain the strings `devrelay` or `DevRelayLink`. A test shall check the built `dist/` text.
-7. The database names shall be `limbo:aftershock:a` and `limbo:aftershock:b`. Reload shall keep the survey and its queued ops. **Reset demo** shall delete both databases through the app and reload.
+7. The database names shall be `limbo:aftershock:pair-<id>:a` and `limbo:aftershock:pair-<id>:b`, where `<id>` is the session id (R14). Reload shall keep the survey and its queued ops. **Reset demo** shall delete this session's two databases through the app, clear the session key and reload.
 8. Every text colour in the app CSS shall be a skeleton token pair of at least 4.5:1. The app shall add no colour literal that is not a token, load no font, script or style from a CDN, and carry no `https://` string in its source.
 9. The root `tsconfig.json` and `vitest.config.ts` shall pick up the new app through their existing `apps/*` globs. A task shall verify this, and shall change them only if it is false.
 10. The app's controls shall respect `prefers-reduced-motion`, with the layer's `data-motion` flag.
@@ -132,7 +132,7 @@ Setup: pair view, replica `a` = Sari, replica `b` = Budi, fresh databases, seede
 3. Each performed op shall be labelled "scripted edit" on screen, next to the sector it changed, until the next link restore.
 4. The button shall not restore the link and shall not tap a **Keep this note** button. The user restores and resolves.
 5. WHERE the user made other edits first, the button shall still perform its six edits. The golden line then does not print (R12.3).
-6. **Reset demo** shall delete both databases through the app, clear the scene flag and reload.
+6. **Reset demo** shall delete this session's two databases (`limbo:aftershock:pair-<id>:a` and `:b`) through the app, clear the session key and the scene flag, and reload.
 
 ## R12 Shuffle test and golden
 

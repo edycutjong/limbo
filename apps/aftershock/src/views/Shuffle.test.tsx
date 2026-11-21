@@ -28,14 +28,18 @@ afterEach(async () => {
   pair?.close();
   pair = undefined;
   el?.remove();
+  sessionStorage.clear();
   await Promise.all(
-    ['a', 'b'].map(
-      (id) =>
-        new Promise<void>((res) => {
-          const r = indexedDB.deleteDatabase(`limbo:aftershock:${id}`);
-          r.onsuccess = r.onerror = r.onblocked = () => res();
-        }),
-    ),
+    (await indexedDB.databases())
+      .map((d) => d.name!)
+      .filter((n) => n.startsWith('limbo:aftershock:'))
+      .map(
+        (n) =>
+          new Promise<void>((res) => {
+            const r = indexedDB.deleteDatabase(n);
+            r.onsuccess = r.onerror = r.onblocked = () => res();
+          }),
+      ),
   );
 });
 

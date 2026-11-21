@@ -155,7 +155,7 @@ Setup: pair view, replica `a` = Sari, replica `b` = Budi, fresh databases, seede
 3. Each performed op shall be labelled "scripted edit" on screen, next to the row it changed, until the next link restore.
 4. The button shall not restore the link and shall not tap Keep or OK. The user restores and resolves.
 5. WHERE the user made other edits first, the button shall still perform its four edits. The golden line then does not print (R12.3), and the app shall make no claim about the claims tying.
-6. **Reset demo** shall delete both databases through the app, clear the scene flag and reload.
+6. **Reset demo** shall delete this session's two databases (`limbo:basecamp:pair-<id>:a` and `:b`) through the app, clear the session key and the scene flag, and reload.
 
 ## R12 Shuffle test and golden
 
@@ -173,7 +173,7 @@ Setup: pair view, replica `a` = Sari, replica `b` = Budi, fresh databases, seede
 4. Pair view shall be the default at 640 px and wider. A single replica shall show below 640 px. `?replicas=1` and `?replicas=2` shall override the width.
 5. WHEN the page loads in a dev or test build, `window.limbo` shall expose `ready` (a promise), `state(a|b)` (canonical JSON of the materialized state), `ops(a|b)`, `view(a|b)`, `queued(a|b)`, and `pair`.
 6. A production build shall not define `window.limbo` and shall not contain the strings `devrelay` or `DevRelayLink`. A test shall check the built `dist/` text.
-7. The database names shall be `limbo:basecamp:a` and `limbo:basecamp:b`. Reload shall keep the list and its queued ops.
+7. The database names shall be `limbo:basecamp:pair-<id>:a` and `limbo:basecamp:pair-<id>:b`, where `<id>` is the session id (R14). Reload shall keep the list and its queued ops.
 8. Every text colour in the app CSS shall be a skeleton token pair of at least 4.5:1. The app shall not load a font, script or style from a CDN, and shall carry no `https://` string in its source except the Playwright and docs files.
 9. The app's controls shall respect `prefers-reduced-motion`, with the layer's `data-motion` flag.
 

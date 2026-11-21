@@ -72,6 +72,18 @@
         "chatSessionId": "sess_17fdf734-d9a5-4268-ab04-5fa7eb4a9391",
         "timestamp": 1795284056792
       }
+    ],
+    "7. D1 (part 2): wire both apps and update the tests that assert fixed names": [
+      {
+        "executionId": "82be4b84-8200-4bf5-8e7b-9c9ff85dc866",
+        "chatSessionId": "sess_45252347-768a-4102-abc5-4048546d5272",
+        "timestamp": 1795284179789
+      },
+      {
+        "executionId": "82be4b84-8200-4bf5-8e7b-9c9ff85dc866",
+        "chatSessionId": "sess_45252347-768a-4102-abc5-4048546d5272",
+        "timestamp": 1795284489779
+      }
     ]
   }
 }

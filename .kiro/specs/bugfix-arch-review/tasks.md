@@ -49,7 +49,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D1 1.5, 1.9; Unchanged 10, 13_
 
-- [ ] 7. D1 (part 2): wire both apps and update the tests that assert fixed names
+- [x] 7. D1 (part 2): wire both apps and update the tests that assert fixed names
   - Failing tests first, in `apps/basecamp/src/app.test.tsx` and `apps/aftershock/src/app.test.tsx`, through `boot(el, { identity })` with in-memory storage and locks and ids `s1`, `s2`: the pair opens `limbo:<app>:pair-s1:a|b` and not the fixed names; a second boot with the same session id and the same locks opens `pair-s2:a|b`; Reset demo deletes only `pair-s1:a|b` (a bystander `pair-other:a` and the second tab's databases remain), clears the session key and calls `reload` once; booting again with the same storage after a plain reload opens the same names and keeps the list and queued ops. Update the existing "Reset demo deletes both databases and calls reload" tests and the `afterEach` cleanups to the R14 names; add a `beforeEach` that clears `sessionStorage` where storage is not injected. Run and record the failures.
   - Fix: `boot()` in both `main.tsx` files acquires the identity first, passes the `store` opener (side `:a` to `names[0]`, `:b` to `names[1]`), and `reset` runs `identity.reset(() => pair?.close())` then reload. `BootOptions` gains `identity?: IdentityOptions`. The aftershock `seedOps` option stays.
   - Update the database-name wording in `.kiro/specs/basecamp/requirements.md` (R14.7 and the Reset demo item) and `.kiro/specs/aftershock/requirements.md` (the database-name item and the Reset demo item) to the R14 names.

@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client';
 import { canonical } from '../../../skeleton/src/core/causal.ts';
 import { LimboShell, ReplicaPair, type Id } from '../../../skeleton/src/limbo/index.ts';
 import { createPair, type Pair } from '../../../skeleton/src/sync/pair.ts';
-import { deleteStore } from '../../../skeleton/src/sync/store.ts';
+import type { Identity } from '../../../skeleton/src/sync/identity.ts';
+import { openStore } from '../../../skeleton/src/sync/store.ts';
 import * as config from '../app.config.ts';
 import { displayName } from './members.ts';
 import type { State } from './model.ts';
@@ -13,6 +14,7 @@ import { ReplicaBody } from './views/ReplicaBody.tsx';
 import { ShuffleSection } from './views/ShuffleSection.tsx';
 import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
 import { registerShell } from '../../offline-shell.ts';
+import { acquirePairIdentity, type IdentityOptions } from '../../pair-identity.ts';
 import '../../../skeleton/src/limbo/tokens.css';
 import '../../controls.css';
 import '../app.css';
@@ -72,7 +74,9 @@ export interface LimboDebug {
 const DEBUG = import.meta.env.DEV || import.meta.env.MODE === 'test';
 
 export interface BootOptions {
-  /** Called after Reset demo has deleted both databases. Default `location.reload`. */
+  /** Storage, locks, id source and query string for the pair identity. Default: the browser's. */
+  identity?: IdentityOptions;
+  /** Called after Reset demo has deleted this session's two databases. Default `location.reload`. */
   reload?(): void;
   /** Shuffle test runner. Default: a Web Worker. */
   createRunner?(): ShuffleRunner;
@@ -82,17 +86,21 @@ export interface BootOptions {
 export function boot(el: HTMLElement, o: BootOptions = {}): { ready: Promise<Pair<State>> } {
   const root = createRoot(el);
   let pair: Pair<State> | undefined;
+  let identity: Identity | undefined;
   const reset = async (): Promise<void> => {
-    pair?.close();
-    await Promise.all(['a', 'b'].map((id) => deleteStore(`limbo:${config.name}:${id}`)));
+    await identity?.reset(() => pair?.close());
     (o.reload ?? (() => location.reload()))();
   };
-  const ready = createPair<State>({
-    app: config.name,
-    defs: config.defs,
-    materialize: config.materialize,
-    twinCount: config.twinCount,
-    seedOps: config.seedOps,
+  const ready = acquirePairIdentity(config.name, o.identity).then((id) => {
+    identity = id;
+    return createPair<State>({
+      app: config.name,
+      defs: config.defs,
+      materialize: config.materialize,
+      twinCount: config.twinCount,
+      seedOps: config.seedOps,
+      store: (name) => openStore(name.endsWith(':a') ? id.names[0]! : id.names[1]!),
+    });
   }).then((p) => {
     pair = p;
     root.render(
