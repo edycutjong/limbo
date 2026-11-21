@@ -79,7 +79,7 @@ export interface SimResult {
 }
 
 /** Random topological order of `ops` under `deps`, with some ops inserted twice. */
-function deliveryOrder(ops: readonly Op[], rand: Rand, dupRate: number): string[] {
+export function deliveryOrder(ops: readonly Op[], rand: Rand, dupRate: number): string[] {
   const vv: Record<string, number> = {};
   const left = [...ops];
   const order: Op[] = [];

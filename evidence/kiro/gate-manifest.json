@@ -92,6 +92,6 @@
     "kit/scripts/gate-integrity.mjs": "08bf155b6412b8900e16ed4c0935b9334275a4041c2867690a7ee8b1cb92377f",
     "kit/scripts/gate-list.mjs": "de8734976708f1c951f1cac4d4bcd408d06ffd0b16b07a1a225f5f0317d50e11",
     "kit/scripts/kiro-run.mjs": "466038d9acc3965929580cb1eed56de9de8325fab787ec75b343949613aa6aef",
-    "skeleton/src/core/simulate.ts": "3a81f49d37b4a8df14489cbdadebeba2675b6e0281c8293e66b411c8846b217a"
+    "skeleton/src/core/simulate.ts": "e16abe2ea25a163c46bc044ebc4386ab2945027eec8737f93cb6310198c8ec0d"
   }
 }
