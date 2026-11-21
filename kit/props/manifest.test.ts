@@ -15,6 +15,7 @@ const EXPECTED: Record<string, Intent['kind']> = {
   'expense.add': 'split',
   'expense.setAmount': 'split',
   'expense.addMember': 'split',
+  'expense.removeMember': 'split',
   'sector.report': 'max',
   'sector.clear': 'max',
   'sector.count': 'set',
@@ -30,10 +31,10 @@ function def(name: string, intent: Intent): OpDef {
 describe('intents.json (R13)', () => {
   const manifest = loadManifest();
 
-  it('holds exactly the 17 names with the required kinds', () => {
+  it('holds exactly the 18 names with the required kinds', () => {
     expect(manifest).toBeDefined();
     const kinds = Object.fromEntries(Object.entries(manifest ?? {}).map(([n, i]) => [n, i.kind]));
-    expect(Object.keys(EXPECTED)).toHaveLength(17);
+    expect(Object.keys(EXPECTED)).toHaveLength(18);
     expect(kinds).toEqual(EXPECTED);
   });
 

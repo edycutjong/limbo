@@ -23,7 +23,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: `expense.state.test.ts` for `present` (add observed by a remove is gone; concurrent add and remove survives; duplicate adds; remove before add); the two scaffolded props suites pass, and the vacuity guard sees concurrent amount edits.
   - _Requirements: R6.1, R6.2, R6.7, R6.8, R6.9, R16.1, R16.4_
 
-- [ ] 5. `expense.addMember` and `expense.removeMember`
+- [x] 5. `expense.addMember` and `expense.removeMember`
   - Add the two ops and their `*.props.ts` (`splitIntent` and `addRemoveIntent` in `checks`). Add `"expense.removeMember": { "kind": "split" }` to `kit/props/intents.json` (the only edit to that file). Confirm the manifest test still passes.
   - Tests: scaffolded props pass; a concurrent add and remove of the same member keeps the member; a remove that observed the add removes it; the vacuity guard finds concurrent add and remove.
   - _Requirements: R6.3 to R6.6, R6.8, R16.4_

@@ -48,6 +48,18 @@
         "chatSessionId": "sess_96a3c56f-443c-47ac-8f0c-2810ae7cd01e",
         "timestamp": 1795245099014
       }
+    ],
+    "5. `expense.addMember` and `expense.removeMember`": [
+      {
+        "executionId": "4dedaf9e-6d15-411d-b642-e419ea8f480c",
+        "chatSessionId": "sess_f9afa634-fe7e-4f95-bd19-4e40535e2545",
+        "timestamp": 1795245217318
+      },
+      {
+        "executionId": "4dedaf9e-6d15-411d-b642-e419ea8f480c",
+        "chatSessionId": "sess_f9afa634-fe7e-4f95-bd19-4e40535e2545",
+        "timestamp": 1795245433927
+      }
     ]
   }
 }

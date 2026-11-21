@@ -35,6 +35,34 @@ export function present(addsOf: readonly MemberAdd[], removes: readonly MemberRe
   return [...out].sort();
 }
 
+export interface MemberPayload {
+  member: string;
+}
+
+/** State shared by `expense.addMember` and `expense.removeMember`: both ops keep their writes by op id and re-derive `members`. */
+export interface MemberOpsState {
+  memberAdds?: Record<string, Op<MemberPayload>>;
+  memberRemoves?: Record<string, Op<MemberPayload>>;
+  members?: Record<string, string[]>;
+}
+
+/** Record one member op by id and re-derive the present members of its target (order and duplicates cannot change it). */
+export function applyMemberOp(s: MemberOpsState, op: Op<MemberPayload>, kind: 'add' | 'remove'): MemberOpsState {
+  const memberAdds = kind === 'add' ? { ...(s.memberAdds ?? {}), [op.id]: op } : (s.memberAdds ?? {});
+  const memberRemoves = kind === 'remove' ? { ...(s.memberRemoves ?? {}), [op.id]: op } : (s.memberRemoves ?? {});
+  const of = (m: Record<string, Op<MemberPayload>>) =>
+    Object.values(m).filter((o) => o.target === op.target).map((o) => ({ member: o.payload.member, op: o }));
+  return { ...s, memberAdds, memberRemoves, members: { ...(s.members ?? {}), [op.target]: present(of(memberAdds), of(memberRemoves)) } };
+}
+
+/** Invariant shared by both member ops: every recorded member is a string. */
+export function memberInvariant(s: MemberOpsState): true | string {
+  for (const m of [...Object.values(s.memberAdds ?? {}), ...Object.values(s.memberRemoves ?? {})]) {
+    if (typeof m.payload.member !== 'string') return `op ${m.id} has a non-string member`;
+  }
+  return true;
+}
+
 /** The expense's defining add: the lowest stamp (ties cannot occur, stamps are unique). */
 export function firstAdd(adds: readonly Op<AddPayload>[]): Op<AddPayload> | undefined {
   let best: Op<AddPayload> | undefined;
