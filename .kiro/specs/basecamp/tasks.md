@@ -8,7 +8,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: `app-shell.test.tsx` renders `main`'s root component and finds the `h1` and the line "For people whose shared list breaks when the signal does."; `pnpm --filter @limbo/basecamp build` produces `dist/index.html`.
   - _Requirements: R1.2, R1.3, R13.2, R13.3, R17.5_
 
-- [ ] 2. Money and members helpers
+- [x] 2. Money and members helpers
   - `apps/basecamp/src/money.ts` (`parseCents`, `formatCents`) and `members.ts` (replica id to member, display names `Sari`/`Budi`/`Citra`/`Dewi`, `authorOf(op)` = `stamp.r.split('#')[0]`).
   - Tests: parse `26`, `26.5`, `26.50`, `$26.00` → 2600, 2650, 2650, 2600; reject `26.555`, `-1`, `abc`, empty; `formatCents` 0, 5, 834, 2600, 100000; round trip over fast-check integers; no `toLocale`, `Intl` or `/` on money (source scan).
   - _Requirements: R7.4, R7.6_
