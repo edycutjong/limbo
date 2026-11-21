@@ -5,6 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { afterAll, afterEach, describe, expect, it } from 'vitest';
 import { fixtures } from '../props/bad/index.ts';
 import type { OpDef } from '../../skeleton/src/core/types.ts';
@@ -362,5 +363,64 @@ describe('server: evidence ledger', () => {
     const b = await call(bad, 'fuzz_op', args);
     expect(b).toEqual(a);
     expect(b.isError).toBeFalsy();
+  }, 60_000);
+});
+
+describe('server: stdio spawn and cwd', () => {
+  const dirs: string[] = [];
+  afterEach(() => {
+    for (const d of dirs.splice(0)) rmSync(d, { recursive: true, force: true });
+  });
+
+  async function spawnClient(cwd: string): Promise<{ client: Client; errors: Error[]; log: string }> {
+    const d = mkdtempSync(join(tmpdir(), 'limbo-stdio-test-'));
+    dirs.push(d);
+    const log = join(d, 'mcp-calls.jsonl');
+    const env: Record<string, string> = {};
+    for (const [k, v] of Object.entries(process.env)) if (v !== undefined) env[k] = v;
+    env.LIMBO_MCP_LOG = log;
+    const transport = new StdioClientTransport({
+      command: process.execPath,
+      args: [join(root, 'kit', 'mcp', 'server.mjs')],
+      cwd,
+      env,
+      stderr: 'ignore',
+    });
+    const errors: Error[] = [];
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    client.onerror = (e) => errors.push(e);
+    await client.connect(transport);
+    clients.push(client);
+    return { client, errors, log };
+  }
+
+  const opNames = (r: Out): string[] => (r.structuredContent!.ops as { name: string }[]).map((o) => o.name);
+
+  it('fuzz_op on item.tick from the repo root passes with the requested runs', async () => {
+    const { client, errors, log } = await spawnClient(root);
+    const r = await call(client, 'fuzz_op', { app: 'basecamp', op: 'item.tick', orderings: 100 });
+    expect(r.isError).toBeFalsy();
+    expect(r.structuredContent).toMatchObject({ pass: true, runs: 100 });
+    expect(errors).toEqual([]);
+    const row = JSON.parse(readFileSync(log, 'utf8').trim().split('\n').pop()!) as Record<string, unknown>;
+    expect(row).toMatchObject({ tool: 'fuzz_op', op: 'item.tick', pass: true, runs: 100 });
+  }, 60_000);
+
+  it('from another working directory it lists the same tools and the same ops', async () => {
+    const here = await spawnClient(root);
+    const there = await spawnClient(tmpdir());
+    const names = async (c: Client) => (await c.listTools()).tools.map((t) => t.name).sort();
+    const expected = ['check_lint', 'explain_trace', 'fuzz_op', 'list_ops'];
+    expect(await names(there.client)).toEqual(expected);
+    expect(await names(here.client)).toEqual(expected);
+    for (const app of ['basecamp', 'aftershock']) {
+      const a = await call(here.client, 'list_ops', { app });
+      const b = await call(there.client, 'list_ops', { app });
+      expect(b.isError).toBeFalsy();
+      expect(opNames(b).length).toBeGreaterThan(0);
+      expect(opNames(b)).toEqual(opNames(a));
+    }
+    expect(here.errors).toEqual([]);
+    expect(there.errors).toEqual([]);
   }, 60_000);
 });

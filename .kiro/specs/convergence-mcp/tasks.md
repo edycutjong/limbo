@@ -50,7 +50,7 @@ Each task ends with `pnpm -s typecheck && pnpm -s test && pnpm -s props` green. 
   - Confirm no test writes `evidence/kiro/mcp-calls.jsonl` (check the file is absent or unchanged after `pnpm test`).
   - _Requirements: R9.1 to R9.5, R8.7_
 
-- [ ] 8. Stdio and cwd tests
+- [x] 8. Stdio and cwd tests
   - Tests (`server.test.ts`, spawn `node kit/mcp/server.mjs` with the SDK `StdioClientTransport`, `LIMBO_MCP_LOG` set to a temp file): from the repo root, `fuzz_op` on `item.tick` with `orderings: 100` returns `pass: true`, `runs: 100`; from `cwd = os.tmpdir()`, `listTools` returns the four tools and `list_ops` for both apps returns the same ops as from the repo root; the server's stdout carries only MCP frames (the client does not error on a bad frame).
   - Test (`kit/mcp/clean.test.ts`, new): grep `kit/mcp/*.ts` and `*.mjs` for `console.log` and `process.stdout.write`; none outside `job-main.mjs`'s single reply line.
   - _Requirements: R1.2 to R1.4, R4.2, R11.1, R11.2, R11.6_
