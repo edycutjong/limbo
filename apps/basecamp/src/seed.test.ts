@@ -36,6 +36,10 @@ describe('seed', () => {
     expect(seedOps.length).toBe(15);
   });
 
+  it('keeps the recorded first seed key', () => {
+    expect((seedOps[0]!.payload as { key: string }).key).toBe('a001r01d01d01c1');
+  });
+
   it('sha256 of the canonical JSON equals the recorded constant', () => {
     const sha = createHash('sha256').update(canonical(seedOps)).digest('hex');
     console.log(`seed sha256: ${sha}`);

@@ -135,8 +135,8 @@ export interface Placed {
  * ordered-move: a pure join over the items of one list.
  * Each item's `pos` is `causalLww` over its create key and its moves.
  * Order = ascending by (key, id), both by UTF-16 code unit (never localeCompare).
- * Items with no writes are dropped. Keys carry a replica suffix, so two moves into one gap
- * give distinct keys; the id only breaks a tie between identical keys.
+ * Items with no writes are dropped. Keys from different ops differ (the key suffix encodes the
+ * op's dot); identical keys can exist in data written before that, and the id then breaks the tie.
  * Reads no arrival order; duplicates collapse by op id.
  */
 export function orderedMove(items: readonly MoveItem[]): Placed[] {

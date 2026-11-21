@@ -1,3 +1,5 @@
+import fc from 'fast-check';
+import { generateKeyBetween } from 'fractional-indexing';
 import { describe, expect, it } from 'vitest';
 import { allocKey, canonical, causalBuffer, compareStamp, concurrent, covers, createOp, newReplica, observe } from './causal.ts';
 import type { Op, VV } from './types.ts';
@@ -114,5 +116,80 @@ describe('allocKey', () => {
   });
   it('uses only the part before # and drops dashes', () => {
     expect(allocKey(null, null, 'a-b#1')).toBe(allocKey(null, null, 'ab#2'));
+  });
+});
+
+describe('allocKey with a dot', () => {
+  const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const un62 = (d: string): number => [...d].reduce((a, c) => a * 62 + B62.indexOf(c), 0);
+  /** Test-side decoder: strip the final `1`, read 3 digits of length L, then 3L digits of the dot string. */
+  function decode(key: string): { r: string; n: number } {
+    const body = key.slice(0, -1);
+    const len = un62(body.slice(-3));
+    const enc = body.slice(-3 - 3 * len, -3);
+    let s = '';
+    for (let i = 0; i < enc.length; i += 3) s += String.fromCharCode(un62(enc.slice(i, i + 3)));
+    const at = s.lastIndexOf(':');
+    return { r: s.slice(0, at), n: Number(s.slice(at + 1)) };
+  }
+  const L = 'a0';
+  const R = 'a1';
+
+  it('gives distinct keys for different n, incarnations and dashed ids', () => {
+    const ks = [
+      allocKey(L, R, { r: 'a#1', n: 1 }),
+      allocKey(L, R, { r: 'a#1', n: 2 }),
+      allocKey(L, R, { r: 'a#2', n: 1 }),
+      allocKey(L, R, { r: 'a-b#1', n: 1 }),
+      allocKey(L, R, { r: 'ab#1', n: 1 }),
+    ];
+    expect(new Set(ks).size).toBe(ks.length);
+  });
+  it('decodes to the dot, stays inside the gap and within the length bound', () => {
+    for (const dot of [{ r: 'a#1', n: 1 }, { r: 'a-b#2', n: 40 }, { r: 'seed', n: 7 }]) {
+      for (const [l, r] of [[L, R], [null, null], [null, 'a0'], ['a0', 'a0V']] as const) {
+        const k = allocKey(l, r, dot);
+        expect(decode(k)).toEqual(dot);
+        if (l !== null) expect(k > l).toBe(true);
+        if (r !== null) expect(k < r).toBe(true);
+      }
+    }
+  });
+  it('length is at most len(k) + 3 * len(dotString) + 4 for the generated key k', () => {
+    const dot = { r: 'a#1', n: 12 };
+    const k = allocKey(L, R, dot);
+    const base = generateKeyBetween(L, R);
+    expect(k.length).toBeLessThanOrEqual(base.length + 3 * `${dot.r}:${dot.n}`.length + 4);
+  });
+  it('never equals the seed key', () => {
+    const seedKey = allocKey(null, null, 'seed');
+    expect(allocKey(null, null, { r: 'seed', n: 1 })).not.toBe(seedKey);
+    expect(allocKey(null, null, { r: 'seed#1', n: 1 })).not.toBe(seedKey);
+  });
+  it('keeps the legacy string form', () => {
+    expect(allocKey(L, R, 'a#1')).toBe(allocKey(L, R, 'a#2'));
+    expect(() => allocKey('K', 'K', 'b#1')).toThrow();
+  });
+  it('property: keys are pairwise distinct for distinct dots, inside the gap, and decode', () => {
+    const dot = fc.record({ r: fc.stringMatching(/^[a-z0-9#-]{1,6}$/), n: fc.integer({ min: 1, max: 5000 }) });
+    const gap = fc.integer({ min: 0, max: 12 }).chain((len) =>
+      fc.tuple(fc.constant(len), fc.nat(len)).map(([m, i]) => {
+        const keys: string[] = [];
+        let prev: string | null = null;
+        for (let j = 0; j < m; j++) keys.push((prev = generateKeyBetween(prev, null)));
+        return [keys[i - 1] ?? null, keys[i] ?? null] as const;
+      }),
+    );
+    fc.assert(
+      fc.property(gap, fc.uniqueArray(dot, { minLength: 2, maxLength: 12, selector: (d) => `${d.r}:${d.n}` }), ([l, r], dots) => {
+        const keys = dots.map((d) => allocKey(l, r, d));
+        expect(new Set(keys).size).toBe(keys.length);
+        keys.forEach((k, i) => {
+          if (l !== null) expect(k > l).toBe(true);
+          if (r !== null) expect(k < r).toBe(true);
+          expect(decode(k)).toEqual(dots[i]);
+        });
+      }),
+    );
   });
 });

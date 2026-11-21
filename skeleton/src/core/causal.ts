@@ -63,11 +63,27 @@ function base62(s: string): string {
   return out;
 }
 
-/** Fractional key between `left` and `right`, made unique per replica by a suffix. Called at op creation only. */
-export function allocKey(left: string | null, right: string | null, r: ReplicaId): string {
+/** The dot of the op that will carry a key: its replica namespace (with incarnation) and its counter. */
+export interface Dot {
+  r: ReplicaId;
+  n: number;
+}
+
+const len3 = (n: number): string => B62[Math.floor(n / 3844) % 62]! + B62[Math.floor(n / 62) % 62]! + B62[n % 62]!;
+
+/**
+ * Fractional key between `left` and `right`, made unique by a suffix. Called at op creation only.
+ * A string `by` keeps the legacy suffix (replica id before `#`, dashes dropped). A dot gives
+ * `k + base62(`${r}:${n}`) + len3 + '1'`, which is injective in the dot and parseable from the end.
+ */
+export function allocKey(left: string | null, right: string | null, by: ReplicaId | Dot): string {
   let k = generateKeyBetween(left, right);
   while (right !== null && right.startsWith(k)) k = generateKeyBetween(k, right);
-  return k + base62((r.split('#')[0] ?? '').replaceAll('-', '')) + '1';
+  if (typeof by !== 'string') {
+    const d = `${by.r}:${by.n}`;
+    return k + base62(d) + len3(d.length) + '1';
+  }
+  return k + base62((by.split('#')[0] ?? '').replaceAll('-', '')) + '1';
 }
 
 /** Canonical JSON: keys sorted by code unit, no whitespace, `undefined` dropped, integers only. */

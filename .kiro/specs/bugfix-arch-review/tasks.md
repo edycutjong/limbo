@@ -12,7 +12,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D3 3.1 to 3.8; Unchanged 1, 10, 15, 17_
 
-- [-] 2. D2 (part 1): unique keys in `allocKey`
+- [x] 2. D2 (part 1): unique keys in `allocKey`
   - Failing tests first, in `skeleton/src/core/causal.test.ts`: a dot form `allocKey(L, R, { r, n })` gives distinct keys for different `n`, different incarnations (`a#1` vs `a#2`), and dashed ids (`a-b#1` vs `ab#1`); `decode(key)` (a helper in the test) returns the dot; every key lies strictly between `left` and `right`; length is at most `len(k) + 3 * len(dotString) + 4`; a dot key never equals the real seed key. A fast-check property over random gaps and dots checks pairwise distinctness. Keep the legacy-form lines: `allocKey(L, R, 'a#1') === allocKey(L, R, 'a#2')` and `allocKey(K, K, 'b#1')` throws. Run and record the failure (the dot form does not exist yet).
   - Fix: `skeleton/src/core/causal.ts` `allocKey(left, right, by: ReplicaId | Dot)`; a string keeps the exact current output. Update the `orderedMove` doc comment in `skeleton/src/core/merges.ts` (comment only).
   - Confirm unchanged: existing `allocKey` tests, `seed.test.ts` (assert one literal seed key plus `seedVersion`), goldens G01 to G21, `pnpm props`.
