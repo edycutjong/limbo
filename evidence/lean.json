@@ -4,7 +4,7 @@
   "skeleton_ts_loc_nonblank": 2520,
   "skeleton_ts_loc_noncomment": 2297,
   "skeleton_test_files": 34,
-  "index_exports": 16,
+  "index_exports": 15,
   "files_by_dir": {
     "core": 4,
     "index.ts": 1,

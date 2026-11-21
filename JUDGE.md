@@ -13,21 +13,22 @@ No setup, no keys, no cloning.
 3. Press **Play the lake scene**. Sari ticks the tent while Budi deletes it, and both claim the last stove.
 4. Press **Restore link**. The tent returns as a ghost _twin_; the stove goes to exactly one claimant on both replicas.
 5. Tap **Keep** on the twin and **OK** on the lost claim. The fog lifts and the **FIXED** stamp appears: both replicas hold the same list.
-6. Open [AFTERSHOCK](https://aftershock.limbo.edycu.dev/?replicas=2) (a second, different app on the same skeleton) and run the same cut, play, restore.
+6. Open [AFTERSHOCK](https://aftershock.limbo.edycu.dev/?replicas=2) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note with **Keep** on the twin card.
+7. Optional: press **Run shuffle test** in either page's shuffle section to replay the on-screen ops in random causal orders in your browser.
 
 ## The receipts
 
 | What | Number | Source |
 |---|---|---|
 | Convergence | 10,000 random orderings of 3 replicas, 0 divergences across every op of both apps (seed 20251031); a measured, property-tested claim, not a proof | `evidence/convergence/full-2026-11-22.json` |
-| Tests | 1,393 unit, component and property tests pass (9 skipped: the full-tier suites), 24 Playwright e2e tests pass | `evidence/ci/latest.json` |
+| Tests | 1,393 unit, component and property tests pass (9 skipped: the AFTERSHOCK rows for conflict classes it has no ops for), 24 Playwright e2e tests pass (undefined skipped: viewport-conditional phone checks) | `evidence/ci/latest.json` |
 | Coverage | 100% lines, 100% branches, 100% functions on the skeleton and each app's domain modules (CI fails below 100%) | `evidence/ci/latest.json, vitest.config.ts` |
-| Kiro work | 188 Kiro sessions, 173 spec tasks executed by Kiro across 11 specs, 1,770 hook fires, 659.11 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
-| Kiro share | 111 of 119 product commits carry a Kiro-Session trailer (93.28%); the rest are logged as claude-direct | `evidence/kiro/share.json` |
+| Kiro work | 188 Kiro sessions, 173 sessions across 11 specs (135 ran numbered tasks, 11 authored a spec), 1,770 hook fires, 659.11 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
+| Kiro share | 111 of 119 product commits carry a Kiro-Session trailer (93.28%); the others are listed with their subjects | `evidence/kiro/share.json` |
 
 ## Where Kiro did the work
 
-- `.kiro/specs/`: requirements, design and tasks for each feature, written by Kiro. Start with .kiro/specs/basecamp/ or coverage-full/.
+- `.kiro/specs/`: requirements, design and tasks for each feature, authored by Kiro sessions from an orchestrator brief. Start with .kiro/specs/basecamp/ or coverage-full/.
 - `.kiro/steering/`: the rules Kiro was held to: local-first.md (no wall clock, commute or declare the merge) and testing.md (properties first).
 - `.kiro/hooks/ and .kiro/agents/`: the hooks that ran the convergence properties after each task and blocked the agent from stopping while one failed.
 - `evidence/kiro/sessions.jsonl`: one row per Kiro session (spec, task, credits, hooks fired, outcome). Hand edits are logged as claude-direct rows. hooks.jsonl is written only by the hook scripts.
@@ -49,7 +50,7 @@ No setup, no keys, no cloning.
 - No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op's declared rule picks one claimant deterministically and the other user sees a twin ghost.
 - The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).
 - AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.
-- Test tooling (vitest) carries advisory-level audit findings that need a major upgrade; shipped dependencies audit clean (pnpm audit --prod).
+- Test tooling (vitest) carries advisory-level audit findings that need a major upgrade; shipped dependencies have no high or critical findings (pnpm audit --prod --audit-level=high).
 
 ## Links
 
