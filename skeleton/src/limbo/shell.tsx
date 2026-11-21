@@ -175,7 +175,7 @@ function makeStore(c: Ctx, id: Id) {
         session.onCross((ops) => {
           mark(c.describe(replica.state()));
           const before = replica.log().length - ops.length;
-          for (const [k, e] of seen) if (e.resolved && (e.at ?? 0) <= before) seen.delete(k);
+          for (const [k, e] of seen) if (e.resolved && e.at! <= before) seen.delete(k);
           crossing = { seq: crossing.seq + 1, k: ops.length };
           bump();
         }),

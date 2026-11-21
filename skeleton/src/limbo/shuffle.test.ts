@@ -56,6 +56,49 @@ describe('runShuffle', () => {
   });
 });
 
+const SPECIAL_N = 300;
+const order = (ops: readonly Op[]) => ops.map((o) => o.id).join(',');
+
+describe('runShuffle edge cases', () => {
+  it('replays an empty op list as one state of the empty materialization', () => {
+    const r = runShuffle({ ops: [], n: 2, seed: 1 }, sum);
+    expect(r).toEqual({ ran: 2, disagree: 0, states: [canonical(sum([]))] });
+  });
+
+  it('skips a drop that would remove every op, and still shrinks to a smaller set', () => {
+    const a = newReplica('a');
+    const root = createOp(a, add, 't', { by: 1 });
+    const b = newReplica('b');
+    const c = newReplica('c');
+    observe(b, root);
+    observe(c, root);
+    b.vv.a = 1;
+    c.vv.a = 1;
+    const ops = [root, createOp(b, add, 't', { by: 2 }), createOp(c, add, 't', { by: 3 })];
+    const r = runShuffle({ ops, n: 20, seed: 1 }, (os) => order(os));
+    expect(r.disagree).toBeGreaterThan(0);
+    expect(r.shrunk).toHaveLength(3);
+    expect(r.trace).toContain('first difference');
+  });
+
+  it('stops shrinking after the attempt cap and returns the smaller set it reached', () => {
+    const many = Array.from({ length: 205 }, (_, i) => createOp(newReplica(`r${i}`), add, 't', { by: i }));
+    const r = runShuffle({ ops: many, n: 2, seed: 1 }, (os) => order(os));
+    expect(r.disagree).toBe(1);
+    // One op is dropped per attempt and the cap is 200 attempts.
+    expect(r.shrunk).toHaveLength(5);
+  });
+
+  it('gives no trace when the disagreeing ordering is outside the shrink search', () => {
+    const ops = Array.from({ length: 5 }, (_, i) => createOp(newReplica(`r${i}`), add, 't', { by: i }));
+    const special = order([...ops].sort((x, y) => (x.id < y.id ? -1 : 1)));
+    const r = runShuffle({ ops, n: SPECIAL_N, seed: 1 }, (os) => (order(os) === special ? 'special' : 'plain'));
+    expect(r.disagree).toBeGreaterThan(0);
+    expect(r.trace).toBeUndefined();
+    expect(r.shrunk).toHaveLength(5);
+  });
+});
+
 describe('groupThousands', () => {
   it('groups by string slicing', () => {
     expect([0, 999, 1000, 12345, 1234567].map(groupThousands)).toEqual(['0', '999', '1,000', '12,345', '1,234,567']);

@@ -33,6 +33,8 @@ function Rows(p: { onKeep(): void; onOther(): void }) {
   );
 }
 
+// jsdom has no AnimationEvent, so React listens for the prefixed name.
+const animationEnd = (el: Element): void => void fireEvent(el, new Event('webkitAnimationEnd', { bubbles: true }));
 const sync = (pair: P) => act(async () => void (await pair.settle()));
 
 async function setup(kind: 'life' | 'claim') {
@@ -128,5 +130,69 @@ describe('Twin', () => {
     expect(container.querySelector('.limbo-twin')).toBeNull();
     expect(container.querySelector('[data-leaving]')).toBeNull();
     pair.close();
+  });
+
+  it('ignores keys other than Enter on the twin row', async () => {
+    const { container, keep, other, pair } = await setup('life');
+    const row = container.querySelector<HTMLElement>('.limbo-twin')!;
+    fireEvent.keyDown(row, { key: ' ' });
+    fireEvent.keyDown(row, { key: 'Escape' });
+    expect(keep).not.toHaveBeenCalled();
+    expect(other).not.toHaveBeenCalled();
+    pair.close();
+  });
+
+  it('leaves Enter on an action button to that button', async () => {
+    const { container, keep, pair } = await setup('life');
+    const other = container.querySelectorAll<HTMLElement>('.limbo-twin-actions button')[1]!;
+    fireEvent.keyDown(other, { key: 'Enter' });
+    expect(keep).not.toHaveBeenCalled();
+    pair.close();
+  });
+
+  describe('a twin kept mounted by its parent', () => {
+    const fixed = (
+      <Twin replica="a" id="n1:claim:bob" atRest={<span>ann</span>} ghost={<span>bob</span>} caption="bob also claimed" rule="claim-one" actions={<button>Keep</button>} />
+    );
+    async function conflict() {
+      const pair = await makeStubPair();
+      const r = renderApp(pair, fixed);
+      act(() => void pair.a.local('note.add', 'n1', {}));
+      await sync(pair);
+      act(() => pair.cut());
+      act(() => {
+        pair.a.local('note.claim', 'n1', { who: 'ann' });
+        pair.b.local('note.claim', 'n1', { who: 'bob' });
+      });
+      act(() => pair.restore());
+      await sync(pair);
+      return { pair, ...r };
+    }
+
+    it('keeps the leaving twin until its ghost animation ends', async () => {
+      const { container, pair } = await conflict();
+      expect(container.querySelector('.limbo-twin')!.getAttribute('data-leaving')).toBeNull();
+      act(() => void pair.a.local('note.delete', 'n1', {}));
+      await sync(pair);
+      expect(container.querySelector('.limbo-twin')!.getAttribute('data-leaving')).toBe('true');
+      animationEnd(container.querySelector('.limbo-twin-ghost')!);
+      expect(container.querySelector('.limbo-twin')).toBeNull();
+      pair.close();
+    });
+
+    it('shows the twin again when the same conflict returns after it left', async () => {
+      const { container, pair } = await conflict();
+      act(() => void pair.a.local('note.delete', 'n1', {}));
+      await sync(pair);
+      animationEnd(container.querySelector('.limbo-twin-ghost')!);
+      expect(container.querySelector('.limbo-twin')).toBeNull();
+      act(() => void pair.a.local('note.restore', 'n1', {}));
+      await sync(pair);
+      const row = container.querySelector('.limbo-twin')!;
+      expect(row).not.toBeNull();
+      expect(row.getAttribute('data-leaving')).toBeNull();
+      expect(container.querySelector('.limbo-twin-rule')!.textContent).toBe('Decided by: claim-one');
+      pair.close();
+    });
   });
 });

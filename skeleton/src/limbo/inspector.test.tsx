@@ -325,3 +325,83 @@ describe('Inspector', () => {
     });
   });
 });
+
+describe('Inspector coverage', () => {
+  it('says none yet while the session has no peer id', async () => {
+    const pair = await makeStubPair();
+    const noPeer = { ...pair, sessions: { ...pair.sessions, a: { ...pair.sessions.a, peerId: () => undefined } } } as typeof pair;
+    renderApp(noPeer, <Inspector id="a" />);
+    open();
+    expect(section('Link').textContent).toContain('Peer: none yet');
+    pair.close();
+  });
+
+  it('says no ops crossed for an exchange that carried none', async () => {
+    const pair = await makeStubPair();
+    const empty = { ...pair, exchanges: () => ({ last: [[]], open: [] }) } as unknown as typeof pair;
+    renderApp(empty, <Inspector id="a" />);
+    open();
+    const recent = section('Recent exchanges');
+    expect(recent.textContent).toContain('No ops crossed.');
+    expect(recent.querySelector('table')).toBeNull();
+    pair.close();
+  });
+
+  it('labels ops that this replica received as in', async () => {
+    const pair = await makeStubPair();
+    renderApp(pair, <Inspector id="a" />);
+    act(() => void pair.b.local('note.add', 'n1', {}));
+    await sync(pair);
+    open();
+    const cells = Array.from(rows(section('Recent exchanges'))[0]!.querySelectorAll('td')).map((c) => c.textContent);
+    expect(cells[0]).toBe('in');
+    expect(cells[1]).toBe('note.add');
+    pair.close();
+  });
+
+  describe('focus trap with a second focusable', () => {
+    const setup = async () => {
+      const pair = await makeStubPair();
+      renderApp(pair, <Inspector id="a" lever={<button type="button">Lever</button>} />);
+      open();
+      const close = screen.getByRole('button', { name: 'Close' });
+      const lever = screen.getByRole('button', { name: 'Lever' });
+      return { pair, close, lever, dialog: screen.getByRole('dialog') };
+    };
+
+    it('Tab from outside the drawer moves focus to the first focusable', async () => {
+      const { pair, close, dialog } = await setup();
+      screen.getByRole('button', { name: 'Inspector' }).focus();
+      expect(fireEvent.keyDown(dialog, { key: 'Tab' })).toBe(false);
+      expect(document.activeElement).toBe(close);
+      pair.close();
+    });
+
+    it('Shift+Tab from outside the drawer moves focus to the last focusable', async () => {
+      const { pair, lever, dialog } = await setup();
+      screen.getByRole('button', { name: 'Inspector' }).focus();
+      expect(fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })).toBe(false);
+      expect(document.activeElement).toBe(lever);
+      pair.close();
+    });
+
+    it('Tab on the last focusable wraps to the first, Shift+Tab on the first wraps to the last', async () => {
+      const { pair, close, lever, dialog } = await setup();
+      lever.focus();
+      expect(fireEvent.keyDown(dialog, { key: 'Tab' })).toBe(false);
+      expect(document.activeElement).toBe(close);
+      expect(fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })).toBe(false);
+      expect(document.activeElement).toBe(lever);
+      pair.close();
+    });
+
+    it('Tab between the two focusables is left to the browser', async () => {
+      const { pair, close, lever, dialog } = await setup();
+      close.focus();
+      expect(fireEvent.keyDown(dialog, { key: 'Tab' })).toBe(true);
+      lever.focus();
+      expect(fireEvent.keyDown(dialog, { key: 'Tab', shiftKey: true })).toBe(true);
+      pair.close();
+    });
+  });
+});

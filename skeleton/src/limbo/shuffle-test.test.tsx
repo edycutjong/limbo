@@ -88,4 +88,20 @@ describe('ShuffleTest', () => {
     await start();
     expect(container.textContent!.toLowerCase()).not.toMatch(/proven|guaranteed/);
   });
+
+  it('shows a rejection that is not an Error as its own text', async () => {
+    render(<ShuffleTest ops={ops()} createRunner={() => ({ run: () => Promise.reject('plain text'), cancel: () => undefined })} />);
+    await start();
+    expect(screen.getByRole('alert').textContent).toBe('Shuffle test failed: plain text');
+  });
+
+  it('ignores a runner error that arrives after cancel', async () => {
+    let fail!: (e: unknown) => void;
+    render(<ShuffleTest ops={ops()} createRunner={() => ({ run: () => new Promise((_, rej) => (fail = rej)), cancel: () => undefined })} />);
+    await start();
+    fireEvent.click(screen.getByText('Cancel'));
+    await act(async () => fail(new Error('late')));
+    expect(screen.getByText('Cancelled.')).toBeTruthy();
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
 });

@@ -1,7 +1,7 @@
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LINK_CAPTION, ReplicaPair } from './pair-view.tsx';
 import { makeStubPair, renderApp } from './test/app.ts';
 
@@ -89,5 +89,18 @@ describe('ReplicaPair', () => {
     expect(css).toMatch(/\.limbo-lever\s*{[^}]*min-width: 44px[^}]*min-height: 44px/);
     expect(css).toMatch(/\.limbo-reset\s*{[^}]*min-width: 44px[^}]*min-height: 44px/);
     expect(css).toMatch(/\.limbo-button\s*{[^}]*min-height: 44px/);
+  });
+
+  describe('without a location', () => {
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('uses the width rule when the page has no location and no search is given', async () => {
+      vi.stubGlobal('location', undefined);
+      const pair = await makeStubPair();
+      renderApp(pair, <ReplicaPair pair={pair} names={names} plate={plate} onReset={vi.fn()} />);
+      expect(document.querySelectorAll('[data-replica]')).toHaveLength(2);
+      expect(screen.getByRole('button', { name: 'Reset demo' })).toBeTruthy();
+      pair.close();
+    });
   });
 });

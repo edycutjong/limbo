@@ -95,9 +95,8 @@ export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boole
       setOpen(false);
     } else if (e.key === 'Tab' && drawer.current) {
       const f = Array.from(drawer.current.querySelectorAll<HTMLElement>(FOCUSABLE));
-      const first = f[0];
-      const last = f[f.length - 1];
-      if (!first || !last) return;
+      const first = f[0]!;
+      const last = f[f.length - 1]!;
       const at = document.activeElement;
       if (e.shiftKey && (at === first || !drawer.current.contains(at))) {
         e.preventDefault();

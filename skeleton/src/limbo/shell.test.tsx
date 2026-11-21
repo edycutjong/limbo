@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { makeStubPair, renderApp } from './test/app.ts';
 import { setMedia } from './test/setup.ts';
-import { useLimbo } from './shell.tsx';
+import { useDefs, useLimbo } from './shell.tsx';
 
 function Probe(): React.ReactNode {
   const l = useLimbo('a');
@@ -19,6 +19,13 @@ function Probe(): React.ReactNode {
 }
 
 describe('LimboShell and useLimbo', () => {
+  it('useDefs throws outside LimboShell', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const Defs = (): React.ReactNode => <p>{useDefs().length}</p>;
+    expect(() => render(<Defs />)).toThrow(/useDefs must be used inside <LimboShell>/);
+    err.mockRestore();
+  });
+
   it('throws outside LimboShell', () => {
     const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     expect(() => render(<Probe />)).toThrow(/LimboShell/);

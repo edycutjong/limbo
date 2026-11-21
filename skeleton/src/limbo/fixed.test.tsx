@@ -78,4 +78,13 @@ describe('FixedStamp', () => {
     expect(container.innerHTML).toBe(html);
     pair.close();
   });
+
+  it('does not mark the entrance when it mounts while FIXED is already showing', async () => {
+    const pair = await makeStubPair();
+    await fixIt(pair);
+    expect(pair.view('a').fixed).toBe(true);
+    const { container } = renderApp(pair, <FixedStamp id="a" />);
+    expect(stamp(container)!.getAttribute('data-enter')).toBe('false');
+    pair.close();
+  });
 });

@@ -20,7 +20,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Do not touch the adapter contract of `store.ts` (the only module that imports Yjs).
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.2_
 
-- [ ] 4. `skeleton/src/limbo/*`
+- [x] 4. `skeleton/src/limbo/*`
   - Files: `inspector`, `marks`, `pair-view`, `shell`, `shuffle-test`, `shuffle`, `twin`. Extend the matching `*.test.tsx` (limbo project) and `shuffle.test.ts` (unit).
   - Use the stub app and `renderApp` from `skeleton/src/limbo/test/`. Keep the shuffle runs small (a few orderings); do not run the 1,000-ordering shuffle for coverage.
   - The layer keeps reading only `Pair` state. A test never makes the layer compute a sync number.

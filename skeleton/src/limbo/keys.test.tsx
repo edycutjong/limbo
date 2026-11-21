@@ -138,4 +138,31 @@ describe('keyboard', () => {
     expect(pair.b.state().notes[0]?.life).toBe('deleted');
     pair.close();
   });
+
+  it('arrows leave the key alone when the shell has no rows', async () => {
+    const pair = await setup('?replicas=1');
+    const add = screen.getByRole('button', { name: 'Add' });
+    add.focus();
+    expect(fireEvent.keyDown(add, { key: 'ArrowDown' })).toBe(true);
+    expect(fireEvent.keyDown(add, { key: 'ArrowUp' })).toBe(true);
+    expect(document.activeElement).toBe(add);
+    pair.close();
+  });
+
+  it('ArrowUp from outside the rows lands on the last row', async () => {
+    const pair = await setup('?replicas=1', true);
+    press(screen.getByRole('button', { name: 'Add' }), 'ArrowUp');
+    expect(document.activeElement).toBe(screen.getByTestId('r3'));
+    pair.close();
+  });
+
+  it('ArrowUp on the first row keeps focus there', async () => {
+    const pair = await setup('?replicas=1', true);
+    const r1 = screen.getByTestId('r1');
+    press(screen.getByRole('button', { name: 'Add' }), 'ArrowDown');
+    expect(document.activeElement).toBe(r1);
+    press(r1, 'ArrowUp');
+    expect(document.activeElement).toBe(r1);
+    pair.close();
+  });
 });

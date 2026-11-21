@@ -1,9 +1,11 @@
-import { act } from '@testing-library/react';
+import { act, fireEvent } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Wisps } from './marks.tsx';
 import { makeStubPair, renderApp } from './test/app.ts';
 import { setMedia } from './test/setup.ts';
 
+// jsdom has no AnimationEvent, so React listens for the prefixed name.
+const animationEnd = (el: Element): void => void fireEvent(el, new Event('webkitAnimationEnd', { bubbles: true }));
 const q = (c: HTMLElement): number => c.querySelectorAll('.limbo-wisp-row .wisp').length;
 const cross = (c: HTMLElement): number => c.querySelectorAll('.wisp-cross').length;
 const count = (c: HTMLElement): string | undefined => c.querySelector('.wisp-count')?.textContent ?? undefined;
@@ -99,5 +101,23 @@ describe('Wisps', () => {
     expect(cross(container)).toBe(0);
     pair.close();
     setMedia({ reduce: false });
+  });
+
+  it('removes the crossing wisps when the last one finishes its animation', async () => {
+    const pair = await makeStubPair();
+    const { container } = renderApp(pair, <Wisps id="b" plate={2} />);
+    act(() => pair.cut());
+    add(pair, 3);
+    act(() => pair.restore());
+    await act(async () => {
+      await pair.settle();
+    });
+    const wisps = Array.from(container.querySelectorAll('.wisp-cross'));
+    expect(wisps).toHaveLength(3);
+    animationEnd(wisps[0]!);
+    expect(cross(container)).toBe(3);
+    animationEnd(wisps[2]!);
+    expect(cross(container)).toBe(0);
+    pair.close();
   });
 });
