@@ -109,7 +109,8 @@ describe('server: fuzz_op and explain_trace', () => {
     const r = await call(c, 'fuzz_op', args(nameOf('tick-toggle')));
     expect(r.isError).toBeFalsy();
     expect(r.structuredContent!.pass).toBe(false);
-    expect(r.structuredContent!.counterexample.property).toBe('intent:set');
+    // A toggle also fails raw idempotence, and shrinking may land on either.
+    expect(['intent:set', 'raw idempotence']).toContain(r.structuredContent!.counterexample.property);
   });
 
   it('lww-wallclock fixture returns a counterexample', async () => {

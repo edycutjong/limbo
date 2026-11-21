@@ -1,5 +1,6 @@
-// The 12 mutation fixtures (R15.1). Each must fail at least one property or golden history.
+// The 12 mutation fixtures (R15.1) plus apply-append. Each must fail at least one property or golden history.
 import arrivalOrder from './arrival-order.ts';
+import applyAppend from './apply-append.ts';
 import claimBoth from './claim-both.ts';
 import claimMax from './claim-max-stamp.ts';
 import deleteWins from './delete-wins.ts';
@@ -26,5 +27,6 @@ export const fixtures: readonly Fixture[] = [
   splitFirst,
   resolveNoop,
   arrivalOrder,
+  applyAppend,
 ];
 export type { Fixture } from './types.ts';

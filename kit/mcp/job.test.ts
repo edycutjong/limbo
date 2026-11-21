@@ -112,7 +112,8 @@ describe('job: explain_trace', () => {
     const x = (r as { ok: true; result: ExplainResult }).result;
     expect(x.agree).toBe(true);
     expect(x.firstDifference).toBeNull();
-    expect(x.property).toBe('intent:set');
+    // A toggle also fails raw idempotence, and shrinking may land on either.
+    expect(['intent:set', 'raw idempotence']).toContain(x.property);
     expect(x.reason.length).toBeGreaterThan(0);
   });
 

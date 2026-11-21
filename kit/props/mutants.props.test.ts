@@ -26,10 +26,10 @@ export function killedBy(fx: Fixture): string[] {
 }
 
 describe('mutation fixtures', () => {
-  it('has the 12 fixtures of R15.1', () => {
+  it('has the 12 fixtures of R15.1 plus apply-append', () => {
     expect(fixtures.map((f) => f.name).sort()).toEqual(
       [
-        'arrival-order', 'claim-both', 'claim-max-stamp', 'delete-wins', 'lww-wallclock', 'move-reinsert',
+        'apply-append', 'arrival-order', 'claim-both', 'claim-max-stamp', 'delete-wins', 'lww-wallclock', 'move-reinsert',
         'qty-read-modify-write', 'resolve-noop', 'severity-lww', 'split-first-member', 'split-float', 'tick-toggle',
       ].sort(),
     );

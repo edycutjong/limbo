@@ -3,7 +3,7 @@ import type { Op, OpDef } from '../../skeleton/src/core/types.ts';
 import { classify, measureVacuity, measureVacuityAsync, vacuityFailures, vacuityReport } from './vacuity.ts';
 import { checkManifest, checkRun, failingProperties, type RunOptions } from './run.ts';
 
-type S = { v?: number; n?: number; ticked?: boolean };
+type S = { v?: number; n?: number; adds?: Record<string, number>; ticked?: boolean };
 const gen: RunOptions['gen'] = (def, rand) => ({
   target: 't',
   payload: def.name === 'stub.inc' ? { by: 1 + rand.int(3) } : { v: rand.int(4) },
@@ -12,7 +12,11 @@ const inc: OpDef<S, { by: number }> = {
   name: 'stub.inc',
   merge: 'commutes',
   intent: { kind: 'delta', field: 'n' },
-  apply: (s, op) => ({ ...s, n: (s.n ?? 0) + op.payload.by }),
+  // Keyed by op id so apply is idempotent (steering rule 6); n is the sum of the keyed adds.
+  apply: (s, op) => {
+    const adds = { ...(s.adds ?? {}), [op.id]: op.payload.by };
+    return { ...s, adds, n: Object.values(adds).reduce((a, b) => a + b, 0) };
+  },
 };
 // Wrong on purpose: declares `commutes` but a set does not commute.
 const setBad: OpDef<S, { v: number }> = {

@@ -74,6 +74,8 @@ function bufferRun(order: readonly Op[]): { applied: Op[]; held: number } {
 
 type Prop = (res: SimResult, def: OpDef, init: () => unknown) => true | string;
 
+const RAW_IDEMPOTENCE = 'raw idempotence';
+
 const PROPS: Record<string, Prop> = {
   convergence(res) {
     const entries = Object.entries(res.states);
@@ -106,6 +108,25 @@ const PROPS: Record<string, Prop> = {
     const once = canonical(applyAll(def, init, first));
     for (const [r, s] of Object.entries(res.states)) {
       if (s !== once) return `replica ${r} with duplicate deliveries differs from the single-delivery state:\n  ${r}: ${s}\n  once: ${once}`;
+    }
+    return true;
+  },
+
+  'raw idempotence'(res, def, init) {
+    // Steering rule 6 checked on the reducer itself: apply(apply(s, o), o) equals apply(s, o).
+    // The causal buffer drops a repeated op id before apply runs, so this property bypasses it.
+    if (!def.apply) return true;
+    const sorted = [...res.ops].sort((a, b) => compareStamp(a.stamp, b.stamp));
+    const { applied } = bufferRun(sorted);
+    let s = init();
+    for (const o of applied) {
+      if (o.op !== def.name) continue;
+      const once = def.apply(s, o);
+      const twice = def.apply(once, o);
+      const a = canonical(once);
+      const b = canonical(twice);
+      if (a !== b) return `apply is not idempotent for op ${o.id}:\n  apply once:  ${a}\n  apply twice: ${b}`;
+      s = once;
     }
     return true;
   },
@@ -177,14 +198,17 @@ export function runOnce(def: OpDef, simSeed: number, steps: number, opts: RunOpt
     ...(opts.gen ? { gen: opts.gen } : {}),
   });
   const failures: Failure[] = [];
-  for (const [name, p] of Object.entries(PROPS)) {
+  // `raw idempotence` reports last, so the first failure of a fixture stays the property that names its mistake.
+  const run = (name: string, p: Prop): void => {
     const r = p(res, def, init);
     if (r !== true) failures.push({ property: name, reason: formatFailure(name, r, res, cfg.seed) });
-  }
+  };
+  for (const [name, p] of Object.entries(PROPS)) if (name !== RAW_IDEMPOTENCE) run(name, p);
   for (const c of opts.checks ?? []) {
     const r = c.check(res, { def, init });
     if (r !== true) failures.push({ property: c.name, reason: formatFailure(c.name, r, res, cfg.seed) });
   }
+  run(RAW_IDEMPOTENCE, PROPS[RAW_IDEMPOTENCE]!);
   return { res, failures };
 }
 

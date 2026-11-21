@@ -21,12 +21,16 @@ const PRE_CHANGE_RUN_EXPORTS = [
   'runOpProperties',
 ];
 
-type S = { n?: number };
+type S = { n?: number; adds?: Record<string, number> };
 const inc: OpDef = asDef({
   name: 'stub.inc',
   merge: 'commutes',
   intent: { kind: 'delta', field: 'n' },
-  apply: (s: S, op: { payload: { by: number } }) => ({ ...s, n: (s.n ?? 0) + op.payload.by }),
+  // Keyed by op id so apply is idempotent (steering rule 6); n is the sum of the keyed adds.
+  apply: (s: S, op: { id: string; payload: { by: number } }) => {
+    const adds = { ...(s.adds ?? {}), [op.id]: op.payload.by };
+    return { ...s, adds, n: Object.values(adds).reduce((a, b) => a + b, 0) };
+  },
 });
 const gen = (_def: OpDef, rand: { int(n: number): number }) => ({ target: 't', payload: { by: 1 + rand.int(3) } });
 
@@ -93,7 +97,8 @@ describe('fuzz', () => {
     const r = engine.fuzz(f.def!, f.opts!, P);
     expect(r.pass).toBe(false);
     expect(r.counterexample).toBeDefined();
-    expect(f.expectFails).toContain(r.counterexample!.property);
+    // A toggle also fails raw idempotence, and shrinking may land on either.
+    expect([...f.expectFails, 'raw idempotence']).toContain(r.counterexample!.property);
   });
 
   it('fails lww-wallclock with a counterexample', () => {
