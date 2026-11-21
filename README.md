@@ -26,7 +26,7 @@ On a desktop-width window you get two replicas side by side: **Replica A — Sar
 3. Press **Restore link**. The edits cross; the tent comes back as a ghost **twin** (rule `resurrect`), the stove goes to one
    claimant on both replicas (rule `claim-one`), and the fog lifts once both sides agree.
 4. Tap **Keep** on the tent twin and **OK** on the lost claim. The **FIXED** stamp appears.
-5. Press **I** for the inspector: each op that crossed, its declared merge rule, its causal stamp and deps.
+5. Click inside a card, then press **I** (or use its Inspector button) for the inspector: each op that crossed, its declared merge rule, its causal stamp and deps.
 6. **Run shuffle test** replays the ops on screen in random causal orders in your browser and prints the count it actually ran.
 
 **Reset demo** returns the pair to the seed. `?replicas=1` shows a single replica.
@@ -34,8 +34,10 @@ On a desktop-width window you get two replicas side by side: **Replica A — Sar
 ## Evidence
 - Full property tier: 3 replicas × 10,000 random orderings, seed 20251031, every property passing —
   [`evidence/convergence/full-2026-11-21.json`](evidence/convergence/full-2026-11-21.json) (log beside it).
-- Offline e2e (two browser contexts, a real partition, then convergence): (a) and (b) passed 10 of 10 repeats —
-  [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); a fresh-clone run —
+- Offline e2e: the lake-scene test (one page, the pair view) and the two-browser-context test (a real partition through a dev-only
+  test relay, then convergence) each passed 10 of 10 repeats —
+  [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); a fresh-clone run at commit `fc86597` (before the
+  Inspector bugfix) —
   [`evidence/e2e/fresh-clone-2026-11-21.txt`](evidence/e2e/fresh-clone-2026-11-21.txt).
 - How much of the product code Kiro wrote: [`evidence/kiro/share.json`](evidence/kiro/share.json) (commits touching `skeleton/` or
   `apps/` that carry a `Kiro-Session` trailer). Every Kiro session: [`evidence/kiro/sessions.jsonl`](evidence/kiro/sessions.jsonl);
