@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and properties are never weakened, skipped, or run with a lower `numRuns`. Each task touches one module and its tests, plus the minimum glue. Do not run git.
 
-- [ ] 1. Status derivation (pure)
+- [x] 1. Status derivation (pure)
   - `skeleton/src/sync/status.ts`: `deriveSync`, `countUnacked`, `countBehind`, `nextFixed`, `createExchangeLog`.
   - Tests (`status.test.ts`): table over link state and `unacked`, `behind`, `buffered` for the axis (fog only when down or connecting; haze only with unacked, behind, or a held op); both conflict values; chip strings exactly (`Live`, `Offline — 3 waiting`, `Syncing 2…`, `Live · 1 conflict`, `Syncing 2… · 1 conflict`, plural, `Offline`); `nextFixed` fires once per qualifying transition and not from `DEVELOPING` alone, hides on leaving either axis; exchange log excludes duplicates by construction, keeps the last 3, closes on settle and not on chunk count, records name, merge, stamp, deps; `countUnacked` skips seed and peer-authored ops; `countBehind` counts a buffered dot once.
   - _Requirements: R10, R11, R12, R13_
