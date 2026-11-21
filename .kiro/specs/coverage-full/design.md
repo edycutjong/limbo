@@ -171,7 +171,22 @@ Dead-branch candidates (X) are only confirmed by the owning task, which then rem
 
 ## 8. Final
 
-Filled by Task 8: the four summary percentages, total duration of `pnpm test:coverage` (under 3 minutes, R5.2), and `pnpm coverage:gaps` output `No coverage gaps.`
+Measured by Task 8. `pnpm typecheck`, `pnpm test` (103 files, 1034 tests), and `pnpm props` (22 files, 359 passed, 9 skipped) all exit 0. `pnpm test:coverage` exits 0 (125 test files, 1393 tests passed, 9 skipped).
+
+| Metric | Percent | Covered / total |
+|---|---|---|
+| Statements | 100 | 2675 / 2675 |
+| Branches | 100 | 1463 / 1463 |
+| Functions | 100 | 316 / 316 |
+| Lines | 100 | 2675 / 2675 |
+
+Duration of `pnpm test:coverage`: 90.34 s vitest, 1:31.02 wall (limit 3 minutes, R5.2).
+
+`pnpm coverage:gaps` prints `No coverage gaps.`
+
+Ignores: a search of `skeleton/src` and `apps/*/src` for `v8 ignore`, `istanbul ignore` and `c8 ignore` finds none, so §6 (none) is correct. §5 lists the dead-code removals made by Tasks 2 to 7.
+
+Skeleton budget, command from `evidence/budget-basecamp-baseline.md`: 21 files, 2,189 non-blank, non-comment lines. The last recorded figure is 2,142 (after bugfix-inspector-resolved task 2), so the count is 47 lines higher than that record, not lower. The removals in §5 only lower it, and this spec adds no skeleton product code. The growth is not explained by this spec; the source of the +47 is not established here. It is within the 30-file, 2,400-line budget.
 
 ## 9. Risks
 

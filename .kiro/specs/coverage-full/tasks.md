@@ -42,7 +42,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Demo data only. Do not add a field-use claim to any test name or comment.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.6_
 
-- [ ] 8. Final
+- [x] 8. Final
   - Run `pnpm typecheck && pnpm test && pnpm props`, then `pnpm test:coverage` (exit 0, all four thresholds at 100%) and `pnpm coverage:gaps` (prints `No coverage gaps.`).
   - Record in `design.md` §8 the four summary percentages and the run duration, from the measured output. Confirm §5 and §6 list every removal and every ignore (ignores: target none).
   - Re-measure the skeleton budget with the command in `evidence/budget-basecamp-baseline.md` and confirm it did not grow.
