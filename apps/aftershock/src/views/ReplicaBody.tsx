@@ -1,6 +1,6 @@
 // ReplicaBody: one replica's body: grid, then the card of this replica's own selected sector.
 import { useState, type ReactNode } from 'react';
-import { useLimbo, type Id } from '../../../../skeleton/src/limbo/index.ts';
+import { Inspector, useLimbo, type Id } from '../../../../skeleton/src/limbo/index.ts';
 import type { Replica } from '../../../../skeleton/src/sync/replica.ts';
 import type { State } from '../model.ts';
 import { SectorCard } from './SectorCard.tsx';
@@ -12,6 +12,7 @@ export const EMPTY_TEXT = 'No sectors reported yet. Tap a sector to report.';
 export function ReplicaBody(p: { id: Id; selected?: string | undefined }): ReactNode {
   const { replica } = useLimbo(p.id);
   const [selected, setSelected] = useState<string | undefined>(p.selected);
+  const [inspector, setInspector] = useState(false);
   const s = (replica as Replica<State>).state();
   const reported = Object.values(s.sectors).filter((x) => x.severity !== undefined).length;
   return (
@@ -26,6 +27,7 @@ export function ReplicaBody(p: { id: Id; selected?: string | undefined }): React
           <SectorTwins id={p.id} replica={replica as Replica<State>} sector={s.sectors[selected]} />
         </SectorCard>
       )}
+      <Inspector id={p.id} open={inspector} onOpenChange={setInspector} />
     </div>
   );
 }

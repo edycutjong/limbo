@@ -90,7 +90,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (two real replicas over `createPair`, manual `settle()`): after concurrent notes the caption equals "TWIN · Sari wrote “cracked stairwell” while Budi wrote “gas smell, east wall” · rule: causal-lww" (or the stamp-ordered equivalent the design §7 gives), with one **Keep this note** button per note; a tap clears the twin on both and leaves one note; concurrent different counts from one surveyor show **Keep this count** buttons and the pick clears it; no ghost, caption or button remains after the resolve; the ghost is `aria-hidden`.
   - _Requirements: R9, R10.9, R17.1_
 
-- [ ] 18. Inspector and ShuffleTest wiring
+- [x] 18. Inspector and ShuffleTest wiring
   - Render `Inspector` per card (controlled `open`; check that `I` toggles it, else bind `I` in `ReplicaBody` with the layer's input exclusions). `shuffle.worker.ts`, `shuffle-runner.ts`, `views/ShuffleSection.tsx` with the on-screen ops, N = 1,000 and the matching golden or none.
   - Tests: Inspector queued rows equal `view.unacked`; the shuffle test with an injected inline runner prints "1,000 / 1,000 orderings → same state" and, for the seed, "matches the specified result ✓"; after an extra edit no golden line prints; the worker file imports `runShuffle` and `materialize` only.
   - _Requirements: R10.6, R10.7, R12.1 to R12.3_
