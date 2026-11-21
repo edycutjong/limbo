@@ -14,7 +14,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `skeleton/src/limbo/focus.test.ts` reads `tokens.css` and checks the rule, the `3px` width, the `2px` offset, and that no other `:focus-visible` rule sets `outline`. `tokens.test.ts` stays green unchanged.
   - _Requirements: R7.1, R7.3_
 
-- [ ] 3. Shared control classes
+- [x] 3. Shared control classes
   - In `apps/controls.css` write `.ui-btn`, `.ui-btn--quiet`, `.ui-input`, `.ui-check` (drawn checkbox, 44 px label), `.ui-chip`, `.ui-card`, `.ui-note`, with rest, hover, press, disabled states (focus comes from task 2). Extend the selector list to `.limbo-button`, `.limbo-lever`, `.limbo-reset`. Tokens only: no hex value, no new font.
   - Tests: `apps/controls.test.ts` reads the sheet and checks that it has no `#` colour literal, no `url(`, no `@import` of a network address, every `transition` uses `var(--ui-dur)`, and every state of R1.5 has a selector.
   - _Requirements: R1.5, R1.7, R6.5, R7.3_

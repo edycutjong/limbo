@@ -1,8 +1,188 @@
-/* Shared control styles for both apps. Imported after tokens.css. */
+/* Shared control styles for both apps. Imported after tokens.css. Tokens only. */
 body { --ui-dur: 120ms; --ui-ease: ease-out; }
 
 @media (prefers-reduced-motion: reduce) {
   body *,
   body *::before,
   body *::after { transition: none !important; animation: none !important; }
+}
+
+/* Buttons: rest */
+.ui-btn,
+.limbo-button,
+.limbo-lever,
+.limbo-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color var(--ui-dur) var(--ui-ease), transform var(--ui-dur) var(--ui-ease),
+    background-color var(--ui-dur) var(--ui-ease);
+}
+/* Buttons: hover */
+.ui-btn:hover:not(:disabled),
+.limbo-button:hover:not(:disabled),
+.limbo-lever:hover:not(:disabled),
+.limbo-reset:hover:not(:disabled) {
+  border-color: var(--ink);
+  transform: translateY(-1px);
+}
+/* Buttons: press */
+.ui-btn:active:not(:disabled),
+.limbo-button:active:not(:disabled),
+.limbo-lever:active:not(:disabled),
+.limbo-reset:active:not(:disabled) {
+  background: var(--bg);
+  transform: none;
+}
+/* Buttons: disabled */
+.ui-btn:disabled,
+.limbo-button:disabled,
+.limbo-lever:disabled,
+.limbo-reset:disabled {
+  color: var(--muted);
+  border-style: dashed;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Quiet text button */
+.ui-btn--quiet {
+  background: transparent;
+  border-color: transparent;
+}
+.ui-btn--quiet:hover:not(:disabled) {
+  border-color: transparent;
+  text-decoration: underline;
+  transform: none;
+}
+.ui-btn--quiet:active:not(:disabled) { background: var(--card); }
+.ui-btn--quiet:disabled { border-style: solid; border-color: transparent; }
+
+/* Inputs, selects, textareas */
+.ui-input {
+  min-height: 44px;
+  padding: 0 12px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 17px;
+  transition: border-color var(--ui-dur) var(--ui-ease);
+}
+.ui-input:hover:not(:disabled) { border-color: var(--muted); }
+.ui-input:active:not(:disabled) { border-color: var(--ink); }
+.ui-input:disabled {
+  color: var(--muted);
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+/* Drawn checkbox: the label is the 44 px hit area */
+.ui-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.ui-check input[type="checkbox"],
+input[type="checkbox"].ui-check {
+  appearance: none;
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  background: var(--bg);
+  border: 2px solid var(--ink);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--ui-dur) var(--ui-ease), border-color var(--ui-dur) var(--ui-ease);
+}
+.ui-check input[type="checkbox"]::after,
+input[type="checkbox"].ui-check::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 1px;
+  width: 6px;
+  height: 12px;
+  border: solid var(--ink);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  opacity: 0;
+}
+.ui-check input[type="checkbox"]:checked::after,
+input[type="checkbox"].ui-check:checked::after { opacity: 1; }
+.ui-check:hover input[type="checkbox"]:not(:disabled),
+input[type="checkbox"].ui-check:hover:not(:disabled) { border-color: var(--muted); }
+.ui-check:active input[type="checkbox"]:not(:disabled),
+input[type="checkbox"].ui-check:active:not(:disabled) { background: var(--card); }
+.ui-check input[type="checkbox"]:disabled,
+input[type="checkbox"].ui-check:disabled {
+  border-style: dashed;
+  border-color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* Chip */
+.ui-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  transition: border-color var(--ui-dur) var(--ui-ease), background-color var(--ui-dur) var(--ui-ease);
+}
+button.ui-chip { cursor: pointer; }
+.ui-chip:hover:not(:disabled) { border-color: var(--ink); }
+.ui-chip:active:not(:disabled) { background: var(--card); }
+.ui-chip:disabled {
+  color: var(--muted);
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+/* Card */
+.ui-card {
+  padding: 12px 16px;
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  transition: border-color var(--ui-dur) var(--ui-ease);
+}
+.ui-card:hover { border-color: var(--muted); }
+.ui-card:active { border-color: var(--ink); }
+.ui-card[aria-disabled="true"],
+.ui-card:disabled {
+  color: var(--muted);
+  border-style: dashed;
+}
+
+/* Note */
+.ui-note {
+  margin: 8px 0;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.4;
 }

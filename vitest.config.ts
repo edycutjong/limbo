@@ -8,7 +8,7 @@ export default defineConfig({
       {
         test: {
           name: 'unit',
-          include: ['skeleton/src/**/*.test.ts', 'apps/*/src/**/*.test.ts', 'kit/**/*.test.ts'],
+          include: ['skeleton/src/**/*.test.ts', 'apps/*/src/**/*.test.ts', 'apps/*.test.ts', 'kit/**/*.test.ts'],
           exclude: ['**/*.props.test.ts', '**/node_modules/**'],
         },
       },
