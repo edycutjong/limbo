@@ -24,7 +24,8 @@ const fixture: Fixture = {
     gen: (_d, r) => ({ target: 't', payload: { k: r.chance(0.5) ? 'create' : 'move', id: r.pick(['p', 'q', 'r']), at: r.int(3) } }),
     checks: [
       moveIntent({
-        expected: (ops) => ops.filter((o) => o.op === 'f.move' && (o.payload as P).k === 'create').map((o) => (o.payload as P).id),
+        // Membership and duplication are what this fixture breaks; its fold has no keys, so the expected order is sorted ids.
+        expected: (ops) => [...new Set(ops.filter((o) => o.op === 'f.move' && (o.payload as P).k === 'create').map((o) => (o.payload as P).id))].sort(),
         read: (s: S) => s.list ?? [],
       }),
     ],

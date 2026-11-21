@@ -19,6 +19,8 @@ export const GATE_FILES = [
   'kit/props/run.ts',
   'kit/props/engine.ts',
   'kit/props/bad/apply-append.ts',
+  'kit/props/bad/apply-append-inplace.ts',
+  'kit/props/bad/move-ignore.ts',
   'kit/props/config.ts',
   'kit/props/suite.props.test.ts',
   'kit/props/mixed.ts',

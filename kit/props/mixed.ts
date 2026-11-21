@@ -6,7 +6,7 @@ import { canonical, compareStamp } from '../../skeleton/src/core/causal.ts';
 import type { SimResult, Step } from '../../skeleton/src/core/simulate.ts';
 import type { Op, OpDef } from '../../skeleton/src/core/types.ts';
 import type { PropsConfig } from './config.ts';
-import { claimIntent, lifeIntent, moveIntent, type ClaimSpec, type LifeSpec } from './intent/index.ts';
+import { claimIntent, expectedOrder, lifeIntent, moveIntent, type ClaimSpec, type LifeSpec } from './intent/index.ts';
 import { formatFailure, type Failure, type RunCheck, type RunOptions } from './run.ts';
 import { classify, lwwNamesOf, mixedSteps, simulateMixed } from './vacuity.ts';
 
@@ -25,7 +25,11 @@ export interface AppProps {
     losers: ClaimSpec['losers'];
   };
   /** Display order in a folded state. */
-  move?: { read(state: unknown): readonly string[] };
+  move?: {
+    read(state: unknown): readonly string[];
+    /** The fractional key an op writes to its item's position (the create op and every move), else `undefined`. */
+    key(op: Op): string | undefined;
+  };
 }
 
 export const MIXED_PROPERTIES = [
@@ -69,15 +73,23 @@ function tailOf(property: string, reason: string, res: SimResult, app: AppProps,
 
 type Checker = (res: SimResult, states: Record<string, string>) => true | string;
 
+/**
+ * The ops the intent checks look at: when the app declares item lifecycles, only ops on targets with a create op
+ * (the app's fold skips the others). Without `life` there is no such filter. The vacuity guard classifies these ops,
+ * so a class share measures checked runs.
+ */
+export function checkedOps(ops: readonly Op[], app: AppProps | undefined): Op[] {
+  const kind = app?.life?.kind;
+  if (kind === undefined) return [...ops];
+  const keep = new Set(ops.filter((o) => kind(o) === 'create').map((o) => o.target));
+  return ops.filter((o) => keep.has(o.target));
+}
+
 /** Intent checks over the folded states. Items without a create op are not folded by the app, so they are filtered out. */
 function intentCheckers(app: AppProps): [string, Checker][] {
   const out: [string, Checker][] = [];
   const kind = app.life?.kind;
-  const created = (ops: readonly Op[]): Set<string> => new Set(ops.filter((o) => kind?.(o) === 'create').map((o) => o.target));
-  const scoped = (res: SimResult, states: Record<string, string>): SimResult => {
-    const keep = created(res.ops);
-    return { ...res, states, ops: res.ops.filter((o) => keep.has(o.target)) };
-  };
+  const scoped = (res: SimResult, states: Record<string, string>): SimResult => ({ ...res, states, ops: checkedOps(res.ops, app) });
   const ctx = { def: undefined as unknown as OpDef, init: () => ({}) };
   const run = (c: RunCheck, res: SimResult, states: Record<string, string>): true | string => c.check(scoped(res, states), ctx);
   // A fold exposes the items as `.items`; `read*` hooks receive the whole state.
@@ -109,10 +121,7 @@ function intentCheckers(app: AppProps): [string, Checker][] {
       (res, st) => {
         // Expected: created items whose life is not `deleted` (read from the first replica; the other replicas are compared against it).
         const first = JSON.parse(Object.values(st)[0] ?? '{}') as unknown;
-        const expected = (ops: readonly Op[]): string[] => {
-          const ids = ops.filter((o) => kind?.(o) === 'create').map((o) => o.target);
-          return ids.filter((t) => app.life?.read(first, t) !== 'deleted');
-        };
+        const expected = (ops: readonly Op[]): string[] => expectedOrder(ops, m.key, (t) => app.life?.read(first, t) !== 'deleted');
         return run(moveIntent({ expected, read: (s) => m.read(s) }), res, st);
       },
     ]);
@@ -184,7 +193,7 @@ export function mixedRun(
   return {
     index: i,
     steps,
-    classes: classify(res.ops, lwwNamesOf(defs)),
+    classes: classify(checkedOps(res.ops, app), lwwNamesOf(defs)),
     failures: app ? checkMixedRun(res, app, cfg) : [],
   };
 }

@@ -122,8 +122,10 @@ const PROPS: Record<string, Prop> = {
     for (const o of applied) {
       if (o.op !== def.name) continue;
       const once = def.apply(s, o);
-      const twice = def.apply(once, o);
+      // Snapshot before the second apply, and give the second apply its own copy: a reducer that mutates
+      // its input in place and returns it would otherwise make `once` and `twice` the same object.
       const a = canonical(once);
+      const twice = def.apply(structuredClone(once), o);
       const b = canonical(twice);
       if (a !== b) return `apply is not idempotent for op ${o.id}:\n  apply once:  ${a}\n  apply twice: ${b}`;
       s = once;

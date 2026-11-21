@@ -29,5 +29,8 @@ export const app: AppProps = {
     winners: (s, t) => items(s)[t]?.winners ?? [],
     losers: (s, t) => items(s)[t]?.losers ?? [],
   },
-  move: { read: (s) => (s as State).order ?? [] },
+  move: {
+    read: (s) => (s as State).order ?? [],
+    key: (o) => (o.op === 'item.add' || o.op === 'item.move' ? (o.payload as { key: string }).key : undefined),
+  },
 };
