@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-21T23:39:44.374Z",
-  "commit": "09c14224b94066ea2b1a09c0e286736d9909ad9a",
+  "date": "2026-11-21T23:53:19.317Z",
+  "commit": "72f99cb943e95221ceaa5b8419618ce4cf3098cc",
   "tree_dirty": false,
   "machine": "Apple M1 Max, darwin 27.2.0",
   "node": "v22.22.0",
@@ -13,7 +13,7 @@
       "name": "Stage 1 typecheck",
       "cmd": "pnpm typecheck",
       "ok": true,
-      "seconds": 3.2
+      "seconds": 3.5
     },
     {
       "name": "Stage 1 /.kiro root check",
@@ -31,13 +31,13 @@
       "name": "Stage 1 tests + 100% coverage",
       "cmd": "pnpm test:coverage",
       "ok": true,
-      "seconds": 90.5
+      "seconds": 114.9
     },
     {
       "name": "Stage 2 gitleaks (full history)",
       "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
       "ok": true,
-      "seconds": 1.3
+      "seconds": 1.5
     },
     {
       "name": "Stage 2 pnpm audit (shipped deps)",
@@ -49,7 +49,7 @@
       "name": "Stage 3 build",
       "cmd": "pnpm build",
       "ok": true,
-      "seconds": 2.7
+      "seconds": 3.3
     },
     {
       "name": "Stage 3 bundle budget",
@@ -61,7 +61,7 @@
       "name": "Stage 4 e2e",
       "cmd": "pnpm e2e:ci",
       "ok": true,
-      "seconds": 45.1
+      "seconds": 53.1
     }
   ],
   "unit": {
