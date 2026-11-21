@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e tasks (6 to 8) also end with `pnpm e2e` green, with no live variables set. No test, property or `numRuns` is weakened, skipped or lowered. Nothing in `skeleton/` changes, and no `*.op.ts`, `registry.gen.ts` or `kit/props/intents.json` changes. Do not run git. Wording: "measured, property-tested". Every number written to a record comes from a run.
 
-- [ ] 1. Plugin check and dependency
+- [x] 1. Plugin check and dependency
   - `pnpm view vite-plugin-pwa peerDependencies` and pick the newest version that accepts `vite@7`. Add it to `devDependencies` of `apps/basecamp` and `apps/aftershock`, pinned exactly (`pnpm --filter @limbo/<app> add -D -E vite-plugin-pwa@<version>`).
   - Build both apps with a throwaway `VitePWA({ strategies: 'generateSW' })` entry and read `dist/sw.js` and the manifest. Confirm: the build passes on Vite 7.3.8 and Node 22, paths are relative under `base: './'`, and `navigateFallback: 'index.html'` resolves against the worker scope.
   - Record the chosen strategy (`generateSW`, else `injectManifest`, else the hand-written fallback in the design) and the reason in `evidence/offline-shell/plugin-check.md`, with the versions and the command output. If the plugin fails on Vite 7, stop here, write the fallback plugin in `apps/pwa-options.ts` as the design describes, and keep the same exports.
