@@ -36,6 +36,18 @@
         "chatSessionId": "sess_4774fd5f-98c0-4fe9-87ed-a3afb0baf235",
         "timestamp": 1795268003679
       }
+    ],
+    "4. Registration helper and wiring": [
+      {
+        "executionId": "f381efc7-f5f0-4648-9352-491019b3e195",
+        "chatSessionId": "sess_e1ec510d-3883-4aba-9bd8-9e33887878ab",
+        "timestamp": 1795268225260
+      },
+      {
+        "executionId": "f381efc7-f5f0-4648-9352-491019b3e195",
+        "chatSessionId": "sess_e1ec510d-3883-4aba-9bd8-9e33887878ab",
+        "timestamp": 1795268352232
+      }
     ]
   }
 }

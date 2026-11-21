@@ -20,7 +20,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: in each `shell.test.ts`, assert the options (display, theme, `skipWaiting`, `clientsClaim`, `cleanupOutdatedCaches`, `injectRegister: false`, `devOptions.enabled: false`, relative `start_url` and `scope`). Extend each `build.test.ts` so the production build has `sw.js`, `manifest.webmanifest`, the three icons, a precache list naming `index.html`, the JS, the CSS, the shuffle worker and one `woff2`, a manifest with `name`, `short_name`, `display: standalone`, `theme_color: #F2EADB`, and none of the banned strings (`devrelay`, `DevRelayLink`, `window.limbo`, `localhost:5175`, `https://fonts`). Add these cases to the existing file so the two builds of one `dist/` never run in parallel.
   - _Requirements: R1.1, R1.2, R1.4, R4.1, R4.2, R4.3, R5.1, R5.4, R6.1, R6.2, R10.3_
 
-- [ ] 4. Registration helper and wiring
+- [x] 4. Registration helper and wiring
   - Create `apps/offline-shell.ts` with `registerShell(env)` as in the design. In both `main.tsx`, call `void registerShell({ prod: import.meta.env.PROD, nav: navigator })` inside the existing `if (el)` branch, after `boot(el)` or the dev relay branch is chosen. Nothing else in `main.tsx` changes.
   - Tests (`shell.test.ts`): `prod: false` calls `register` zero times; a `nav` without `serviceWorker` calls it zero times; `prod: true` calls `register('./sw.js', { scope: './' })` once; a rejected `register` calls `warn` once and resolves. The existing `app-shell.test.tsx`, `app.test.tsx` and scene tests still pass (Vitest has `PROD` false).
   - _Requirements: R3.1, R3.2, R3.4, R1.5_

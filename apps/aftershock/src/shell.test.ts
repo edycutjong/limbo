@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import { registerShell } from '../../offline-shell.ts';
 import { shellOptions, THEME } from '../../pwa-options.ts';
 
 const root = resolve(__dirname, '..');
@@ -47,5 +48,37 @@ describe('shell build options', () => {
     expect(o.workbox).toMatchObject({ skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true });
     expect(o.injectRegister).toBe(false);
     expect(o.devOptions?.enabled).toBe(false);
+  });
+});
+
+describe('registerShell', () => {
+  const fake = () => ({ register: vi.fn(() => Promise.resolve({})) });
+
+  it('does nothing when prod is false', async () => {
+    const sw = fake();
+    await registerShell({ prod: false, nav: { serviceWorker: sw } });
+    expect(sw.register).toHaveBeenCalledTimes(0);
+  });
+
+  it('does nothing when the navigator has no serviceWorker', async () => {
+    const warn = vi.fn();
+    await registerShell({ prod: true, nav: {}, warn });
+    expect(warn).toHaveBeenCalledTimes(0);
+  });
+
+  it('registers ./sw.js with scope ./ once in production', async () => {
+    const sw = fake();
+    await registerShell({ prod: true, nav: { serviceWorker: sw } });
+    expect(sw.register).toHaveBeenCalledTimes(1);
+    expect(sw.register).toHaveBeenCalledWith('./sw.js', { scope: './' });
+  });
+
+  it('warns once and resolves when registration rejects', async () => {
+    const err = new Error('nope');
+    const sw = { register: vi.fn(() => Promise.reject(err)) };
+    const warn = vi.fn();
+    await expect(registerShell({ prod: true, nav: { serviceWorker: sw }, warn })).resolves.toBeUndefined();
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[1]).toBe(err);
   });
 });
