@@ -20,6 +20,7 @@ import { createHash } from 'node:crypto';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
 import { dirname, join, relative, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { hashGate } from './gate-list.mjs';
 
 // LIMBO_RUN_ROOT points the wrapper at a throwaway copy (the A/B runs); default is this repository.
 const ROOT = process.env.LIMBO_RUN_ROOT || join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -170,12 +171,7 @@ function runKiro(text, resumeId, runLabel) {
 }
 
 function gateManifest() {
-  const roots = ['.kiro/hooks', '.kiro/agents', 'kit/hooks', 'kit/props/intent', 'kit/props/bad', 'kit/props/golden', 'kit/mcp'];
-  const files = ['kit/props/intents.json', 'kit/props/run.ts', 'kit/props/config.ts', 'skeleton/src/core/simulate.ts'];
-  const out = {};
-  for (const r of roots) for (const f of listFiles(join(ROOT, r))) out[relative(ROOT, f)] = sha(f);
-  for (const f of files) if (existsSync(join(ROOT, f))) out[f] = sha(join(ROOT, f));
-  return out;
+  return hashGate(ROOT);
 }
 
 function changedPaths() {

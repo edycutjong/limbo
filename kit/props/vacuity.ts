@@ -1,10 +1,19 @@
 // Vacuity guard (R12): tag each simulated script with the conflict classes it contains,
 // then report the share of runs per class. A class under MIN_SHARE fails; a class whose ops
 // are not registered is `n/a` and excluded. Not a reducer file; no clock or randomness here.
+//
+// Generator choice (A/B pilot finding): scripts used to be drawn uniformly over every registered op, so each
+// unrelated op registered later lowered every class's share (claim-release-claim fell to ~46%). Class weighting
+// is done by ops: a run draws only from the class ops (the union of `requires` of the applicable classes, plus
+// the causal-lww ops when an lww class applies). An op that is in no class gets weight 0, so adding one cannot
+// move any share. The bar stays at MIN_SHARE and no class is dropped. Each op still draws its payload from its
+// own generator and `simulate()` still delivers in random causal orders. The classes are measured with `classify`
+// on the generated histories. The choice is a pure function of the registered defs, so it is deterministic
+// from the recorded seed.
 import { canonical, concurrent, covers } from '../../skeleton/src/core/causal.ts';
 import { simulate } from '../../skeleton/src/core/simulate.ts';
 import type { Op, OpDef } from '../../skeleton/src/core/types.ts';
-import { applicableClasses } from './arbitraries/index.ts';
+import { CONFLICT_CLASSES, applicableClasses } from './arbitraries/index.ts';
 import { config as defaultConfig } from './config.ts';
 import type { RunOptions } from './run.ts';
 
@@ -13,6 +22,23 @@ export const MIN_SHARE = 0.5;
 /** Ops that write item content (requirements glossary: Edit), minus restore which has its own classes. */
 /** Op names assumed `causal-lww` when the caller does not pass the registered defs. */
 const DEFAULT_LWW: ReadonlySet<string> = new Set(['item.rename', 'item.tick']);
+
+/** Defs a vacuity run may draw from: the ops of the applicable classes. Falls back to all defs if none match. */
+export function classOps(defs: readonly OpDef[]): OpDef[] {
+  const lwwNames = defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name);
+  const { applicable } = applicableClasses(
+    defs.map((d) => d.name),
+    lwwNames,
+  );
+  const names = new Set<string>();
+  for (const c of CONFLICT_CLASSES) {
+    if (!applicable.includes(c.name)) continue;
+    for (const r of c.requires) names.add(r);
+    if (c.anyLww) for (const n of lwwNames) names.add(n);
+  }
+  const pool = defs.filter((d) => names.has(d.name));
+  return pool.length > 0 ? pool : [...defs];
+}
 
 const EDITS = new Set(['item.tick', 'item.rename', 'item.claim']);
 
@@ -138,10 +164,11 @@ function* vacuityRuns(defs: readonly OpDef[], opts: RunOptions, runs?: number): 
   const range = opts.steps ?? { min: 2, max: 14 };
   const init = opts.init ?? (() => ({}));
   const lwwOps = new Set(defs.filter((d) => d.merge === 'causal-lww').map((d) => d.name));
+  const pool = classOps(defs);
   const sets: Set<string>[] = [];
   for (let i = 0; i < n; i++) {
     const res = simulate({
-      defs: [...defs],
+      defs: pool,
       replicas: cfg.replicas,
       seed: (cfg.seed + i) >>> 0,
       steps: range.min + (i % (range.max - range.min + 1)),
