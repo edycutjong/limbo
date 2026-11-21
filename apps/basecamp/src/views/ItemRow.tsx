@@ -1,7 +1,8 @@
 // ItemRow (R4.1, R4.9): drag handle, tick box, name, ClaimChip and an overflow menu.
 // Space on the focused row ticks (explicit value), Delete deletes; both ignore text inputs.
-// Reorder behaviour on the handle arrives in task 14. Names render as text.
-import { useState, type KeyboardEvent, type ReactNode } from 'react';
+// Reorder (R3.8, R4.8): ArrowUp/ArrowDown on the handle move one place and keep focus on the handle;
+// a pointer drag over the sibling rows calls onMove with the target index. Names render as text.
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import type { Item } from '../model.ts';
 import { ClaimChip } from './ClaimChip.tsx';
 import { TARGET } from './target.ts';
@@ -11,6 +12,11 @@ export interface ItemRowProps {
   me: string;
   queuedClaim: boolean;
   promoted?: boolean;
+  /** Position in the visible order and the number of visible rows. */
+  index?: number;
+  count?: number;
+  /** Move to `index` among the other visible items. */
+  onMove?(index: number): void;
   onTick(ticked: boolean): void;
   onRename(name: string): void;
   onDelete(): void;
@@ -21,8 +27,54 @@ export interface ItemRowProps {
 const isTextField = (el: EventTarget | null): boolean =>
   el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement || el instanceof HTMLSelectElement;
 
+/** Index the dragged row takes among the other rows, from the pointer's y over the sibling rects. */
+export function dropIndex(list: Element, id: string, y: number): number {
+  let n = 0;
+  for (const r of Array.from(list.querySelectorAll<HTMLElement>('[data-item]'))) {
+    if (r.dataset.item === id) continue;
+    const b = r.getBoundingClientRect();
+    if (y > b.top + b.height / 2) n++;
+  }
+  return n;
+}
+
 export function ItemRow(p: ItemRowProps): ReactNode {
   const { item } = p;
+  const handle = useRef<HTMLButtonElement>(null);
+  const refocus = useRef(false);
+  useEffect(() => {
+    if (refocus.current) {
+      refocus.current = false;
+      handle.current?.focus();
+    }
+  }, [p.index]);
+
+  const onHandleKey = (e: KeyboardEvent<HTMLButtonElement>): void => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+    e.preventDefault();
+    e.stopPropagation();
+    const i = p.index ?? 0;
+    const to = e.key === 'ArrowUp' ? i - 1 : i + 1;
+    if (!p.onMove || to < 0 || to > (p.count ?? 1) - 1) return;
+    refocus.current = true;
+    p.onMove(to);
+  };
+
+  const onHandleDown = (e: React.PointerEvent<HTMLButtonElement>): void => {
+    const list = e.currentTarget.closest('ul');
+    if (!list || !p.onMove) return;
+    const up = (ev: Event): void => {
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      const to = dropIndex(list, item.id, (ev as MouseEvent).clientY);
+      if (to !== p.index) {
+        refocus.current = true;
+        p.onMove?.(to);
+      }
+    };
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  };
   const [menu, setMenu] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
 
@@ -45,7 +97,15 @@ export function ItemRow(p: ItemRowProps): ReactNode {
 
   return (
     <li className="bc-row" data-limbo-row data-item={item.id} tabIndex={0} onKeyDown={onKeyDown}>
-      <button type="button" className="bc-handle" aria-label={`Move ${item.name}`} style={TARGET}>
+      <button
+        ref={handle}
+        type="button"
+        className="bc-handle"
+        aria-label={`Move ${item.name}`}
+        style={{ ...TARGET, touchAction: 'none' }}
+        onKeyDown={onHandleKey}
+        onPointerDown={onHandleDown}
+      >
         ⠿
       </button>
       <input

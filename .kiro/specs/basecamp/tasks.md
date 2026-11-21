@@ -69,7 +69,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (two real replicas over `createPair`, manual `settle()`): tent twin caption equals "TWIN · Budi deleted this while Sari ticked it · rule: resurrect" with Keep and Delete; Keep and Delete each clear it on both; stove loser caption on B, quiet note on A, OK clears both; Why Sari? opens the Inspector and prints both stamps; concurrent renames show one button per name and the pick clears the twin; tick values twin; resolved twins leave no ghost.
   - _Requirements: R3.2, R3.3, R4.3 to R4.7_
 
-- [ ] 14. Reorder
+- [x] 14. Reorder
   - Drag handle and keyboard on the handle; `actions.move`. ArrowUp and ArrowDown on the handle move one place and do not move focus to another row.
   - Tests: keyboard move up and down changes `order` and emits one `item.move`; first and last rows do not move past the ends; pointer drag over jsdom rect stubs calls `move` with the right index; two concurrent moves converge on both replicas and show no twin.
   - _Requirements: R3.8, R4.8, R9.3, R17.2_

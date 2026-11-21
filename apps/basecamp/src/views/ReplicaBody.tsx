@@ -21,7 +21,7 @@ export function ReplicaBody(p: { id: Id }): ReactNode {
       <AddItem onAdd={(name) => act.addItem(replica, name)} />
       {s.order.length === 0 && <p className="bc-empty">Nothing packed yet. Add the first thing.</p>}
       <ul className="bc-list" aria-label="Packing list">
-        {s.order.map((id) => {
+        {s.order.map((id, index) => {
           const item = s.items[id]!;
           return (
             <ItemTwins
@@ -34,6 +34,9 @@ export function ReplicaBody(p: { id: Id }): ReactNode {
               row={(promoted) => (
                 <ItemRow
                   promoted={promoted}
+                  index={index}
+                  count={s.order.length}
+                  onMove={(to) => act.moveItem(replica, id, to)}
                   item={item}
                   me={me}
                   queuedClaim={queued.some((o) => o.op === 'item.claim' && o.target === id && (o.payload as { who?: string }).who === me)}
