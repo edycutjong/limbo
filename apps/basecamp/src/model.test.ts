@@ -66,6 +66,15 @@ describe('expense fold', () => {
   });
 });
 
+describe('ordering with equal keys', () => {
+  it('is still (key, id)', () => {
+    const add = (r: string, n: number, id: string, key: string) =>
+      op(r, n, n, {}, 'item.add', id, { name: id, key, units: 1 });
+    const s = materialize([add('a', 1, 'a:1', 'a5'), add('a', 2, 'z', 'a5'), add('a', 3, 'b', 'a5'), add('a', 4, 'low', 'a1')]);
+    expect(s.order).toEqual(['low', 'a:1', 'b', 'z']);
+  });
+});
+
 const item = (units = 1) => op('s', 1, 1, {}, 'item.add', 'i', { name: 'gas', key: 'a0', units });
 const claim = (r: string, who: string) => op(r, 1, 2, { s: 1 }, 'item.claim', 'i', { who });
 

@@ -24,6 +24,18 @@
         "chatSessionId": "sess_2da86bba-68dc-4da7-8372-2ef9958c803d",
         "timestamp": 1795282833347
       }
+    ],
+    "3. D2 (part 2): BASECAMP callers and the repro": [
+      {
+        "executionId": "32d252eb-53f3-46e1-964b-7c2de4114f2c",
+        "chatSessionId": "sess_204a3e7a-3dfe-4b2f-9e0c-683af109f0e7",
+        "timestamp": 1795282948075
+      },
+      {
+        "executionId": "32d252eb-53f3-46e1-964b-7c2de4114f2c",
+        "chatSessionId": "sess_204a3e7a-3dfe-4b2f-9e0c-683af109f0e7",
+        "timestamp": 1795283085991
+      }
     ]
   }
 }

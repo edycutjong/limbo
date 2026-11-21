@@ -1,7 +1,7 @@
 // BASECAMP actions (design §6): one function per user action. Each creates one op through
 // `replica.local`, so `deps` is the replica's current vv and a resolve op observes every op
 // the replica holds on that target. No clock, randomness or locale is read here.
-import { allocKey } from '../../../skeleton/src/core/causal.ts';
+import { allocKey, type Dot } from '../../../skeleton/src/core/causal.ts';
 import type { Op } from '../../../skeleton/src/core/types.ts';
 import type { Replica } from '../../../skeleton/src/sync/replica.ts';
 import { memberOfReplica } from './members.ts';
@@ -9,15 +9,27 @@ import type { State } from './model.ts';
 
 type R = Replica<State>;
 
+/** The dot of the op this replica creates next; its key suffix then encodes that op's id. */
+const nextDot = (r: R): Dot => ({ r: r.ns, n: (r.vv()[r.ns] ?? 0) + 1 });
+
+/** Neighbour keys for slot `i` among `keys` (ascending). Keys equal to the left key are skipped, since no key lies between equal keys. */
+function gap(keys: readonly string[], i: number): [string | null, string | null] {
+  const left = i > 0 ? keys[i - 1]! : null;
+  let j = i;
+  while (left !== null && j < keys.length && keys[j]! <= left) j++;
+  return [left, j < keys.length ? keys[j]! : null];
+}
+
 /** The member id this replica acts as; replicas without a member act as themselves. */
 export const memberOf = (r: R): string => memberOfReplica(r.id) ?? r.id;
 
 /** Add an item. The target is the add op's own id, so two replicas cannot pick the same one. */
 export function addItem(r: R, name: string, units = 1): Op {
-  const target = `${r.ns}:${(r.vv()[r.ns] ?? 0) + 1}`;
+  const dot = nextDot(r);
+  const target = `${dot.r}:${dot.n}`;
   const s = r.state();
   const last = s.order[s.order.length - 1];
-  const key = allocKey(last === undefined ? null : s.items[last]!.pos, null, r.ns);
+  const key = allocKey(last === undefined ? null : s.items[last]!.pos, null, dot);
   return r.local('item.add', target, { name, units, key });
 }
 
@@ -40,9 +52,8 @@ export function moveItem(r: R, id: string, index: number): Op {
   const s = r.state();
   const others = s.order.filter((x) => x !== id);
   const i = Math.max(0, Math.min(index, others.length));
-  const left = i > 0 ? s.items[others[i - 1]!]!.pos : null;
-  const right = i < others.length ? s.items[others[i]!]!.pos : null;
-  return r.local('item.move', id, { key: allocKey(left, right, r.ns) });
+  const [left, right] = gap(others.map((x) => s.items[x]!.pos), i);
+  return r.local('item.move', id, { key: allocKey(left, right, nextDot(r)) });
 }
 
 export const addExpenseMember = (r: R, id: string, member: string): Op => r.local('expense.addMember', id, { member });

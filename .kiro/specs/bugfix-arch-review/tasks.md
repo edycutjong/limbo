@@ -19,7 +19,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D2 2.5, 2.6, 2.8; Unchanged 1, 2, 14, 17_
 
-- [ ] 3. D2 (part 2): BASECAMP callers and the repro
+- [x] 3. D2 (part 2): BASECAMP callers and the repro
   - Failing tests first, in `apps/basecamp/src/actions.test.ts`: (i) the repro (A places X in the L/R gap, deletes X, places Y in the same gap, restores X, then `moveItem` between them): assert X and Y hold different `pos`, the move op is applied, and after exchanging ops both replicas have equal `canonical(state())`; (ii) hand-built pre-fix state with two items holding the same key `K`: `moveItem` between them does not throw and the new key is `> K`; (iii) the key of every op made by `addItem` and `moveItem` decodes to that op's `id`; (iv) `addItem` calls `allocKey` with `right === null`. Run and record the failures (today the move throws "K >= K").
   - Fix: `apps/basecamp/src/actions.ts`: a `nextDot(r)` helper used by `addItem` and `moveItem`; the `gap` helper that skips keys equal to the left key.
   - Add to `model.test.ts`: ordering with equal keys is still (key, id).

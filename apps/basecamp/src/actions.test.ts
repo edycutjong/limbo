@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createReplica, type Replica } from '../../../skeleton/src/sync/replica.ts';
 import { openStore } from '../../../skeleton/src/sync/store.ts';
 import { canonical } from '../../../skeleton/src/core/causal.ts';
+import type { Op } from '../../../skeleton/src/core/types.ts';
 import * as act from './actions.ts';
 import { describeConflicts, twinCount } from './conflicts.ts';
 import { materialize, type State } from './model.ts';
@@ -19,6 +20,13 @@ const sync = (a: R, b: R): void => {
     a.receive(b.applied());
     b.receive(a.applied());
   }
+};
+const B62 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+const decode3 = (s: string): number => [...s].reduce((n, c) => n * 62 + B62.indexOf(c), 0);
+const unb62 = (s: string): string => {
+  let out = '';
+  for (let i = 0; i < s.length; i += 3) out += String.fromCharCode(decode3(s.slice(i, i + 3)));
+  return out;
 };
 const ids = (r: R): string[] => describeConflicts(r.state()).map((d) => d.id);
 
@@ -52,6 +60,66 @@ describe('actions', () => {
     expect(s.items.tent!.pos < s.items.rope!.pos && s.items.rope!.pos < s.items.stove!.pos).toBe(true);
     act.moveItem(a, 'rope', 99);
     expect(a.state().order.at(-1)).toBe('rope');
+  });
+
+  it('move after a restore with equal keys: keys differ, move applies, replicas converge', async () => {
+    const [a, b] = await pair();
+    const o = a.state().order;
+    const [x, y, z] = [o[5]!, o[6]!, o[8]!];
+    act.moveItem(a, x, 1);
+    act.deleteItem(a, x);
+    act.moveItem(a, y, 1);
+    act.restoreItem(a, x);
+    const s = a.state();
+    expect(s.items[x]!.pos).not.toBe(s.items[y]!.pos);
+    const i = Math.min(s.order.indexOf(x), s.order.indexOf(y)) + 1;
+    const others = s.order.filter((k) => k !== z);
+    const idx = others.indexOf(s.order[i - 1]!) + 1;
+    const before = s.items[z]!.pos;
+    let m;
+    expect(() => (m = act.moveItem(a, z, idx))).not.toThrow();
+    expect(a.state().items[z]!.pos).not.toBe(before);
+    expect(a.applied().some((p) => p.id === m!.id)).toBe(true);
+    sync(a, b);
+    expect(canonical(a.state())).toBe(canonical(b.state()));
+  });
+
+  it('pre-fix equal keys: move between them does not throw and the new key is above K', async () => {
+    const [a] = await pair();
+    const K = 'a5';
+    const add = (n: number, id: string, key: string): Op => ({
+      id: `q:${n}`, op: 'item.add', target: id, payload: { name: id, key, units: 1 }, stamp: { l: n, r: 'q', n }, deps: n > 1 ? { q: n - 1 } : {},
+    });
+    a.receive([add(1, 'p', K), add(2, 'q', K)]);
+    const o = a.state().order;
+    const at = o.indexOf('p') + 1;
+    const mover = o[0]!;
+    const others = o.filter((k) => k !== mover);
+    const idx = others.indexOf('p') + 1;
+    expect(at).toBeGreaterThan(0);
+    expect(() => act.moveItem(a, mover, idx)).not.toThrow();
+    expect(a.state().items[mover]!.pos > K).toBe(true);
+  });
+
+  it('the key of addItem and moveItem ops decodes to the op id', async () => {
+    const [a] = await pair();
+    const ops = [act.addItem(a, 'N1'), act.moveItem(a, 'rope', 1), act.addItem(a, 'N2'), act.moveItem(a, 'tent', 3)];
+    for (const op of ops) {
+      const key = (op.payload as { key: string }).key;
+      const L = decode3(key.slice(-4, -1));
+      const enc = key.slice(-4 - 3 * L, -4);
+      expect(key.endsWith('1')).toBe(true);
+      expect(unb62(enc)).toBe(op.id);
+    }
+  });
+
+  it('addItem allocates with right === null', async () => {
+    const [a] = await pair();
+    const op = act.addItem(a, 'Tail');
+    const s = a.state();
+    const last = s.order.at(-1)!;
+    expect(last).toBe(op.id);
+    expect(s.items[last]!.pos > s.items[s.order.at(-2)!]!.pos).toBe(true);
   });
 
   it('delete then restore', async () => {
