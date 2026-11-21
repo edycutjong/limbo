@@ -52,7 +52,7 @@ export function countUnacked(log: readonly Op[], peerAck: VV, peerId: string | u
 export function countBehind(vv: VV, peerVV: VV | undefined): number {
   if (peerVV === undefined) return 0;
   let n = 0;
-  for (const r of Object.keys(peerVV)) n += Math.max(0, (peerVV[r] ?? 0) - (vv[r] ?? 0));
+  for (const [r, p] of Object.entries(peerVV)) n += Math.max(0, p - (vv[r] ?? 0));
   return n;
 }
 

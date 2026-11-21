@@ -155,3 +155,12 @@ describe('identity', () => {
     ).rejects.toThrow(/lock held/);
   });
 });
+
+describe('identity without Web Locks', () => {
+  it('is not exclusive and release does nothing', async () => {
+    const id = await acquireIdentity({ app: 'x', mode: 'single', storage: memStorage(), locks: undefined, newId: counter() });
+    expect(id.exclusive).toBe(false);
+    expect(id.names).toEqual(['limbo:x:id1']);
+    expect(() => id.release()).not.toThrow();
+  });
+});

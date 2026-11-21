@@ -171,3 +171,12 @@ describe('unackedOps', () => {
     expect(unackedOps(log, {}, undefined).map((o) => o.id)).toEqual(['a#1:1', 'a#1:2', 'a#2:1', 'b#1:1']);
   });
 });
+
+describe('exchange log merge label', () => {
+  it('labels a crossing with merge unknown when no definition names the op', () => {
+    const log = createExchangeLog([]);
+    const op: Op = { id: 'a:1', op: 'ghost', target: 't', payload: 1, stamp: { l: 1, r: 'a', n: 1 }, deps: {} };
+    log.cross('a', [op]);
+    expect(log.open().map((c) => [c.name, c.merge])).toEqual([['ghost', 'unknown']]);
+  });
+});

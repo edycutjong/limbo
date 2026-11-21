@@ -62,6 +62,10 @@ Only dead-code removals (R3.1, R4.2). Format: `file:line, what was removed, why 
 | `skeleton/src/core/causal.ts` | 86 | `?? ''` after `by.split('#')[0]`; now `[0]!` | `split` always returns at least one element | 0 |
 | `skeleton/src/core/causal.ts` | 123 | `op.deps[r] ?? 0` in `ready`; loop now iterates `Object.entries(op.deps)` | `r` comes from the keys of `op.deps`, so the entry exists (`VV` values are numbers) | 0 |
 | `skeleton/src/core/simulate.ts` | 88 | `o.deps[r] ?? 0` in `deliveryOrder`; now `Object.entries(o.deps).every(([r, n]) => ...)` | same: `r` comes from the keys of `o.deps` | 0 |
+| `skeleton/src/sync/identity.ts` | 38-48 | `take`: initial no-op `release` and the `granted` boolean; the promise now resolves the release function (or `undefined`) directly | `release` is assigned synchronously in the lock callback before the boolean resolved, so the no-op was never called | -3 |
+| `skeleton/src/sync/link.ts` | 32 | `if (!y) return false` in `same`; `y` is now `VV`, call site passes `lastSeen!` | `observeVV` runs only after a hello, which sets `lastSeen`; `reset` clears `helloSeen` and `lastSeen` together | -1 |
+| `skeleton/src/sync/link.ts` | 125 | `peerVV ?? {}` in the replica subscriber; now `peerVV!` | the subscriber runs only when `helloSeen`, and a hello sets `peerVV` (cleared together with `helloSeen`) | 0 |
+| `skeleton/src/sync/status.ts` | 55 | `peerVV[r] ?? 0` in `countBehind`; loop now iterates `Object.entries(peerVV)` | `r` comes from the keys of `peerVV` | 0 |
 
 ## 6. Ignored branches
 

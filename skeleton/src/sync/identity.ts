@@ -39,18 +39,15 @@ const MAX_TRIES = 5;
 
 /** Try to take `name` without waiting. Resolves a release function, or undefined when held. */
 async function take(locks: IdLocks, name: string): Promise<(() => void) | undefined> {
-  let release: () => void = () => {};
-  const granted = await new Promise<boolean>((resolve) => {
+  return new Promise<(() => void) | undefined>((resolve) => {
     void locks.request(name, { ifAvailable: true }, (lock) => {
       if (!lock) {
-        resolve(false);
+        resolve(undefined);
         return null;
       }
-      resolve(true);
-      return new Promise<void>((res) => (release = res));
+      return new Promise<void>((res) => resolve(() => res()));
     });
   });
-  return granted ? () => release() : undefined;
 }
 
 export async function acquireIdentity(o: AcquireOpts): Promise<Identity> {

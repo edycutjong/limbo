@@ -14,7 +14,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Remove a branch only if dead, and record it.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.1_
 
-- [ ] 3. `skeleton/src/sync/*`
+- [x] 3. `skeleton/src/sync/*`
   - Files: `identity`, `inpage-link`, `link`, `replica`, `status`, `store`, `dev-relay-link`. Extend the matching `*.test.ts` files.
   - Failure paths (store `onerror`, closed link, throwing callback) are covered by injected failures through fakes. Assert the surfaced error or the state afterwards.
   - Do not touch the adapter contract of `store.ts` (the only module that imports Yjs).

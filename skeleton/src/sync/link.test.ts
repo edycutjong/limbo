@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { canonical } from '../core/causal.ts';
+import { canonical, createOp, newReplica } from '../core/causal.ts';
 import { causalLww } from '../core/merges.ts';
 import type { Op, OpDef } from '../core/types.ts';
 import { createInPageLink } from './inpage-link.ts';
@@ -269,5 +269,49 @@ describe('link protocol', () => {
     const hello = bSeen[0]!.m as Extract<Msg, { t: 'hello' }>;
     expect(hello.vv[a.ns]).toBeUndefined();
     expect(b.applied().map((o) => o.id)).toEqual([a1.id, a2.id]); // healed by the hello
+  });
+});
+
+/** A hand-driven Link: the test chooses when it reads up and what the session receives. */
+function fakeLink(initiallyUp: boolean) {
+  let up = initiallyUp;
+  let onMsg: ((m: Msg) => void) | undefined;
+  const sent: Msg[] = [];
+  const link: Link = {
+    send: (m) => void sent.push(structuredClone(m)),
+    onMessage: (cb) => ((onMsg = cb), () => undefined),
+    onState: () => () => undefined,
+    isUp: () => up,
+  };
+  return { link, sent, deliver: (m: Msg) => onMsg!(m), setUp: (v: boolean) => (up = v) };
+}
+const peerDelta = (id: string, n: number): Op[] => {
+  const p = newReplica(id);
+  return Array.from({ length: n }, () => createOp(p, defs[1]!, 't', 1));
+};
+
+describe('link serving', () => {
+  it('serves missing ops ordered by replica id then counter, whatever order they arrived in', async () => {
+    for (const arrival of [['p', 'q'], ['q', 'p']]) {
+      const b = await make('b');
+      for (const id of arrival) b.receive(peerDelta(id, 2));
+      const f = fakeLink(true);
+      attachLink(b, f.link);
+      f.deliver({ t: 'hello', replica: 'z', vv: {} });
+      const served = f.sent.filter((m) => m.t === 'ops').flatMap((m) => (m as Extract<Msg, { t: 'ops' }>).ops);
+      expect(served.map((o) => o.id)).toEqual(['p:1', 'p:2', 'q:1', 'q:2']);
+    }
+  });
+
+  it('serves nothing while the link reads down, then serves once it reads up', async () => {
+    const b = await make('b');
+    b.receive(peerDelta('p', 1));
+    const f = fakeLink(false);
+    attachLink(b, f.link);
+    f.deliver({ t: 'hello', replica: 'z', vv: {} });
+    expect(f.sent.filter((m) => m.t === 'ops')).toHaveLength(0);
+    f.setUp(true);
+    f.deliver({ t: 'ack', vv: { z: 1 } });
+    expect(f.sent.filter((m) => m.t === 'ops')).toHaveLength(1);
   });
 });

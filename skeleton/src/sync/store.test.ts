@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { Op } from '../core/types.ts';
 import { deleteStore, openStore } from './store.ts';
 
@@ -191,5 +191,65 @@ describe('yjs import lint', () => {
     };
     roots.forEach(walk);
     expect(offenders).toEqual([]);
+  });
+});
+
+describe('store injected failures', () => {
+  const fakeTx = (error: unknown) => ({ error }) as unknown as IDBTransaction & { onerror(): void; onabort(): void };
+
+  it('rejects a flush with the transaction error', async () => {
+    const s = openStore('t-flush-error');
+    await s.ready;
+    const tx = fakeTx(new Error('disk full'));
+    const spy = vi.spyOn(IDBDatabase.prototype, 'transaction').mockReturnValue(tx);
+    const p = s.meta.write({});
+    tx.onerror();
+    await expect(p).rejects.toThrow('disk full');
+    spy.mockRestore();
+    s.close();
+  });
+
+  it('rejects a flush with a default error when the transaction names none', async () => {
+    const s = openStore('t-flush-error-default');
+    await s.ready;
+    const tx = fakeTx(null);
+    const spy = vi.spyOn(IDBDatabase.prototype, 'transaction').mockReturnValue(tx);
+    const p = s.meta.write({});
+    tx.onerror();
+    await expect(p).rejects.toThrow('store flush failed');
+    spy.mockRestore();
+    s.close();
+  });
+
+  it('rejects a flush when the transaction aborts', async () => {
+    const s = openStore('t-flush-abort');
+    await s.ready;
+    const named = fakeTx(new Error('quota'));
+    const spy = vi.spyOn(IDBDatabase.prototype, 'transaction').mockReturnValue(named);
+    const p1 = s.meta.write({});
+    named.onabort();
+    await expect(p1).rejects.toThrow('quota');
+    const bare = fakeTx(null);
+    spy.mockReturnValue(bare);
+    const p2 = s.meta.write({});
+    bare.onabort();
+    await expect(p2).rejects.toThrow('store flush aborted');
+    spy.mockRestore();
+    s.close();
+  });
+
+  it('rejects deleteStore with the request error, or a default one', async () => {
+    const mk1 = (error: unknown) => ({ error }) as unknown as IDBOpenDBRequest & { onerror(): void };
+    const named = mk1(new Error('blocked by policy'));
+    const spy = vi.spyOn(indexedDB, 'deleteDatabase').mockReturnValue(named);
+    const p1 = deleteStore('t-del');
+    named.onerror();
+    await expect(p1).rejects.toThrow('blocked by policy');
+    const bare = mk1(null);
+    spy.mockReturnValue(bare);
+    const p2 = deleteStore('t-del');
+    bare.onerror();
+    await expect(p2).rejects.toThrow('deleteStore failed');
+    spy.mockRestore();
   });
 });

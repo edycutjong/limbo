@@ -230,3 +230,9 @@ describe('replica', () => {
     expect(r.twins()).toBe(0);
   });
 });
+
+describe('makeSeedOps', () => {
+  it('throws on a script step whose op is not defined', () => {
+    expect(() => makeSeedOps(defs, [{ name: 'nope', target: 't', payload: 1 }])).toThrow('unknown op: nope');
+  });
+});

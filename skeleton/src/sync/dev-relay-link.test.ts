@@ -190,3 +190,81 @@ describe('DevRelayLink', () => {
     expect(src).not.toMatch(/from\s+['"](react|react-dom|[^'"]*\/limbo\/)/);
   });
 });
+
+describe('DevRelayLink failures and defaults', () => {
+  const mkOp = (n: number): Op => ({ id: `a:${n}`, op: 'set', target: 't', payload: 'x', stamp: { l: n, r: 'a', n }, deps: {} });
+
+  it('goes down when the relay answers a poll with a non-ok status', async () => {
+    const relay = fakeRelay();
+    let status = 200;
+    const fetchFn = (async (...args: Parameters<typeof fetch>) =>
+      status === 200 ? relay.fetch(...args) : new Response('no', { status })) as typeof fetch;
+    const link = createDevRelayLink({ url: 'http://relay.test', replicaId: 'a', fetch: fetchFn, pollMs: 100 });
+    const seen: string[] = [];
+    link.onState((s) => seen.push(s));
+    await ticks();
+    status = 500;
+    await ticks();
+    expect(seen).toEqual(['up', 'down']);
+    expect(link.isUp()).toBe(false);
+  });
+
+  it('ignores a poll answer that arrives after the last handler left', async () => {
+    const relay = fakeRelay();
+    let release: (() => void) | undefined;
+    const fetchFn = (async (...args: Parameters<typeof fetch>) => {
+      await new Promise<void>((res) => (release = res));
+      return relay.fetch(...args);
+    }) as typeof fetch;
+    const link = createDevRelayLink({ url: 'http://relay.test', replicaId: 'a', fetch: fetchFn, pollMs: 100 });
+    const seen: string[] = [];
+    const off = link.onState((s) => seen.push(s));
+    off();
+    release!();
+    await ticks();
+    expect(seen).toEqual([]);
+    expect(link.isUp()).toBe(false);
+  });
+
+  it('goes down when the relay answers a post with a non-ok status', async () => {
+    const relay = fakeRelay();
+    const fetchFn = (async (input: string, init?: { method?: string }) =>
+      init?.method === 'POST' ? new Response('no', { status: 503 }) : relay.fetch(input, init as never)) as unknown as typeof fetch;
+    const link = createDevRelayLink({ url: 'http://relay.test', replicaId: 'a', fetch: fetchFn, pollMs: 100 });
+    const seen: string[] = [];
+    link.onState((s) => seen.push(s));
+    await ticks();
+    expect(link.isUp()).toBe(true);
+    link.send({ t: 'ops', ops: [mkOp(1)], vv: {} });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(link.isUp()).toBe(false);
+    expect(seen).toEqual(['up', 'down']);
+    expect(relay.log).toHaveLength(0);
+  });
+
+  it('uses the global fetch when none is given', async () => {
+    const relay = fakeRelay();
+    vi.stubGlobal('fetch', relay.fetch);
+    try {
+      const link = createDevRelayLink({ url: 'http://relay.test', replicaId: 'a', pollMs: 100 });
+      link.onState(() => undefined);
+      await ticks();
+      expect(link.isUp()).toBe(true);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('polls every 150 ms when pollMs is not given', async () => {
+    const relay = fakeRelay();
+    const spy = vi.fn(relay.fetch);
+    const link = createDevRelayLink({ url: 'http://relay.test', replicaId: 'a', fetch: spy });
+    link.onState(() => undefined);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(spy).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(149);
+    expect(spy).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+});

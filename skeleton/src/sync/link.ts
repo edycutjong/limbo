@@ -29,8 +29,7 @@ export interface Session {
   detach(): void;
 }
 
-const same = (x: VV, y: VV | undefined): boolean => {
-  if (!y) return false;
+const same = (x: VV, y: VV): boolean => {
   for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) if ((x[k] ?? 0) !== (y[k] ?? 0)) return false;
   return true;
 };
@@ -76,7 +75,7 @@ export function attachLink<S>(replica: Replica<S>, link: Link, opts: { chunk?: n
   /** Record the peer's vv; re-serve when it differs from the last one seen in this session. */
   const observeVV = (vv: VV): void => {
     peerVV = vv;
-    const changed = !same(vv, lastSeen);
+    const changed = !same(vv, lastSeen!);
     lastSeen = vv;
     if (changed) sendMissing(vv);
   };
@@ -124,7 +123,7 @@ export function attachLink<S>(replica: Replica<S>, link: Link, opts: { chunk?: n
     }),
     replica.subscribe(() => {
       // A local op while up: send what the peer lacks and we have not sent yet.
-      if (!inHandler && helloSeen && link.isUp()) sendMissing(peerVV ?? {}, true);
+      if (!inHandler && helloSeen && link.isUp()) sendMissing(peerVV!, true);
     }),
   ];
   if (link.isUp()) sendHello();
