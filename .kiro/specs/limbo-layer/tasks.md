@@ -39,7 +39,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`twin.test.tsx`, stub app resurrect conflict and claim-one loser): after a real conflict the twin renders on the same row (no second `[data-limbo-row]`); ghost is `aria-hidden` and offset 6 px; caption and buttons are not in the faded layer; rule line names the merge; `Enter` triggers the first button; after resolve the twin is gone and a resolved or superseded conflict is never shown; with reduced motion no leaving class.
   - _Requirements: R6, R15.2, R16.4_
 
-- [ ] 8. FixedStamp
+- [x] 8. FixedStamp
   - `marks.tsx`: `FixedStamp` bound to `view.fixed` and `fixedCount`.
   - Tests (`fixed.test.tsx`): not shown at start; shown once after cut → edit → restore → settle; hidden when the link is cut again or a conflict returns; resolving a conflict fires it once and a re-render does not replay the entrance; no JS timer sets or clears it (fake timers advance 5 s and the state is unchanged).
   - _Requirements: R7, R14.4_

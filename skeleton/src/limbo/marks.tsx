@@ -27,6 +27,21 @@ export function Fog(p: { id: Id; children?: ReactNode }): ReactNode {
   );
 }
 
+/** The oxblood FIXED stamp. Shown while `view.fixed`; the entrance applies only once `fixedCount` has risen past its mount value. The settle is a CSS delay. */
+export function FixedStamp(p: { id: Id }): ReactNode {
+  const { view } = useLimbo(p.id);
+  const [base] = useState(view.fixedCount);
+  if (!view.fixed) return null;
+  return (
+    <span className="limbo-fixed" data-fixed-count={view.fixedCount} data-enter={view.fixedCount > base ? 'true' : 'false'}>
+      <svg {...SVG} className="limbo-icon" data-icon="stamp">
+        <path d="M3 8.5l3.5 3.5L13 4.5" />
+      </svg>
+      <span className="limbo-fixed-text">FIXED</span>
+    </span>
+  );
+}
+
 /** The chip's icon follows the axis: cloud-slash (fogged), arrows (developing), check (live). */
 function AxisIcon(p: { axis: 'FOGGED' | 'DEVELOPING' | 'LIVE' }): ReactNode {
   return (

@@ -81,3 +81,8 @@
 .limbo-twin-label { font-size: 11px; letter-spacing: .08em; color: var(--twin); }
 .limbo-twin-leaving .limbo-twin-ghost { animation: limbo-twin-out 250ms ease-in forwards; }
 @keyframes limbo-twin-out { to { transform: translate(0, 0); opacity: 0; } }
+
+.limbo-fixed { display: inline-flex; align-items: center; gap: 4px; color: var(--after); border: 2px solid var(--after); border-radius: 3px; padding: 1px 6px; font-family: var(--font-display); letter-spacing: .12em; font-size: 12px; transform: rotate(-4deg); animation: limbo-fixed-settle 300ms ease-out 2s forwards; }
+.limbo-fixed[data-enter="true"] { animation: limbo-fixed-in 250ms ease-out, limbo-fixed-settle 300ms ease-out 2s forwards; }
+@keyframes limbo-fixed-in { from { transform: rotate(-4deg) scale(1.6); opacity: 0; } }
+@keyframes limbo-fixed-settle { to { transform: rotate(-4deg) scale(.8); opacity: .75; } }
