@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last task also ends with `pnpm e2e` green. Tests, properties, hooks and the vacuity guard are never weakened, skipped, or run with a lower `numRuns`. Existing tests change only where a task says so, and only selectors or class names, never an assertion's meaning. No git. Skeleton edits are limited to `twin.tsx`, `marks.tsx` and `tokens.css`; record each in `design.md` section 12.
 
-- [ ] 1. Baselines
+- [-] 1. Baselines
   - Record in `evidence/ui-polish/baseline.md`: `pnpm test` file and test counts (85 files, 697 tests when this spec was written; re-measure), the skeleton budget with the command of `evidence/aftershock/budget-baseline.md`, and screenshots-free notes of the eight defects on the dev servers (one line each).
   - Resolve the four open decisions of `design.md` section 1 with the owner. If one is reversed, edit the design before task 2.
   - Tests: none new. All suites green before any change.
