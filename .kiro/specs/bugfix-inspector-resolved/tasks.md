@@ -21,7 +21,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except ta
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: Unchanged Behavior 1 to 9_
 
-- [ ] 4. Update the e2e
+- [x] 4. Update the e2e
   - `e2e/basecamp-offline.spec.ts` (~lines 198-201): assert two rows on A, one ending `(rule: resurrect) resolved` and one ending `(rule: claim-one) resolved`; remove the "KNOWN GAP (R10.8)" comment.
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`.
   - Search the repo for the string "KNOWN GAP" and confirm no hit remains for R10.8.

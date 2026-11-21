@@ -196,9 +196,9 @@ test('lake scene in one page: partition, Play the lake scene, reconnect, resolve
     expect(r[6]).not.toBe('');
   }
   const conflicts = await dlg.getByRole('region', { name: 'Conflicts' }).locator('li').allTextContents();
-  // KNOWN GAP (R10.8), the same one lake-scene.test.tsx records: useLimbo purges a conflict that an incoming
-  // op resolved in the same crossing, so A lists the tent twin it resolved itself. This asserts what A shows.
-  expect(conflicts.some((t) => /\(rule: resurrect\) resolved$/.test(t))).toBe(true);
+  expect(conflicts).toHaveLength(2);
+  expect(conflicts.filter((t) => /\(rule: resurrect\) resolved$/.test(t))).toHaveLength(1);
+  expect(conflicts.filter((t) => /\(rule: claim-one\) resolved$/.test(t))).toHaveLength(1);
   await dlg.getByRole('button', { name: 'Close' }).click();
 
   // R10.9: shuffle test prints its own count and the golden line.
