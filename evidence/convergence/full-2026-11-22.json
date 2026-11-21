@@ -42,22 +42,75 @@
     "runs": 10000,
     "share": {
       "lww-equal": 0.9987,
-      "lww-different": 0.9994
+      "lww-different": 0.9994,
+      "delete-edit": 0.9589,
+      "restore-delete": 0.8883,
+      "keep-delete": 0.6386,
+      "claim-claim": 0.9307,
+      "claim-delete": 0.9432,
+      "move-move": 0.7211,
+      "move-same-gap": 0.5845,
+      "move-delete": 0.8885,
+      "claim-release-claim": 0.6452
     },
-    "na": [
-      "delete-edit",
-      "restore-delete",
-      "keep-delete",
-      "claim-claim",
-      "claim-delete",
-      "move-move",
-      "move-same-gap",
-      "move-delete",
-      "claim-release-claim"
-    ]
+    "na": [],
+    "byApp": {
+      "aftershock": {
+        "runs": 10000,
+        "share": {
+          "lww-equal": 0.9987,
+          "lww-different": 0.9994
+        },
+        "applicable": [
+          "lww-equal",
+          "lww-different"
+        ],
+        "na": [
+          "delete-edit",
+          "restore-delete",
+          "keep-delete",
+          "claim-claim",
+          "claim-delete",
+          "move-move",
+          "move-same-gap",
+          "move-delete",
+          "claim-release-claim"
+        ]
+      },
+      "basecamp": {
+        "runs": 10000,
+        "share": {
+          "delete-edit": 0.9589,
+          "restore-delete": 0.8883,
+          "keep-delete": 0.6386,
+          "claim-claim": 0.9307,
+          "claim-delete": 0.9432,
+          "move-move": 0.7211,
+          "move-same-gap": 0.5845,
+          "move-delete": 0.8885,
+          "claim-release-claim": 0.6452,
+          "lww-equal": 0.8518,
+          "lww-different": 0.9211
+        },
+        "applicable": [
+          "delete-edit",
+          "restore-delete",
+          "keep-delete",
+          "claim-claim",
+          "claim-delete",
+          "move-move",
+          "move-same-gap",
+          "move-delete",
+          "claim-release-claim",
+          "lww-equal",
+          "lww-different"
+        ],
+        "na": []
+      }
+    }
   },
   "yjsVersion": "13.6.33",
   "nodeVersion": "22.22.0",
-  "durationMs": 1187406,
+  "durationMs": 1308475,
   "date": "2026-11-22"
 }
