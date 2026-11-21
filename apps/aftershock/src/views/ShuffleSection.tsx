@@ -15,5 +15,10 @@ export function ShuffleSection(p: { createRunner: () => ShuffleRunner; goldens: 
   const b = useLimbo('b');
   const ops = [...new Map([...a.replica.log(), ...b.replica.log()].map((o) => [o.id, o] as const)).values()];
   const golden = matchGolden(ops, p.goldens);
-  return <ShuffleTest ops={ops} n={p.n ?? 1000} createRunner={p.createRunner} {...(golden ? { golden } : {})} />;
+  return (
+    <>
+      <ShuffleTest ops={ops} n={p.n ?? 1000} createRunner={p.createRunner} {...(golden ? { golden } : {})} />
+      <p className="ui-note">This is the live in-browser run of the ops on screen. The full-tier property suite runs in CI.</p>
+    </>
+  );
 }

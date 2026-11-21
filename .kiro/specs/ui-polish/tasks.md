@@ -57,7 +57,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `SectorCard.test.tsx`: two scripted fields render two tags, each with a field name and the text `scripted edit`. `ReportForm.test.tsx`: the Re-inspection input is inside a `.ui-check` label. `app.css` check in `controls.test.ts` or a sibling: `.as-cell:hover` has a `transform` and a `border-color` and uses `var(--ui-dur)`.
   - _Requirements: R6.1 to R6.5, R7.1_
 
-- [ ] 11. Shuffle blurb
+- [x] 11. Shuffle blurb
   - Add the one-line note under `ShuffleTest` in both `ShuffleSection.tsx` files.
   - Tests: both `Shuffle.test.tsx` files assert the sentence is present, contains no digit, and that the existing "orderings → same state" line is unchanged.
   - _Requirements: R8.1, R8.2_

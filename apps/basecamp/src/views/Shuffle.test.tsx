@@ -80,6 +80,15 @@ describe('Inspector and ShuffleTest wiring', () => {
     expect(screen.getByText('matches the specified result ✓')).toBeTruthy();
   });
 
+  it('the blurb sits under the shuffle test, has no digit, and leaves the orderings line unchanged', async () => {
+    await mount();
+    const blurb = screen.getByText('This is the live in-browser run of the ops on screen. The full-tier property suite runs in CI.');
+    expect(blurb.className).toContain('ui-note');
+    expect(/\d/.test(blurb.textContent ?? '')).toBe(false);
+    await runShuffleTest();
+    expect(screen.getByText('1,000 / 1,000 orderings → same state')).toBeTruthy();
+  });
+
   it('after an extra edit no golden line prints', async () => {
     const p = await mount();
     await act(async () => void actions.addItem(p.a, 'Kettle'));
