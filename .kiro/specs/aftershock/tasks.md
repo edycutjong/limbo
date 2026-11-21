@@ -100,7 +100,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Test (`survey-scene.test.tsx`, real `createPair`, manual `settle()`): R10.1 to R10.9 on the DOM text in order: fog and "Offline", "3 waiting" on both and the local views (DAMAGED "2 reported — Sari 2" on A, UNSAFE "3 reported — Budi 3" on B), haze "Syncing" before `settle()`, both states equal after, UNSAFE, "5 reported — Sari 2, Budi 3", "may overlap", note twin and "C3 — do not enter", one **Keep this note** tap, deep-equal canonical states, zero twins, FIXED, Inspector order (resolve first, then the six partition ops, each with merge, `l·r·n` and deps) and the Conflicts list with `causal-lww`, shuffle line and golden line. Manual edits (no button) give the same result.
   - _Requirements: R10, R11_
 
-- [ ] 20. Solo page
+- [x] 20. Solo page
   - `src/devrelay.ts` and the guarded dynamic import in `main.tsx` per R14 and design §8 (import `skeleton/src/sync/dev-relay-link.ts` by path).
   - Tests (`devrelay.test.tsx`, fake fetch over an in-memory relay): the solo page shows `[data-status]`, a `[data-sector]` line for a reported sector, and `window.limbo` with `report`, `count`, `note`; two solo replicas over one fake relay converge on C3 `unsafe` with both counts.
   - _Requirements: R14_

@@ -119,4 +119,12 @@ export function boot(el: HTMLElement, o: BootOptions = {}): { ready: Promise<Pai
 }
 
 const el = typeof document === 'undefined' ? null : document.getElementById('root');
-if (el) boot(el);
+if (el) {
+  // Dev and test only (R14.1): `?devrelay=<url>&r=<id>` mounts the solo page. A production build
+  // replaces DEBUG with `false`, drops this branch, and never emits the dynamic import.
+  const relay = DEBUG ? new URLSearchParams(location.search).get('devrelay') : null;
+  if (DEBUG && relay) {
+    const r = new URLSearchParams(location.search).get('r') ?? 'a';
+    void import('./devrelay.ts').then((m) => m.mountSolo({ url: relay, r, el }));
+  } else boot(el);
+}
