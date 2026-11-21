@@ -24,7 +24,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`shell.test.tsx`): throws outside the shell; one `view` read per change and a stable snapshot between changes; unmount removes the replica, session and `onCross` subscriptions; `data-motion` follows the media query and its change; a descriptor count that differs from `view.twins` still shows `view.twins` and warns once; live region says "Link cut. Edits will wait on this device." then "Link restored. Syncing…" then "n edits synced." once each and not again on re-render.
   - _Requirements: R1, R2, R15.3, R17_
 
-- [ ] 5. Fog and StatusChip
+- [x] 5. Fog and StatusChip
   - `skeleton/src/limbo/marks.tsx`: `Fog` (full, haze, none), `StatusChip` (icon per axis, conflict mark, stalled line).
   - Tests (`fog.test.tsx`, `chip.test.tsx`): cut → full fog with label "Offline" and the content wrapper desaturated; `connecting` also full; restore before settle → haze `Syncing n…` with `n = unacked + behind`; after settle → none; buffered-only → no fog and chip `Syncing…`; the veil has `pointer-events: none` and `aria-hidden`; all five chip strings exactly; `stalledOwn > 0` adds "waiting for an earlier edit that was not saved"; every state has a word and an icon.
   - _Requirements: R3, R8, R18.4_
