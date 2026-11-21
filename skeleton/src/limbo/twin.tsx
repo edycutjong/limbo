@@ -36,14 +36,16 @@ export function Twin(p: {
       tabIndex={0}
       onKeyDown={onKeyDown}
     >
-      <div className="limbo-twin-rest">{p.atRest}</div>
-      <div
-        className="limbo-twin-ghost"
-        aria-hidden="true"
-        style={{ transform: 'translate(6px, 6px)', outline: '1px dashed var(--twin)', opacity: 0.7, position: 'absolute', inset: 0, pointerEvents: 'none' }}
-        onAnimationEnd={leaving ? () => setDone(true) : undefined}
-      >
-        {p.ghost}
+      <div className="limbo-twin-stage">
+        <div className="limbo-twin-rest">{p.atRest}</div>
+        <div
+          className="limbo-twin-ghost"
+          aria-hidden="true"
+          style={{ transform: 'translate(6px, 6px)', outline: '1px dashed var(--twin)', opacity: 0.7, position: 'absolute', inset: 0, pointerEvents: 'none' }}
+          onAnimationEnd={leaving ? () => setDone(true) : undefined}
+        >
+          {p.ghost}
+        </div>
       </div>
       <span className="limbo-twin-label">TWIN</span>
       <div className="limbo-twin-caption">{p.caption}</div>

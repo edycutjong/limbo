@@ -30,7 +30,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `ExpenseRow.test.tsx` checks the list has no bullet class (`list-style` via the sheet test) and that Remove keeps its accessible name. Existing assertions unchanged.
   - _Requirements: R1.5, R1.6, R1.7_
 
-- [ ] 6. Twin ghost bugfix
+- [x] 6. Twin ghost bugfix
   - First write `skeleton/src/limbo/twin-layout.test.tsx` and see it fail: the ghost and the at-rest content share one parent, and that parent contains no caption, rule line or action.
   - Fix `twin.tsx` (stage wrapper, inline style untouched) and the twin rules in `tokens.css` per design section 5. Record the line delta in `design.md` section 12 and re-measure the budget.
   - Tests: new layout test passes; `twin.test.tsx`, `motion.test.tsx`, `fixed.test.tsx` and the app twin tests pass with no edit (Unchanged clause).

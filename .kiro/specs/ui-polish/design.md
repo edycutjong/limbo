@@ -185,7 +185,7 @@ Filled in by each task. Format: file, lines before → after (non-blank, non-com
 
 | File | Before → after | Reason |
 | --- | --- | --- |
-| `skeleton/src/limbo/twin.tsx` | (task 6) | R2 stage wrapper |
+| `skeleton/src/limbo/twin.tsx` | 2142 → 2144 total (+2 lines, the stage open and close tags; 21 files, unchanged); `tokens.css` twin rules changed in the same task | R2 stage wrapper |
 | `skeleton/src/limbo/marks.tsx` | (task 7) | R3 wisps markup |
 | `skeleton/src/limbo/tokens.css` | CSS, not counted | R2, R3, R4, R7 |
 | `skeleton/src/limbo/tokens.css` (task 2) | CSS, not counted; +2 lines at end (`:focus-visible` rule), `:root` untouched | R7.1 |
