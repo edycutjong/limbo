@@ -10,6 +10,7 @@ import * as config from '../app.config.ts';
 import { displayName } from './members.ts';
 import type { State } from './model.ts';
 import { createWorkerRunner } from './shuffle-runner.ts';
+import { ScenePanel, ScriptedContext, useScriptedState } from './views/ScenePanel.tsx';
 import { ReplicaBody } from './views/ReplicaBody.tsx';
 import { ShuffleSection } from './views/ShuffleSection.tsx';
 import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
@@ -20,8 +21,10 @@ export const DEMO_CHIP = 'DEMO DATA';
 export const DEMO_NOTE = 'Demonstration data shape — not used in the field';
 
 /** Root component: heading, tagline, DEMO DATA chip (a note, not dismissible), and the pair when given. */
-export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): ShuffleRunner }): ReactNode {
+export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): ShuffleRunner; sceneDelay?: number }): ReactNode {
+  const scripted = useScriptedState();
   return (
+    <ScriptedContext.Provider value={scripted}>
     <main className="as-shell">
       <h1>AFTERSHOCK</h1>
       <p>{TAGLINE}</p>
@@ -38,13 +41,18 @@ export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): 
               b: displayName(config.members.b.member).toUpperCase(),
             }}
             plate={{ a: 1, b: 2 }}
-            onReset={() => (p.onReset ?? (() => undefined))()}
+            onReset={() => {
+              scripted.reset();
+              (p.onReset ?? (() => undefined))();
+            }}
             renderReplica={(id: Id) => <ReplicaBody id={id} />}
           />
+          <ScenePanel pair={p.pair} {...(p.sceneDelay === undefined ? {} : { delay: p.sceneDelay })} />
           <ShuffleSection createRunner={p.createRunner ?? createWorkerRunner} goldens={config.goldens} />
         </LimboShell>
       )}
     </main>
+    </ScriptedContext.Provider>
   );
 }
 

@@ -95,7 +95,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: Inspector queued rows equal `view.unacked`; the shuffle test with an injected inline runner prints "1,000 / 1,000 orderings → same state" and, for the seed, "matches the specified result ✓"; after an extra edit no golden line prints; the worker file imports `runShuffle` and `materialize` only.
   - _Requirements: R10.6, R10.7, R12.1 to R12.3_
 
-- [ ] 19. ScenePanel and the survey scene in jsdom
+- [x] 19. ScenePanel and the survey scene in jsdom
   - `views/ScenePanel.tsx`: button shown while the link is down and the scene is unset, six scripted edits with an injectable delay (0 in tests), "scripted edit" tags on the sector card, clear on link up, Reset clears the flag.
   - Test (`survey-scene.test.tsx`, real `createPair`, manual `settle()`): R10.1 to R10.9 on the DOM text in order: fog and "Offline", "3 waiting" on both and the local views (DAMAGED "2 reported — Sari 2" on A, UNSAFE "3 reported — Budi 3" on B), haze "Syncing" before `settle()`, both states equal after, UNSAFE, "5 reported — Sari 2, Budi 3", "may overlap", note twin and "C3 — do not enter", one **Keep this note** tap, deep-equal canonical states, zero twins, FIXED, Inspector order (resolve first, then the six partition ops, each with merge, `l·r·n` and deps) and the Conflicts list with `causal-lww`, shuffle line and golden line. Manual edits (no button) give the same result.
   - _Requirements: R10, R11_

@@ -221,6 +221,18 @@
         "chatSessionId": "sess_1fafef29-62c1-4688-b277-285a3e13d9b2",
         "timestamp": 1795261267796
       }
+    ],
+    "19. ScenePanel and the survey scene in jsdom": [
+      {
+        "executionId": "3a531eb8-b030-47ad-bf47-db4f3ae09faa",
+        "chatSessionId": "sess_33389cc8-5a48-4c6a-b89f-c5fc4df8955f",
+        "timestamp": 1795261459294
+      },
+      {
+        "executionId": "3a531eb8-b030-47ad-bf47-db4f3ae09faa",
+        "chatSessionId": "sess_33389cc8-5a48-4c6a-b89f-c5fc4df8955f",
+        "timestamp": 1795261694585
+      }
     ]
   }
 }

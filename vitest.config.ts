@@ -18,6 +18,8 @@ export default defineConfig({
           include: ['skeleton/src/**/*.test.tsx', 'apps/*/src/**/*.test.tsx'],
           environment: 'jsdom',
           setupFiles: ['skeleton/src/limbo/test/setup.ts'],
+          // The scene tests run the 1,000-ordering shuffle in jsdom (3 to 7 s alone, more under parallel load).
+          testTimeout: 60_000,
         },
       },
       {
