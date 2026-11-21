@@ -44,7 +44,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`fixed.test.tsx`): not shown at start; shown once after cut → edit → restore → settle; hidden when the link is cut again or a conflict returns; resolving a conflict fires it once and a re-render does not replay the entrance; no JS timer sets or clears it (fake timers advance 5 s and the state is unchanged).
   - _Requirements: R7, R14.4_
 
-- [ ] 9. Inspector
+- [x] 9. Inspector
   - `skeleton/src/limbo/inspector.tsx`: drawer with Link, Queued ops, Recent exchanges, Conflicts, Replica; focus trap and return; empty-section words.
   - Tests (`inspector.test.tsx`): opens and closes with the button and `Escape`, focus returns; Link shows state and peer id; queued rows equal `view.unacked` and show op name, target, declared merge, declared intent, stamp `l·r·n` and deps for each; exchanges newest first, last 3 only, with in/out and the same columns; a resolved conflict stays until the next crossing then goes; Replica shows id, `vv` and log size; an op with no def shows `unknown`.
   - _Requirements: R9, R18.6_
