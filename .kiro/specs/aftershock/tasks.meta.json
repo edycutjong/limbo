@@ -137,6 +137,18 @@
         "chatSessionId": "sess_b47db450-80aa-4d9a-9b17-abe087031da2",
         "timestamp": 1795258865051
       }
+    ],
+    "12. Survey scene script and goldens": [
+      {
+        "executionId": "6eb4a0ac-3798-4234-a569-b4adb25636b1",
+        "chatSessionId": "sess_8b302793-310f-461b-a820-f7d89f2b4298",
+        "timestamp": 1795259045103
+      },
+      {
+        "executionId": "6eb4a0ac-3798-4234-a569-b4adb25636b1",
+        "chatSessionId": "sess_8b302793-310f-461b-a820-f7d89f2b4298",
+        "timestamp": 1795259190268
+      }
     ]
   }
 }

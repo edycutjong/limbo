@@ -60,7 +60,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`actions.test.ts`, two real `createReplica` instances with manual delivery): each resolve clears its twin on both replicas after delivery; the count target is `C3#sari` on `a` and `C3#budi` on `b`; pressing a need twice makes two adds; re-inspection lowers an observed `unsafe` and leaves a concurrent report standing; no action reads state to compute a delta or a flip.
   - _Requirements: R13, R9.1, R9.2, R3.2_
 
-- [ ] 12. Survey scene script and goldens
+- [x] 12. Survey scene script and goldens
   - `src/scene.ts`: `surveyScript` (six edits, alternating A then B), `SEED_OP_IDS`, `PARTITION_OP_IDS`, `RESOLVE_OP_IDS`, the two goldens (hand-written canonical states), the assumption comment about fresh databases.
   - Tests (`scene.test.ts`, real `createPair` with a manual scheduler): after the six edits and a restore, ids are `a#1:1..3` and `b#1:1..3`, the two reports have `l = 19` and different `r`, the counts `l = 20`, the notes `l = 21`, the resolve is `a#1:4` with `l = 22`; severity `unsafe`, total 5, two note values before the resolve and none after; golden `state` strings equal the canonical `materialize` of their ops in several shuffled orders; the stated expectations are asserted field by field.
   - _Requirements: R10.2 to R10.5, R12.2, R12.4, R12.5_
