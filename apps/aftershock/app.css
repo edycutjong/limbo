@@ -71,3 +71,36 @@ body {
   display: grid;
   gap: 0.5rem;
 }
+.as-form {
+  display: grid;
+  gap: 0.5rem;
+}
+.as-seg,
+.as-stepper,
+.as-needs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.as-btn,
+.as-input,
+.as-check {
+  min-width: 44px;
+  min-height: 44px;
+}
+.as-check {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.as-input {
+  font-variant-numeric: tabular-nums;
+}
+.as-btn[aria-checked='true'],
+.as-btn[aria-pressed='true'] {
+  outline: 2px solid var(--ink);
+}
+.as-error {
+  font-weight: 600;
+}

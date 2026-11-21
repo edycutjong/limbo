@@ -80,7 +80,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: C3 with Sari 2 and Budi 3 reads "5 reported — Sari 2, Budi 3" and `[data-may-overlap]` is a sibling of the total, not inside the instruction line; the instruction "C3 — do not enter" is present for `unsafe` and absent for `safe` and `damaged`; B2 shows rina 3 and sari 1 in roster order (Sari first); the two cards select different sectors independently; names render as text.
   - _Requirements: R7.3, R7.4, R7.9, R4.6_
 
-- [ ] 16. `ReportForm`
+- [x] 16. `ReportForm`
   - `views/ReportForm.tsx` per R7.5 to R7.7 and design §6: segmented control, stepper, needs chips, note field, Re-inspection checkbox, Save with the diff rules, inline errors, 44 px controls. Wire Save to `actions`.
   - Tests: A saves C3 damaged, 2, "cracked stairwell" and exactly three ops (report, count, note) are created; Save with nothing changed is disabled; a lower report without Re-inspection is not written; with Re-inspection a clear then a report are written in that order; a count of -1 or 2.5, a 281-character note, and Save with no severity on a new sector show an inline error and create no op, keeping typed text; needs write add for newly pressed and unneed for newly unpressed, never both for one need.
   - _Requirements: R7.5 to R7.7, R13.3, R17.2_
