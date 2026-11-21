@@ -49,7 +49,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`actions.test.ts`, over two real `createReplica` instances with manual delivery): each resolve action clears its twin on both replicas after delivery; add item gives distinct ids on two replicas; tick never toggles (two ticks of `true` stay `true`); move allocates a key between neighbours; delete then restore.
   - _Requirements: R3.1 to R3.8, R4.3, R4.4, R7.5_
 
-- [ ] 10. Lake scene script and goldens
+- [x] 10. Lake scene script and goldens
   - `apps/basecamp/src/scene.ts`: `lakeScript` (A tick tent, B delete tent, A claim stove, B claim stove), the two goldens (hand-written canonical states), the assumption comment about fresh databases.
   - Tests (`scene.test.ts`, over a real `createPair` with a manual scheduler): after the four edits and a restore, the stove claims both have `l = 17` and different `r`, the winner is `sari`, the op ids are `a#1:1`, `a#1:2`, `b#1:1`, `b#1:2`, the resolves are `a#1:3` and `b#1:3`; the golden `state` strings equal the canonical `materialize` of their ops in several shuffled orders; the stated expectations (tent alive and ticked, stove won by `sari`, zero twins) are asserted field by field.
   - _Requirements: R10.3, R10.6, R12.2, R12.4, R12.5_
