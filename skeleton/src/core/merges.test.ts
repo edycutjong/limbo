@@ -1,5 +1,6 @@
+import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
-import { causalLww, claimOne, orderedMove, resurrect, type ClaimPayload, type LifeOp, type MoveItem } from './merges.ts';
+import { causalLww, claimOne, orderedMove, resurrect, sumSplit, type ClaimPayload, type LifeOp, type MoveItem } from './merges.ts';
 import type { Op, VV } from './types.ts';
 
 const w = (r: string, n: number, l: number, v: string, deps: VV = {}): Op<string> => ({
@@ -224,5 +225,47 @@ describe('orderedMove', () => {
 
   it('drops items with no writes', () => {
     expect(orderedMove([{ id: 'i', writes: [] }])).toEqual([]);
+  });
+});
+
+describe('sumSplit', () => {
+  const trio = ['sari', 'budi', 'dewi'];
+  it('splits 2500 over three members, remainder to the first in code-unit order', () => {
+    expect(sumSplit(2500, trio)).toEqual({ budi: 834, dewi: 833, sari: 833 });
+  });
+  it('no members gives {}; one member takes all; amount 0 gives zeros', () => {
+    expect(sumSplit(2500, [])).toEqual({});
+    expect(sumSplit(2500, ['sari'])).toEqual({ sari: 2500 });
+    expect(sumSplit(0, trio)).toEqual({ budi: 0, dewi: 0, sari: 0 });
+  });
+  it('amount below k gives one cent to the first members', () => {
+    expect(sumSplit(2, trio)).toEqual({ budi: 1, dewi: 1, sari: 0 });
+  });
+  it('duplicate members count once', () => {
+    expect(sumSplit(100, ['a', 'b', 'a', 'b', 'a'])).toEqual({ a: 50, b: 50 });
+  });
+  it('sorts by code unit, not locale', () => {
+    expect(Object.keys(sumSplit(1, ['b', 'B']))).toEqual(['B', 'b']);
+    expect(sumSplit(1, ['b', 'B'])).toEqual({ B: 1, b: 0 });
+  });
+  it('is independent of input order', () => {
+    for (const p of perms(trio)) expect(sumSplit(2500, p)).toEqual(sumSplit(2500, trio));
+  });
+  it('throws on a float, a negative and NaN', () => {
+    expect(() => sumSplit(1.5, trio)).toThrow();
+    expect(() => sumSplit(-1, trio)).toThrow();
+    expect(() => sumSplit(Number.NaN, trio)).toThrow();
+  });
+  it('property: integers >= 0, sum = amount, max - min <= 1', () => {
+    fc.assert(
+      fc.property(fc.integer({ min: 0, max: 10_000_000 }), fc.array(fc.string({ maxLength: 4 }), { minLength: 1, maxLength: 8 }), (amt, ms) => {
+        const vals = Object.values(sumSplit(amt, ms));
+        expect(vals.length).toBe(new Set(ms).size);
+        expect(vals.every((v) => Number.isInteger(v) && v >= 0)).toBe(true);
+        expect(vals.reduce((a, b) => a + b, 0)).toBe(amt);
+        expect(Math.max(...vals) - Math.min(...vals)).toBeLessThanOrEqual(1);
+      }),
+      { numRuns: 200 },
+    );
   });
 });

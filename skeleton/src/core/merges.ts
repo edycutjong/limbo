@@ -150,3 +150,17 @@ export function orderedMove(items: readonly MoveItem[]): Placed[] {
     a.key !== b.key ? (a.key < b.key ? -1 : 1) : a.id < b.id ? -1 : a.id > b.id ? 1 : 0,
   );
 }
+
+/**
+ * sum-split: split integer cents over distinct members, sorted by UTF-16 code unit.
+ * The first `amount % k` members get one extra cent, so shares sum to the amount and differ by at most 1.
+ */
+export function sumSplit(amountCents: number, members: readonly string[]): Record<string, number> {
+  if (!Number.isInteger(amountCents) || amountCents < 0) throw new Error(`sumSplit: bad amount ${amountCents}`);
+  const ids = [...new Set(members)].sort();
+  const k = ids.length;
+  if (k === 0) return {};
+  const base = Math.floor(amountCents / k);
+  const rem = amountCents % k;
+  return Object.fromEntries(ids.map((id, i) => [id, i < rem ? base + 1 : base]));
+}

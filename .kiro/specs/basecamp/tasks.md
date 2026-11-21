@@ -13,7 +13,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: parse `26`, `26.5`, `26.50`, `$26.00` → 2600, 2650, 2650, 2600; reject `26.555`, `-1`, `abc`, empty; `formatCents` 0, 5, 834, 2600, 100000; round trip over fast-check integers; no `toLocale`, `Intl` or `/` on money (source scan).
   - _Requirements: R7.4, R7.6_
 
-- [ ] 3. `sumSplit` reducer (skeleton)
+- [x] 3. `sumSplit` reducer (skeleton)
   - `skeleton/src/core/merges.ts`: add `sumSplit` as in design §5. No change to `skeleton/src/index.ts`. Record the new measured skeleton total and report it (R1.3).
   - Tests (`merges.test.ts`): 2500 over `sari, budi, dewi`; k = 0 gives `{}`; k = 1; amount 0; amount < k; duplicate members; input order independence; throws on a float, a negative and `NaN`; fast-check: integers ≥ 0, sum = amount, max − min ≤ 1.
   - _Requirements: R5_
