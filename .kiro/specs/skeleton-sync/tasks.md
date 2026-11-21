@@ -29,7 +29,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`link.test.ts`, two replicas with a manual scheduler): while cut, `stats().delivered` stays 0 both ways and `cut()` drops in-flight messages; after restore both canonical states deep-equal; a hello re-serves what the peer's `vv` lacks; a stalled buffer heals via the next ack; a reloaded peer is re-served and `peerAckVV` goes down so the lost op is unacked again and re-sent; an ack or ops with an unchanged `vv` causes no resend; the message count after quiet is bounded; messages before `hello` are ignored; every `vv` sent excludes held ops; `send` while down drops.
   - _Requirements: R6, R7, R9_
 
-- [ ] 6. Chaos mode
+- [x] 6. Chaos mode
   - `inpage-link.ts`: seeded random choice among pending messages and random delay.
   - Tests (`link.chaos.test.ts`): with a fixed seed the delivery order is repeatable; across several fixed seeds both replicas converge to deep-equal canonical states after offline edits on both sides; no message is dropped or duplicated by chaos; the message count stays bounded.
   - _Requirements: R8_

@@ -44,6 +44,7 @@ export function attachLink<S>(replica: Replica<S>, link: Link, opts: { chunk?: n
   let peer: string | undefined;
   let lastSeen: VV | undefined;
   let peerVV: VV | undefined;
+  let ignoredEarly = false;
   let inHandler = false;
   const sent = new Set<string>();
   const subs = new Set<() => void>();
@@ -51,7 +52,7 @@ export function attachLink<S>(replica: Replica<S>, link: Link, opts: { chunk?: n
   const notify = (): void => subs.forEach((fn) => fn());
 
   const reset = (): void => {
-    helloSent = helloSeen = false;
+    helloSent = helloSeen = ignoredEarly = false;
     lastSeen = peerVV = undefined;
     sent.clear();
   };
@@ -86,9 +87,13 @@ export function attachLink<S>(replica: Replica<S>, link: Link, opts: { chunk?: n
       peer = m.replica;
       replica.peerAck.set(peer, m.vv);
       peerVV = lastSeen = m.vv;
-      if (!helloSent) sendHello();
+      // A reordered link can deliver the peer's ops before its hello. Those were ignored, so
+      // say hello again; the peer re-serves from the fresh vv.
+      if (!helloSent || ignoredEarly) sendHello();
+      ignoredEarly = false;
       sendMissing(m.vv);
     } else if (!helloSeen) {
+      ignoredEarly = true;
       return; // before hello: ignored
     } else if (m.t === 'ops') {
       peerVV = m.vv;

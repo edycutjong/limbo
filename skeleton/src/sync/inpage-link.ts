@@ -1,10 +1,13 @@
 // An in-memory link between two replicas in one page. The cut is explicit: browser-level
 // offline does not affect it, so any UI must label it as simulated.
+import { makeRand } from '../core/simulate.ts';
 import type { Link, Msg } from './link.ts';
 
 export interface InPageLinkOptions {
   /** Called once per sent message to schedule a `pump`. Default `setTimeout`. A test passes a no-op and pumps by hand. */
   schedule?: (fn: () => void, delay: number) => void;
+  /** Seeded chaos: `pump` picks a random pending message of either direction and each send draws a random delay (ms). Never drops or duplicates. */
+  chaos?: { seed: number };
 }
 
 export interface DirStats {
@@ -24,7 +27,7 @@ export interface InPageLink {
   restore(): void;
   /** Messages queued and not yet delivered. */
   pending(): number;
-  /** Deliver the oldest pending message. False when empty or cut. */
+  /** Deliver the oldest pending message (a random one under chaos). False when empty or cut. */
   pump(): boolean;
   stats(): LinkStats;
 }
@@ -34,6 +37,7 @@ type Dir = 'ab' | 'ba';
 /** The link starts down; `restore()` brings it up and starts a link session. */
 export function createInPageLink(opts: InPageLinkOptions = {}): InPageLink {
   const schedule = opts.schedule ?? ((fn, delay) => void setTimeout(fn, delay));
+  const rand = opts.chaos ? makeRand(opts.chaos.seed) : undefined;
   let up = false;
   let queue: { to: Dir; msg: Msg }[] = [];
   const stats: LinkStats = {
@@ -46,8 +50,8 @@ export function createInPageLink(opts: InPageLinkOptions = {}): InPageLink {
   const stateCbs: Record<'a' | 'b', Set<(s: 'up' | 'down') => void>> = { a: new Set(), b: new Set() };
 
   const pump = (): boolean => {
-    const next = up ? queue.shift() : undefined;
-    if (!next) return false;
+    if (!up || queue.length === 0) return false;
+    const next = queue.splice(rand ? rand.int(queue.length) : 0, 1)[0]!;
     stats.delivered[next.to]++;
     for (const cb of [...msgCbs[next.to]]) cb(structuredClone(next.msg));
     return true;
@@ -63,7 +67,7 @@ export function createInPageLink(opts: InPageLinkOptions = {}): InPageLink {
         }
         stats.sent[out]++;
         queue.push({ to: out, msg: structuredClone(msg) });
-        schedule(pump, 0);
+        schedule(pump, rand ? rand.int(20) : 0);
       },
       onMessage(cb) {
         msgCbs[inbound].add(cb);
