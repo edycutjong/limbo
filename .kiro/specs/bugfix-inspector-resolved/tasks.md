@@ -8,7 +8,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except ta
   - Run both and record the failure (the inspector case reads "No conflicts."; the lake scene has one row). Keep them failing. This is the one task where `pnpm test` is expected red, and only for these two tests. `pnpm typecheck` and `pnpm props` stay green.
   - _Requirements: Current Behavior 1, 2, 4; Expected Behavior 1, 2, 4_
 
-- [ ] 2. Fix `useLimbo`
+- [x] 2. Fix `useLimbo`
   - `skeleton/src/limbo/shell.tsx`: extract `mark(now)` from `build()`; add `at` (log length when first marked resolved, cleared on reappearance); in `onCross`, run `mark(describe(replica.state()))` first, then delete only entries with `resolved && at <= replica.log().length - ops.length`. No new export, file or timer.
   - Verify the assumption in design §2 (ops of `onCross` are already in `replica.log()`); if not, use the fallback described there.
   - Update the limbo-layer design §3 sentence about `onCross` clearing resolved entries to match.

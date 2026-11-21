@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Inspector } from './inspector.tsx';
-import { LimboShell } from './shell.tsx';
+import { LimboShell, useLimbo } from './shell.tsx';
 import { describeConflicts, makeStubPair, renderApp } from './test/app.ts';
 
 type P = Awaited<ReturnType<typeof makeStubPair>>;
@@ -182,6 +182,62 @@ describe('Inspector', () => {
     await sync(pair);
     expect(section('Conflicts').querySelector('[data-resolved]')).toBeNull();
     expect(section('Conflicts').textContent).toContain('No conflicts.');
+    pair.close();
+  });
+
+  it('lists only the incoming resolve after a local resolve in the previous crossing', async () => {
+    const pair = await makeStubPair();
+    renderApp(pair, <Inspector id="a" />);
+    act(() => {
+      pair.a.local('note.add', 'n1', {});
+      pair.a.local('note.add', 'n2', {});
+    });
+    await sync(pair);
+    act(() => pair.cut());
+    act(() => {
+      for (const t of ['n1', 'n2']) {
+        pair.a.local('note.claim', t, { who: 'ann' });
+        pair.b.local('note.claim', t, { who: 'bob' });
+      }
+    });
+    act(() => pair.restore());
+    await sync(pair);
+    open();
+    expect(section('Conflicts').textContent).toContain('n1');
+    act(() => void pair.a.local('note.delete', 'n1', {}));
+    await sync(pair);
+    expect(section('Conflicts').querySelectorAll('[data-resolved]')).toHaveLength(1);
+    act(() => void pair.b.local('note.delete', 'n2', {}));
+    await sync(pair);
+    const resolved = section('Conflicts').querySelectorAll('[data-resolved]');
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]!.textContent).toContain('n2');
+    act(() => void pair.b.local('note.add', 'n3', {}));
+    await sync(pair);
+    expect(section('Conflicts').querySelector('[data-resolved]')).toBeNull();
+    pair.close();
+  });
+
+  it('keeps a re-twinned Keep and Delete as an open twin, not resolved', async () => {
+    const pair = await makeStubPair();
+    let latest: ReturnType<typeof useLimbo> | undefined;
+    function Probe(): null {
+      latest = useLimbo('a');
+      return null;
+    }
+    renderApp(pair, <Probe />);
+    act(() => void pair.a.local('note.add', 'n1', {}));
+    await sync(pair);
+    act(() => pair.cut());
+    act(() => {
+      pair.a.local('note.delete', 'n1', {});
+      pair.b.local('note.restore', 'n1', {});
+    });
+    act(() => pair.restore());
+    await sync(pair);
+    expect(latest!.view.twins).toBe(1);
+    expect(latest!.conflicts).toHaveLength(1);
+    expect(latest!.resolved).toHaveLength(0);
     pair.close();
   });
 

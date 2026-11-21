@@ -54,7 +54,7 @@ function useLimbo(id: 'a' | 'b'): Limbo {
 
 `makeStore` keeps `version`, a cached snapshot and a cached crossing record. `subscribe(fn)` registers `replica.subscribe`, `session.subscribe` and `session.onCross`, and returns one unsubscribe for all three. On any callback, it bumps `version`; `get()` recomputes `{ view: pair.view(id), queued: pair.queued(id), exchanges: pair.exchanges(), conflicts: describe(replica.state()), crossing }` only when `version` changed. `onCross` also sets `crossing = { seq: seq + 1, k: ops.length }`. The snapshot is therefore stable between changes, as `useSyncExternalStore` requires.
 
-Conflict descriptors are read from the app each change. The "resolved" memory (R9.5) lives in the same store: a map `id → descriptor` of descriptors seen since the last crossing. When a descriptor leaves the current list it stays in the map with `resolved: true`. The next `onCross` clears resolved entries. This is presentation state only. No count or label reads it except the Inspector's resolved rows.
+Conflict descriptors are read from the app each change. The "resolved" memory (R9.5) lives in the same store: a map `id → descriptor` of descriptors seen since the last crossing. When a descriptor leaves the current list it stays in the map with `resolved: true`. Each resolved entry records the log size when it was first marked (`at`; cleared if the id reappears). `onCross` first marks against the current state, then clears only entries with `at <= log().length - ops.length`, so a conflict resolved by the crossing's own ops stays listed until the next crossing. This is presentation state only. No count or label reads it except the Inspector's resolved rows.
 
 ## 4. Binding table (the tests assert each row)
 

@@ -114,7 +114,7 @@ function makeStore(c: Ctx, id: Id) {
   const replica = id === 'a' ? pair.a : pair.b;
   const session = pair.sessions[id];
   const subs = new Set<() => void>();
-  const seen = new Map<string, { d: ConflictDescriptor; resolved: boolean }>();
+  const seen = new Map<string, { d: ConflictDescriptor; resolved: boolean; at?: number }>();
   let version = 0;
   let built = -1;
   let snap: Snap | undefined;
@@ -126,13 +126,17 @@ function makeStore(c: Ctx, id: Id) {
     version++;
     for (const f of [...subs]) f();
   };
+  /** Open entries for the listed ids; entries no longer listed become resolved, stamped with the log size. */
+  const mark = (now: ConflictDescriptor[]): void => {
+    const ids = new Set(now.map((d) => d.id));
+    for (const d of now) seen.set(d.id, { d, resolved: false });
+    for (const [k, e] of seen) if (!ids.has(k) && !e.resolved) Object.assign(e, { resolved: true, at: replica.log().length });
+  };
   const build = (): Snap => {
     const view = pair.view(id);
     const exchanges = pair.exchanges();
     const now = c.describe(replica.state());
-    const ids = new Set(now.map((d) => d.id));
-    for (const d of now) seen.set(d.id, { d, resolved: false });
-    for (const [k, e] of seen) if (!ids.has(k)) e.resolved = true;
+    mark(now);
     if (now.length !== view.twins && !warned) {
       warned = true;
       console.warn(`limbo: ${now.length} conflict descriptors but view.twins = ${view.twins}`);
@@ -169,7 +173,9 @@ function makeStore(c: Ctx, id: Id) {
         replica.subscribe(bump),
         session.subscribe(bump),
         session.onCross((ops) => {
-          for (const [k, e] of seen) if (e.resolved) seen.delete(k);
+          mark(c.describe(replica.state()));
+          const before = replica.log().length - ops.length;
+          for (const [k, e] of seen) if (e.resolved && (e.at ?? 0) <= before) seen.delete(k);
           crossing = { seq: crossing.seq + 1, k: ops.length };
           bump();
         }),

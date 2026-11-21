@@ -147,4 +147,36 @@ describe('LimboShell and useLimbo', () => {
     expect(seen.filter((s) => s === 'Link restored. Syncing…').length).toBeLessThanOrEqual(1);
     pair.close();
   });
+
+  it('uses no timer: advancing fake timers changes neither resolved nor crossing', async () => {
+    const pair = await makeStubPair();
+    let latest: ReturnType<typeof useLimbo> | undefined;
+    function Snap(): null {
+      latest = useLimbo('a');
+      return null;
+    }
+    renderApp(pair, <Snap />);
+    act(() => void pair.a.local('note.add', 'n1', {}));
+    await act(async () => void (await pair.settle()));
+    act(() => pair.cut());
+    act(() => {
+      pair.a.local('note.claim', 'n1', { who: 'ann' });
+      pair.b.local('note.claim', 'n1', { who: 'bob' });
+    });
+    act(() => pair.restore());
+    await act(async () => void (await pair.settle()));
+    act(() => void pair.b.local('note.delete', 'n1', {}));
+    await act(async () => void (await pair.settle()));
+    const before = { resolved: latest!.resolved, crossing: latest!.crossing };
+    expect(before.resolved).toHaveLength(1);
+    vi.useFakeTimers();
+    try {
+      act(() => void vi.advanceTimersByTime(60_000));
+    } finally {
+      vi.useRealTimers();
+    }
+    expect(latest!.resolved).toEqual(before.resolved);
+    expect(latest!.crossing).toEqual(before.crossing);
+    pair.close();
+  });
 });
