@@ -1,0 +1,24 @@
+/* Layout only. Colours come from the limbo tokens. */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+.as-shell {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+.as-chip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  font-family: var(--font-data);
+  font-size: 0.75rem;
+}
