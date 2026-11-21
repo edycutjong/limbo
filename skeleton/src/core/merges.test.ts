@@ -223,6 +223,12 @@ describe('orderedMove', () => {
     expect(only?.twins).toEqual([]);
   });
 
+  it('keeps two entries that share an id and a key, in one result for any order', () => {
+    const one: MoveItem = { id: 'i', writes: [k('a', 1, 1, 'a1')] };
+    const two: MoveItem = { id: 'i', writes: [k('b', 1, 1, 'a1')] };
+    for (const p of perms([one, two])) expect(orderedMove(p).map((i) => [i.id, i.key])).toEqual([['i', 'a1'], ['i', 'a1']]);
+  });
+
   it('drops items with no writes', () => {
     expect(orderedMove([{ id: 'i', writes: [] }])).toEqual([]);
   });

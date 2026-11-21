@@ -83,7 +83,7 @@ export function allocKey(left: string | null, right: string | null, by: ReplicaI
     const d = `${by.r}:${by.n}`;
     return k + base62(d) + len3(d.length) + '1';
   }
-  return k + base62((by.split('#')[0] ?? '').replaceAll('-', '')) + '1';
+  return k + base62(by.split('#')[0]!.replaceAll('-', '')) + '1';
 }
 
 /** Canonical JSON: keys sorted by code unit, no whitespace, `undefined` dropped, integers only. */
@@ -120,7 +120,7 @@ export function causalBuffer(vv: VV = {}): CausalBuffer {
 
   const ready = (op: Op): boolean => {
     if ((vv[op.stamp.r] ?? 0) !== op.stamp.n - 1) return false;
-    for (const r of Object.keys(op.deps)) if ((vv[r] ?? 0) < (op.deps[r] ?? 0)) return false;
+    for (const [r, n] of Object.entries(op.deps)) if ((vv[r] ?? 0) < n) return false;
     return true;
   };
   const isApplied = (op: Op): boolean => (vv[op.stamp.r] ?? 0) >= op.stamp.n;

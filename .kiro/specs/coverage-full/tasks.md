@@ -8,7 +8,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Write nothing else. No test or product file changes.
   - _Requirements: R6.2, R8.3_
 
-- [ ] 2. `skeleton/src/core/*`
+- [x] 2. `skeleton/src/core/*`
   - Files: `causal`, `merges`, `simulate`. Extend `causal.test.ts`, `merges.test.ts`, `simulate.test.ts` (create beside the module if missing).
   - Cover each gap with a behaviour test (defaults, empty inputs, arms, uncalled callbacks). Merges stay pure joins: assert one result for any order and for duplicates where the branch is about input handling.
   - Remove a branch only if dead, and record it.

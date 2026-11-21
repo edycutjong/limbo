@@ -59,7 +59,9 @@ Only dead-code removals (R3.1, R4.2). Format: `file:line, what was removed, why 
 
 | File | Line | Removed | Why dead | Delta |
 |---|---|---|---|---|
-| none yet | | | | |
+| `skeleton/src/core/causal.ts` | 86 | `?? ''` after `by.split('#')[0]`; now `[0]!` | `split` always returns at least one element | 0 |
+| `skeleton/src/core/causal.ts` | 123 | `op.deps[r] ?? 0` in `ready`; loop now iterates `Object.entries(op.deps)` | `r` comes from the keys of `op.deps`, so the entry exists (`VV` values are numbers) | 0 |
+| `skeleton/src/core/simulate.ts` | 88 | `o.deps[r] ?? 0` in `deliveryOrder`; now `Object.entries(o.deps).every(([r, n]) => ...)` | same: `r` comes from the keys of `o.deps` | 0 |
 
 ## 6. Ignored branches
 

@@ -12,6 +12,18 @@
         "chatSessionId": "sess_88a3f125-b13e-42f5-93c7-5d460c7b2d3b",
         "timestamp": 1795295023362
       }
+    ],
+    "2. `skeleton/src/core/*`": [
+      {
+        "executionId": "e8aafb09-d936-4726-a5b1-c66548c666a2",
+        "chatSessionId": "sess_50fd5ba7-9768-494d-ad80-ce8cea3086ab",
+        "timestamp": 1795295287332
+      },
+      {
+        "executionId": "e8aafb09-d936-4726-a5b1-c66548c666a2",
+        "chatSessionId": "sess_50fd5ba7-9768-494d-ad80-ce8cea3086ab",
+        "timestamp": 1795295573803
+      }
     ]
   }
 }

@@ -54,6 +54,12 @@ describe('simulate', () => {
     }
   });
 
+  it('generates 12 ops when no step count is given', () => {
+    const res = simulate({ defs: [setDef] as unknown as OpDef[], replicas: 2, seed: 5 });
+    expect(res.ops).toHaveLength(12);
+    expect(res.ops.every((o) => o.target === 't')).toBe(true);
+  });
+
   it('delivers some ops twice', () => {
     for (let seed = 1; seed <= 10; seed++) {
       expect(simulate(input(seed)).trace.some((s) => s.duplicate)).toBe(true);
@@ -74,6 +80,9 @@ describe('simulate', () => {
     const H = 3_600_000;
     const seen = withSkew(2 * H, () => Date.now() - dateNow());
     expect(seen).toBeGreaterThanOrEqual(2 * H);
+    const perfBefore = performance.now();
+    const perfSeen = withSkew(2 * H, () => performance.now() - perfBefore);
+    expect(perfSeen).toBeGreaterThanOrEqual(2 * H);
     expect(() =>
       withSkew(-3 * H, () => {
         throw new Error('boom');

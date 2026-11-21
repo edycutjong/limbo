@@ -20,6 +20,11 @@ describe('compareStamp', () => {
     expect(compareStamp({ l: 2, r: 'a', n: 1 }, { l: 2, r: 'a', n: 2 })).toBeLessThan(0);
     expect(compareStamp({ l: 2, r: 'a', n: 2 }, { l: 2, r: 'a', n: 2 })).toBe(0);
   });
+  it('puts the higher stamp after the lower one on each field', () => {
+    expect(compareStamp({ l: 3, r: 'a', n: 1 }, { l: 2, r: 'z', n: 9 })).toBeGreaterThan(0);
+    expect(compareStamp({ l: 2, r: 'b', n: 1 }, { l: 2, r: 'a', n: 9 })).toBeGreaterThan(0);
+    expect(compareStamp({ l: 2, r: 'a', n: 3 }, { l: 2, r: 'a', n: 2 })).toBeGreaterThan(0);
+  });
   it('compares r by UTF-16 code unit', () => {
     expect(compareStamp({ l: 1, r: 'B', n: 1 }, { l: 1, r: 'a', n: 1 })).toBeLessThan(0);
     // U+1F600 is the surrogate pair D83D DE00, which sorts below U+FF5E by code unit.
@@ -61,6 +66,18 @@ describe('canonical', () => {
   it('sorts keys, drops undefined, keeps array order', () => {
     expect(canonical({ b: 1, a: [3, 1], c: undefined, 'B': { y: 1, x: 2 } })).toBe('{"B":{"x":2,"y":1},"a":[3,1],"b":1}');
   });
+  it('writes an undefined array element as null', () => {
+    expect(canonical([1, undefined, 'x'])).toBe('[1,null,"x"]');
+  });
+  it('writes null, booleans and strings', () => {
+    expect(canonical([null, true, 's'])).toBe('[null,true,"s"]');
+  });
+  it('rejects types JSON cannot carry (function, symbol, bigint, undefined)', () => {
+    expect(() => canonical(() => 1)).toThrow('unsupported type function');
+    expect(() => canonical(Symbol('s'))).toThrow('unsupported type symbol');
+    expect(() => canonical(1n)).toThrow('unsupported type bigint');
+    expect(() => canonical(undefined)).toThrow('unsupported type undefined');
+  });
   it('rejects floats', () => {
     expect(() => canonical({ a: 1.5 })).toThrow();
     expect(() => canonical(NaN)).toThrow();
@@ -89,6 +106,14 @@ describe('causalBuffer', () => {
     expect(buf.offer(a1)).toEqual([]);
     expect(buf.offer(a2)).toEqual([]);
     expect(buf.vv).toEqual({ a: 2 });
+  });
+  it('holds an op until every replica in its deps has reached the stated count', () => {
+    const buf = causalBuffer();
+    const c1 = mk('c', 1, 5, { a: 1 });
+    expect(buf.offer(c1)).toEqual([]);
+    expect(buf.held().map((o) => o.id)).toEqual(['c:1']);
+    expect(buf.offer(a1).map((o) => o.id)).toEqual(['a:1', 'c:1']);
+    expect(buf.vv).toEqual({ a: 1, c: 1 });
   });
   it('keeps vv contiguous when a gap exists', () => {
     const buf = causalBuffer();
