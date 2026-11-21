@@ -1,8 +1,8 @@
 {
-  "generated_from": "fc86597de9f86587801883a52e59b3862fa2c09d",
-  "product_commits": 60,
-  "kiro_commits": 56,
-  "share": 0.9333,
+  "generated_from": "18c82edb715435422acb798e1982be6d8a9fb878",
+  "product_commits": 62,
+  "kiro_commits": 58,
+  "share": 0.9355,
   "claude_direct_commits": [
     {
       "sha": "603993b22ed3488071811f6189967cb586007b01",
