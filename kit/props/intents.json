@@ -11,6 +11,7 @@
   "expense.add": { "kind": "split" },
   "expense.setAmount": { "kind": "split" },
   "expense.addMember": { "kind": "split" },
+  "expense.removeMember": { "kind": "split" },
   "sector.report": { "kind": "max" },
   "sector.clear": { "kind": "max" },
   "sector.count": { "kind": "set" },
