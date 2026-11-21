@@ -3,7 +3,10 @@
 // so edited ops are never served from a module cache. Nothing here writes to stdout.
 // Convergence is measured, property-tested.
 import { spawn } from 'node:child_process';
-import { join } from 'node:path';
+import { existsSync, mkdtempSync, readFileSync, realpathSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import type { JobReply, JobSpec } from './job.ts';
@@ -13,6 +16,9 @@ export const MAX_ORDERINGS = 5000;
 export const DEFAULT_ORDERINGS = 500;
 export const SOFT_DEADLINE_MS = 50_000;
 export const KILL_MS = 58_000;
+
+/** The hook script is the only lint implementation. It ships with the kit, next to this file. */
+const HOOK_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', 'hooks', 'op-lint.mjs');
 
 export type RunJob = (spec: JobSpec, signal: AbortSignal) => Promise<JobReply>;
 
@@ -209,7 +215,65 @@ export function createServer(opts: ServerOptions): McpServer {
       description: 'Run the op lint hook on one file.',
       inputSchema: { file: z.string().describe('path of an op file, relative to the repo root or absolute') },
     },
-    guarded(async () => err('not-implemented', 'check_lint is added by a later task')),
+    guarded(async ({ file }: { file: string }) => {
+      const abs = resolve(root, file);
+      const outside = (p: string): boolean => {
+        const r = relative(root, p);
+        return r === '..' || r.startsWith(`..${sep}`) || isAbsolute(r);
+      };
+      if (outside(abs)) return err('file-outside-root', `file "${file}" is outside the workspace root`);
+      if (!existsSync(abs)) return err('file-not-found', `file "${file}" does not exist`);
+      const realRoot = realpathSync(root);
+      const realRel = relative(realRoot, realpathSync(abs));
+      if (realRel === '..' || realRel.startsWith(`..${sep}`) || isAbsolute(realRel)) {
+        return err('file-outside-root', `file "${file}" is outside the workspace root`);
+      }
+      const dir = mkdtempSync(join(tmpdir(), 'limbo-lint-'));
+      const ledger = join(dir, 'hooks.jsonl');
+      try {
+        const run = await new Promise<{ exit: number | null; stderr: string }>((res) => {
+          const child = spawn(process.execPath, [HOOK_PATH], {
+            cwd: root,
+            stdio: ['pipe', 'pipe', 'pipe'],
+            env: { ...process.env, LIMBO_ROOT: root, LIMBO_HOOKS_LOG: ledger },
+            timeout: 20_000,
+          });
+          let stderr = '';
+          child.stdout.on('data', () => undefined);
+          child.stderr.on('data', (d: Buffer) => (stderr += d.toString()));
+          child.on('error', (e) => res({ exit: null, stderr: e.message }));
+          child.on('close', (code) => res({ exit: code, stderr }));
+          child.stdin.on('error', () => undefined);
+          child.stdin.end(JSON.stringify({ file_path: abs, cwd: root }));
+        });
+        let row: { result?: string; target?: string | null; detail?: string | null } | undefined;
+        try {
+          row = readFileSync(ledger, 'utf8')
+            .split('\n')
+            .filter(Boolean)
+            .map((l) => JSON.parse(l) as { result?: string; target?: string | null; detail?: string | null })
+            .pop();
+        } catch {
+          row = undefined;
+        }
+        if (!row) return err('job-crashed', `lint hook wrote no result: ${run.stderr.split('\n').slice(0, 5).join(' | ')}`);
+        const violations: { rule: string; message: string }[] = [];
+        for (const line of run.stderr.split('\n')) {
+          const m = /^op-lint [^:]*: \[([^\]]+)\] (.*)$/.exec(line);
+          if (m) violations.push({ rule: m[1]!, message: m[2]! });
+        }
+        return ok({
+          pass: row.result === 'pass',
+          result: row.result ?? null,
+          exit: run.exit,
+          target: row.target ?? null,
+          detail: row.detail ?? null,
+          violations,
+        });
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    }),
   );
 
   return server;

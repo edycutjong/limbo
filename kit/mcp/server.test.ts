@@ -1,3 +1,6 @@
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -191,5 +194,87 @@ describe('server: limits and errors', () => {
     expect(bad.structuredContent!.error).toMatchObject({ code: 'job-crashed', message: 'kaboom' });
     const good = await call(c, 'list_ops', { app: 'basecamp' });
     expect(good.isError).toBeFalsy();
+  });
+});
+
+describe('server: check_lint', () => {
+  const tmpRoots: string[] = [];
+  afterEach(() => {
+    for (const d of tmpRoots.splice(0)) rmSync(d, { recursive: true, force: true });
+  });
+
+  function tempRoot(): string {
+    const d = mkdtempSync(join(tmpdir(), 'limbo-lint-test-'));
+    tmpRoots.push(d);
+    mkdirSync(join(d, 'ops'), { recursive: true });
+    mkdirSync(join(d, 'kit', 'props'), { recursive: true });
+    writeFileSync(join(d, 'kit', 'props', 'intents.json'), JSON.stringify({ 'x.good': 'set', 'x.bad': 'set' }));
+    return d;
+  }
+  const opSrc = (name: string, body: string) =>
+    `export const def = {\n  name: '${name}',\n  merge: 'causal-lww',\n  intent: { kind: 'set', field: 'v' },\n  apply: (s, op) => ({ ...s, v: ${body} }),\n};\n`;
+
+  async function lintClient(d: string): Promise<Client> {
+    const server = createServer({ root: d, runJob: async () => ({ ok: true, result: {} }) });
+    const [a, b] = InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: 'test', version: '0.0.0' });
+    await Promise.all([server.connect(a), client.connect(b)]);
+    clients.push(client);
+    return client;
+  }
+
+  function hookDirect(d: string, file: string) {
+    const log = join(d, 'direct.jsonl');
+    const p = spawnSync(process.execPath, [join(root, 'kit', 'hooks', 'op-lint.mjs')], {
+      input: JSON.stringify({ file_path: file, cwd: d }),
+      env: { ...process.env, LIMBO_ROOT: d, LIMBO_HOOKS_LOG: log },
+      encoding: 'utf8',
+    });
+    const row = JSON.parse(readFileSync(log, 'utf8').trim().split('\n').pop()!) as { result: string; detail: string | null };
+    return { exit: p.status, result: row.result, detail: row.detail };
+  }
+
+  const realLedger = join(root, 'evidence', 'kiro', 'hooks.jsonl');
+  const ledgerLines = (): number => (existsSync(realLedger) ? readFileSync(realLedger, 'utf8').split('\n').filter(Boolean).length : 0);
+
+  it('flags Date.now and equals what the hook itself reports', async () => {
+    const d = tempRoot();
+    const file = join(d, 'ops', 'x.op.ts');
+    writeFileSync(file, opSrc('x.bad', 'Date.now()'));
+    const before = ledgerLines();
+    const r = await call(await lintClient(d), 'check_lint', { file: 'ops/x.op.ts' });
+    expect(r.isError).toBeFalsy();
+    expect(r.structuredContent!.pass).toBe(false);
+    expect(r.structuredContent!.violations.map((v: { rule: string }) => v.rule)).toContain('no-nondeterminism');
+    const direct = hookDirect(d, file);
+    expect(r.structuredContent).toMatchObject({ result: direct.result, detail: direct.detail, exit: direct.exit });
+    expect(ledgerLines()).toBe(before);
+  }, 30_000);
+
+  it('passes a good op file', async () => {
+    const d = tempRoot();
+    writeFileSync(join(d, 'ops', 'x.op.ts'), opSrc('x.good', 'op.payload'));
+    const r = await call(await lintClient(d), 'check_lint', { file: join(d, 'ops', 'x.op.ts') });
+    expect(r.structuredContent).toMatchObject({ pass: true, result: 'pass', exit: 0, violations: [] });
+  }, 30_000);
+
+  it('returns the hook pass for a non-op file', async () => {
+    const d = tempRoot();
+    writeFileSync(join(d, 'readme.md'), 'hi');
+    const r = await call(await lintClient(d), 'check_lint', { file: 'readme.md' });
+    expect(r.structuredContent).toMatchObject({ pass: true, detail: 'not an op file' });
+  }, 30_000);
+
+  it('rejects paths outside the root and missing files without running the hook', async () => {
+    const d = tempRoot();
+    const before = ledgerLines();
+    const c = await lintClient(d);
+    const out = await call(c, 'check_lint', { file: '../../etc/passwd' });
+    expect(out.isError).toBe(true);
+    expect(out.structuredContent!.error.code).toBe('file-outside-root');
+    const missing = await call(c, 'check_lint', { file: 'ops/none.op.ts' });
+    expect(missing.isError).toBe(true);
+    expect(missing.structuredContent!.error.code).toBe('file-not-found');
+    expect(ledgerLines()).toBe(before);
   });
 });
