@@ -16,10 +16,18 @@ export default defineConfig<{ app: 'basecamp' | 'aftershock' }>({
     // ui-polish layout checks against each dev server; `app` picks the scene button.
     { name: 'ui-polish-basecamp', testMatch: 'ui-polish.spec.ts', use: { baseURL: 'http://localhost:5174', app: 'basecamp' } },
     { name: 'ui-polish-aftershock', testMatch: 'ui-polish.spec.ts', use: { baseURL: 'http://localhost:5176', app: 'aftershock' } },
+    // The static landing site with the /judge route (served by e2e/site-server.mjs, which mirrors Vercel cleanUrls).
+    { name: 'judge', testMatch: 'judge.spec.ts', use: { baseURL: 'http://localhost:5179' } },
     // Deployed URLs come from env vars; no server and no baseURL.
     { name: 'live', testMatch: 'live.spec.ts' },
+    { name: 'live-judge', testMatch: 'judge.spec.ts' }, // needs LIMBO_LIVE_LANDING; skipped otherwise
   ],
   webServer: [
+    {
+      command: 'node e2e/site-server.mjs',
+      url: 'http://localhost:5179/judge',
+      reuseExistingServer: !process.env.CI,
+    },
     {
       command: 'pnpm exec vite apps/aftershock --port 5176 --strictPort',
       url: 'http://localhost:5176/',

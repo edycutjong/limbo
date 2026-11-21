@@ -1,9 +1,9 @@
 {
   "skeleton_production_files": 24,
   "skeleton_ts_files": 23,
-  "skeleton_ts_loc_nonblank": 2525,
-  "skeleton_ts_loc_noncomment": 2302,
-  "skeleton_test_files": 33,
+  "skeleton_ts_loc_nonblank": 2520,
+  "skeleton_ts_loc_noncomment": 2297,
+  "skeleton_test_files": 34,
   "index_exports": 16,
   "files_by_dir": {
     "core": 4,
@@ -15,6 +15,6 @@
   "basecamp_ts_loc_nonblank": 2187,
   "basecamp_ops": 12,
   "aftershock_ts_files": 34,
-  "aftershock_ts_loc_nonblank": 1465,
+  "aftershock_ts_loc_nonblank": 1464,
   "aftershock_ops": 6
 }

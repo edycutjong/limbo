@@ -35,6 +35,8 @@ jobs:
         run: pnpm kiro:check
       - name: Gate integrity (kit-owned properties, hooks, agents)
         run: pnpm gate
+      - name: /judge page and JUDGE.md match the committed measurements
+        run: node kit/scripts/judge-build.mjs --check
       - name: Unit, component and property tests with 100% coverage thresholds
         # The property suite runs at its CI-sized ordering count here; the full 10,000-ordering tier is committed under evidence/convergence/.
         run: pnpm test:coverage

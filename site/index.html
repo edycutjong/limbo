@@ -26,6 +26,7 @@
   .note a:hover { background:#E8DEC8; }
   footer a { color:var(--accent); text-underline-offset:3px; transition: background .15s, color .15s; }
   footer a:hover { background:#E8DEC8; color:var(--ink); }
+  .version-chip { border:1px solid var(--line); border-radius:999px; padding:2px 10px; font:14px ui-monospace,SFMono-Regular,Menlo,monospace; text-decoration:none; }
   footer { margin-top:48px; color:var(--muted); font-size:15px; }
   .only-narrow { display:none; }
   @media (max-width: 700px) { iframe { display:none; } .only-narrow { display:block; } }
@@ -58,7 +59,12 @@
   <p class="note"><a href="https://basecamp.limbo.edycu.dev/?replicas=2">Open it full screen</a></p>
   <iframe src="https://basecamp.limbo.edycu.dev/?replicas=2" title="BASECAMP, two replicas joined by a simulated link" loading="lazy"></iframe>
 
-  <footer>Source: <a href="https://github.com/edycutjong/limbo">github.com/edycutjong/limbo</a> (MIT). Built with Kiro for the Kiroween hackathon, Skeleton Crew category.</footer>
+  <footer>Source: <a href="https://github.com/edycutjong/limbo">github.com/edycutjong/limbo</a> (MIT). Built with Kiro for the Kiroween hackathon, Skeleton Crew category. <a class="version-chip" id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a> · <a href="/judge">For judges</a></footer>
 </main>
+<script>
+// Version chip: the baked text stays if the request fails (offline, rate limit, private repo).
+fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
+</script>
 </body>
 </html>

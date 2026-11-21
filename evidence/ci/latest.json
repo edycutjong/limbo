@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-21T22:55:35.561Z",
+  "commit": "7d2af47539713cc07796765dfdb93153d5c2421e",
+  "tree_dirty": true,
+  "machine": "Apple M1 Max, darwin 27.2.0",
+  "node": "v22.22.0",
+  "pnpm": "10.34.5",
+  "stages_skipped": [
+    "Stage 4 e2e"
+  ],
+  "note": "Stage 5 (Lighthouse, advisory) and Stage 6 (deploy gate) run only on GitHub Actions",
+  "all_passed": false,
+  "steps": [
+    {
+      "name": "Stage 1 typecheck",
+      "cmd": "pnpm typecheck",
+      "ok": true,
+      "seconds": 2.8
+    },
+    {
+      "name": "Stage 1 /.kiro root check",
+      "cmd": "pnpm kiro:check",
+      "ok": true,
+      "seconds": 0.3
+    },
+    {
+      "name": "Stage 1 gate integrity",
+      "cmd": "pnpm gate",
+      "ok": true,
+      "seconds": 0.2
+    },
+    {
+      "name": "Stage 1 tests + 100% coverage",
+      "cmd": "pnpm test:coverage",
+      "ok": true,
+      "seconds": 91
+    },
+    {
+      "name": "Stage 1 judge pages in sync with evidence",
+      "cmd": "node kit/scripts/judge-build.mjs --check",
+      "ok": false,
+      "seconds": 0
+    },
+    {
+      "name": "Stage 2 gitleaks (full history)",
+      "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
+      "ok": true,
+      "seconds": 1.3
+    },
+    {
+      "name": "Stage 2 pnpm audit (shipped deps)",
+      "cmd": "pnpm audit --prod --audit-level=high",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 3 build",
+      "cmd": "pnpm build",
+      "ok": true,
+      "seconds": 2.6
+    },
+    {
+      "name": "Stage 3 bundle budget",
+      "cmd": "node kit/scripts/bundle-budget.mjs",
+      "ok": true,
+      "seconds": 0
+    }
+  ],
+  "unit": {
+    "passed": 0,
+    "skipped": 0
+  },
+  "coverage": {
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100
+  },
+  "e2e": {
+    "passed": 0
+  }
+}

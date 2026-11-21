@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIMBO for judges: the 60-second path, the receipts, the limits</title>
+<meta name="description" content="When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit. The 60-second judge path, the measured receipts and the honest limits.">
+<style>
+  :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.55 "Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font:400 clamp(32px,6vw,48px)/1.1 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:0 0 12px; }
+  h2 { font:400 26px/1.2 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:36px 0 10px; }
+  .claim { font-size:22px; border-left:4px solid var(--accent); padding:4px 0 4px 16px; margin:16px 0; }
+  .version { font-size:14px; color:var(--muted); margin:0 0 20px; }
+  .version a { color:var(--muted); }
+  ol, ul { padding-left: 24px; } li { margin: 8px 0; }
+  table { border-collapse: collapse; width:100%; font-size:16px; }
+  th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; width:150px; }
+  code { font:15px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; background:#E8DEC8; padding:1px 5px; border-radius:3px; }
+  .src { color:var(--muted); font-size:14px; }
+  a { color:var(--accent); text-underline-offset:3px; }
+  a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  a:hover { background:#E8DEC8; }
+  .note { color:var(--muted); font-size:15px; }
+  @media (max-width: 640px) { th { width:auto; display:block; border:0; padding-bottom:0; } td { display:block; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>LIMBO, for judges</h1>
+  <p class="version"><a id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a> · <a href="https://limbo.edycu.dev/">landing page</a></p>
+  <p class="claim">When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit.</p>
+
+  <h2>The 60-second path</h2>
+  <p class="note">No setup, no keys, no cloning.</p>
+  <ol>
+    <li>Open <a href="https://basecamp.limbo.edycu.dev/?replicas=2">BASECAMP in its two-replica view</a>. No install, no login, no credits. Two cards appear: REPLICA A (Sari) and REPLICA B (Budi), joined by an in-page link that is labelled as simulated.</li>
+    <li>Press <strong>Cut link</strong>. Both cards fog over and count their waiting edits.</li>
+    <li>Press <strong>Play the lake scene</strong>. Sari ticks the tent while Budi deletes it, and both claim the last stove.</li>
+    <li>Press <strong>Restore link</strong>. The tent returns as a ghost <em>twin</em>; the stove goes to exactly one claimant on both replicas.</li>
+    <li>Tap <strong>Keep</strong> on the twin and <strong>OK</strong> on the lost claim. The fog lifts and the <strong>FIXED</strong> stamp appears: both replicas hold the same list.</li>
+    <li>Open <a href="https://aftershock.limbo.edycu.dev/?replicas=2">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, play, restore.</li>
+  </ol>
+
+  <h2>The receipts</h2>
+  <table>
+    <tr><th scope="row">Convergence</th><td>10,000 random orderings of 3 replicas, 0 divergences across every op of both apps (seed 20251031); a measured, property-tested claim, not a proof<div class="src">evidence/convergence/full-2026-11-22.json</div></td></tr>
+    <tr><th scope="row">Tests</th><td>0 unit, component and property tests pass (0 skipped: the full-tier suites), 0 Playwright e2e tests pass<div class="src">evidence/ci/latest.json</div></td></tr>
+    <tr><th scope="row">Coverage</th><td>100% lines, 100% branches, 100% functions on the skeleton and each app's domain modules (CI fails below 100%)<div class="src">evidence/ci/latest.json, vitest.config.ts</div></td></tr>
+    <tr><th scope="row">Kiro work</th><td>188 Kiro sessions, 173 spec tasks executed by Kiro across 11 specs, 1,770 hook fires, 659.11 credits<div class="src">evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json</div></td></tr>
+    <tr><th scope="row">Kiro share</th><td>105 of 112 product commits carry a Kiro-Session trailer (93.75%); the rest are logged as claude-direct<div class="src">evidence/kiro/share.json</div></td></tr>
+  </table>
+
+  <h2>Where Kiro did the work</h2>
+  <ul>
+    <li><code>.kiro/specs/</code>: requirements, design and tasks for each feature, written by Kiro. Start with .kiro/specs/basecamp/ or coverage-full/.</li>
+    <li><code>.kiro/steering/</code>: the rules Kiro was held to: local-first.md (no wall clock, commute or declare the merge) and testing.md (properties first).</li>
+    <li><code>.kiro/hooks/ and .kiro/agents/</code>: the hooks that ran the convergence properties after each task and blocked the agent from stopping while one failed.</li>
+    <li><code>evidence/kiro/sessions.jsonl</code>: one row per Kiro session (spec, task, credits, hooks fired, outcome). Hand edits are logged as claude-direct rows. hooks.jsonl is written only by the hook scripts.</li>
+  </ul>
+
+  <h2>Reproduce it</h2>
+  <ul>
+    <li><code>git clone https://github.com/edycutjong/limbo &amp;&amp; cd limbo &amp;&amp; pnpm install</code>: the real product, locally</li>
+    <li><code>pnpm --filter @limbo/basecamp dev</code>: BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev)</li>
+    <li><code>pnpm test:coverage</code>: unit, component and property tests with the 100% coverage gate</li>
+    <li><code>pnpm e2e:ci</code>: two browser contexts, a real partition, offline shell</li>
+    <li><code>pnpm props:full</code>: the full 10,000-ordering tier (about 22 minutes)</li>
+    <li><code>node kit/scripts/readme-tally.mjs</code>: recomputes every Kiro number above from evidence/kiro/</li>
+  </ul>
+  <p class="note"><strong>CI / deterministic replay.</strong> The in-page "Run shuffle test" button replays the on-screen ops in random causal orders inside your browser and prints the count it actually ran. It is a deterministic replay of the same ops, not the full-tier run.</p>
+
+  <h2>Honest limits</h2>
+  <ul>
+    <li>The live apps sync two replicas through an in-page link that is labelled as simulated. There is no hosted cross-device relay; the two-browser-context partition test uses a dev-only relay that ships in no production build.</li>
+    <li>No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op's declared rule picks one claimant deterministically and the other user sees a twin ghost.</li>
+    <li>The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).</li>
+    <li>AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.</li>
+    <li>Test tooling (vitest) carries advisory-level audit findings that need a major upgrade; shipped dependencies audit clean (pnpm audit --prod).</li>
+  </ul>
+
+  <h2>Links</h2>
+  <ul>
+    <li>Repository (MIT): <a href="https://github.com/edycutjong/limbo">https://github.com/edycutjong/limbo</a></li>
+    <li>BASECAMP: <a href="https://basecamp.limbo.edycu.dev/">https://basecamp.limbo.edycu.dev/</a></li>
+    <li>AFTERSHOCK: <a href="https://aftershock.limbo.edycu.dev/">https://aftershock.limbo.edycu.dev/</a></li>
+    <li>Landing page: <a href="https://limbo.edycu.dev/">https://limbo.edycu.dev/</a></li>
+  </ul>
+</main>
+<script>
+// Version chip: the baked text stays if the request fails (offline, rate limit, private repo).
+fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
+  .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
+</script>
+</body>
+</html>
