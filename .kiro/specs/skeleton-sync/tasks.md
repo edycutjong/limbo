@@ -44,7 +44,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`identity.test.ts`, stand-in `locks` with a held-name set and a Map-backed `storage`): the second tab with the same session id gets a new pair; a held single replica name gives a new replica id; `reset` deletes only this identity's databases (a second session's databases survive, checked with `fake-indexeddb`); a reset pair restarts at incarnation 1; `locks` undefined gives `exclusive: false`; the retry limit throws.
   - _Requirements: R14_
 
-- [ ] 9. Exports and budget check
+- [x] 9. Exports and budget check
   - `skeleton/src/index.ts`: add the six value exports (`createReplica`, `createPair`, `createInPageLink`, `attachLink`, `deriveSync`, `acquireIdentity`) next to the merge-kit exports, plus types.
   - Measure: file count, non-test TS/TSX lines, export count. Record the measured numbers in `evidence/` as a small JSON file named `skeleton-budget.json` only if the project already keeps budget evidence there; otherwise report them in the task result. If any limit is exceeded, stop and report which module to trim (design, Budget).
   - Test (`index.test.ts`): the index exports exactly the expected names, and `rg` for `yjs` or `y-indexeddb` outside `store.ts` finds nothing, and no `BroadcastChannel`, `SharedWorker`, `Date.now` or `Math.random` appears in `skeleton/src/sync` except the allowed `newId` in `identity.ts`.
