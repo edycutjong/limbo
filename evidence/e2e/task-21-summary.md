@@ -17,3 +17,8 @@ Playwright retries are 0 (the default), so any flaky run would show as a failure
 ## Skeleton size after this task (R1.3)
 
 Measured with the command in `../budget-basecamp-baseline.md`: 21 files, 2,137 non-blank, non-comment lines. This task added one code line to `skeleton/` (the `ack` emit). The added comment line is not counted.
+
+## Review notes (orchestrator, 2026-11-21)
+- **"It fails without the fix" — checked.** With line 54 of `skeleton/src/sync/dev-relay-link.ts` commented out, `npx vitest run --project unit skeleton/src/sync/dev-relay-link.test.ts` reports `× DevRelayLink > ops received from the relay count as held by the relay (no stale unacked)`; restoring the line makes it pass again (5 other tests pass both ways).
+- The first failing run of test (b) described above was not saved; its output ("Syncing 2… · 2 conflicts", the queued `b#1:1`, `b#1:2`) is the session's own account, kept as narrative, not as an artifact.
+- Absolute local paths in `task-20-e2e.txt`, `task-21-e2e.txt` and `../convergence/full-2026-11-21.log` were replaced with `<repo>`.

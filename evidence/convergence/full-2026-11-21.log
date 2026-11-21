@@ -1,9 +1,9 @@
 
-> limbo@0.0.0 props:full /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> limbo@0.0.0 props:full <repo>
 > node kit/scripts/props-full.mjs
 
 
- RUN  v3.2.7 /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+ RUN  v3.2.7 <repo>
 
  ✓ |props| apps/basecamp/src/ops/item.move.props.test.ts (7 tests) 43472ms
    ✓ op item.move > convergence  7688ms
@@ -227,4 +227,4 @@ mutant arrival-order: killed by convergence, replay equivalence, idempotence
    Duration  515.08s (transform 577ms, setup 156ms, collect 1.93s, tests 1151.75s, environment 5ms, prepare 1.03s)
 
 JSON report written to /var/folders/hy/h4_prwdj11d1p_gf5kr77k5r0000gn/T/limbo-props-full-4htqUQ/report.json
-props:full: wrote /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build/evidence/convergence/full-2026-11-21.json
+props:full: wrote <repo>/evidence/convergence/full-2026-11-21.json
