@@ -72,6 +72,18 @@
         "chatSessionId": "sess_a62f3b7e-2e95-4ff9-8280-eb2766d9fa0d",
         "timestamp": 1795245833391
       }
+    ],
+    "7. Conflict descriptors": [
+      {
+        "executionId": "8d1d7d5f-7bab-402b-91b3-72d409c84cca",
+        "chatSessionId": "sess_677d48c2-cd3c-4a0b-bf16-6eb4d4af10f9",
+        "timestamp": 1795245960695
+      },
+      {
+        "executionId": "8d1d7d5f-7bab-402b-91b3-72d409c84cca",
+        "chatSessionId": "sess_677d48c2-cd3c-4a0b-bf16-6eb4d4af10f9",
+        "timestamp": 1795246032611
+      }
     ]
   }
 }

@@ -34,7 +34,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`model.test.ts`): G20 and G21 shares and `unallocated`; seed-like expense with a concurrent add of Dewi and a set to 2600 gives four members, 650 each, sum 2600 in every order of a fixed shuffle; an expense with no `expense.add` is absent; `gas` with units 2 and two claims gives two winners and no loser; units 1 with two claims gives a loser; `lifeInfo` names the active deleter and the resurrecting editor; `values` lists both names on a concurrent rename; the spike's item results are unchanged (existing tests pass). `pnpm props` shows G20 and G21 as passing; `split-float` and `split-first-member` still fail a property or golden.
   - _Requirements: R3.9, R5, R7.1, R7.2, R7.7, R8_
 
-- [ ] 7. Conflict descriptors
+- [x] 7. Conflict descriptors
   - `apps/basecamp/src/conflicts.ts` per design §6.
   - Tests (`conflicts.test.ts`): each row of the table; `twinCount === describeConflicts.length`; move twins are ignored; ids are stable and equal on two replicas built from the same ops in different orders.
   - _Requirements: R9_
