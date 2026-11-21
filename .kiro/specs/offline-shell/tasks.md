@@ -15,7 +15,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`apps/<app>/src/shell.test.ts`, new): each PNG has the PNG signature and IHDR sizes 192×192 and 512×512; `icon.svg` exists and has no `<text>`; `index.html` has the theme-color meta.
   - _Requirements: R5.2, R5.3, R5.1_
 
-- [ ] 3. Shared build options and both Vite configs
+- [x] 3. Shared build options and both Vite configs
   - Create `apps/pwa-options.ts` with `THEME` and `shellOptions({ name, description })` as in the design. In both `vite.config.ts`, add `VitePWA(shellOptions({ name: 'BASECAMP' | 'AFTERSHOCK', description }))` to `plugins`. Keep `base: './'`, ports and `outDir`.
   - Tests: in each `shell.test.ts`, assert the options (display, theme, `skipWaiting`, `clientsClaim`, `cleanupOutdatedCaches`, `injectRegister: false`, `devOptions.enabled: false`, relative `start_url` and `scope`). Extend each `build.test.ts` so the production build has `sw.js`, `manifest.webmanifest`, the three icons, a precache list naming `index.html`, the JS, the CSS, the shuffle worker and one `woff2`, a manifest with `name`, `short_name`, `display: standalone`, `theme_color: #F2EADB`, and none of the banned strings (`devrelay`, `DevRelayLink`, `window.limbo`, `localhost:5175`, `https://fonts`). Add these cases to the existing file so the two builds of one `dist/` never run in parallel.
   - _Requirements: R1.1, R1.2, R1.4, R4.1, R4.2, R4.3, R5.1, R5.4, R6.1, R6.2, R10.3_

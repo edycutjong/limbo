@@ -27,11 +27,36 @@ it('the production build contains no dev relay, no window.limbo, no localhost:51
   execFileSync('pnpm', ['--filter', '@limbo/aftershock', 'build'], { stdio: 'pipe', env: prodEnv });
   // Two library error-message strings carry documentation URLs (React and Yjs). They are text in messages,
   // never fetched. Everything else in dist/ must be free of https://, so no CDN font, script or style loads.
-  const vendorDocs = ['https://react.dev/errors/', 'https://github.com/yjs/yjs/issues/438'];
+  // The generated Workbox runtime (workbox-*.js) has one console.warn message that links https://bit.ly/wb-precache.
+  // It is message text in a library file, never fetched; sw.js itself holds no https://.
+  const vendorDocs = ['https://react.dev/errors/', 'https://github.com/yjs/yjs/issues/438', 'https://bit.ly/wb-precache'];
   let text = textOf(dist);
   expect(text.length).toBeGreaterThan(1000);
   for (const v of vendorDocs) text = text.split(v).join('');
   for (const banned of ['devrelay', 'DevRelayLink', 'window.limbo', 'localhost:5175', 'https://']) {
+    expect(text.includes(banned), banned).toBe(false);
+  }
+}, 120_000);
+
+it('the production build ships the worker, manifest, icons and a precache list for the shell', () => {
+  execFileSync('pnpm', ['--filter', '@limbo/aftershock', 'build'], { stdio: 'pipe', env: prodEnv });
+  for (const f of ['sw.js', 'manifest.webmanifest', 'icon.svg', 'icon-192.png', 'icon-512.png']) {
+    expect(existsSync(resolve(dist, f)), f).toBe(true);
+  }
+  const sw = readFileSync(resolve(dist, 'sw.js'), 'utf8');
+  for (const re of [/index\.html/, /assets\/index-[^"']+\.js/, /assets\/index-[^"']+\.css/, /assets\/shuffle\.worker-[^"']+\.js/, /\.woff2/]) {
+    expect(re.test(sw), String(re)).toBe(true);
+  }
+  const manifest = JSON.parse(readFileSync(resolve(dist, 'manifest.webmanifest'), 'utf8'));
+  expect(manifest.name).toBe('AFTERSHOCK');
+  expect(manifest.short_name).toBe('AFTERSHOCK');
+  expect(manifest.display).toBe('standalone');
+  expect(manifest.theme_color).toBe('#F2EADB');
+  expect(manifest.start_url).toBe('./');
+  expect(manifest.scope).toBe('./');
+  // The Workbox runtime file carries library URLs in its own text; the banned strings must still be absent.
+  const text = textOf(dist);
+  for (const banned of ['devrelay', 'DevRelayLink', 'window.limbo', 'localhost:5175', 'https://fonts']) {
     expect(text.includes(banned), banned).toBe(false);
   }
 }, 120_000);

@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { shellOptions, THEME } from '../../pwa-options.ts';
 
 const root = resolve(__dirname, '..');
 const pub = (f: string) => resolve(root, 'public', f);
@@ -25,5 +26,26 @@ describe('shell icons and theme colour', () => {
   it('index.html sets the theme-color meta', () => {
     const html = readFileSync(resolve(root, 'index.html'), 'utf8');
     expect(html).toContain('<meta name="theme-color" content="#F2EADB" />');
+  });
+});
+
+describe('shell build options', () => {
+  const o = shellOptions({ name: 'AFTERSHOCK', description: 'd' });
+  const m = o.manifest as Record<string, unknown>;
+
+  it('declares a standalone manifest with the theme colour and relative start_url and scope', () => {
+    expect(m.name).toBe('AFTERSHOCK');
+    expect(m.short_name).toBe('AFTERSHOCK');
+    expect(m.display).toBe('standalone');
+    expect(THEME).toBe('#F2EADB');
+    expect(m.theme_color).toBe(THEME);
+    expect(m.start_url).toBe('./');
+    expect(m.scope).toBe('./');
+  });
+
+  it('updates at once, cleans old caches, registers by hand and stays off in dev', () => {
+    expect(o.workbox).toMatchObject({ skipWaiting: true, clientsClaim: true, cleanupOutdatedCaches: true });
+    expect(o.injectRegister).toBe(false);
+    expect(o.devOptions?.enabled).toBe(false);
   });
 });
