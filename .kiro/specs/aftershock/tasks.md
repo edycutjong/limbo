@@ -65,7 +65,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`scene.test.ts`, real `createPair` with a manual scheduler): after the six edits and a restore, ids are `a#1:1..3` and `b#1:1..3`, the two reports have `l = 19` and different `r`, the counts `l = 20`, the notes `l = 21`, the resolve is `a#1:4` with `l = 22`; severity `unsafe`, total 5, two note values before the resolve and none after; golden `state` strings equal the canonical `materialize` of their ops in several shuffled orders; the stated expectations are asserted field by field.
   - _Requirements: R10.2 to R10.5, R12.2, R12.4, R12.5_
 
-- [ ] 13. App assembly and `ReplicaBody`
+- [x] 13. App assembly and `ReplicaBody`
   - `app.config.ts`, `main.tsx`: `createPair` with the seed, `LimboShell`, `ReplicaPair` (`names` SARI and BUDI, `plate` 1 and 2, `onReset` using `deleteStore` then reload), a `ReplicaBody` that shows the empty state and a selected-sector placeholder, `window.limbo` behind the dev/test guard, `?replicas` handled by the layer. The header keeps the h1, the tagline and the chip.
   - Tests (`app.test.tsx`, jsdom, fake-indexeddb): both cards render; both chips read "Live"; the single layout shows below 640 px; `window.limbo` exists in test; Reset demo deletes `limbo:aftershock:a` and `limbo:aftershock:b` and calls an injected reload; with no seed ops the empty state "No sectors reported yet. Tap a sector to report." shows.
   - _Requirements: R1.1, R7.8, R8.1, R8.3 to R8.5, R8.7_
