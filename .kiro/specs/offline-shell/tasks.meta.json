@@ -72,6 +72,18 @@
         "chatSessionId": "sess_bc7aa212-7f58-47af-bd9e-f833d591121e",
         "timestamp": 1795269081950
       }
+    ],
+    "7. E2E: offline reload (`e2e/offline-shell.spec.ts`)": [
+      {
+        "executionId": "c1a4b3f3-9419-4d07-81b0-84ff28d724c0",
+        "chatSessionId": "sess_1729be0f-3e3a-4ff4-96c9-dd1e8e4e0506",
+        "timestamp": 1795269303276
+      },
+      {
+        "executionId": "c1a4b3f3-9419-4d07-81b0-84ff28d724c0",
+        "chatSessionId": "sess_1729be0f-3e3a-4ff4-96c9-dd1e8e4e0506",
+        "timestamp": 1795269500060
+      }
     ]
   }
 }

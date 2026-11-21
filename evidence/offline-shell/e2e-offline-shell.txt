@@ -1,0 +1,15 @@
+== run 1 ==
+Running 2 tests using 1 worker
+  ✓  1 [basecamp-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (2.8s)
+  ✓  2 [aftershock-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (1.6s)
+  2 passed (18.4s)
+== run 2 ==
+Running 2 tests using 1 worker
+  ✓  1 [basecamp-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (2.7s)
+  ✓  2 [aftershock-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (1.6s)
+  2 passed (17.6s)
+== run 3 ==
+Running 2 tests using 1 worker
+  ✓  1 [basecamp-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (2.6s)
+  ✓  2 [aftershock-shell] › e2e/offline-shell.spec.ts:69:1 › offline reload keeps the edit and the state (1.5s)
+  2 passed (16.5s)

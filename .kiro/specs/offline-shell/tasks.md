@@ -37,7 +37,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Check: `pnpm e2e` runs the three existing projects plus the two smoke cases, all green.
   - _Requirements: R8.1, R8.6, R9.1, R10.2_
 
-- [ ] 7. E2E: offline reload (`e2e/offline-shell.spec.ts`)
+- [x] 7. E2E: offline reload (`e2e/offline-shell.spec.ts`)
   - Per app, in a fresh context: load, wait for the worker to be active and the page controlled, "Cut link", edit (BASECAMP: tick the tent, read the real checkbox name from the seed; AFTERSHOCK: report C3 as Unsafe, count 3, note), assert the wisp count is greater than 0 on the editing card, "Restore link", poll until the cards agree and the counts settle, take the snapshot (both cards' list or grid text, wisp counts, chip text), `context.setOffline(true)`, reload, and assert the snapshot is equal.
   - Assert the edit shows on both cards after the reload (tent checked on both; C3 `UNSAFE` on both), `'limbo' in window` is `false` before and after, `navigator.serviceWorker.controller` is not null, and "Run shuffle test" still prints its "orderings → same state" line while offline.
   - Replace the smoke case from task 6. Run the spec three times in a row to catch flakes; record the three results in `evidence/offline-shell/e2e-offline-shell.txt`.
