@@ -156,6 +156,35 @@ describe('Inspector', () => {
     pair.close();
   });
 
+  it('lists a conflict that an incoming op resolved, then drops it at the next crossing', async () => {
+    const pair = await makeStubPair();
+    renderApp(pair, <Inspector id="a" />);
+    act(() => void pair.a.local('note.add', 'n1', {}));
+    await sync(pair);
+    act(() => pair.cut());
+    act(() => {
+      pair.a.local('note.claim', 'n1', { who: 'ann' });
+      pair.b.local('note.claim', 'n1', { who: 'bob' });
+    });
+    act(() => pair.restore());
+    await sync(pair);
+    open();
+    expect(section('Conflicts').textContent).toContain('rule: claim-one');
+    expect(section('Conflicts').querySelector('[data-resolved]')).toBeNull();
+    act(() => void pair.b.local('note.delete', 'n1', {}));
+    await sync(pair);
+    expect(pair.view('a').conflict).toBe('CLEAR');
+    const resolved = section('Conflicts').querySelectorAll('[data-resolved]');
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]!.textContent).toContain('claim-one');
+    expect(resolved[0]!.textContent).toContain('resolved');
+    act(() => void pair.b.local('note.add', 'n2', {}));
+    await sync(pair);
+    expect(section('Conflicts').querySelector('[data-resolved]')).toBeNull();
+    expect(section('Conflicts').textContent).toContain('No conflicts.');
+    pair.close();
+  });
+
   it('shows replica id, vv and log size', async () => {
     const pair = await makeStubPair();
     renderApp(pair, <Inspector id="a" />);

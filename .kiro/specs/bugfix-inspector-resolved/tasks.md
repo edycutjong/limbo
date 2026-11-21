@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, except task 1, whose new tests are expected to fail until task 2 (see its note). The e2e task also runs `pnpm e2e`. Tests and properties are never weakened, skipped, or run with a lower `numRuns`. Do not run git.
 
-- [ ] 1. Failing tests that show the bug
+- [x] 1. Failing tests that show the bug
   - `skeleton/src/limbo/inspector.test.tsx`: add the "Incoming resolve is listed" case (concurrent claims, B deletes, A's Conflicts section has a `[data-resolved]` row naming `claim-one`, and it is gone after the next crossing).
   - `apps/basecamp/src/views/lake-scene.test.tsx`: assert two resolved rows on A (`resurrect` and `claim-one`) and remove the "KNOWN GAP (R10.8)" comment.
   - Run both and record the failure (the inspector case reads "No conflicts."; the lake scene has one row). Keep them failing. This is the one task where `pnpm test` is expected red, and only for these two tests. `pnpm typecheck` and `pnpm props` stay green.

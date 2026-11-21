@@ -1,0 +1,17 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Failing tests that show the bug": [
+      {
+        "executionId": "cd635f32-c6bc-44fb-8947-0c37ae3e2def",
+        "chatSessionId": "sess_2eba4210-e354-406a-a9e9-9b90f02bcec0",
+        "timestamp": 1795252692231
+      },
+      {
+        "executionId": "cd635f32-c6bc-44fb-8947-0c37ae3e2def",
+        "chatSessionId": "sess_2eba4210-e354-406a-a9e9-9b90f02bcec0",
+        "timestamp": 1795252773302
+      }
+    ]
+  }
+}

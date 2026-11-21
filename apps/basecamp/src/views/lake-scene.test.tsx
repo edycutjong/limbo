@@ -158,12 +158,10 @@ describe('lake scene (R10) with manual edits', () => {
     expect(older.map((r) => r[5]).sort()).toEqual(['16·a#1·1', '16·b#1·1', '17·a#1·2', '17·b#1·2']);
     const conflicts = within(card('a')).getByRole('region', { name: 'Conflicts' });
     const items = Array.from(conflicts.querySelectorAll('li')).map((li) => text(li));
-    // KNOWN GAP (R10.8): the layer's useLimbo purges a conflict that an INCOMING op resolved in the same
-    // crossing (replica.subscribe marks it resolved, then onCross deletes it). Only the viewer's own resolve
-    // stays listed, so A lists the tent twin it resolved with Keep, and the stove twin that B's OK resolved
-    // is not listed on A. `skeleton/src/limbo` does not change in this spec, so this asserts what A shows.
-    expect(items).toHaveLength(1);
-    expect(items[0]).toMatch(/\(rule: resurrect\) resolved$/);
+    // A lists both resolved twins: the tent (its own Keep) and the stove claim (B's OK, incoming).
+    expect(items).toHaveLength(2);
+    expect(items.some((i) => /\(rule: resurrect\) resolved$/.test(i))).toBe(true);
+    expect(items.some((i) => /\(rule: claim-one\) resolved$/.test(i))).toBe(true);
 
     // R10.9
     await click(screen.getByRole('button', { name: 'Run shuffle test' }));
