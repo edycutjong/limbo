@@ -99,7 +99,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: unit test spawns `vite build` and asserts the built `dist/` text contains none of `devrelay`, `DevRelayLink`, `window.limbo`, `localhost:5175`, `https://fonts`; a jsdom test mounts the solo page with a fake fetch and finds the list, the status line and `window.limbo`.
   - _Requirements: R13.6, R13.8, R14.6, R14.7, R1.5_
 
-- [ ] 20. E2E (a): the lake scene in one page
+- [x] 20. E2E (a): the lake scene in one page
   - `playwright.config.ts`: two projects (`spike`, `basecamp`) and a `webServer` entry for the BASECAMP dev server on 5174, beside the spike's and the relay's. `e2e/basecamp-offline.spec.ts` test (a): each R10 line, read from the page; **Play the lake scene** for the partition edits; each "scripted edit" label; canonical states from `window.limbo.state('a'|'b')` deep-equal at the end. Fresh browser context so databases are empty.
   - Run `pnpm e2e`: the spike test and this test both pass. Save the run output under `evidence/e2e/`.
   - _Requirements: R10, R11, R15.1, R15.2, R15.5, R15.6_
