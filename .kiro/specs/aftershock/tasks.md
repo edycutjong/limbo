@@ -55,7 +55,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`seed.test.ts`): materialized values of R2.7 (10 reported, 8 safe, B2 and E3 damaged, totals, needs, `C3` absent, zero twins); 18 ops, all by `seed`, counters 1..18; byte-identical on two builds; sha256 of the canonical JSON equals a recorded constant (print it).
   - _Requirements: R2_
 
-- [ ] 11. Actions
+- [x] 11. Actions
   - `src/actions.ts` per R13: report, re-inspect (clear then report), set count, add need, remove need, set note, pick note, pick count. `memberOf(replica)`.
   - Tests (`actions.test.ts`, two real `createReplica` instances with manual delivery): each resolve clears its twin on both replicas after delivery; the count target is `C3#sari` on `a` and `C3#budi` on `b`; pressing a need twice makes two adds; re-inspection lowers an observed `unsafe` and leaves a concurrent report standing; no action reads state to compute a delta or a flip.
   - _Requirements: R13, R9.1, R9.2, R3.2_
