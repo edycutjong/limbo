@@ -36,6 +36,18 @@
         "chatSessionId": "sess_35c6aa20-9c7b-4167-87bf-5c4074e452f6",
         "timestamp": 1795244832360
       }
+    ],
+    "4. `expense.add` and `expense.setAmount`": [
+      {
+        "executionId": "ca25e579-2b6f-4b1e-bba5-5179eceb85f2",
+        "chatSessionId": "sess_96a3c56f-443c-47ac-8f0c-2810ae7cd01e",
+        "timestamp": 1795244922705
+      },
+      {
+        "executionId": "ca25e579-2b6f-4b1e-bba5-5179eceb85f2",
+        "chatSessionId": "sess_96a3c56f-443c-47ac-8f0c-2810ae7cd01e",
+        "timestamp": 1795245099014
+      }
     ]
   }
 }

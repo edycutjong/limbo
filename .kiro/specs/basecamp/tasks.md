@@ -18,7 +18,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`merges.test.ts`): 2500 over `sari, budi, dewi`; k = 0 gives `{}`; k = 1; amount 0; amount < k; duplicate members; input order independence; throws on a float, a negative and `NaN`; fast-check: integers ≥ 0, sum = amount, max − min ≤ 1.
   - _Requirements: R5_
 
-- [ ] 4. `expense.add` and `expense.setAmount`
+- [x] 4. `expense.add` and `expense.setAmount`
   - Create `ops/expense.add.op.ts`, `ops/expense.setAmount.op.ts` and `ops/expense.state.ts` (shared membership and amount helpers, `present(addsOf, removes)`). Write each op's intent sentence at the top of the file first. Write `*.props.ts` with `conflictGen` payload generators and the kit `splitIntent`; `setAmount` also asserts causal dominance. Let the hooks scaffold `*.props.test.ts` and `registry.gen.ts`.
   - Tests: `expense.state.test.ts` for `present` (add observed by a remove is gone; concurrent add and remove survives; duplicate adds; remove before add); the two scaffolded props suites pass, and the vacuity guard sees concurrent amount edits.
   - _Requirements: R6.1, R6.2, R6.7, R6.8, R6.9, R16.1, R16.4_
