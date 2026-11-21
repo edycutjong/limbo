@@ -64,7 +64,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`keys.test.tsx`): `L` cuts then restores in the pair and in the single layout; `I` opens and closes the drawer; arrows move focus across rows; typing `l` or `i` in an input does nothing; Ctrl+L does nothing; a stub row bound by the test to Space and Delete works with the convention.
   - _Requirements: R16_
 
-- [ ] 13. Shuffle replay and ShuffleTest
+- [x] 13. Shuffle replay and ShuffleTest
   - `skeleton/src/limbo/shuffle.ts`: `runShuffle` using `deliveryOrder`, `causalBuffer`, `canonical`, a bounded shrinker and `explainTrace`. `skeleton/src/limbo/shuffle-test.tsx`: `ShuffleTest` with the injected-runner interface and `groupThousands`. Add `apps/basecamp/src/shuffle.worker.ts` only if BASECAMP already has a Vite entry; otherwise leave the worker wiring for the app spec.
   - Tests (`shuffle.test.ts`, `shuffle-test.test.tsx`): 1,000 orderings of a converging stub op set print `1,000 / 1,000 orderings → same state` using the count the runner returned (a runner that returns 640 prints 640); golden line appears only when op ids equal the golden ids and the state matches, and is absent after an edit; a deliberately non-commutative stub `materialize` (read-modify-write) yields `k of N disagree` with `k > 0` and a trace that `explainTrace` produced; the shrunk set is no larger than the input and still disagrees; the caption says it replays the ops on screen; "Running…" and cancel show while pending; a runner error shows an error line and no pass; text contains no "proven" or "guaranteed".
   - _Requirements: R12_
