@@ -26,7 +26,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - The layer keeps reading only `Pair` state. A test never makes the layer compute a sync number.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.3_
 
-- [ ] 5. `apps/basecamp/src/` non-op modules
+- [x] 5. `apps/basecamp/src/` non-op modules
   - Files: `actions`, `members`, `model`, `money`. Extend the matching `*.test.ts`.
   - Money cases use integer cents and `sum-split`. Assert shares sum to the amount.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.4_

@@ -66,6 +66,9 @@ Only dead-code removals (R3.1, R4.2). Format: `file:line, what was removed, why 
 | `skeleton/src/sync/link.ts` | 32 | `if (!y) return false` in `same`; `y` is now `VV`, call site passes `lastSeen!` | `observeVV` runs only after a hello, which sets `lastSeen`; `reset` clears `helloSeen` and `lastSeen` together | -1 |
 | `skeleton/src/sync/link.ts` | 125 | `peerVV ?? {}` in the replica subscriber; now `peerVV!` | the subscriber runs only when `helloSeen`, and a hello sets `peerVV` (cleared together with `helloSeen`) | 0 |
 | `skeleton/src/sync/status.ts` | 55 | `peerVV[r] ?? 0` in `countBehind`; loop now iterates `Object.entries(peerVV)` | `r` comes from the keys of `peerVV` | 0 |
+| `apps/basecamp/src/members.ts` | 18, 22 | `?? op.stamp.r` and `?? replicaId` after `split('#')[0]`; now `[0]!` | `split` always returns at least one element | 0 |
+| `apps/basecamp/src/model.ts` | 122, 208, 216 | `?? first.payload.*` after `amount.value?.`, `name.value?.`, `pos.value?.`; now `value!` | `amountOf`, `nameWrites` and `keyWrites` always include the first add, so the lww winner exists | 0 |
+| `apps/basecamp/src/model.ts` | 223 | `EDIT_KIND[o.op] ?? 'add'`; now `!` | resurrecting ops are only `EDIT_OPS`, all keys of `EDIT_KIND` | 0 |
 
 ## 6. Ignored branches
 

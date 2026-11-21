@@ -125,3 +125,30 @@ describe('lifeInfo and values', () => {
     expect(materialize([item()]).items.i!.values.name).toEqual([]);
   });
 });
+
+describe('frontier ordering and edit kinds', () => {
+  it('lists three concurrent renames in ascending stamp order whatever the input order', () => {
+    const ren = (r: string, name: string) => op(r, 1, 2, { s: 1 }, 'item.rename', 'i', { name });
+    const ops = [item(), ren('c', 'third'), ren('a', 'first'), ren('b', 'second')];
+    for (const o of shuffles(ops)) {
+      expect(materialize(o).items.i!.values.name).toEqual([
+        { by: 'a', value: 'first' },
+        { by: 'b', value: 'second' },
+        { by: 'c', value: 'third' },
+      ]);
+    }
+  });
+
+  it('breaks an equal Lamport and replica tie of two adds by counter', () => {
+    const add = (n: number, name: string) => op('a', n, 1, {}, 'item.add', 'i', { name, key: 'a0', units: 1 });
+    expect(materialize([add(2, 'late'), add(1, 'early')]).items.i!.units).toBe(1);
+  });
+
+  it('reports the kind of each resurrecting edit', () => {
+    const kinds = (edit: Op): string[] =>
+      materialize([item(), op('b', 1, 2, { s: 1 }, 'item.delete', 'i', {}), edit]).items.i!.lifeInfo!.editedBy.map((e) => e.kind);
+    expect(kinds(op('a', 1, 2, { s: 1 }, 'item.rename', 'i', { name: 'x' }))).toEqual(['rename']);
+    expect(kinds(op('a', 1, 2, { s: 1 }, 'item.claim', 'i', { who: 'sari' }))).toEqual(['claim']);
+    expect(kinds(op('a', 1, 2, { s: 1 }, 'item.restore', 'i', {}))).toEqual(['restore']);
+  });
+});

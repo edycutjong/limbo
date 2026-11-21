@@ -119,7 +119,7 @@ function expenseOf(id: string, group: Op[]): Expense | undefined {
     op: o,
   }));
   const members = present(adds, removes);
-  const amountCents = amount.value?.amountCents ?? first.payload.amountCents;
+  const amountCents = amount.value!.amountCents;
   return {
     id,
     label: first.payload.label,
@@ -205,7 +205,7 @@ export function materialize(ops: readonly Op[]): State {
 
     items[id] = {
       id,
-      name: name.value?.name ?? first.payload.name,
+      name: name.value!.name,
       ticked: tick.value?.ticked ?? false,
       units,
       life: life.life,
@@ -213,14 +213,14 @@ export function materialize(ops: readonly Op[]): State {
       fieldTwins: fields,
       winners: claim.winners.map((w) => w.payload.who),
       losers: claim.losers.map((l) => l.payload.who),
-      pos: pos.value?.key ?? first.payload.key,
+      pos: pos.value!.key,
       claims: { winners: claim.winners.map(claimInfo), losers: claim.losers.map(claimInfo) },
       ...(life.active.length === 0
         ? {}
         : {
             lifeInfo: {
               deletedBy: life.active.map(authorOf),
-              editedBy: life.resurrecting.map((o) => ({ by: authorOf(o), kind: EDIT_KIND[o.op] ?? 'add', op: o.id })),
+              editedBy: life.resurrecting.map((o) => ({ by: authorOf(o), kind: EDIT_KIND[o.op]!, op: o.id })),
             },
           }),
       values: { name: frontier(name, (p) => p.name), ticked: frontier(tick, (p) => p.ticked) },

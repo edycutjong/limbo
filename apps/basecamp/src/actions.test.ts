@@ -30,6 +30,22 @@ const unb62 = (s: string): string => {
 };
 const ids = (r: R): string[] => describeConflicts(r.state()).map((d) => d.id);
 
+describe('actions without a member or items', () => {
+  it('acts as its own replica id when it has no member', async () => {
+    const c = await make('c');
+    expect(act.memberOf(c)).toBe('c');
+    expect(act.memberOf(await make('a'))).toBe('sari');
+    expect(act.claimItem(c, 'tent').payload).toEqual({ who: 'c' });
+  });
+
+  it('adds the first item to an empty list', async () => {
+    const e = await createReplica<State>({ app: 'basecamp', replicaId: 'a', defs, materialize, twinCount, store: openStore(`actions-empty-${n++}`), seedOps: [] });
+    expect(e.state().order).toEqual([]);
+    const op = act.addItem(e, 'First');
+    expect(e.state().order).toEqual([op.id]);
+  });
+});
+
 describe('actions', () => {
   it('add item gives distinct ids on two replicas and a key after the last item', async () => {
     const [a, b] = await pair();
