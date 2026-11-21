@@ -120,6 +120,9 @@
 .limbo-lift { animation: limbo-lift 900ms ease-in-out; }
 @keyframes limbo-lift { from { filter: saturate(.25) contrast(.9); } to { filter: none; } }
 .limbo-wisp-row, .limbo-cross-row { display: inline-flex; gap: 4px; }
+.limbo-wisps { display: flex; flex-wrap: wrap; align-items: center; column-gap: 12px; row-gap: 4px; }
+.limbo-wisp-summary { display: inline-flex; gap: 4px; }
+.limbo-plate { color: var(--muted); font-variant: small-caps; letter-spacing: .06em; }
 .wisp { width: 8px; height: 8px; border-radius: 50%; background: var(--developing); }
 .wisp-cross { animation: limbo-cross 550ms ease-in-out both; animation-delay: calc(var(--i, 0) * 50ms); }
 @keyframes limbo-cross { from { transform: translateX(-24px); opacity: 0; } 50% { opacity: 1; } to { transform: translateX(24px); opacity: 0; } }

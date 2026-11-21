@@ -98,7 +98,12 @@ export function Wisps(p: { id: Id; plate: number | string }): ReactNode {
           ))}
         </span>
       )}
-      {n > 0 && <output className="wisp-count">{n}</output>}
+      {n > 0 && (
+        <span className="limbo-wisp-summary">
+          <output className="wisp-count">{n}</output>
+          <span className="limbo-wisp-word">waiting</span>
+        </span>
+      )}
       {n > 0 && <span className="limbo-plate">{`PLATE ${p.plate} · ${n} WAITING`}</span>}
       {cross > 0 && (
         <span className="limbo-cross-row" aria-hidden="true" data-seq={crossing.seq} key={crossing.seq}>

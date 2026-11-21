@@ -27,6 +27,19 @@ describe('Wisps', () => {
     pair.close();
   });
 
+  it('splits the summary into count and word, and keeps the plate text', async () => {
+    const pair = await makeStubPair();
+    const { container } = renderApp(pair, <Wisps id="a" plate={7} />);
+    act(() => pair.cut());
+    add(pair, 2);
+    const s = container.querySelector('.limbo-wisp-summary')!;
+    expect(s.textContent).toBe('2waiting');
+    expect(s.querySelector('.wisp-count')!.textContent).toBe('2');
+    expect(s.querySelector('.limbo-wisp-word')!.textContent).toBe('waiting');
+    expect(container.querySelector('.limbo-plate')!.textContent).toBe('PLATE 7 · 2 WAITING');
+    pair.close();
+  });
+
   it('caps queued wisps at 12 and keeps the full count', async () => {
     const pair = await makeStubPair();
     const { container } = renderApp(pair, <Wisps id="a" plate={1} />);

@@ -36,7 +36,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: new layout test passes; `twin.test.tsx`, `motion.test.tsx`, `fixed.test.tsx` and the app twin tests pass with no edit (Unchanged clause).
   - _Requirements: R2.1 to R2.4, R9.3, R9.4_
 
-- [ ] 7. Wisps
+- [x] 7. Wisps
   - Split the `Wisps` markup in `marks.tsx` per design section 6; add the flex row rules to `tokens.css`. Record the line delta and re-measure the budget.
   - Tests: `wisps.test.tsx` gains a case: with 2 queued ops, `.limbo-wisp-summary` text is `2waiting` as separate `.wisp-count` ("2") and `.limbo-wisp-word` ("waiting"), and `.limbo-plate` text is `PLATE 7 · 2 WAITING`. Existing wisps, single, pair-view and app scene tests unchanged.
   - _Requirements: R3.1 to R3.3, R9.3_
