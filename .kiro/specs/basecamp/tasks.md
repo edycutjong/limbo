@@ -74,7 +74,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: keyboard move up and down changes `order` and emits one `item.move`; first and last rows do not move past the ends; pointer drag over jsdom rect stubs calls `move` with the right index; two concurrent moves converge on both replicas and show no twin.
   - _Requirements: R3.8, R4.8, R9.3, R17.2_
 
-- [ ] 15. `ExpenseRow`
+- [x] 15. `ExpenseRow`
   - `views/ExpenseRow.tsx`: amount, payer, members, shares, `sum-split` rule line, amount field, add and remove member, amount value twin.
   - Tests: seed shows `$12.00` ×4 and `$8.34` / `$8.33` / `$8.33`; offline A adds Dewi while B sets `$26.00`, after `settle()` both show four members, `$6.50` each and the shares sum to `$26.00`; concurrent amounts show a twin with two buttons and the pick resolves it; invalid input shows an inline message and creates no op; shares use tabular numerals.
   - _Requirements: R7.3 to R7.7, R17.4_

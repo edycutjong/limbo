@@ -168,6 +168,18 @@
         "chatSessionId": "sess_67d4f13a-73df-4629-87c0-c89f08fbe48f",
         "timestamp": 1795247932206
       }
+    ],
+    "15. `ExpenseRow`": [
+      {
+        "executionId": "f491a225-bce4-43b0-a56e-282662663084",
+        "chatSessionId": "sess_4493b147-cccb-4b77-88bf-f26fd0942363",
+        "timestamp": 1795248062615
+      },
+      {
+        "executionId": "f491a225-bce4-43b0-a56e-282662663084",
+        "chatSessionId": "sess_4493b147-cccb-4b77-88bf-f26fd0942363",
+        "timestamp": 1795248210229
+      }
     ]
   }
 }

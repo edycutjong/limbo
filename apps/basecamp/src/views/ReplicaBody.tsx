@@ -4,9 +4,9 @@ import { useState, type ReactNode } from 'react';
 import { Inspector, useLimbo, type Id } from '../../../../skeleton/src/limbo/index.ts';
 import type { Replica } from '../../../../skeleton/src/sync/replica.ts';
 import * as act from '../actions.ts';
-import { formatCents } from '../money.ts';
 import type { State } from '../model.ts';
 import { AddItem } from './AddItem.tsx';
+import { ExpenseRow } from './ExpenseRow.tsx';
 import { ItemRow } from './ItemRow.tsx';
 import { ItemTwins } from './ItemTwins.tsx';
 
@@ -54,7 +54,7 @@ export function ReplicaBody(p: { id: Id }): ReactNode {
       <Inspector id={p.id} open={inspector} onOpenChange={setInspector} />
       <ul className="bc-expenses" aria-label="Shared expenses">
         {Object.values(s.expenses).map((e) => (
-          <li key={e.id}>{`${e.label} ${formatCents(e.amountCents)}`}</li>
+          <ExpenseRow key={e.id} id={p.id} replica={replica} expense={e} />
         ))}
       </ul>
     </div>
