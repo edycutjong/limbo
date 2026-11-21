@@ -49,7 +49,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`inspector.test.tsx`): opens and closes with the button and `Escape`, focus returns; Link shows state and peer id; queued rows equal `view.unacked` and show op name, target, declared merge, declared intent, stamp `l·r·n` and deps for each; exchanges newest first, last 3 only, with in/out and the same columns; a resolved conflict stays until the next crossing then goes; Replica shows id, `vv` and log size; an op with no def shows `unknown`.
   - _Requirements: R9, R18.6_
 
-- [ ] 10. ReplicaPair, LinkCord, Reset demo
+- [x] 10. ReplicaPair, LinkCord, Reset demo
   - `skeleton/src/limbo/pair-view.tsx`: two cards with imprint and plate caption, `LinkCord` with lever and caption, **Reset demo** button, per-card live region.
   - Tests (`pair-view.test.tsx`): lever reads "Cut link"/"Restore link" from `view('a').link` and calls `pair.cut()`/`pair.restore()`; both cards fogged while cut; caption text exact; **Reset demo** calls `onReset` and nothing else; each card has exactly one `aria-live="polite"`; stylesheet text contains the 1024 px and 640 px breakpoints; lever and buttons have a 44 px min size in CSS.
   - _Requirements: R10, R17.1, R18.3_

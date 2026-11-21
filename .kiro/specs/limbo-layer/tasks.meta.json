@@ -108,6 +108,18 @@
         "chatSessionId": "sess_62fd9d44-1a48-41ba-a628-7d2d1e04a639",
         "timestamp": 1795242475430
       }
+    ],
+    "10. ReplicaPair, LinkCord, Reset demo": [
+      {
+        "executionId": "ff229681-6af2-4d4d-8d42-3ed6590878be",
+        "chatSessionId": "sess_80bf268e-926b-44c0-abd7-c74e3e2d4229",
+        "timestamp": 1795242572090
+      },
+      {
+        "executionId": "ff229681-6af2-4d4d-8d42-3ed6590878be",
+        "chatSessionId": "sess_80bf268e-926b-44c0-abd7-c74e3e2d4229",
+        "timestamp": 1795242718546
+      }
     ]
   }
 }

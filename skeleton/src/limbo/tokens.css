@@ -86,3 +86,16 @@
 .limbo-fixed[data-enter="true"] { animation: limbo-fixed-in 250ms ease-out, limbo-fixed-settle 300ms ease-out 2s forwards; }
 @keyframes limbo-fixed-in { from { transform: rotate(-4deg) scale(1.6); opacity: 0; } }
 @keyframes limbo-fixed-settle { to { transform: rotate(-4deg) scale(.8); opacity: .75; } }
+
+/* Replica pair: stacked from 640 px, side by side from 1024 px */
+.limbo-pair { display: grid; grid-template-columns: 1fr; gap: 16px; }
+.limbo-pair-card { display: flex; flex-direction: column; gap: 8px; outline: 1px solid var(--rule); outline-offset: -6px; }
+.limbo-cord { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.limbo-cord-line { width: 100%; height: 10px; stroke: var(--before); stroke-width: 2; fill: none; }
+.limbo-cord[data-cord="severed"] .limbo-cord-line { stroke: var(--after); }
+.limbo-lever { min-width: 44px; min-height: 44px; }
+.limbo-reset { min-width: 44px; min-height: 44px; justify-self: start; }
+.limbo-cord-caption { font-variant: small-caps; letter-spacing: .06em; font-size: 14px; color: var(--muted); margin: 0; }
+@media (min-width: 640px) and (max-width: 1023px) { .limbo-pair { grid-template-columns: 1fr; } }
+@media (min-width: 1024px) { .limbo-pair { grid-template-columns: 1fr auto 1fr; align-items: start; } .limbo-reset { grid-column: 1 / -1; } }
+.limbo-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
