@@ -44,7 +44,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`seed.test.ts`): materialized values of R2.5; byte-identical on two builds; sha256 of the canonical JSON equals a recorded constant (print it); ops are all authored by `seed` with counters 1..n.
   - _Requirements: R2_
 
-- [ ] 9. Actions
+- [x] 9. Actions
   - `apps/basecamp/src/actions.ts`: every row of the design §6 table, add item (target = own op id, key between neighbours), rename, tick (explicit value), delete, restore, claim, release, move, add expense member, remove member, set amount.
   - Tests (`actions.test.ts`, over two real `createReplica` instances with manual delivery): each resolve action clears its twin on both replicas after delivery; add item gives distinct ids on two replicas; tick never toggles (two ticks of `true` stay `true`); move allocates a key between neighbours; delete then restore.
   - _Requirements: R3.1 to R3.8, R4.3, R4.4, R7.5_
