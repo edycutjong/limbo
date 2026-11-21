@@ -35,7 +35,7 @@ export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): 
   return (
     <ScriptedContext.Provider value={scripted}>
     <main className="as-shell">
-      <h1>AFTERSHOCK</h1>
+      <h1 className="limbo-title">AFTERSHOCK</h1>
       <p>{TAGLINE}</p>
       <div className="as-chip" role="note">
         <strong>{DEMO_CHIP}</strong>

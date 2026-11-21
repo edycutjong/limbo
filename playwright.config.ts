@@ -13,6 +13,9 @@ export default defineConfig<{ app: 'basecamp' | 'aftershock' }>({
     // Production previews of each built app (service worker enabled); `app` picks the title checked in offline-shell.spec.ts.
     { name: 'basecamp-shell', testMatch: 'offline-shell.spec.ts', use: { baseURL: 'http://localhost:5177', app: 'basecamp' } },
     { name: 'aftershock-shell', testMatch: 'offline-shell.spec.ts', use: { baseURL: 'http://localhost:5178', app: 'aftershock' } },
+    // ui-polish layout checks against each dev server; `app` picks the scene button.
+    { name: 'ui-polish-basecamp', testMatch: 'ui-polish.spec.ts', use: { baseURL: 'http://localhost:5174', app: 'basecamp' } },
+    { name: 'ui-polish-aftershock', testMatch: 'ui-polish.spec.ts', use: { baseURL: 'http://localhost:5176', app: 'aftershock' } },
     // Deployed URLs come from env vars; no server and no baseURL.
     { name: 'live', testMatch: 'live.spec.ts' },
   ],

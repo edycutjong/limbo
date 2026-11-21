@@ -62,7 +62,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: both `Shuffle.test.tsx` files assert the sentence is present, contains no digit, and that the existing "orderings → same state" line is unchanged.
   - _Requirements: R8.1, R8.2_
 
-- [ ] 12. Playwright check, final record (last)
+- [x] 12. Playwright check, final record (last)
   - Add `e2e/ui-polish.spec.ts` per design section 11, and the two projects (`ui-polish-basecamp` on 5174, `ui-polish-aftershock` on 5176) to `playwright.config.ts`. No existing e2e file changes.
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`. If a check fails because of a product defect, fix the CSS or markup of the owning task; do not loosen the check.
   - Fill in `design.md` sections 12 and 13: skeleton files touched with line deltas, the measured budget (files and lines against 30 and 2,400), test counts before and after, the `pnpm props` and `pnpm e2e` results, and every file changed outside `apps/` (expected: `skeleton/src/limbo/{twin.tsx,marks.tsx,tokens.css}`, new `skeleton/src/limbo/{focus,twin-layout,fog-veil}` tests, `e2e/ui-polish.spec.ts`, `playwright.config.ts`, `evidence/ui-polish/*`). Write the same into `evidence/ui-polish/final.md`.
