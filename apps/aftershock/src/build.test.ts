@@ -69,7 +69,8 @@ it('wording scan: no "proven" claim, no "guaranteed", no field-use claim', () =>
 it('colour literals live in tokens only', () => {
   const colour = /#[0-9a-fA-F]{3,8}\b|\brgba?\(|\bhsla?\(|\boklch\(/;
   for (const f of scanned) {
-    const text = readFileSync(f, 'utf8');
+    // The one allowed literal: the PWA theme-color meta in index.html (offline-shell R5.2).
+    const text = readFileSync(f, 'utf8').replace(/<meta name="theme-color" content="#F2EADB" \/>/, '');
     expect(colour.test(text), f).toBe(false);
   }
 });

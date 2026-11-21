@@ -9,7 +9,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Test: the existing `build.test.ts` still passes.
   - _Requirements: R1.1, R6.1, R10.4_
 
-- [ ] 2. Icons, manifest values and theme colour
+- [x] 2. Icons, manifest values and theme colour
   - Generate `icon.svg`, `icon-192.png`, `icon-512.png` into `apps/basecamp/public/` and `apps/aftershock/public/` with a one-off script (not committed, no new dependency). Cream `#F2EADB` ground, a simple dark glyph, no third-party mark.
   - Add `<meta name="theme-color" content="#F2EADB" />` to both `index.html`.
   - Tests (`apps/<app>/src/shell.test.ts`, new): each PNG has the PNG signature and IHDR sizes 192×192 and 512×512; `icon.svg` exists and has no `<text>`; `index.html` has the theme-color meta.
