@@ -213,3 +213,96 @@ test('lake scene in one page: partition, Play the lake scene, reconnect, resolve
 
   await ctx.close();
 });
+
+// BASECAMP test (b), R14 and R15.3 to R15.6: two browser contexts, each a solo page over the dev relay.
+// `context.setOffline` is the partition. Waits are on state, never on fixed sleeps, except the one bounded
+// observation window that asserts nothing crosses while both are offline.
+
+const RELAY = 'http://localhost:5175';
+
+interface SoloDebug {
+  ready: Promise<void>;
+  state(): string;
+  queued(): unknown[];
+  tick(id: string, ticked?: boolean): unknown;
+  delete(id: string): unknown;
+  claim(id: string): unknown;
+}
+type SoloItem = { life: string; ticked: boolean; winners: string[]; losers: string[] };
+const solo = (p: Page) => ({
+  state: (): Promise<string> => p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.state()),
+  queued: (): Promise<number> => p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.queued().length),
+  items: async (): Promise<Record<string, SoloItem>> =>
+    (JSON.parse(await p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.state())) as { items: Record<string, SoloItem> }).items,
+});
+
+test('two contexts through the dev relay: partition, reconnect, converge', async ({ browser, request }) => {
+  await request.post(`${RELAY}/reset`);
+  const ctxA = await browser.newContext();
+  const ctxB = await browser.newContext();
+  const pa = await ctxA.newPage();
+  const pb = await ctxB.newPage();
+  await pa.goto(`/?devrelay=${encodeURIComponent(RELAY)}&r=a`);
+  await pb.goto(`/?devrelay=${encodeURIComponent(RELAY)}&r=b`);
+  for (const p of [pa, pb]) await p.evaluate(() => (window as unknown as { limbo: SoloDebug }).limbo.ready);
+  const A = solo(pa);
+  const B = solo(pb);
+
+  // Both live and equal before the cut.
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toHaveText('Live', { timeout: 15_000 });
+  await expect.poll(async () => (await A.state()) === (await B.state())).toBe(true);
+  const seedA = await A.state();
+
+  // Partition both contexts. The link reads down once a poll fails.
+  await ctxA.setOffline(true);
+  await ctxB.setOffline(true);
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toHaveText(/Offline/, { timeout: 15_000 });
+
+  // A ticks the tent and claims the stove; B deletes the tent and claims the stove.
+  await pa.evaluate(() => {
+    const l = (window as unknown as { limbo: SoloDebug }).limbo;
+    l.tick('tent', true);
+    l.claim('stove');
+  });
+  await pb.evaluate(() => {
+    const l = (window as unknown as { limbo: SoloDebug }).limbo;
+    l.delete('tent');
+    l.claim('stove');
+  });
+  expect(await A.queued()).toBe(2);
+  expect(await B.queued()).toBe(2);
+
+  // Several poll periods (150 ms each) with the link cut: no edit crosses, the relay log stays empty.
+  const midA = await A.state();
+  const midB = await B.state();
+  await pa.waitForTimeout(1_500);
+  expect(await A.state()).toBe(midA);
+  expect(await B.state()).toBe(midB);
+  expect((await A.items())['tent']).toMatchObject({ life: 'alive', ticked: true });
+  expect((await B.items())['tent']?.life).toBe('deleted');
+  const relayLog = (await (await request.get(`${RELAY}/ops?since=0`)).json()) as { ops: { id: string }[] };
+  expect(relayLog.ops.filter((o) => /^(a|b)#/.test(o.id))).toHaveLength(0);
+  expect(midA).not.toBe(seedA);
+
+  // Reconnect and wait on state, not on time.
+  await ctxA.setOffline(false);
+  await ctxB.setOffline(false);
+  await expect
+    .poll(async () => (await A.state()) === (await B.state()) && (await A.queued()) === 0 && (await B.queued()) === 0, {
+      timeout: 20_000,
+    })
+    .toBe(true);
+  for (const p of [pa, pb]) await expect(p.locator('[data-status]')).toContainText('Live', { timeout: 15_000 });
+
+  // Canonical states deep-equal; tent is a twin on both; exactly one stove claimant.
+  const fa = await A.state();
+  expect(JSON.parse(fa)).toEqual(JSON.parse(await B.state()));
+  for (const items of [await A.items(), await B.items()]) {
+    expect(items['tent']?.life).toBe('twin');
+    expect(items['stove']?.winners).toHaveLength(1);
+    expect(items['stove']?.losers).toHaveLength(1);
+  }
+
+  await ctxA.close();
+  await ctxB.close();
+});

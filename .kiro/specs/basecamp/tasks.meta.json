@@ -240,6 +240,18 @@
         "chatSessionId": "sess_72bc96cb-0797-412b-8391-5af6aa3e6e7b",
         "timestamp": 1795250277430
       }
+    ],
+    "21. E2E (b): two contexts through the dev relay": [
+      {
+        "executionId": "60db8625-ec86-4b39-a4de-f82a42c49d83",
+        "chatSessionId": "sess_bd1cb086-21ed-4883-acdd-971d3bed6425",
+        "timestamp": 1795250430269
+      },
+      {
+        "executionId": "60db8625-ec86-4b39-a4de-f82a42c49d83",
+        "chatSessionId": "sess_bd1cb086-21ed-4883-acdd-971d3bed6425",
+        "timestamp": 1795250959451
+      }
     ]
   }
 }

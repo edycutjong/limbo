@@ -50,6 +50,8 @@ export function createDevRelayLink(opts: DevRelayOptions): Link {
       }
       const fresh = body.ops.filter((o) => !own(o));
       if (fresh.length > 0) emit({ t: 'ops', ops: fresh, vv: { ...relayVV } });
+      // The relay holds every op it serves, so a poll that brings ops is also an ack for them.
+      if (!wasDown && body.ops.length > 0) emit({ t: 'ack', vv: { ...relayVV } });
     } catch {
       setState('down');
     }

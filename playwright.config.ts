@@ -1,9 +1,11 @@
 import { defineConfig } from '@playwright/test';
 
 // Vite serves the spike page on 5173 and BASECAMP on 5174; the store-and-forward relay runs on 5175.
+// One worker: the spike test and BASECAMP test (b) share the relay and each POST /reset it, so they must not overlap.
 export default defineConfig({
   testDir: 'e2e',
   testMatch: '**/*.spec.ts',
+  workers: 1,
   projects: [
     { name: 'spike', testMatch: 'offline-spike.spec.ts', use: { baseURL: 'http://localhost:5173' } },
     { name: 'basecamp', testMatch: 'basecamp-offline.spec.ts', use: { baseURL: 'http://localhost:5174' } },

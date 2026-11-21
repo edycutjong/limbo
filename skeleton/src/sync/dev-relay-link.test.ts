@@ -105,6 +105,22 @@ describe('DevRelayLink', () => {
     b.sess.detach();
   });
 
+  it('ops received from the relay count as held by the relay (no stale unacked)', async () => {
+    const relay = fakeRelay();
+    const a = await rig('a', relay);
+    const b = await rig('b', relay);
+    await ticks();
+    a.r.local('set', 't', 'from-a');
+    await ticks();
+    b.r.local('set', 't', 'from-b');
+    await ticks(6);
+    expect(a.r.applied().map((o) => o.id)).toContain(b.r.log().at(-1)!.id);
+    expect(unacked(a.r, a.sess)).toBe(0);
+    expect(unacked(b.r, b.sess)).toBe(0);
+    a.sess.detach();
+    b.sess.detach();
+  });
+
   it('a failed POST leaves unacked unchanged and the retry works after the next up', async () => {
     const relay = fakeRelay();
     const a = await rig('a', relay);

@@ -104,7 +104,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Run `pnpm e2e`: the spike test and this test both pass. Save the run output under `evidence/e2e/`.
   - _Requirements: R10, R11, R15.1, R15.2, R15.5, R15.6_
 
-- [ ] 21. E2E (b): two contexts through the dev relay
+- [x] 21. E2E (b): two contexts through the dev relay
   - Test (b) in the same spec: `POST /reset`, two contexts, `?devrelay=http://localhost:5175&r=a|b`, `setOffline(true)` on both, tick, delete, both claim, assert no edit crosses over several poll periods, `setOffline(false)`, wait on state equality, then canonical states deep-equal, tent twin on both, exactly one stove claimant.
   - Run `pnpm e2e`; save the output under `evidence/e2e/`. Run the (a) and (b) tests ten times and record the pass count in `evidence/e2e/` (a flaky test is a failing test; fix the wait, not the assertion).
   - _Requirements: R14, R15.3 to R15.6_

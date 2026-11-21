@@ -1,0 +1,30 @@
+# BASECAMP e2e tests (a) and (b), ten repeats
+# date: 2026-11-21T08:47:11Z
+# command: CI=1 pnpm exec playwright test --project=basecamp --repeat-each=10 --reporter=list
+# Playwright retries: 0 (default). A flaky run counts as a failure.
+
+
+Running 20 tests using 1 worker
+
+  ✓   1 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓   2 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓   3 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓   4 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓   5 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓   6 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓   7 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓   8 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓   9 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  10 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  11 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  12 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  13 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  14 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  15 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  16 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  17 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  18 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  ✓  19 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  20 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+
+  20 passed (1.2m)

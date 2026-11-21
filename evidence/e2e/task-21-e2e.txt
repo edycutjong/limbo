@@ -1,0 +1,16 @@
+# pnpm e2e, task 21 (spike test, basecamp tests a and b)
+# date: 2026-11-21T08:46:58Z
+# command: CI=1 pnpm e2e --reporter=list
+
+
+> limbo@0.0.0 e2e /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> playwright test --reporter=list
+
+
+Running 3 tests using 1 worker
+
+  ✓  1 [spike] › e2e/offline-spike.spec.ts:10:1 › two offline replicas converge after reconnect (1.6s)
+  ✓  2 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  3 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+
+  3 passed (12.6s)
