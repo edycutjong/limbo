@@ -7,6 +7,7 @@ import {
   deriveSync,
   initialFixed,
   nextFixed,
+  unackedOps,
   type FixedState,
   type LinkState,
   type SyncView,
@@ -113,7 +114,7 @@ describe('exchange log', () => {
     log.cross('a', [o]);
     log.settle(false);
     expect(log.last()).toEqual([]);
-    expect(log.open()).toEqual([{ side: 'a', name: 'tick', merge: 'causal-lww', stamp: o.stamp, deps: { seed: 2 } }]);
+    expect(log.open()).toEqual([{ side: 'a', id: 'a#1:1', target: 't', name: 'tick', merge: 'causal-lww', stamp: o.stamp, deps: { seed: 2 } }]);
     log.settle(true);
     expect(log.open()).toEqual([]);
     expect(log.last()).toHaveLength(1);
@@ -148,5 +149,25 @@ describe('counting', () => {
     expect(countBehind({ seed: 2 }, undefined)).toBe(0);
     expect(countBehind({ seed: 2, 'a#1': 1 }, { seed: 2, 'a#1': 4, 'b#1': 2 })).toBe(5);
     expect(countBehind({ 'a#1': 5 }, { 'a#1': 3 })).toBe(0);
+  });
+});
+
+describe('unackedOps', () => {
+  const log = [mk('seed', 1), mk('a#1', 1), mk('a#1', 2), mk('a#2', 1), mk('b#1', 1)];
+  const table: [Record<string, number>, string | undefined][] = [
+    [{}, 'b'],
+    [{ 'a#1': 1 }, 'b'],
+    [{ 'a#1': 2, 'a#2': 1 }, 'b'],
+    [{}, undefined],
+    [{ 'b#1': 1 }, 'a'],
+  ];
+  for (const [ack, peer] of table) {
+    it(`length equals countUnacked for ack=${JSON.stringify(ack)} peer=${peer}`, () => {
+      expect(unackedOps(log, ack, peer)).toHaveLength(countUnacked(log, ack, peer));
+    });
+  }
+  it('skips seed and peer-authored ops and returns the ops themselves', () => {
+    expect(unackedOps(log, {}, 'b').map((o) => o.id)).toEqual(['a#1:1', 'a#1:2', 'a#2:1']);
+    expect(unackedOps(log, {}, undefined).map((o) => o.id)).toEqual(['a#1:1', 'a#1:2', 'a#2:1', 'b#1:1']);
   });
 });

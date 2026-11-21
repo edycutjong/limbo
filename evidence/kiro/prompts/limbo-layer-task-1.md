@@ -1,0 +1,1 @@
+Run task 1 of the limbo-layer spec only. `deliveryOrder` is already exported from `skeleton/src/core/simulate.ts` (a kit change); that file is on the protected list, so do not edit it — only add the test that it is exported and `simulate` output is unchanged.

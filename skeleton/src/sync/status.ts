@@ -37,14 +37,15 @@ export function deriveSync(i: SyncInput): SyncView {
 }
 
 /** Ops in `log` whose dot peerAckVV does not cover, skipping seed ops and ops authored by the peer. */
-export function countUnacked(log: readonly Op[], peerAck: VV, peerId: string | undefined): number {
-  let n = 0;
-  for (const o of log) {
+export function unackedOps(log: readonly Op[], peerAck: VV, peerId: string | undefined): Op[] {
+  return log.filter((o) => {
     const author = o.stamp.r.split('#')[0];
-    if (author === 'seed' || author === peerId) continue;
-    if ((peerAck[o.stamp.r] ?? 0) < o.stamp.n) n++;
-  }
-  return n;
+    return author !== 'seed' && author !== peerId && (peerAck[o.stamp.r] ?? 0) < o.stamp.n;
+  });
+}
+
+export function countUnacked(log: readonly Op[], peerAck: VV, peerId: string | undefined): number {
+  return unackedOps(log, peerAck, peerId).length;
 }
 
 /** Sum over dot namespaces of max(0, peerVV - vv). 0 while no hello has arrived (`peerVV` undefined). */
@@ -76,6 +77,8 @@ export function nextFixed(prev: FixedState, view: Pick<SyncView, 'axis' | 'confl
 
 export interface Crossing {
   side: string;
+  id: string;
+  target: string;
   name: string;
   merge: string;
   stamp: Stamp;
@@ -96,7 +99,7 @@ export function createExchangeLog(defs: readonly OpDef[]): ExchangeLog {
     cross(side, ops) {
       for (const o of ops) {
         const merge = defs.find((d) => d.name === o.op)?.merge ?? 'unknown';
-        open.push({ side, name: o.op, merge, stamp: o.stamp, deps: o.deps });
+        open.push({ side, id: o.id, target: o.target, name: o.op, merge, stamp: o.stamp, deps: o.deps });
       }
     },
     settle(bothSettled) {

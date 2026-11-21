@@ -7,6 +7,7 @@ import { createReplica, type Replica } from './replica.ts';
 import {
   countBehind,
   countUnacked,
+  unackedOps,
   createExchangeLog,
   deriveSync,
   initialFixed,
@@ -49,6 +50,8 @@ export interface Pair<S> {
   restore(): void;
   settle(): Promise<void>;
   view(id: 'a' | 'b'): PairView;
+  /** The ops `view(id).unacked` counts, in log order. */
+  queued(id: 'a' | 'b'): Op[];
   exchanges(): { last: Crossing[][]; open: Crossing[] };
   stats(): LinkStats;
   close(): void;
@@ -131,6 +134,7 @@ export async function createPair<S>(cfg: PairConfig<S>): Promise<Pair<S>> {
       tick(id);
       return { ...derive(id), fixed: fixed[id].s.visible, fixedCount: fixed[id].count };
     },
+    queued: (id) => unackedOps(replicas[id].log(), sessions[id].peerAckVV(), sessions[id].peerId()),
     exchanges: () => ({ last: log.last(), open: log.open() }),
     stats: () => link.stats(),
     close() {

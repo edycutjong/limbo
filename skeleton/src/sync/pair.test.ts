@@ -190,4 +190,33 @@ describe('pair harness', () => {
     await expect(p.settle()).rejects.toThrow(/pump cap/);
     p.close();
   });
+
+  it('queued(id) matches view(id).unacked while cut and after restore', async () => {
+    const p = await make();
+    p.cut();
+    p.a.local('delta', 't', 1);
+    p.a.local('set', 't', 'x');
+    p.b.local('delta', 't', 5);
+    for (const id of ['a', 'b'] as const) expect(p.queued(id)).toHaveLength(p.view(id).unacked);
+    expect(p.queued('a').map((o) => o.op)).toEqual(['delta', 'set']);
+    p.restore();
+    await p.settle();
+    for (const id of ['a', 'b'] as const) {
+      expect(p.queued(id)).toEqual([]);
+      expect(p.view(id).unacked).toBe(0);
+    }
+    p.close();
+  });
+
+  it('crossing records carry id and target', async () => {
+    const p = await make();
+    p.cut();
+    const o = p.a.local('delta', 'item-7', 1);
+    p.restore();
+    await p.settle();
+    const all = [...p.exchanges().last.flat(), ...p.exchanges().open];
+    const rec = all.find((c) => c.id === o.id);
+    expect(rec).toMatchObject({ id: o.id, target: 'item-7', name: 'delta' });
+    p.close();
+  });
 });

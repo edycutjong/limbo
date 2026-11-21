@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { explainTrace, simulate, withSkew, type SimInput, type Step } from './simulate.ts';
+import { deliveryOrder, explainTrace, simulate, withSkew, type SimInput, type Step } from './simulate.ts';
 import type { OpDef } from './types.ts';
 
 type S = { v?: number; n?: number };
@@ -121,5 +121,20 @@ describe('explainTrace', () => {
     const res = simulate({ defs: [incDef] as unknown as OpDef[], replicas: 3, seed: 4, steps: 8, gen: () => ({ target: 't', payload: { by: 1 } }) });
     expect(new Set(Object.values(res.states)).size).toBe(1);
     expect(explainTrace(res)).toContain('no difference');
+  });
+});
+
+// Recorded from the behaviour before the layer work (seed 7, input above).
+const SNAP = {"ops": ["b:1", "c:1", "a:1", "a:2", "c:2", "a:3", "c:3", "c:4", "a:4", "b:2", "c:5", "c:6", "a:5", "b:3"], "orders": {"a": ["c:1", "b:1", "a:1", "a:2", "c:2", "b:2", "b:3", "c:3", "a:3", "a:4", "a:5", "a:3", "c:4", "c:5", "c:6", "a:4", "b:2"], "b": ["c:1", "c:2", "a:1", "a:1", "b:1", "b:1", "a:2", "c:3", "b:2", "b:3", "b:2", "a:3", "a:4", "c:4", "a:5", "c:5", "a:2", "c:6"], "c": ["c:1", "a:1", "c:2", "b:1", "c:3", "a:2", "c:4", "c:2", "c:5", "a:3", "a:4", "b:2", "b:3", "a:5", "c:6", "b:3"]}, "states": {"a": "{\"n\":17,\"v\":2}", "b": "{\"n\":17,\"v\":2}", "c": "{\"n\":17,\"v\":0}"}};
+describe('deliveryOrder and fixed-seed output', () => {
+  it('deliveryOrder is exported', () => {
+    expect(typeof deliveryOrder).toBe('function');
+  });
+  it('simulate output for a fixed seed is unchanged', () => {
+    const r = simulate(input(7));
+    expect(r).toEqual(simulate(input(7)));
+    expect(r.ops.map((o) => o.id)).toEqual(SNAP.ops);
+    expect(r.orders).toEqual(SNAP.orders);
+    expect(r.states).toEqual(SNAP.states);
   });
 });

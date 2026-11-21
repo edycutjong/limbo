@@ -2,7 +2,7 @@
 
 Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and properties are never weakened, skipped, or run with a lower `numRuns`. Each task touches one component or two, plus its tests and the minimum glue. Do not run git. After each task that adds TS/TSX under `skeleton/src`, record the measured non-test line count; if the total would pass 1,800, files pass 30, or `index.ts` exports pass 15, stop and report (R20.1).
 
-- [ ] 1. Sync-side additions (pure)
+- [x] 1. Sync-side additions (pure)
   - `sync/status.ts`: export `unackedOps(log, peerAck, peerId)`; `countUnacked` returns its length. `Crossing` gains `id` and `target`; `createExchangeLog.cross` fills them. `sync/pair.ts`: add `queued(id)`. `core/simulate.ts`: export `deliveryOrder` (no behaviour change).
   - Check how the existing budget measure counts files; if a `test/` directory is counted, add the exclusion rule there and note it.
   - Tests (extend `status.test.ts`, `pair.test.ts`): `unackedOps(...).length === countUnacked(...)` over the existing table; seed and peer-authored ops are skipped; `pair.queued(id).length === pair.view(id).unacked` while cut and after restore; crossing records carry `id` and `target`; `deliveryOrder` is exported and `simulate` output is unchanged for a fixed seed.
