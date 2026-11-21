@@ -349,3 +349,5 @@
 {"ts":"2026-11-21T05:25:38.065Z","hook":"guard-shell","trigger":"PreToolUse","target":"pnpm typecheck 2>&1 | tail -20; pnpm test 2>&1 | tail -30","result":"allow","ms":0,"session_id":"sess_c53fc0ed-7716-444e-852e-0994a89e1ddb","task":null,"detail":null}
 {"ts":"2026-11-21T05:26:14.826Z","hook":"props-after-task","trigger":"PostTaskExec","target":"./.kiro/specs/skeleton-sync/tasks.md","result":"pass","ms":16515,"session_id":"sess_c53fc0ed-7716-444e-852e-0994a89e1ddb","task":"4. Replica persistence, incarnations, reload","detail":"ok"}
 {"ts":"2026-11-21T05:26:37.957Z","hook":"stop-gate","trigger":"Stop","target":null,"result":"pass","ms":16902,"session_id":"sess_c53fc0ed-7716-444e-852e-0994a89e1ddb","task":null,"detail":"ok"}
+{"ts":"2026-11-21T05:27:18.209Z","hook":"session-context","trigger":"SessionStart","target":null,"result":"context","ms":6,"session_id":"sess_d0ec4e88-4b60-423b-8e3d-5536fbbd26ea","task":null,"detail":"8 ops"}
+{"ts":"2026-11-21T05:27:50.767Z","hook":"stop-gate","trigger":"Stop","target":null,"result":"pass","ms":16279,"session_id":"sess_d0ec4e88-4b60-423b-8e3d-5536fbbd26ea","task":null,"detail":"ok"}

@@ -9,7 +9,7 @@ export interface Rand {
   pick<T>(xs: readonly T[]): T;
 }
 
-function makeRand(seed: number): Rand {
+export function makeRand(seed: number): Rand {
   let a = seed >>> 0;
   const next = (): number => {
     a = (a + 0x6d2b79f5) >>> 0;
