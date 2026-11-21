@@ -14,7 +14,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Test (`test/harness.test.tsx`): a trivial component renders under jsdom; `createPair` over the stub app builds; one edit on `a` shows in `view('a').unacked` while cut.
   - _Requirements: R19.1 to R19.6_
 
-- [ ] 3. Tokens, fonts and contrast
+- [x] 3. Tokens, fonts and contrast
   - `skeleton/src/limbo/tokens.css`: the exact `:root` block, Fontsource imports (confirm package names, fall back per design §6), type scale, tabular numerals, base card and chip styles. Install the four Fontsource packages.
   - Tests (`tokens.test.ts`, in `unit`): the `:root` block equals the R13.1 block; every text token pair in design §6 is at least 4.5:1 against `--bg` and `--card`; `--before` is not used as a `color:` value; no `https://` or `fonts.googleapis` in `skeleton/src/limbo`.
   - _Requirements: R13, R18.1, R18.2_

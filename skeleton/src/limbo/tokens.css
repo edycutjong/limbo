@@ -1,0 +1,77 @@
+/* Self-hosted fonts (Fontsource, OFL). They ship through the app's Vite build, so they load offline. */
+@import '@fontsource/old-standard-tt/400.css';
+@import '@fontsource/old-standard-tt/400-italic.css';
+@import '@fontsource/libre-caslon-text/400.css';
+@import '@fontsource/atkinson-hyperlegible-next/400.css';
+@import '@fontsource/atkinson-hyperlegible-next/600.css';
+@import '@fontsource/dm-mono/400.css';
+
+:root {
+  --bg:#F2EADB; --card:#E8DDC9; --ink:#2A2019; --muted:#6B5B4B; --rule:#CDBFA8;
+  --live:#2F6B4F; --before:#8F989C; --fog-ink:#4E5A60; --developing:#80560F; --twin:#2F5D86; --after:#8A2E22;
+  --font-display:"Old Standard TT","Libre Caslon Text",Georgia,serif;
+  --font-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;
+  --font-data:"DM Mono",ui-monospace,monospace;
+}
+
+/* Base */
+.limbo-root {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+/* Type scale */
+.limbo-row { font-size: 18px; line-height: 1.35; }
+.limbo-button { font-family: var(--font-body); font-size: 17px; min-height: 44px; min-width: 44px; }
+.limbo-imprint { font-family: var(--font-display); font-style: italic; font-size: 22px; }
+.limbo-title { font-family: var(--font-display); font-size: 32px; }
+.limbo-inspector { font-family: var(--font-data); font-size: 14px; }
+
+/* Counts and amounts use tabular numerals */
+.limbo-count,
+.limbo-amount,
+.limbo-inspector,
+.limbo-chip {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Base card */
+.limbo-card {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+/* Base chip */
+.limbo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.limbo-chip[data-state="live"] { color: var(--live); }
+.limbo-chip[data-state="offline"] { color: var(--fog-ink); border-color: var(--before); }
+.limbo-chip[data-state="syncing"] { color: var(--developing); }
+.limbo-chip[data-state="conflict"] { color: var(--twin); }
+.limbo-chip[data-state="error"] { color: var(--after); }
+
+@media (prefers-reduced-motion: reduce) {
+  .limbo-root *,
+  .limbo-root *::before,
+  .limbo-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
