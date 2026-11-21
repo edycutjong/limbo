@@ -18,7 +18,7 @@ kit (steering, hooks, custom agents, specs) under which Kiro built the skeleton 
 pnpm install
 pnpm --filter @limbo/basecamp dev        # http://localhost:5174
 ```
-On a desktop-width window you get two replicas side by side: **REPLICA A — Sari** and **REPLICA B — Budi**.
+On a desktop-width window you get two replicas side by side: **REPLICA A — SARI** and **REPLICA B — BUDI**.
 1. Press **Cut link** on the cord between them. Both cards fog over; the cord is labelled as a simulated link, because DevTools
    "offline" does not cut it.
 2. Press **Play the lake scene** (or do it by hand): Sari ticks the tent while Budi deletes it, and both claim the last stove.
