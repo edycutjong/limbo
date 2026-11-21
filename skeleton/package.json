@@ -5,6 +5,8 @@
   "type": "module",
   "license": "MIT",
   "exports": {
+    "./limbo": "./src/limbo/index.ts",
+    "./limbo/tokens.css": "./src/limbo/tokens.css",
     ".": "./src/index.ts"
   },
   "peerDependencies": {
