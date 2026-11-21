@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+// README / DEMO.md tally. Read-only: derives every Kiro-ledger and leanness number the README prints.
+// Writes evidence/kiro/tally.json and evidence/lean.json; prints a summary. Run: node kit/scripts/readme-tally.mjs
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
+
+const rows = (f) => readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+const sessions = rows('evidence/kiro/sessions.jsonl');
+const hooks = rows('evidence/kiro/hooks.jsonl');
+const kiro = sessions.filter((s) => s.actor === 'kiro');
+const bump = (o, k) => ((o[k] = (o[k] || 0) + 1), o);
+
+const hooksByTrigger = {}, hooksByHook = {}, results = {};
+for (const h of hooks) {
+  bump(hooksByTrigger, h.trigger); bump(hooksByHook, h.hook); bump(results, `${h.hook}:${h.result}`);
+}
+const specDirs = new Set(readdirSync('.kiro/specs'));
+const tasks = kiro.filter((s) => s.task != null && specDirs.has(s.spec));
+const kitRevisions = kiro.filter((s) => s.spec && !specDirs.has(s.spec)).length;
+const specs = {};
+for (const s of kiro) if (s.spec) bump(specs, s.spec);
+const share = JSON.parse(readFileSync('evidence/kiro/share.json', 'utf8'));
+const first = execFileSync('git', ['log', '--reverse', '--format=%ad %h', '--date=short'], { encoding: 'utf8' }).split('\n')[0];
+const commits = Number(execFileSync('git', ['rev-list', '--count', 'HEAD'], { encoding: 'utf8' }).trim());
+const ab = JSON.parse(readFileSync('evidence/kiro/ab/results.json', 'utf8'));
+
+const tally = {
+  sessions_total: sessions.length,
+  kiro_sessions: kiro.length,
+  claude_direct_rows: sessions.length - kiro.length,
+  kiro_executed_spec_tasks: tasks.length,
+  spec_dirs: specDirs.size,
+  kit_revision_sessions: kitRevisions,
+  specs,
+  credits_used: Math.round(kiro.reduce((a, s) => a + (s.credits_delta || 0), 0) * 100) / 100,
+  hook_fires_total: hooks.length,
+  hooks_by_trigger: hooksByTrigger,
+  hooks_by_hook: hooksByHook,
+  hook_results: results,
+  agent_stop_blocks_ledger: kiro.reduce((a, s) => a + (s.stop_blocks || 0), 0),
+  agent_stop_blocks_hooklog: results['stop-gate:block'] || 0,
+  shell_denials: results['guard-shell:deny'] || 0,
+  product_commits: share.product_commits,
+  kiro_product_commits: share.kiro_commits,
+  kiro_share: share.share,
+  total_commits: commits,
+  first_commit: first,
+  ab_keys: Object.keys(ab),
+};
+writeFileSync('evidence/kiro/tally.json', JSON.stringify(tally, null, 2) + '\n');
+
+// Leanness: skeleton production TS/TSX (no tests), CSS+tokens split out, exports of top-level index.ts.
+const walk = (d) => readdirSync(d).flatMap((n) => {
+  if (n === 'node_modules' || n === 'dist') return [];
+  const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p];
+});
+const files = walk('skeleton/src');
+const isTest = (f) => /\.test\.tsx?$/.test(f);
+const ts = files.filter((f) => /\.tsx?$/.test(f) && !isTest(f));
+const loc = (f) => readFileSync(f, 'utf8').split('\n').filter((l) => l.trim()).length;
+const code = (f) => readFileSync(f, 'utf8').split('\n').filter((l) => { const t = l.trim(); return t && !/^(\/\/|\/\*|\*)/.test(t); }).length;
+const lean = {
+  skeleton_production_files: files.filter((f) => !isTest(f)).length,
+  skeleton_ts_files: ts.length,
+  skeleton_ts_loc_nonblank: ts.reduce((a, f) => a + loc(f), 0),
+  skeleton_ts_loc_noncomment: ts.reduce((a, f) => a + code(f), 0),
+  skeleton_test_files: files.filter(isTest).length,
+  index_exports: (readFileSync('skeleton/src/index.ts', 'utf8').match(/\bexport\b/g) || []).length,
+  files_by_dir: ts.reduce((o, f) => bump(o, relative('skeleton/src', f).split('/')[0]), {}),
+};
+for (const app of ['basecamp', 'aftershock']) {
+  const af = walk(`apps/${app}/src`).filter((f) => /\.tsx?$/.test(f) && !isTest(f));
+  lean[`${app}_ts_files`] = af.length;
+  lean[`${app}_ts_loc_nonblank`] = af.reduce((a, f) => a + loc(f), 0);
+  lean[`${app}_ops`] = af.filter((f) => /\.op\.ts$/.test(f)).length;
+}
+writeFileSync('evidence/lean.json', JSON.stringify(lean, null, 2) + '\n');
+console.log(JSON.stringify({ tally, lean }, null, 1));
