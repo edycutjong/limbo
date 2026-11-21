@@ -30,9 +30,9 @@ const tally = {
   kiro_sessions: kiro.length,
   claude_direct_rows: sessions.length - kiro.length,
   kiro_executed_spec_tasks: tasks.length, // legacy name: every Kiro session tied to one of the spec dirs (see the split below)
-  spec_sessions_numbered_task: tasks.filter((s) => /^\d+$/.test(String(s.task))).length,
+  spec_sessions_numbered_task: tasks.filter((s) => /^\d/.test(String(s.task))).length,
   spec_sessions_authoring: tasks.filter((s) => s.task === 'spec').length,
-  spec_sessions_other: tasks.filter((s) => !/^\d+$/.test(String(s.task)) && s.task !== 'spec').length,
+  spec_sessions_other: tasks.filter((s) => !/^\d/.test(String(s.task)) && s.task !== 'spec').length,
   bootstrap_sessions: kiro.length - tasks.length - kitRevisions,
   spec_dirs: specDirs.size,
   kit_revision_sessions: kitRevisions,
