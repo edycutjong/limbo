@@ -9,7 +9,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: `app-shell.test.tsx` finds the `h1`, the tagline and the chip text; `pnpm --filter @limbo/aftershock build` produces `dist/index.html`.
   - _Requirements: R1.2, R1.3, R8.1 to R8.3, R8.8, R8.9, R17.5_
 
-- [ ] 2. Constants and members
+- [x] 2. Constants and members
   - `src/sectors.ts`: `SECTOR_IDS` (columns A–F, rows 1–4, 24 ids), `SEVERITIES` (`safe, damaged, unsafe`), `NEEDS`, `MAX_COUNT` (100000), `MAX_NOTE` (280). `src/members.ts`: replica `a` → `sari`, `b` → `budi`, roster `sari, budi, rina`, display names, `authorOf(op)` = `stamp.r.split('#')[0]`, `memberOfReplica`, `displayName`.
   - Tests: 24 distinct ids in row-major order for the grid; `authorOf` of `a#1`, `seed`; roster order; unknown member displays as its id.
   - _Requirements: R4.6, R8.1_
