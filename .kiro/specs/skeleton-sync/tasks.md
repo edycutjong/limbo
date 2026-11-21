@@ -13,7 +13,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests: meta round-trip across close and reopen; `deleteStore` removes the log and meta; a second `put` of the same id is a no-op; no-IndexedDB path resolves.
   - _Requirements: R4.1, R4.2, R4.7, R4.9, R4.10_
 
-- [ ] 3. Replica runtime (in-memory store)
+- [x] 3. Replica runtime (in-memory store)
   - `skeleton/src/sync/replica.ts`: `createReplica` with seed application, `local`, `receive`, `state`, `vv`, `log`, `applied`, `buffered`, `rejected`, `subscribe`, `close`. Add a seed helper that builds byte-identical seed ops with a core replica `seed`.
   - Tests (`replica.test.ts`, a stub def set with a `set` op and a `delta` op, plus one BASECAMP check): local op changes state; out-of-order receive is buffered then applied; duplicate ignored and not in `applied`; unknown op rejected, logged, and never reaches the store; malformed id rejected; `local` with an unknown name throws; two replicas built from the same `seedOps` have equal seed ops and states; `vv` omits held ops; subscribers fire once per change.
   - _Requirements: R1, R2.1, R2.2, R2.4, R3_

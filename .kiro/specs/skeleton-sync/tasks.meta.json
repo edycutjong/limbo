@@ -24,6 +24,18 @@
         "chatSessionId": "sess_4a4478c0-f0f2-41db-8fa7-b7a2d0b15991",
         "timestamp": 1795238306841
       }
+    ],
+    "3. Replica runtime (in-memory store)": [
+      {
+        "executionId": "5e866975-4d54-41b3-8f15-f5bcba3496a6",
+        "chatSessionId": "sess_381f70ff-c0ba-4842-902c-7897d29e9dc6",
+        "timestamp": 1795238417743
+      },
+      {
+        "executionId": "5e866975-4d54-41b3-8f15-f5bcba3496a6",
+        "chatSessionId": "sess_381f70ff-c0ba-4842-902c-7897d29e9dc6",
+        "timestamp": 1795238560097
+      }
     ]
   }
 }
