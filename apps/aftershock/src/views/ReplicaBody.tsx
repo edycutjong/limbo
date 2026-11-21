@@ -5,6 +5,7 @@ import type { Replica } from '../../../../skeleton/src/sync/replica.ts';
 import type { State } from '../model.ts';
 import { SectorCard } from './SectorCard.tsx';
 import { SectorGrid } from './SectorGrid.tsx';
+import { SectorTwins } from './SectorTwins.tsx';
 
 export const EMPTY_TEXT = 'No sectors reported yet. Tap a sector to report.';
 
@@ -20,7 +21,11 @@ export function ReplicaBody(p: { id: Id; selected?: string | undefined }): React
       <p className="as-selected" data-selected>
         {selected ? `Sector ${selected}` : 'No sector selected.'}
       </p>
-      {selected && <SectorCard id={selected} sector={s.sectors[selected]} />}
+      {selected && (
+        <SectorCard id={selected} sector={s.sectors[selected]}>
+          <SectorTwins id={p.id} replica={replica as Replica<State>} sector={s.sectors[selected]} />
+        </SectorCard>
+      )}
     </div>
   );
 }

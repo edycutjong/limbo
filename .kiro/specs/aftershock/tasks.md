@@ -85,7 +85,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: A saves C3 damaged, 2, "cracked stairwell" and exactly three ops (report, count, note) are created; Save with nothing changed is disabled; a lower report without Re-inspection is not written; with Re-inspection a clear then a report are written in that order; a count of -1 or 2.5, a 281-character note, and Save with no severity on a new sector show an inline error and create no op, keeping typed text; needs write add for newly pressed and unneed for newly unpressed, never both for one need.
   - _Requirements: R7.5 to R7.7, R13.3, R17.2_
 
-- [ ] 17. Twin variants
+- [x] 17. Twin variants
   - `views/SectorTwins.tsx`: note twin and count twin through the layer's `Twin` with the captions, rule lines and buttons of R9.
   - Tests (two real replicas over `createPair`, manual `settle()`): after concurrent notes the caption equals "TWIN · Sari wrote “cracked stairwell” while Budi wrote “gas smell, east wall” · rule: causal-lww" (or the stamp-ordered equivalent the design §7 gives), with one **Keep this note** button per note; a tap clears the twin on both and leaves one note; concurrent different counts from one surveyor show **Keep this count** buttons and the pick clears it; no ghost, caption or button remains after the resolve; the ghost is `aria-hidden`.
   - _Requirements: R9, R10.9, R17.1_
