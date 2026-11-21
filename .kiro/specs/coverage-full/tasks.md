@@ -37,7 +37,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Do not edit `registry.gen.ts`.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.5_
 
-- [ ] 7. `apps/aftershock/src/`
+- [x] 7. `apps/aftershock/src/`
   - Files: `model.ts`, `ops/sector.count.op`, `ops/sector.note.op`, `ops/sector.state`. Extend or create the matching tests.
   - Demo data only. Do not add a field-use claim to any test name or comment.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.6_

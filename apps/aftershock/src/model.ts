@@ -1,6 +1,6 @@
 // AFTERSHOCK model: folds an op set into sector views. Pure; reads only causal context (stamp, deps).
 // Convergence of this fold is "measured, property-tested" by the goldens and the op properties.
-import { causalBuffer, covers } from '../../../skeleton/src/core/causal.ts';
+import { causalBuffer, compareStamp, covers } from '../../../skeleton/src/core/causal.ts';
 import { causalLww } from '../../../skeleton/src/core/merges.ts';
 import type { Op } from '../../../skeleton/src/core/types.ts';
 import { ROSTER, authorOf } from './members.ts';
@@ -33,8 +33,7 @@ export interface State {
   sectors: Record<string, Sector>;
 }
 
-const byStamp = (a: Op, b: Op): number =>
-  a.stamp.l !== b.stamp.l ? a.stamp.l - b.stamp.l : a.stamp.r !== b.stamp.r ? (a.stamp.r < b.stamp.r ? -1 : 1) : a.stamp.n - b.stamp.n;
+const byStamp = (a: Op, b: Op): number => compareStamp(a.stamp, b.stamp);
 
 /** Frontier values of a register, only when twinned: winner and twins, ascending stamp. */
 function frontier<P, V>(r: { winner: Op<P> | undefined; twins: Op<P>[] }, value: (p: P) => V): { by: string; value: V }[] {
@@ -68,7 +67,7 @@ function sectorFold(id: string, group: Op[]): Sector {
   let total = 0;
   for (const [who, writes] of byWho) {
     const r = causalLww(writes);
-    const value = r.value?.count ?? 0;
+    const value = r.value!.count; // writes is never empty, so the join always has a winner
     total += value;
     if (who !== '') counts.push({ who, value, values: frontier(r, (p) => p.count) });
   }

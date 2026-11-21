@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Op } from '../../../../skeleton/src/core/types.ts';
 import type { Severity } from '../sectors.ts';
-import { applyNeedOp, applySeverityOp, present, severityOf, type ReportPayload } from './sector.state.ts';
+import { applyNeedOp, applySeverityOp, needInvariant, present, severityInvariant, severityOf, type ReportPayload } from './sector.state.ts';
 
 function mk<P>(r: string, n: number, l: number, deps: Record<string, number>, payload: P, target = 'C3'): Op<P> {
   return { id: `${r}:${n}`, op: 'x', target, payload, stamp: { l, r, n }, deps };
@@ -75,5 +75,24 @@ describe('present and applyNeedOp', () => {
     let s = applyNeedOp({}, o1, 'add');
     s = applyNeedOp(applyNeedOp(s, o2, 'add'), o2, 'add');
     expect(s.needs?.['C3']).toEqual(['food', 'water']);
+  });
+});
+
+describe('severityInvariant and needInvariant', () => {
+  it('accept an empty state', () => {
+    expect(severityInvariant({})).toBe(true);
+    expect(needInvariant({})).toBe(true);
+  });
+  it('severityInvariant names a report with an unknown severity', () => {
+    const r = rep('a', 1, 1, 'bogus' as Severity);
+    expect(severityInvariant({ reports: { [r.id]: r } })).toBe('report a:1 has an unknown severity');
+    expect(severityInvariant({ reports: { [r.id]: rep('a', 1, 1, 'safe') } })).toBe(true);
+  });
+  it('needInvariant names a non-string need among adds and among removes', () => {
+    const bad = mk('a', 1, 1, {}, { need: 5 as unknown as string });
+    expect(needInvariant({ needAdds: { [bad.id]: bad } })).toBe('op a:1 has a non-string need');
+    expect(needInvariant({ needRemoves: { [bad.id]: bad } })).toBe('op a:1 has a non-string need');
+    const ok = mk('a', 2, 1, {}, { need: 'water' });
+    expect(needInvariant({ needAdds: { [ok.id]: ok }, needRemoves: { [ok.id]: ok } })).toBe(true);
   });
 });

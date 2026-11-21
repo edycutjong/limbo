@@ -77,6 +77,23 @@
         "chatSessionId": "sess_c4198843-7109-4e82-8a5a-1456147eab99",
         "timestamp": 1795298837033
       }
+    ],
+    "7. `apps/aftershock/src/`": [
+      {
+        "executionId": "ff7a629f-8552-4796-b87d-a9172a473fe5",
+        "chatSessionId": "sess_36b712ee-3817-4a12-8bd2-f1f77f0a3f68",
+        "timestamp": 1795299103315
+      },
+      {
+        "executionId": "a616dc4b-081d-4dc3-b071-a0d61396eab0",
+        "chatSessionId": "sess_18aa34ba-9667-4287-a47f-c57a352abc1d",
+        "timestamp": 1795300012517
+      },
+      {
+        "executionId": "a616dc4b-081d-4dc3-b071-a0d61396eab0",
+        "chatSessionId": "sess_18aa34ba-9667-4287-a47f-c57a352abc1d",
+        "timestamp": 1795300237903
+      }
     ]
   }
 }

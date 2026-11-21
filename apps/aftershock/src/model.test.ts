@@ -128,3 +128,33 @@ describe('notes', () => {
     }
   });
 });
+
+describe('twinned frontier order', () => {
+  it('lists concurrent notes by Lamport counter first, whatever the replica ids', () => {
+    const low = op('z', 1, 1, {}, 'sector.note', 'C3', { note: 'low' });
+    const high = op('a', 1, 2, {}, 'sector.note', 'C3', { note: 'high' });
+    for (const o of shuffles([low, high])) {
+      expect(materialize(o).sectors.C3!.noteValues).toEqual([
+        { by: 'z', value: 'low' },
+        { by: 'a', value: 'high' },
+      ]);
+    }
+  });
+
+  it('lists three concurrent notes with equal counters by replica id', () => {
+    const ops = ['c', 'a', 'b'].map((r) => op(r, 1, 1, {}, 'sector.note', 'C3', { note: `note ${r}` }));
+    for (const o of [...shuffles(ops), ...shuffles([...ops].sort((x, y) => (x.id < y.id ? -1 : 1)))]) {
+      expect(materialize(o).sectors.C3!.noteValues.map((v) => v.by)).toEqual(['a', 'b', 'c']);
+    }
+  });
+});
+
+describe('twinned frontier from one replica', () => {
+  it('orders two uncovering notes of one replica and counter by per-replica counter', () => {
+    const first = op('a', 1, 1, {}, 'sector.note', 'C3', { note: 'first' });
+    const second = op('a', 2, 1, {}, 'sector.note', 'C3', { note: 'second' });
+    for (const o of shuffles([first, second])) {
+      expect(materialize(o).sectors.C3!.noteValues.map((v) => v.value)).toEqual(['first', 'second']);
+    }
+  });
+});

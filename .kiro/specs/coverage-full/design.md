@@ -70,6 +70,8 @@ Only dead-code removals (R3.1, R4.2). Format: `file:line, what was removed, why 
 | `apps/basecamp/src/model.ts` | 122, 208, 216 | `?? first.payload.*` after `amount.value?.`, `name.value?.`, `pos.value?.`; now `value!` | `amountOf`, `nameWrites` and `keyWrites` always include the first add, so the lww winner exists | 0 |
 | `apps/basecamp/src/ops/item.move.op.ts` | 20 | `?? op.payload.key` after `value?.key`; now `value!.key` | `writes` always contains this op, so the lww winner exists | 0 |
 | `apps/basecamp/src/model.ts` | 223 | `EDIT_KIND[o.op] ?? 'add'`; now `!` | resurrecting ops are only `EDIT_OPS`, all keys of `EDIT_KIND` | 0 |
+| `apps/aftershock/src/model.ts` | 37 | local `byStamp` comparator (nested ternaries); now `compareStamp(a.stamp, b.stamp)` from `core/causal.ts` | same total order (l, then r by UTF-16 code unit, then n). The `a.r > b.r` arm was unreachable: the frontier array is always built winner first, then twins, in descending stamp order, so the sort never compares a later, larger element | -2 |
+| `apps/aftershock/src/model.ts` | 71 | `?? 0` after `r.value?.count`; now `r.value!.count` | `byWho` lists are never empty, so the lww winner exists | 0 |
 
 ## 6. Ignored branches
 
