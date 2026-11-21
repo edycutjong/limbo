@@ -75,7 +75,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: the seed shows 10 cells with a word and 14 `NO REPORT` cells; B2 and E3 read `DAMAGED`, A1 reads `SAFE` and a total of 2; arrows move focus and stop at the edges; Home and End; Enter and Space select and create no op; typing in a text input does not select; each cell's `aria-label` follows R17.3; only one cell has `tabindex="0"`.
   - _Requirements: R7.1, R7.2, R7.10, R17.1, R17.3_
 
-- [ ] 15. `SectorCard`
+- [x] 15. `SectorCard`
   - `views/SectorCard.tsx` for the selected sector: severity word and glyph, counts by surveyor, total line with "may overlap" beside it, needs chips, note, the instruction line, "scripted edit" slot. Selection is per replica card.
   - Tests: C3 with Sari 2 and Budi 3 reads "5 reported — Sari 2, Budi 3" and `[data-may-overlap]` is a sibling of the total, not inside the instruction line; the instruction "C3 — do not enter" is present for `unsafe` and absent for `safe` and `damaged`; B2 shows rina 3 and sari 1 in roster order (Sari first); the two cards select different sectors independently; names render as text.
   - _Requirements: R7.3, R7.4, R7.9, R4.6_
