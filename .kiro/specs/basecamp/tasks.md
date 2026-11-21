@@ -79,7 +79,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: seed shows `$12.00` ×4 and `$8.34` / `$8.33` / `$8.33`; offline A adds Dewi while B sets `$26.00`, after `settle()` both show four members, `$6.50` each and the shares sum to `$26.00`; concurrent amounts show a twin with two buttons and the pick resolves it; invalid input shows an inline message and creates no op; shares use tabular numerals.
   - _Requirements: R7.3 to R7.7, R17.4_
 
-- [ ] 16. Inspector and ShuffleTest wiring
+- [x] 16. Inspector and ShuffleTest wiring
   - Render `Inspector` per card (controlled `open`, also set by Why Sari?). Check that `I` toggles a controlled drawer. If it does not, bind `I` in `ReplicaBody` with the layer's exclusions. Mount `ShuffleTest` with the on-screen ops, N = 1,000, a worker-backed runner (`shuffle.worker.ts`) and the matching golden or none.
   - Tests: Inspector queued rows equal `view.unacked`; the shuffle test with an injected inline runner prints "1,000 / 1,000 orderings → same state" and, for the seed, "matches the specified result ✓"; after an extra edit no golden line prints; the worker file imports `runShuffle` and `materialize` and nothing else app-specific.
   - _Requirements: R10.8, R10.9, R12.1 to R12.3_

@@ -7,13 +7,16 @@ import { deleteStore } from '../../../skeleton/src/sync/store.ts';
 import * as config from '../app.config.ts';
 import { displayName } from './members.ts';
 import type { State } from './model.ts';
+import { createWorkerRunner } from './shuffle-runner.ts';
 import { ReplicaBody } from './views/ReplicaBody.tsx';
+import { ShuffleSection } from './views/ShuffleSection.tsx';
+import type { ShuffleRunner } from '../../../skeleton/src/limbo/shuffle-test.tsx';
 import '../app.css';
 
 export const TAGLINE = 'For people whose shared list breaks when the signal does.';
 
 /** Root component. Without a pair it shows the heading and tagline only. */
-export function App(p: { pair?: Pair<State>; onReset?(): void }): ReactNode {
+export function App(p: { pair?: Pair<State>; onReset?(): void; createRunner?(): ShuffleRunner }): ReactNode {
   return (
     <main className="bc-shell">
       <h1>BASECAMP</h1>
@@ -27,6 +30,7 @@ export function App(p: { pair?: Pair<State>; onReset?(): void }): ReactNode {
             onReset={p.onReset ?? (() => undefined)}
             renderReplica={(id: Id) => <ReplicaBody id={id} />}
           />
+          <ShuffleSection createRunner={p.createRunner ?? createWorkerRunner} goldens={config.goldens} />
         </LimboShell>
       )}
     </main>
@@ -48,6 +52,8 @@ const DEBUG = import.meta.env.DEV || import.meta.env.MODE === 'test';
 export interface BootOptions {
   /** Called after Reset demo has deleted both databases. Default `location.reload`. */
   reload?(): void;
+  /** Shuffle test runner. Default: a Web Worker. */
+  createRunner?(): ShuffleRunner;
 }
 
 /** Create the pair over the seed, mount the app, and (dev and test only) expose `window.limbo`. */
@@ -69,7 +75,7 @@ export function boot(el: HTMLElement, o: BootOptions = {}): { ready: Promise<Pai
     pair = p;
     root.render(
       <StrictMode>
-        <App pair={p} onReset={() => void reset()} />
+        <App pair={p} onReset={() => void reset()} {...(o.createRunner ? { createRunner: o.createRunner } : {})} />
       </StrictMode>,
     );
     return p;
