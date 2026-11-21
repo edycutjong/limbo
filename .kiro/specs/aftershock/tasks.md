@@ -119,7 +119,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Run `pnpm e2e`; save the output under `evidence/aftershock/e2e/`. Run (a) and (b) ten times and record the pass count there (fix the wait, not the assertion, if a run fails).
   - _Requirements: R14, R15.3 to R15.5_
 
-- [ ] 24. Final verification and adoption log
+- [x] 24. Final verification and adoption log
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`, then `pnpm props:full` (10,000 orderings) and save its output under `evidence/aftershock/`. Measure the skeleton file and line count again with the baseline command and confirm it equals task 1's.
   - List every file changed outside `apps/aftershock/` (expected: `e2e/aftershock-offline.spec.ts`, `playwright.config.ts`, `pnpm-lock.yaml`, and the two kit files of task 6 if accepted; `evidence/aftershock/` additions listed separately as records). Fill `## Adoption log` at the end of `design.md` with, for each: file, why, lines changed; and any skeleton change (target none, with the reason if there is one).
   - Record in the same section the measured test counts from the runs: unit, limbo, props, e2e (passed and total each), the `props:full` result, and the ten-run e2e pass count. Check the README wording ("measured, property-tested", demonstration data, no field use) and that every number on a page is computed live or comes from `evidence/`.

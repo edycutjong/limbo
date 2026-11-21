@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LIMBO: when the connection dies, your app crosses over and comes back without losing an edit</title>
+<meta name="description" content="A local-first skeleton where every op declares its merge rule, plus a Kiro kit that blocks merges that diverge. Two apps built from it: BASECAMP and AFTERSHOCK.">
+<style>
+  :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.55 "Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif; }
+  main { max-width: 1040px; margin: 0 auto; padding: 48px 20px 64px; }
+  h1 { font:400 clamp(34px,6vw,56px)/1.1 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:0 0 12px; }
+  h2 { font:400 28px/1.2 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:40px 0 12px; }
+  .who { font-style: italic; color: var(--muted); margin: 0 0 24px; }
+  .cards { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+  .card { border:1px solid var(--line); border-radius:6px; padding:20px; background:#FBF6EA; }
+  .card h3 { margin:0 0 6px; font:400 24px "Old Standard TT",Georgia,serif; }
+  a.btn { display:inline-block; min-height:44px; padding:10px 16px; margin-top:8px; border:2px solid var(--accent); border-radius:4px; color:var(--accent); text-decoration:none; font-weight:600; transition: background .15s, color .15s, transform .1s; }
+  a.btn:hover, a.btn:focus-visible { background:var(--accent); color:#fff; }
+  a.btn:active { transform: translateY(1px); }
+  a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
+  iframe { width:100%; height:720px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .note { color:var(--muted); font-size:15px; }
+  footer { margin-top:48px; color:var(--muted); font-size:15px; }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>LIMBO</h1>
+  <p class="who">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
+  <p>When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit. LIMBO is a small local-first skeleton in which every op declares its merge rule, plus a <code>/.kiro</code> kit that makes Kiro good at the merge logic that looks right and diverges when operations arrive in a different order.</p>
+
+  <h2>Two apps, one skeleton</h2>
+  <div class="cards">
+    <section class="card">
+      <h3>BASECAMP</h3>
+      <p>A group trip list: ticks, claims on the last stove, delete-versus-edit twins, reorder, shared expenses.</p>
+      <a class="btn" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
+    </section>
+    <section class="card">
+      <h3>AFTERSHOCK</h3>
+      <p>A sector report form whose entries merge into a shared grid. Demonstration data shape, not used in the field.</p>
+      <a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a>
+    </section>
+  </div>
+
+  <h2>Try it here: cut the link, edit on both sides, reconnect</h2>
+  <p class="note">This is the real BASECAMP app in its two-replica view. The link between the two replicas is a <strong>simulated link</strong> inside the page: press Cut link, make conflicting edits, then restore it.</p>
+  <iframe src="https://basecamp.limbo.edycu.dev/?replicas=2" title="BASECAMP, two replicas joined by a simulated link" loading="lazy"></iframe>
+
+  <footer>Source: <a href="https://github.com/edycutjong/limbo">github.com/edycutjong/limbo</a> (MIT). Built with Kiro for the Kiroween hackathon, Skeleton Crew category.</footer>
+</main>
+</body>
+</html>

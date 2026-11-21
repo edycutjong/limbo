@@ -1,0 +1,5 @@
+
+> limbo@0.0.0 typecheck /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> tsc -p tsconfig.json --noEmit
+
+pnpm typecheck  6.13s user 0.36s system 211% cpu 3.072 total

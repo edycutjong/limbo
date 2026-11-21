@@ -263,4 +263,48 @@ Test (b) in the e2e relies on browser offline mode rejecting `fetch`, so the lin
 
 ## Adoption log
 
-To be filled by the last task. Record every file changed outside `apps/aftershock/` (target: `e2e/aftershock-offline.spec.ts`, `playwright.config.ts`, `pnpm-lock.yaml` only), why, and the line counts; the skeleton budget before and after; the measured test counts (unit, limbo, props, e2e) and the `props:full` run.
+Filled by task 24. Changes are measured as `git diff --numstat bc56fe3 HEAD` (the spec commit to task 23), excluding `apps/aftershock/`, `evidence/` and `.kiro/`.
+
+### Files changed outside `apps/aftershock/`
+
+| File | Why | Lines (added / removed) |
+| --- | --- | --- |
+| `e2e/aftershock-offline.spec.ts` (new) | Playwright tests (a) the survey scene in one page (manual and scripted) and (b) two contexts through the dev relay (R15). | 285 / 0 |
+| `playwright.config.ts` | Project `aftershock` (baseURL 5176) and a `webServer` entry for the app. | 6 / 0 |
+| `pnpm-lock.yaml` | Lockfile entries for the new workspace package `apps/aftershock`. | 10 / 0 |
+| `kit/props/intents.json` | Task 6 accepted: entry `sector.unneed` with kind `add-remove`. | 1 / 0 |
+| `kit/props/manifest.test.ts` | Task 6 accepted: `sector.unneed` in `EXPECTED`, count 18 to 19 in the name and the assertion. Nothing else weakened. | 3 / 2 |
+| `vitest.config.ts` (not in the expected list) | Added `testTimeout: 60_000` to the `limbo` project, with a comment. The survey-scene tests run the 1,000-ordering shuffle in jsdom (3 to 7 s alone, more under parallel load). Added in the task 19 commit (`8378f3e`). The `apps/*` globs themselves needed no edit. No test was skipped or weakened. | 2 / 0 |
+
+`.gitignore` also has an uncommitted one-line addition (`.vercel`) from a deploy, not part of the aftershock tasks. `site/` is a new top-level folder outside `apps/aftershock/`; it is not part of this task's adoption count.
+
+`evidence/aftershock/` additions are records, not code changes: `budget-baseline.md`, `e2e/` (run outputs and `ten-runs.txt`), `final-typecheck.txt`, `final-unit.txt`, `final-unit-project.txt`, `final-limbo-project.txt`, `final-props.txt`, `final-e2e.txt`, `props-full-run1-vitest-rpc-timeout.log`, `props-full-run2.log`, and `evidence/convergence/full-2026-11-21-aftershock.json`.
+
+### Skeleton change
+
+None. `git diff bc56fe3 HEAD -- skeleton` is empty. Measured again at task 24 with the baseline command: 21 files, 2142 non-blank, non-comment lines, equal to task 1 (`evidence/aftershock/budget-baseline.md`: 21 files, 2142 lines). Budget: at most 30 files and 2,400 lines.
+
+### Measured runs (task 24, final tree)
+
+| Run | Result | Evidence |
+| --- | --- | --- |
+| `pnpm typecheck` | exit 0 | `evidence/aftershock/final-typecheck.txt` |
+| `pnpm test` (`unit` + `limbo`) | 78 files, 606 passed of 606 | `final-unit.txt` |
+| project `unit` | 47 files, 450 passed of 450 | `final-unit-project.txt` |
+| project `limbo` | 31 files, 156 passed of 156 | `final-limbo-project.txt` |
+| `pnpm props` | 22 files, 320 passed, 9 skipped (329 total), exit 0 | `final-props.txt` |
+| `pnpm e2e` | 6 passed of 6 (spike 1, basecamp 2, aftershock 3), exit 0 | `final-e2e.txt` |
+| aftershock e2e ten runs (task 23) | 10 of 10 runs passed, 30 of 30 tests (3 per run) | `evidence/aftershock/e2e/ten-runs.txt` |
+
+### `props:full` (10,000 orderings, 3 replicas, seed 20251031)
+
+Run by the orchestrator, not by task 24 (about 16 minutes each, longer than the session watchdog).
+
+- Run 1 (`props-full-run1-vitest-rpc-timeout.log`): 22 files, 320 passed, 9 skipped, 1053 s. Vitest reported one unhandled error, `[vitest-worker]: Timeout calling "onTaskUpdate"` (a worker-to-main RPC timeout during the long run), so the exit code was 1 although no test failed.
+- Run 2 (`props-full-run2.log`, `evidence/convergence/full-2026-11-21-aftershock.json`): 22 files, 320 passed, 9 skipped, 930 s, exit 0. The JSON records `orderings` 10000, `replicas` 3, `seed` 20251031, `passed` true, 0 failures for every property, `durationMs` 931298.
+
+Convergence is measured, property-tested. These runs say nothing beyond the generated histories and the seed.
+
+### Wording check
+
+`apps/aftershock/README.md` states that convergence is measured, property-tested, not proven, and that the data is demonstration data with no field use claimed. The wording scan unit test (task 21) passes in `pnpm test`.

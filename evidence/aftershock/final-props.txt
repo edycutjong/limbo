@@ -1,0 +1,276 @@
+
+> limbo@0.0.0 props /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> vitest run --project props
+
+
+ RUN  v3.2.7 /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+
+ ✓ |props| apps/aftershock/src/ops/sector.clear.props.test.ts (7 tests) 3681ms
+   ✓ op sector.clear > convergence  869ms
+   ✓ op sector.clear > replay equivalence  636ms
+   ✓ op sector.clear > idempotence  582ms
+   ✓ op sector.clear > commutes  557ms
+   ✓ op sector.clear > no lost edit  544ms
+   ✓ op sector.clear > intent:max  489ms
+ ✓ |props| apps/basecamp/src/ops/expense.setAmount.props.test.ts (8 tests) 3757ms
+   ✓ op expense.setAmount > convergence  844ms
+   ✓ op expense.setAmount > replay equivalence  571ms
+   ✓ op expense.setAmount > idempotence  526ms
+   ✓ op expense.setAmount > commutes  548ms
+   ✓ op expense.setAmount > no lost edit  445ms
+   ✓ op expense.setAmount > intent:split  396ms
+   ✓ op expense.setAmount > intent:set  424ms
+ ✓ |props| apps/aftershock/src/ops/sector.unneed.props.test.ts (7 tests) 3961ms
+   ✓ op sector.unneed > convergence  986ms
+   ✓ op sector.unneed > replay equivalence  672ms
+   ✓ op sector.unneed > idempotence  738ms
+   ✓ op sector.unneed > commutes  520ms
+   ✓ op sector.unneed > no lost edit  498ms
+   ✓ op sector.unneed > intent:add-remove  545ms
+ ✓ |props| apps/aftershock/src/ops/sector.report.props.test.ts (7 tests) 4138ms
+   ✓ op sector.report > convergence  975ms
+   ✓ op sector.report > replay equivalence  758ms
+   ✓ op sector.report > idempotence  674ms
+   ✓ op sector.report > commutes  624ms
+   ✓ op sector.report > no lost edit  488ms
+   ✓ op sector.report > intent:max  616ms
+ ✓ |props| apps/aftershock/src/ops/sector.need.props.test.ts (7 tests) 4232ms
+   ✓ op sector.need > convergence  1069ms
+   ✓ op sector.need > replay equivalence  702ms
+   ✓ op sector.need > idempotence  700ms
+   ✓ op sector.need > commutes  553ms
+   ✓ op sector.need > no lost edit  499ms
+   ✓ op sector.need > intent:add-remove  706ms
+ ✓ |props| apps/basecamp/src/ops/expense.removeMember.props.test.ts (8 tests) 5234ms
+   ✓ op expense.removeMember > convergence  991ms
+   ✓ op expense.removeMember > replay equivalence  689ms
+   ✓ op expense.removeMember > idempotence  702ms
+   ✓ op expense.removeMember > commutes  608ms
+   ✓ op expense.removeMember > no lost edit  510ms
+   ✓ op expense.removeMember > intent:split  738ms
+   ✓ op expense.removeMember > intent:add-remove  995ms
+ ✓ |props| apps/basecamp/src/ops/expense.addMember.props.test.ts (8 tests) 5459ms
+   ✓ op expense.addMember > convergence  1045ms
+   ✓ op expense.addMember > replay equivalence  738ms
+   ✓ op expense.addMember > idempotence  730ms
+   ✓ op expense.addMember > commutes  595ms
+   ✓ op expense.addMember > no lost edit  540ms
+   ✓ op expense.addMember > intent:split  1076ms
+   ✓ op expense.addMember > intent:add-remove  732ms
+ ✓ |props| apps/basecamp/src/ops/expense.add.props.test.ts (7 tests) 6814ms
+   ✓ op expense.add > convergence  1390ms
+   ✓ op expense.add > replay equivalence  1112ms
+   ✓ op expense.add > idempotence  828ms
+   ✓ op expense.add > commutes  1261ms
+   ✓ op expense.add > no lost edit  1179ms
+   ✓ op expense.add > intent:split  1043ms
+ ✓ |props| apps/aftershock/src/ops/sector.note.props.test.ts (7 tests) 3369ms
+   ✓ op sector.note > convergence  871ms
+   ✓ op sector.note > replay equivalence  545ms
+   ✓ op sector.note > idempotence  554ms
+   ✓ op sector.note > commutes  517ms
+   ✓ op sector.note > no lost edit  483ms
+   ✓ op sector.note > intent:set  396ms
+ ✓ |props| apps/basecamp/src/ops/item.delete.props.test.ts (7 tests) 3555ms
+   ✓ op item.delete > convergence  896ms
+   ✓ op item.delete > replay equivalence  547ms
+   ✓ op item.delete > idempotence  555ms
+   ✓ op item.delete > commutes  485ms
+   ✓ op item.delete > no lost edit  479ms
+   ✓ op item.delete > intent:life  592ms
+ ✓ |props| apps/basecamp/src/ops/item.release.props.test.ts (7 tests) 3165ms
+   ✓ op item.release > convergence  648ms
+   ✓ op item.release > replay equivalence  583ms
+   ✓ op item.release > idempotence  497ms
+   ✓ op item.release > commutes  559ms
+   ✓ op item.release > no lost edit  486ms
+   ✓ op item.release > intent:claim  389ms
+ ✓ |props| apps/basecamp/src/ops/item.move.props.test.ts (7 tests) 3066ms
+   ✓ op item.move > convergence  631ms
+   ✓ op item.move > replay equivalence  539ms
+   ✓ op item.move > idempotence  513ms
+   ✓ op item.move > commutes  493ms
+   ✓ op item.move > no lost edit  494ms
+   ✓ op item.move > intent:move  394ms
+ ✓ |props| apps/basecamp/src/ops/item.claim.props.test.ts (7 tests) 3879ms
+   ✓ op item.claim > convergence  952ms
+   ✓ op item.claim > replay equivalence  560ms
+   ✓ op item.claim > idempotence  594ms
+   ✓ op item.claim > commutes  507ms
+   ✓ op item.claim > no lost edit  508ms
+   ✓ op item.claim > intent:claim  751ms
+ ✓ |props| kit/props/golden.props.test.ts (21 tests) 22ms
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > tick-toggle fails at least one property or golden history
+mutant tick-toggle: killed by intent:set
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > lww-wallclock fails at least one property or golden history
+mutant lww-wallclock: killed by convergence, replay equivalence, idempotence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > qty-read-modify-write fails at least one property or golden history
+mutant qty-read-modify-write: killed by intent:delta, commutes, convergence, replay equivalence, idempotence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > split-float fails at least one property or golden history
+mutant split-float: killed by intent:split, golden:G20
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > delete-wins fails at least one property or golden history
+mutant delete-wins: killed by intent:life
+
+ ✓ |props| apps/aftershock/src/ops/sector.count.props.test.ts (7 tests) 3574ms
+   ✓ op sector.count > convergence  601ms
+   ✓ op sector.count > replay equivalence  556ms
+   ✓ op sector.count > idempotence  484ms
+   ✓ op sector.count > commutes  735ms
+   ✓ op sector.count > no lost edit  715ms
+   ✓ op sector.count > intent:set  481ms
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > claim-both fails at least one property or golden history
+mutant claim-both: killed by intent:claim
+
+ ✓ |props| apps/basecamp/src/ops/item.restore.props.test.ts (7 tests) 3641ms
+   ✓ op item.restore > convergence  568ms
+   ✓ op item.restore > replay equivalence  525ms
+   ✓ op item.restore > idempotence  569ms
+   ✓ op item.restore > commutes  868ms
+   ✓ op item.restore > no lost edit  596ms
+   ✓ op item.restore > intent:life  512ms
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > claim-max-stamp fails at least one property or golden history
+mutant claim-max-stamp: killed by intent:claim
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > move-reinsert fails at least one property or golden history
+mutant move-reinsert: killed by intent:move, replay equivalence, idempotence, convergence
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > severity-lww fails at least one property or golden history
+mutant severity-lww: killed by intent:max
+
+ ✓ |props| apps/basecamp/src/ops/item.tick.props.test.ts (7 tests) 2612ms
+   ✓ op item.tick > convergence  476ms
+   ✓ op item.tick > replay equivalence  474ms
+   ✓ op item.tick > idempotence  581ms
+   ✓ op item.tick > commutes  376ms
+   ✓ op item.tick > no lost edit  374ms
+   ✓ op item.tick > intent:set  330ms
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > split-first-member fails at least one property or golden history
+mutant split-first-member: killed by golden:G20
+
+ ✓ |props| apps/aftershock/src/ops/sector.severity.props.test.ts (4 tests) 1957ms
+   ✓ severity companion (sector.report + sector.clear) > real ops satisfy the max oracle in every run  1203ms
+   ✓ severity companion (sector.report + sector.clear) > the clearAll variant fails the oracle in at least one run  750ms
+ ✓ |props| apps/basecamp/src/ops/item.add.props.test.ts (7 tests) 1826ms
+   ✓ op item.add > convergence  488ms
+   ✓ op item.add > replay equivalence  337ms
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > resolve-noop fails at least one property or golden history
+mutant resolve-noop: killed by intent:life
+
+stdout | kit/props/mutants.props.test.ts > mutation fixtures > arrival-order fails at least one property or golden history
+mutant arrival-order: killed by convergence, replay equivalence, idempotence
+
+ ✓ |props| kit/props/mutants.props.test.ts (15 tests) 1921ms
+ ✓ |props| apps/basecamp/src/ops/item.rename.props.test.ts (7 tests) 2825ms
+   ✓ op item.rename > convergence  888ms
+   ✓ op item.rename > replay equivalence  495ms
+   ✓ op item.rename > idempotence  464ms
+   ✓ op item.rename > commutes  364ms
+   ✓ op item.rename > no lost edit  309ms
+   ✓ op item.rename > intent:set  304ms
+ ✓ |props| kit/props/suite.props.test.ts (160 tests | 9 skipped) 43626ms
+   ✓ op sector.clear > convergence  848ms
+   ✓ op sector.clear > replay equivalence  718ms
+   ✓ op sector.clear > idempotence  529ms
+   ✓ op sector.clear > commutes  608ms
+   ✓ op sector.clear > no lost edit  650ms
+   ✓ op sector.clear > intent:max  980ms
+   ✓ op sector.count > convergence  636ms
+   ✓ op sector.count > replay equivalence  679ms
+   ✓ op sector.count > idempotence  633ms
+   ✓ op sector.count > commutes  401ms
+   ✓ op sector.count > no lost edit  476ms
+   ✓ op sector.count > intent:set  454ms
+   ✓ op sector.need > convergence  606ms
+   ✓ op sector.need > replay equivalence  566ms
+   ✓ op sector.need > idempotence  451ms
+   ✓ op sector.need > commutes  411ms
+   ✓ op sector.need > no lost edit  400ms
+   ✓ op sector.need > intent:add-remove  400ms
+   ✓ op sector.note > convergence  305ms
+   ✓ op sector.note > no lost edit  321ms
+   ✓ op sector.report > convergence  388ms
+   ✓ op sector.report > replay equivalence  383ms
+   ✓ op sector.report > idempotence  389ms
+   ✓ op sector.report > commutes  383ms
+   ✓ op sector.report > no lost edit  383ms
+   ✓ op sector.report > intent:max  385ms
+   ✓ op sector.unneed > convergence  381ms
+   ✓ op sector.unneed > replay equivalence  382ms
+   ✓ op sector.unneed > idempotence  421ms
+   ✓ op sector.unneed > commutes  414ms
+   ✓ op sector.unneed > no lost edit  394ms
+   ✓ op sector.unneed > intent:add-remove  412ms
+   ✓ op expense.add > convergence  655ms
+   ✓ op expense.add > replay equivalence  769ms
+   ✓ op expense.add > idempotence  637ms
+   ✓ op expense.add > commutes  639ms
+   ✓ op expense.add > no lost edit  667ms
+   ✓ op expense.add > intent:split  664ms
+   ✓ op expense.addMember > convergence  434ms
+   ✓ op expense.addMember > replay equivalence  439ms
+   ✓ op expense.addMember > idempotence  429ms
+   ✓ op expense.addMember > commutes  426ms
+   ✓ op expense.addMember > no lost edit  428ms
+   ✓ op expense.addMember > intent:split  431ms
+   ✓ op expense.addMember > intent:add-remove  442ms
+   ✓ op expense.removeMember > convergence  411ms
+   ✓ op expense.removeMember > replay equivalence  426ms
+   ✓ op expense.removeMember > idempotence  409ms
+   ✓ op expense.removeMember > commutes  412ms
+   ✓ op expense.removeMember > no lost edit  416ms
+   ✓ op expense.removeMember > intent:split  548ms
+   ✓ op expense.removeMember > intent:add-remove  408ms
+   ✓ op expense.setAmount > convergence  334ms
+   ✓ op expense.setAmount > replay equivalence  335ms
+   ✓ op expense.setAmount > idempotence  331ms
+   ✓ op expense.setAmount > commutes  327ms
+   ✓ op expense.setAmount > no lost edit  350ms
+   ✓ op expense.setAmount > intent:split  329ms
+   ✓ op expense.setAmount > intent:set  326ms
+   ✓ op item.claim > convergence  325ms
+   ✓ op item.claim > replay equivalence  312ms
+   ✓ op item.claim > idempotence  321ms
+   ✓ op item.claim > commutes  312ms
+   ✓ op item.claim > no lost edit  317ms
+   ✓ op item.claim > intent:claim  309ms
+   ✓ op item.delete > convergence  318ms
+   ✓ op item.delete > replay equivalence  320ms
+   ✓ op item.delete > idempotence  309ms
+   ✓ op item.delete > commutes  307ms
+   ✓ op item.delete > no lost edit  307ms
+   ✓ op item.delete > intent:life  307ms
+   ✓ op item.move > convergence  305ms
+   ✓ op item.move > replay equivalence  303ms
+   ✓ op item.move > idempotence  304ms
+   ✓ op item.move > commutes  315ms
+   ✓ op item.move > no lost edit  308ms
+   ✓ op item.move > intent:move  304ms
+   ✓ op item.release > convergence  301ms
+   ✓ op item.rename > convergence  319ms
+   ✓ op item.rename > replay equivalence  308ms
+   ✓ op item.rename > idempotence  308ms
+   ✓ op item.rename > commutes  306ms
+   ✓ op item.rename > no lost edit  332ms
+   ✓ op item.rename > intent:set  351ms
+   ✓ op item.restore > convergence  306ms
+   ✓ op item.restore > replay equivalence  302ms
+   ✓ op item.restore > idempotence  305ms
+   ✓ op item.restore > commutes  307ms
+   ✓ op item.restore > no lost edit  304ms
+   ✓ op item.restore > intent:life  303ms
+   ✓ op item.tick > convergence  335ms
+   ✓ op item.tick > replay equivalence  308ms
+   ✓ op item.tick > idempotence  307ms
+   ✓ op item.tick > commutes  307ms
+   ✓ op item.tick > no lost edit  305ms
+   ✓ op item.tick > intent:set  304ms
+
+ Test Files  22 passed (22)
+      Tests  320 passed | 9 skipped (329)
+   Start at  20:06:13
+   Duration  44.92s (transform 599ms, setup 209ms, collect 2.61s, tests 116.31s, environment 6ms, prepare 1.53s)
+

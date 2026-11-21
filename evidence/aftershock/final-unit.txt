@@ -1,0 +1,128 @@
+
+> limbo@0.0.0 test /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> vitest run --project unit --project limbo
+
+
+ RUN  v3.2.7 /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+
+ ✓ |unit| skeleton/src/sync/store.test.ts (12 tests) 352ms
+ ✓ |unit| skeleton/src/sync/replica.persist.test.ts (7 tests) 402ms
+ ✓ |unit| kit/props/run.test.ts (12 tests) 709ms
+   ✓ vacuity guard > measureVacuityAsync returns a report deep-equal to measureVacuity (and yields past 50 runs)  582ms
+ ✓ |unit| kit/hooks/tests/gate-integrity.test.ts (5 tests) 792ms
+ ✓ |unit| kit/props/vacuity.scaling.test.ts (1 test) 800ms
+   ✓ vacuity scaling > keeps every applicable class at or above MIN_SHARE with 4 unrelated ops registered  799ms
+ ✓ |unit| kit/props/intent/intent.test.ts (5 tests) 396ms
+ ✓ |unit| kit/hooks/tests/kiro-share.test.ts (2 tests) 1477ms
+   ✓ kiro-share > writes evidence/kiro/share.json  517ms
+ ✓ |unit| kit/props/mixed.test.ts (2 tests) 444ms
+   ✓ mixed properties > flag an arrival-order fold  429ms
+ ✓ |unit| skeleton/src/sync/dev-relay-link.test.ts (7 tests) 137ms
+ ✓ |unit| skeleton/src/sync/pair.test.ts (10 tests) 222ms
+ ✓ |unit| apps/basecamp/src/ops/expense.member.test.ts (4 tests) 66ms
+ ✓ |unit| skeleton/src/limbo/shuffle.test.ts (4 tests) 86ms
+ ✓ |unit| skeleton/src/core/simulate.test.ts (10 tests) 105ms
+ ✓ |unit| skeleton/src/sync/identity.test.ts (7 tests) 291ms
+ ✓ |unit| apps/basecamp/src/actions.test.ts (10 tests) 65ms
+ ✓ |unit| kit/props/arbitraries/arbitraries.test.ts (4 tests) 49ms
+ ✓ |unit| skeleton/src/core/merges.test.ts (30 tests) 28ms
+ ✓ |unit| apps/basecamp/src/scene.test.ts (7 tests) 150ms
+ ✓ |unit| skeleton/src/sync/link.test.ts (12 tests) 47ms
+ ✓ |unit| skeleton/src/sync/replica.test.ts (11 tests) 63ms
+ ✓ |unit| skeleton/src/sync/link.chaos.test.ts (8 tests) 15ms
+stdout | apps/aftershock/src/seed.test.ts > seed > sha256 of the canonical JSON equals the recorded constant
+seed sha256: 0c47bc4386791df0d4f65768f2843621d0266a2668ff951b4220e6a4d414e036
+
+ ✓ |unit| apps/aftershock/src/seed.test.ts (4 tests) 6ms
+ ✓ |unit| kit/props/golden.test.ts (7 tests) 50ms
+ ✓ |unit| apps/aftershock/src/actions.test.ts (6 tests) 71ms
+ ✓ |unit| apps/aftershock/src/scene.test.ts (7 tests) 47ms
+ ✓ |unit| skeleton/src/sync/status.test.ts (24 tests) 6ms
+ ✓ |unit| apps/basecamp/src/money.test.ts (6 tests) 14ms
+ ✓ |unit| skeleton/src/limbo/tokens.test.ts (6 tests) 9ms
+ ✓ |unit| apps/basecamp/src/conflicts.test.ts (9 tests) 37ms
+ ✓ |unit| apps/aftershock/src/model.test.ts (10 tests) 5ms
+ ✓ |unit| skeleton/src/core/causal.test.ts (12 tests) 7ms
+ ✓ |unit| apps/basecamp/src/model.test.ts (10 tests) 6ms
+stdout | apps/basecamp/src/seed.test.ts > seed > sha256 of the canonical JSON equals the recorded constant
+seed sha256: 111c0139702181ebaaa5b23393b06b98dd66289fe99f41a12be69efb7d9d26bd
+
+ ✓ |unit| kit/scripts/props-full.test.ts (3 tests) 3ms
+ ✓ |unit| apps/basecamp/src/seed.test.ts (4 tests) 69ms
+ ✓ |unit| apps/aftershock/src/conflicts.test.ts (9 tests) 5ms
+ ✓ |unit| kit/props/manifest.test.ts (3 tests) 3ms
+ ✓ |unit| skeleton/src/limbo/index.test.ts (3 tests) 4ms
+ ✓ |unit| skeleton/src/index.test.ts (3 tests) 6ms
+ ✓ |unit| apps/aftershock/src/sectors.test.ts (2 tests) 7ms
+ ✓ |unit| apps/aftershock/src/ops/sector.need.test.ts (6 tests) 18ms
+ ✓ |unit| apps/aftershock/src/ops/sector.state.test.ts (10 tests) 4ms
+ ✓ |unit| apps/aftershock/src/ops/sector.lww.test.ts (3 tests) 2ms
+ ✓ |unit| apps/basecamp/src/ops/expense.state.test.ts (7 tests) 4ms
+ ✓ |unit| apps/aftershock/src/members.test.ts (3 tests) 2ms
+ ✓ |unit| kit/hooks/tests/hooks.test.ts (116 tests) 9671ms
+   ✓ op-lint > fails with no intent  462ms
+   ✓ props hooks > stop-gate blocks with JSON on failure and gives up after 3  549ms
+ ✓ |unit| apps/basecamp/src/build.test.ts (2 tests) 10227ms
+   ✓ pnpm --filter @limbo/basecamp build produces dist/index.html  5071ms
+   ✓ the production build contains no dev relay, no window.limbo, no localhost:5175, no CDN font  5154ms
+ ✓ |limbo| apps/basecamp/src/views/ExpenseRow.test.tsx (6 tests) 2726ms
+   ✓ ExpenseRow > offline A adds Dewi while B sets $26.00: both show four members, $6.50 each, sum $26.00  729ms
+   ✓ ExpenseRow > Remove drops a member and the shares re-split  380ms
+   ✓ ExpenseRow > concurrent amounts show a twin with two buttons and the pick resolves it  984ms
+ ✓ |unit| apps/aftershock/src/build.test.ts (5 tests) 10714ms
+   ✓ pnpm --filter @limbo/aftershock build produces dist/index.html  5307ms
+   ✓ the production build contains no dev relay, no window.limbo, no localhost:5175, no https://  5264ms
+ ✓ |limbo| apps/basecamp/src/views/ItemTwins.test.tsx (7 tests) 3154ms
+   ✓ life twin > shows the caption with Keep and Delete on both replicas  574ms
+   ✓ life twin > Keep clears it on both and the tent stays  1000ms
+   ✓ life twin > Delete clears it on both and the tent is gone  735ms
+   ✓ claim loser twin > loser caption on B, quiet note on A; OK clears both  470ms
+ ✓ |limbo| apps/aftershock/src/views/Shuffle.test.tsx (5 tests) 3928ms
+   ✓ Inspector and ShuffleTest wiring > Inspector queued rows equal view.unacked  413ms
+   ✓ Inspector and ShuffleTest wiring > the seed prints the orderings line and the golden line  2179ms
+   ✓ Inspector and ShuffleTest wiring > after an extra edit no golden line prints  1084ms
+ ✓ |limbo| apps/aftershock/src/survey-scene.test.tsx (4 tests) 4447ms
+   ✓ survey scene (R10) with manual edits > walks R10.1 to R10.9 on the DOM  3883ms
+ ✓ |limbo| apps/aftershock/src/views/SectorTwins.test.tsx (3 tests) 805ms
+   ✓ note twin > a tap clears the twin on both and leaves one note  373ms
+ ✓ |limbo| apps/basecamp/src/views/Reorder.test.tsx (4 tests) 824ms
+   ✓ Reorder > ArrowDown then ArrowUp on the handle move one place, emit one item.move each, keep focus  390ms
+ ✓ |limbo| skeleton/src/limbo/inspector.test.tsx (12 tests) 653ms
+ ✓ |limbo| apps/basecamp/src/app.test.tsx (5 tests) 743ms
+ ✓ |limbo| apps/basecamp/src/views/ItemRow.test.tsx (8 tests) 1504ms
+   ✓ ItemRow > tick sets true then false (explicit values)  344ms
+   ✓ ItemRow > empty list shows the empty state  384ms
+ ✓ |limbo| apps/aftershock/src/app.test.tsx (6 tests) 441ms
+ ✓ |limbo| skeleton/src/limbo/keys.test.tsx (6 tests) 346ms
+ ✓ |limbo| skeleton/src/limbo/twin.test.tsx (7 tests) 319ms
+ ✓ |limbo| skeleton/src/limbo/pair-view.test.tsx (6 tests) 322ms
+ ✓ |limbo| skeleton/src/limbo/motion.test.tsx (5 tests) 190ms
+ ✓ |limbo| skeleton/src/limbo/shell.test.tsx (7 tests) 198ms
+ ✓ |limbo| skeleton/src/limbo/fog.test.tsx (5 tests) 218ms
+ ✓ |limbo| apps/basecamp/src/views/lake-scene.test.tsx (3 tests) 6959ms
+   ✓ lake scene (R10) with manual edits > walks R10.1 to R10.9 on the DOM  6169ms
+   ✓ Play the lake scene (R11) > shows only while the link is down, labels each scripted edit and gives the manual result  599ms
+ ✓ |limbo| apps/aftershock/src/devrelay.test.tsx (2 tests) 91ms
+ ✓ |limbo| apps/basecamp/src/views/Shuffle.test.tsx (5 tests) 7117ms
+   ✓ Inspector and ShuffleTest wiring > Inspector queued rows equal view.unacked  622ms
+   ✓ Inspector and ShuffleTest wiring > I toggles the controlled Inspector drawer  389ms
+   ✓ Inspector and ShuffleTest wiring > the seed prints the orderings line and the golden line  3172ms
+   ✓ Inspector and ShuffleTest wiring > after an extra edit no golden line prints  2930ms
+ ✓ |limbo| skeleton/src/limbo/single.test.tsx (5 tests) 375ms
+ ✓ |limbo| apps/aftershock/src/views/ReportForm.test.tsx (6 tests) 323ms
+ ✓ |limbo| skeleton/src/limbo/shuffle-test.test.tsx (7 tests) 171ms
+ ✓ |limbo| apps/aftershock/src/views/SectorGrid.test.tsx (9 tests) 298ms
+ ✓ |limbo| skeleton/src/limbo/chip.test.tsx (3 tests) 238ms
+ ✓ |limbo| skeleton/src/limbo/wisps.test.tsx (5 tests) 270ms
+ ✓ |limbo| apps/aftershock/src/views/SectorCard.test.tsx (5 tests) 57ms
+ ✓ |limbo| apps/aftershock/src/app-shell.test.tsx (1 test) 43ms
+ ✓ |limbo| skeleton/src/limbo/fixed.test.tsx (4 tests) 109ms
+ ✓ |limbo| apps/basecamp/src/app-shell.test.tsx (1 test) 39ms
+ ✓ |limbo| apps/basecamp/src/devrelay.test.tsx (1 test) 26ms
+ ✓ |limbo| skeleton/src/limbo/test/harness.test.tsx (3 tests) 24ms
+
+ Test Files  78 passed (78)
+      Tests  606 passed (606)
+   Start at  20:05:50
+   Duration  16.88s (transform 2.63s, setup 6.33s, collect 16.11s, tests 74.65s, environment 24.09s, prepare 8.50s)
+
