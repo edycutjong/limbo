@@ -1,6 +1,5 @@
 {
   "name": "G20 split-25-over-3",
-  "pending": "sum-split reducer does not exist yet",
   "ops": [
     {
       "id": "s:1",

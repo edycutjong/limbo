@@ -1,6 +1,5 @@
 {
   "name": "G21 split-k0",
-  "pending": "sum-split reducer does not exist yet",
   "ops": [
     {
       "id": "s:1",
