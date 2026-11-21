@@ -8,10 +8,10 @@ For people whose shared list breaks when the signal does, and for the builders w
 LIMBO is a Kiroween **Skeleton Crew** entry: a local-first skeleton where every operation declares how it merges, plus a `/.kiro`
 kit (steering, hooks, custom agents, specs) under which Kiro built the skeleton and its apps.
 
-> **Status (2026-11-21, interim README; the full one comes later).** Built so far: the skeleton and app 1, **BASECAMP**
-> (`apps/basecamp`). App 2, AFTERSHOCK (`apps/aftershock`), is a placeholder folder (README and `package.json` only). The
-> cross-device relay is not built: today two replicas sync through the in-page simulated link, or through a dev-only test relay
-> in the e2e suite.
+> **Status (2026-11-22, interim README; the full one comes later).** Built: the skeleton and both apps on it, **BASECAMP**
+> (`apps/basecamp`, a group trip list) and **AFTERSHOCK** (`apps/aftershock`, a field form whose sector reports merge into a shared
+> grid; demo data only), live at https://basecamp.limbo.edycu.dev and https://aftershock.limbo.edycu.dev. The cross-device relay is
+> not built: two replicas sync through the in-page simulated link, or through a dev-only test relay in the e2e suite.
 
 ## Try it locally (about 2 minutes)
 ```
@@ -49,7 +49,7 @@ claimant deterministically when they reconnect, and the other sees a twin naming
 ## Layout
 - `.kiro/` — steering, hooks, custom agents, specs (authored by Kiro; never gitignored)
 - `skeleton/` — the template: op layer, named merges, causal delivery, replica + sync, the Limbo visual layer
-- `apps/basecamp/` — app 1; `apps/aftershock/` — app 2 (placeholder)
+- `apps/basecamp/` — app 1, the trip list; `apps/aftershock/` — app 2, the sector grid (`pnpm --filter @limbo/aftershock dev`, port 5176)
 - `kit/` — hook scripts, property harness, Kiro run wrapper, gate-integrity check
 - `e2e/` — Playwright offline tests · `evidence/` — measured runs and the Kiro ledgers
 
