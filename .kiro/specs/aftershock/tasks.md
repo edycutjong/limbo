@@ -14,7 +14,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: 24 distinct ids in row-major order for the grid; `authorOf` of `a#1`, `seed`; roster order; unknown member displays as its id.
   - _Requirements: R4.6, R8.1_
 
-- [ ] 3. `sector.state.ts` and `sector.report`
+- [x] 3. `sector.state.ts` and `sector.report`
   - Create `ops/sector.state.ts` (`severityOf`, `applySeverityOp`, `severityInvariant`, `present`, `applyNeedOp`, `needInvariant`) with `covers` from `skeleton/src/core/causal.ts`. Create `ops/sector.report.op.ts` with the intent sentence at the top, `merge: 'commutes'`, intent `{ kind: 'max', field: 'severity', order: ['safe','damaged','unsafe'] }`. Write `sector.report.props.ts` with `conflictGen` and `maxIntent`. Let the hooks scaffold the props test and the registry.
   - Tests: `sector.state.test.ts` for `severityOf` (max of several reports; a clear that saw a report removes it; a concurrent report survives the clear; a report made after the clear is kept; all cleared gives `undefined`; duplicates and order do not change it); the scaffolded props suite passes and the vacuity guard still reports.
   - _Requirements: R3.1, R3.8, R3.9, R6.1, R6.2_
