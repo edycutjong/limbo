@@ -90,6 +90,11 @@ input[type="checkbox"].ui-check.bc-tick:disabled::before { border-style: dashed;
 .bc-list, .bc-expenses { padding: 0; margin: 0; }
 .bc-scripted { font-size: 0.75rem; opacity: 0.75; }
 .bc-scene { margin: 1rem 0; }
+.bc-note { list-style: none; margin: 0; padding: 0 0 4px 104px; color: var(--muted); font-size: 15px; }
+@container (max-width: 460px) { .bc-note { padding-left: 52px; } }
+/* The status pill already says Offline */
+.limbo-fog-label[data-fog-label="full"] { display: none; }
+.bc-claim, .bc-claim .ui-chip { white-space: nowrap; }
 .bc-claim { display: inline-flex; align-items: center; gap: 0.5rem; }
 .bc-add { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
 .bc-add input { flex: 1; }

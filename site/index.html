@@ -20,8 +20,12 @@
   a.btn:hover, a.btn:focus-visible { background:var(--accent); color:#fff; }
   a.btn:active { transform: translateY(1px); }
   a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-  iframe { width:100%; height:720px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  iframe { width:100%; height:1100px; border:1px solid var(--line); border-radius:6px; background:#fff; }
   .note { color:var(--muted); font-size:15px; }
+  .note a { color:var(--accent); transition: background .15s; }
+  .note a:hover { background:#E8DEC8; }
+  footer a { color:var(--accent); text-underline-offset:3px; transition: background .15s, color .15s; }
+  footer a:hover { background:#E8DEC8; color:var(--ink); }
   footer { margin-top:48px; color:var(--muted); font-size:15px; }
   .only-narrow { display:none; }
   @media (max-width: 700px) { iframe { display:none; } .only-narrow { display:block; } }
@@ -51,6 +55,7 @@
   <h2>Try it here: cut the link, edit on both sides, reconnect</h2>
   <p class="note">This is the real BASECAMP app in its two-replica view. The link between the two replicas is a <strong>simulated link</strong> inside the page: press Cut link, make conflicting edits, then restore it.</p>
   <p class="only-narrow"><a class="btn" href="https://basecamp.limbo.edycu.dev/?replicas=2">Open the two-replica BASECAMP</a></p>
+  <p class="note"><a href="https://basecamp.limbo.edycu.dev/?replicas=2">Open it full screen</a></p>
   <iframe src="https://basecamp.limbo.edycu.dev/?replicas=2" title="BASECAMP, two replicas joined by a simulated link" loading="lazy"></iframe>
 
   <footer>Source: <a href="https://github.com/edycutjong/limbo">github.com/edycutjong/limbo</a> (MIT). Built with Kiro for the Kiroween hackathon, Skeleton Crew category.</footer>

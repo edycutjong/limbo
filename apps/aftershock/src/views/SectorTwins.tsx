@@ -36,9 +36,12 @@ export function SectorTwins(p: { id: Id; replica: Replica<State>; sector: Sector
           caption={`TWIN · ${author(first.by)} wrote “${first.value}” while ${author(second.by)} wrote “${second.value}” · rule: causal-lww`}
           rule="causal-lww"
           actions={notes.map((v) => (
-            <Button key={v.value} label={`Keep this note: ${v.value}`} onClick={() => act.pickNote(p.replica, s.id, v.value)}>
-              Keep this note
-            </Button>
+            <span key={v.value} className="as-note-choice">
+              <Button label={`Keep this note: ${v.value}`} onClick={() => act.pickNote(p.replica, s.id, v.value)}>
+                {`Keep ${author(v.by)}'s note`}
+              </Button>
+              <span className="as-note-text">{`“${v.value}”`}</span>
+            </span>
           ))}
         />
       )}

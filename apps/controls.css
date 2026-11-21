@@ -187,11 +187,14 @@ button.ui-chip { cursor: pointer; }
   line-height: 1.4;
 }
 
-/* Fog label: a corner tag inside .limbo-fog */
+/* Fog label: a tag above the content, in flow (never over the content) */
+.limbo-fog { display: flex; flex-direction: column; }
 .limbo-fog-label {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  order: -1;
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  margin-bottom: 8px;
   padding: 2px 8px;
   background: var(--bg);
   color: var(--fog-ink);

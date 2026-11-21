@@ -8,7 +8,7 @@ import type { Severity } from '../sectors.ts';
 const WORD: Record<Severity, string> = { safe: 'SAFE', damaged: 'DAMAGED', unsafe: 'UNSAFE' };
 const GLYPH: Record<Severity, string> = { safe: '✓', damaged: '▲', unsafe: '✖' };
 
-export const SCRIPTED_TEXT = 'scripted edit';
+export const SCRIPTED_TEXT = 'edited offline';
 
 /** `5 reported — Sari 2, Budi 3` (counts already in roster order). */
 export function totalLine(s: Sector): string {

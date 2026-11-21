@@ -65,7 +65,7 @@ describe('SectorCard', () => {
     const r = render(<SectorCard id="C3" sector={sectors.C3} scripted={['note']} />);
     expect(r.container.querySelector('.as-need-chip')!.textContent).toBe('water');
     expect(r.container.querySelector('[data-note]')!.textContent).toBe('<b>gas</b> smell');
-    expect(r.container.querySelector('[data-scripted="note"]')!.textContent).toBe('scripted edit');
+    expect(r.container.querySelector('[data-scripted="note"]')!.textContent).toBe('edited offline');
     expect(r.container.querySelector('b')).toBeNull();
     expect(r.container.querySelector('i')).toBeNull();
     expect(r.container.textContent).toContain('<i>x</i> 1');
@@ -77,7 +77,7 @@ describe('SectorCard', () => {
     expect(tags.length).toBe(2);
     for (const t of tags) {
       expect(t.querySelector('.as-scripted-field')!.textContent).not.toBe('');
-      expect(t.querySelector('[data-scripted]')!.textContent).toBe('scripted edit');
+      expect(t.querySelector('[data-scripted]')!.textContent).toBe('edited offline');
     }
   });
 

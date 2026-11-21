@@ -86,7 +86,7 @@ async function surveyScene(p: Page, scripted: boolean): Promise<void> {
     await openC3(p, 'a');
     await openC3(p, 'b');
     for (const id of ['a', 'b'] as const) {
-      await expect(sector(p, id).locator('[data-scripted]')).toHaveText(['scripted edit', 'scripted edit', 'scripted edit']);
+      await expect(sector(p, id).locator('[data-scripted]')).toHaveText(['edited offline', 'edited offline', 'edited offline']);
     }
   } else {
     await report(p, 'a', 'Damaged', 2, NOTE_A);

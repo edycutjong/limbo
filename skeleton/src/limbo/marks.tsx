@@ -23,7 +23,7 @@ export function Fog(p: { id: Id; children?: ReactNode }): ReactNode {
       </div>
       {mode !== 'none' && <div className="limbo-fog-veil" aria-hidden="true" style={NO_POINTER} />}
       {mode !== 'none' && (
-        <span className="limbo-fog-label" aria-hidden="true" style={NO_POINTER}>
+        <span className="limbo-fog-label" data-fog-label={mode} aria-hidden="true" style={NO_POINTER}>
           {mode === 'full' ? 'Offline' : `Syncing ${n}…`}
         </span>
       )}

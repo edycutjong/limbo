@@ -80,12 +80,20 @@
 }
 
 /* Twin: one row; the ghost sits behind at 70%, the caption, rule and actions stay at 100% */
-.limbo-twin { position: relative; display: flow-root; margin-block: 8px; }
+.limbo-twin { position: relative; display: flow-root; margin-block: 8px; padding: 12px 12px 12px 14px; background: var(--card); border: 1px solid var(--rule); border-left: 3px solid var(--twin); border-radius: 6px; }
 .limbo-twin-stage { position: relative; margin: 0 6px 6px 0; }
 .limbo-twin-ghost { overflow: hidden; color: transparent; }
 .limbo-twin-ghost > * { visibility: hidden; } /* the ghost is an offset dashed outline only: text over text read as a rendering bug */
 .limbo-twin-label { display: block; margin-top: 4px; font-size: 11px; letter-spacing: .08em; color: var(--twin); }
-.limbo-twin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.limbo-twin-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.limbo-twin-actions button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; min-width: 44px; padding: 0 16px;
+  background: var(--card); color: var(--ink); border: 1px solid var(--rule); border-radius: 6px;
+  font-family: var(--font-body); font-size: 17px; line-height: 1.2; cursor: pointer;
+}
+.limbo-twin-actions button:hover:not(:disabled) { border-color: var(--ink); }
+.limbo-twin-actions button:active:not(:disabled) { background: var(--bg); }
 .limbo-twin-enter .limbo-twin-ghost { animation: limbo-twin-in 250ms ease-out; }
 @keyframes limbo-twin-in { from { transform: translate(0, 0); opacity: 0; } }
 .limbo-twin-leaving .limbo-twin-ghost { animation: limbo-twin-out 250ms ease-in forwards; }
@@ -106,7 +114,7 @@
 .limbo-reset { min-width: 44px; min-height: 44px; justify-self: start; }
 .limbo-cord-caption { font-variant: small-caps; letter-spacing: .06em; font-size: 14px; color: var(--muted); margin: 0; }
 @media (min-width: 640px) and (max-width: 1023px) { .limbo-pair { grid-template-columns: 1fr; } }
-@media (min-width: 1024px) { .limbo-pair { grid-template-columns: 1fr auto 1fr; align-items: start; } .limbo-reset { grid-column: 1 / -1; } }
+@media (min-width: 1024px) { .limbo-pair { grid-template-columns: minmax(340px, 1fr) minmax(120px, 160px) minmax(340px, 1fr); align-items: start; } .limbo-reset { grid-column: 1 / -1; } }
 .limbo-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* Single-replica layout: the bar is fixed, the content leaves room for it */

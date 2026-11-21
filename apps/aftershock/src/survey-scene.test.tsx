@@ -210,7 +210,7 @@ describe('Play the survey scene (R11)', () => {
     await openC3('b');
     for (const id of ['a', 'b'] as const) {
       const tags = Array.from(sectorCard(id).querySelectorAll('[data-scripted]')).map((t) => text(t));
-      expect(tags).toEqual(['scripted edit', 'scripted edit', 'scripted edit']);
+      expect(tags).toEqual(['edited offline', 'edited offline', 'edited offline']);
     }
 
     // the tags clear on link up; the button restored nothing and tapped nothing
