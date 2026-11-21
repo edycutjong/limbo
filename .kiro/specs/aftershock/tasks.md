@@ -45,7 +45,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`model.test.ts`): two surveyors' counts on one sector give total 5 and "Sari 2, Budi 3" order; the same surveyor's two concurrent counts give `values` of 2; an absent sector; severity is the max for concurrent reports in every one of several shuffled orders; a clear that saw `unsafe` lowers to the next report or `undefined`; a concurrent report survives a clear; needs add-wins; concurrent notes give `noteValues` of 2 and a pick-one resolves it; `sector.count` on target `t0` does not throw.
   - _Requirements: R4_
 
-- [ ] 9. Conflict descriptors
+- [x] 9. Conflict descriptors
   - `src/conflicts.ts` per design §5.
   - Tests (`conflicts.test.ts`): each row of the table; `twinCount === describeConflicts.length`; severity and needs produce nothing; ids are stable and equal on two replicas built from the same ops in different orders; ordering by (target, rule, id).
   - _Requirements: R5_
