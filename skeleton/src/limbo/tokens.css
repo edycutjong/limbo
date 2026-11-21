@@ -82,7 +82,8 @@
 /* Twin: one row; the ghost sits behind at 70%, the caption, rule and actions stay at 100% */
 .limbo-twin { position: relative; display: flow-root; margin-block: 8px; }
 .limbo-twin-stage { position: relative; margin: 0 6px 6px 0; }
-.limbo-twin-ghost { overflow: hidden; color: var(--twin); }
+.limbo-twin-ghost { overflow: hidden; color: transparent; }
+.limbo-twin-ghost > * { visibility: hidden; } /* the ghost is an offset dashed outline only: text over text read as a rendering bug */
 .limbo-twin-label { display: block; margin-top: 4px; font-size: 11px; letter-spacing: .08em; color: var(--twin); }
 .limbo-twin-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .limbo-twin-enter .limbo-twin-ghost { animation: limbo-twin-in 250ms ease-out; }

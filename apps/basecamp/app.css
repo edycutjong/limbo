@@ -79,7 +79,9 @@ input[type="checkbox"].ui-check.bc-tick:hover:not(:disabled)::before { border-co
 input[type="checkbox"].ui-check.bc-tick:active:not(:disabled)::before { background: var(--card); }
 input[type="checkbox"].ui-check.bc-tick:disabled::before { border-style: dashed; border-color: var(--muted); }
 .bc-row[data-ticked="true"] .bc-name { text-decoration: line-through; color: var(--muted); }
-@media (max-width: 480px) {
+/* Cards are ~330 px wide even on a desktop (two replicas side by side), so the narrow layout follows the card, not the viewport. */
+.bc-list { container-type: inline-size; }
+@container (max-width: 460px) {
   .bc-row {
     grid-template-columns: 44px 44px minmax(0, 1fr) 44px;
     grid-template-areas: "handle tick name menu" ". . claim claim" ". . scripted scripted";
