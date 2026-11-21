@@ -39,7 +39,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`conflicts.test.ts`): each row of the table; `twinCount === describeConflicts.length`; move twins are ignored; ids are stable and equal on two replicas built from the same ops in different orders.
   - _Requirements: R9_
 
-- [ ] 8. Seed
+- [x] 8. Seed
   - `apps/basecamp/src/seed.ts` per R2 with `makeSeedOps` and the item and expense scripts. Items use `allocKey` with replica `seed` for keys, in list order.
   - Tests (`seed.test.ts`): materialized values of R2.5; byte-identical on two builds; sha256 of the canonical JSON equals a recorded constant (print it); ops are all authored by `seed` with counters 1..n.
   - _Requirements: R2_
