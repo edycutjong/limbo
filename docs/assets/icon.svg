@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="LIMBO — a tent and its cyanotype ghost twin, two exposures of one list item waiting for one tap to converge">
+  <defs>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="var(--bg, #F7F1E5)"/>
+      <stop offset="100%" stop-color="var(--card, #E9DECA)"/>
+    </linearGradient>
+    <linearGradient id="ghost" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--twin, #2F5D86)"/>
+      <stop offset="100%" stop-color="var(--twin, #2F5D86)"/>
+    </linearGradient>
+    <path id="tent" d="M240 146 L380 394 L278 394 L240 262 L202 394 L100 394 Z"/>
+  </defs>
+  <!-- mount board + albumen print: the self-carried plate that makes the mark hold on white and on #0d1117 -->
+  <rect x="12" y="12" width="488" height="488" rx="108" fill="var(--card, #E8DDC9)" stroke="var(--muted, #6B5B4B)" stroke-opacity="0.7" stroke-width="5"/>
+  <rect x="40" y="40" width="432" height="432" rx="84" fill="url(#sheen)" stroke="var(--rule, #CDBFA8)" stroke-width="4"/>
+  <!-- the ghost twin: same item, second exposure, offset, cyanotype at 78% (70% in the app; raised to hold 3:1 on the plate at 16px) -->
+  <use href="#tent" transform="translate(52 -40)" fill="url(#ghost)" fill-opacity="0.78"/>
+  <!-- the item itself, sepia ink, on its ground line -->
+  <use href="#tent" fill="var(--ink, #2A2019)"/>
+  <path d="M80 404 H400" stroke="var(--ink, #2A2019)" stroke-width="12" stroke-linecap="round"/>
+</svg>

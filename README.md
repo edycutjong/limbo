@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO — Two phones fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
+</p>
+
 # LIMBO
 
 When the connection dies, your app crosses over, keeps working on the other side, and comes back without silently losing an
