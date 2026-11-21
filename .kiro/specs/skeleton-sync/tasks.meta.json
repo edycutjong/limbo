@@ -48,6 +48,18 @@
         "chatSessionId": "sess_c53fc0ed-7716-444e-852e-0994a89e1ddb",
         "timestamp": 1795238758242
       }
+    ],
+    "5. Link protocol and in-page link": [
+      {
+        "executionId": "5b196081-024b-4cf6-a1b5-da6a27df0d52",
+        "chatSessionId": "sess_695b6eab-f227-4343-9186-18fb83f2efc3",
+        "timestamp": 1795238935698
+      },
+      {
+        "executionId": "5b196081-024b-4cf6-a1b5-da6a27df0d52",
+        "chatSessionId": "sess_695b6eab-f227-4343-9186-18fb83f2efc3",
+        "timestamp": 1795239134489
+      }
     ]
   }
 }

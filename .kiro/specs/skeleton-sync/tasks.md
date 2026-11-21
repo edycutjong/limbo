@@ -23,7 +23,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`replica.persist.test.ts`, `fake-indexeddb`): reload restores state, log and the unacked inputs; `k` increments per load; a faulty store that drops one write, then reload and new ops, never reuses a dot and the new op has a distinct namespace; `stalledOwn > 0` after reload with a missing predecessor and returns to 0 when a peer supplies it; `saved(id)` is false until `put` resolves and stays false on failure; an op received with a missing dependency, reload, then re-delivery of the dependency applies it with no `vv` entry for the held op in between; seed version mismatch rejects.
   - _Requirements: R2.3, R4, R5_
 
-- [ ] 5. Link protocol and in-page link
+- [x] 5. Link protocol and in-page link
   - Export `makeRand` from `skeleton/src/core/simulate.ts` (no behaviour change).
   - `skeleton/src/sync/link.ts`: `Link`, `Msg`, `attachLink` and `Session`. `skeleton/src/sync/inpage-link.ts`: `createInPageLink` with `cut`, `restore`, `pending`, `pump`, `stats`, manual and `setTimeout` scheduling.
   - Tests (`link.test.ts`, two replicas with a manual scheduler): while cut, `stats().delivered` stays 0 both ways and `cut()` drops in-flight messages; after restore both canonical states deep-equal; a hello re-serves what the peer's `vv` lacks; a stalled buffer heals via the next ack; a reloaded peer is re-served and `peerAckVV` goes down so the lost op is unacked again and re-sent; an ack or ops with an unchanged `vv` causes no resend; the message count after quiet is bounded; messages before `hello` are ignored; every `vv` sent excludes held ops; `send` while down drops.
