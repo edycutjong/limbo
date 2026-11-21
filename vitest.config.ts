@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitest/config';
 
-// Two projects: fast unit tests, and the property suite (fast-check over simulated replicas).
+// Projects: fast unit tests, React component tests (jsdom), and the property suite (fast-check over simulated replicas).
 export default defineConfig({
   test: {
     passWithNoTests: true,
@@ -10,6 +10,14 @@ export default defineConfig({
           name: 'unit',
           include: ['skeleton/src/**/*.test.ts', 'apps/*/src/**/*.test.ts', 'kit/**/*.test.ts'],
           exclude: ['**/*.props.test.ts', '**/node_modules/**'],
+        },
+      },
+      {
+        test: {
+          name: 'limbo',
+          include: ['skeleton/src/**/*.test.tsx'],
+          environment: 'jsdom',
+          setupFiles: ['skeleton/src/limbo/test/setup.ts'],
         },
       },
       {
