@@ -40,7 +40,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: `pnpm props` shows the `mixed aftershock` convergence, replay equivalence and idempotence passing, and the vacuity guard listing `lww-equal` and `lww-different` as applicable, the rest `n/a`.
   - _Requirements: R6.4, R6.5_
 
-- [ ] 8. Model
+- [x] 8. Model
   - `src/model.ts` per design §4, including `frontier` for `values` and `noteValues`, sector grouping by `target.split('#')[0]`, roster order, and tolerance for targets without `#`.
   - Tests (`model.test.ts`): two surveyors' counts on one sector give total 5 and "Sari 2, Budi 3" order; the same surveyor's two concurrent counts give `values` of 2; an absent sector; severity is the max for concurrent reports in every one of several shuffled orders; a clear that saw `unsafe` lowers to the next report or `undefined`; a concurrent report survives a clear; needs add-wins; concurrent notes give `noteValues` of 2 and a pick-one resolves it; `sector.count` on target `t0` does not throw.
   - _Requirements: R4_
