@@ -48,6 +48,18 @@
         "chatSessionId": "sess_b3767fd0-52ca-4037-b4ed-d577b3f7be98",
         "timestamp": 1795283502685
       }
+    ],
+    "5. D5: \"Rejected ops\" in the Inspector": [
+      {
+        "executionId": "05a13f05-3539-47d4-a2ef-6adfe9c52390",
+        "chatSessionId": "sess_0c62b6be-3834-473e-a691-910cef7ac1d5",
+        "timestamp": 1795283616760
+      },
+      {
+        "executionId": "05a13f05-3539-47d4-a2ef-6adfe9c52390",
+        "chatSessionId": "sess_0c62b6be-3834-473e-a691-910cef7ac1d5",
+        "timestamp": 1795283801012
+      }
     ]
   }
 }

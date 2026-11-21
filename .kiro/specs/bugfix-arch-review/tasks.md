@@ -34,7 +34,7 @@ Order: D3, D2, D4, D5, D1 (the largest, last), then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`.
   - _Requirements: D4 4.1 to 4.6; Unchanged 3 to 8, 16_
 
-- [ ] 5. D5: "Rejected ops" in the Inspector
+- [x] 5. D5: "Rejected ops" in the Inspector
   - Failing tests first, in `skeleton/src/limbo/inspector.test.tsx`: with the drawer open, "No rejected ops." shows; after `pair.a.receive([...])` with a malformed op and an unknown-op op, rows with the ids and `malformed` / `unknown-op` appear without reopening; a store stub whose `put` rejects shows `store-failed` after `replica.local(...)`. Run and record the failure (no such section).
   - Fix: `skeleton/src/limbo/inspector.tsx` adds the section and table (`aria-label="Rejected ops"`) fed by `replica.rejected()`.
   - Add: rows follow `replica.rejected()` order and stop at 50; the focus trap and Escape still work.

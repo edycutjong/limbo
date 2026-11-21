@@ -2,7 +2,10 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Inspector } from './inspector.tsx';
 import { LimboShell, useLimbo } from './shell.tsx';
-import { describeConflicts, makeStubPair, renderApp } from './test/app.ts';
+import { createPair } from '../sync/pair.ts';
+import { openStore } from '../sync/store.ts';
+import type { Op } from '../core/types.ts';
+import { defs as stubDefs, describeConflicts, makeStubPair, materialize, renderApp, twinCount } from './test/app.ts';
 
 type P = Awaited<ReturnType<typeof makeStubPair>>;
 const sync = (pair: P) => act(async () => void (await pair.settle()));
@@ -269,5 +272,56 @@ describe('Inspector', () => {
     expect(cells[3]).toBe('unknown');
     expect(within(section('Queued ops')).getAllByText('unknown').length).toBeGreaterThan(0);
     pair.close();
+  });
+
+  describe('Rejected ops', () => {
+    const op = (n: number, name: string): Op => ({ id: `z:${n}`, op: name, target: 't', payload: {}, stamp: { l: 1, r: 'z', n }, deps: {} });
+
+    it('shows an empty line, then live rows for malformed and unknown-op ops', async () => {
+      const pair = await makeStubPair();
+      renderApp(pair, <Inspector id="a" />);
+      open();
+      expect(section('Rejected ops').textContent).toContain('No rejected ops.');
+      act(() => void pair.a.receive([{ ...op(1, 'note.add'), deps: null } as unknown as Op, op(2, 'nope.op')]));
+      const list = rows(section('Rejected ops'));
+      expect(list.map((r) => r.textContent)).toEqual(['z:1malformed', 'z:2unknown-op']);
+      expect(section('Rejected ops').querySelector('table')?.getAttribute('aria-label')).toBe('Rejected ops');
+      pair.close();
+    });
+
+    it('shows store-failed after a failed put', async () => {
+      const pair = await createPair({
+        app: 'stub-rej',
+        defs: stubDefs,
+        materialize,
+        twinCount,
+        seedOps: [],
+        schedule: () => undefined,
+        store: (name) => ({ ...openStore(name), put: () => Promise.reject(new Error('disk')) }),
+      });
+      renderApp(pair, <Inspector id="a" />);
+      open();
+      let made!: Op;
+      act(() => void (made = pair.a.local('note.add', 'n1', {})));
+      await act(async () => void (await Promise.resolve()));
+      expect(rows(section('Rejected ops')).map((r) => r.textContent)).toEqual([`${made.id}store-failed`]);
+      pair.close();
+    });
+
+    it('follows replica.rejected() order, stops at 50, and keeps Escape and the focus trap', async () => {
+      const pair = await makeStubPair();
+      renderApp(pair, <Inspector id="a" />);
+      open();
+      act(() => void pair.a.receive(Array.from({ length: 60 }, (_, i) => op(i + 1, 'nope.op'))));
+      const list = rows(section('Rejected ops'));
+      expect(list).toHaveLength(50);
+      expect(list.map((r) => r.querySelector('td')?.textContent)).toEqual(pair.a.rejected().map((r) => r.id));
+      const close = screen.getByRole('button', { name: 'Close' });
+      fireEvent.keyDown(close, { key: 'Tab' });
+      expect(document.activeElement).toBe(close);
+      fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
+      expect(screen.queryByRole('dialog')).toBeNull();
+      pair.close();
+    });
   });
 });

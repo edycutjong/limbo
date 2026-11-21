@@ -87,6 +87,7 @@ export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boole
     deps: fmtDeps(o.deps),
   });
   const recent = [...exchanges.last].reverse();
+  const rejected = replica.rejected().slice(-50);
 
   const onKey = (e: KeyboardEvent): void => {
     if (e.key === 'Escape') {
@@ -165,6 +166,29 @@ export function Inspector(p: { id: Id; open?: boolean; onOpenChange?(open: boole
                 </li>
               ))}
             </ul>
+          </section>
+          <section aria-label="Rejected ops">
+            <h3>Rejected ops</h3>
+            {rejected.length === 0 ? (
+              <p>No rejected ops.</p>
+            ) : (
+              <table aria-label="Rejected ops">
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rejected.map((r, i) => (
+                    <tr key={`${i}:${r.id}`}>
+                      <td>{r.id}</td>
+                      <td>{r.reason}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </section>
           <section aria-label="Replica">
             <h3>Replica</h3>
