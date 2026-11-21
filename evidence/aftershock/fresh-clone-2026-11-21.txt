@@ -1,0 +1,19 @@
+# fresh clone 9d75b6e 2026-11-21T15:25:10Z
+## install
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 1.8s using pnpm v10.34.5
+## typecheck
+exit 0
+## test
+ Test Files  85 passed (85)
+      Tests  697 passed (697)
+## props
+ Test Files  22 passed (22)
+      Tests  320 passed | 9 skipped (329)
+## build
+  dist/workbox-9c191d2f.js
+  dist/workbox-9c191d2f.js
+## e2e
+
+  6 skipped
+  8 passed (31.7s)
