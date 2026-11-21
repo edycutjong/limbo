@@ -10,6 +10,7 @@ export interface ItemRowProps {
   item: Item;
   me: string;
   queuedClaim: boolean;
+  promoted?: boolean;
   onTick(ticked: boolean): void;
   onRename(name: string): void;
   onDelete(): void;
@@ -73,7 +74,7 @@ export function ItemRow(p: ItemRowProps): ReactNode {
           onBlur={commit}
         />
       )}
-      <ClaimChip item={item} me={p.me} queued={p.queuedClaim} onClaim={p.onClaim} onRelease={p.onRelease} />
+      <ClaimChip item={item} me={p.me} queued={p.queuedClaim} promoted={p.promoted === true} onClaim={p.onClaim} onRelease={p.onRelease} />
       <span className="bc-menu">
         <button
           type="button"

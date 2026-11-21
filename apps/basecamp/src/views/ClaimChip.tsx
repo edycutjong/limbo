@@ -1,6 +1,6 @@
 // ClaimChip (R4.2): what the claim on one item looks like to one viewer. No timer: "waiting"
-// comes from the queued ops the caller passes in. Loser twins render in task 13.
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+// comes from the queued ops the caller passes in. Loser twins render in `ItemTwins`.
+import type { ReactNode } from 'react';
 import { displayName } from '../members.ts';
 import type { Item } from '../model.ts';
 import { TARGET } from './target.ts';
@@ -11,26 +11,18 @@ export interface ClaimChipProps {
   me: string;
   /** The viewer's own `item.claim` for this item is still queued (not acknowledged). */
   queued: boolean;
+  /** The viewer moved from losers to winners (tracked by `ItemTwins`, which stays mounted across the twin). */
+  promoted?: boolean;
   onClaim(): void;
   onRelease(): void;
 }
 
-type Role = 'winner' | 'loser' | 'none';
-
 export function ClaimChip(p: ClaimChipProps): ReactNode {
   const { item, me } = p;
-  const { winners, losers } = item.claims;
+  const { winners } = item.claims;
   const isWinner = winners.some((c) => c.who === me);
-  const role: Role = isWinner ? 'winner' : losers.some((c) => c.who === me) ? 'loser' : 'none';
-
-  // "Now you're bringing it": the viewer moved from losers to winners. Presentation state only.
-  const prev = useRef<Role>(role);
-  const [promoted, setPromoted] = useState(false);
-  useEffect(() => {
-    if (prev.current === 'loser' && role === 'winner') setPromoted(true);
-    else if (role !== 'winner') setPromoted(false);
-    prev.current = role;
-  }, [role]);
+  const role = isWinner ? 'winner' : item.claims.losers.some((c) => c.who === me) ? 'loser' : 'none';
+  const promoted = p.promoted === true;
 
   const who = winners.map((c) => displayName(c.who)).join(', ');
   const stop = isWinner && !p.queued && (

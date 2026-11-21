@@ -64,7 +64,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: tick sets `true` then `false`; units 2 shows "1 of 2 claimed" and a claim button for another member; "I'll bring it" → "Yours? waiting" while queued → "{Name} is bringing it" with "Stop bringing it" after sync; release lets the next claimant see "Now you're bringing it"; empty list shows "Nothing packed yet. Add the first thing."; every control is 44 px or larger; names render as text.
   - _Requirements: R3.5 to R3.7, R4.1, R4.2, R4.9 to R4.11, R17.2_
 
-- [ ] 13. Twin variants
+- [x] 13. Twin variants
   - `views/ItemTwins.tsx`: life, claim loser (both sides), value variants, via the layer's `Twin` and the rule lines of design §7.
   - Tests (two real replicas over `createPair`, manual `settle()`): tent twin caption equals "TWIN · Budi deleted this while Sari ticked it · rule: resurrect" with Keep and Delete; Keep and Delete each clear it on both; stove loser caption on B, quiet note on A, OK clears both; Why Sari? opens the Inspector and prints both stamps; concurrent renames show one button per name and the pick clears the twin; tick values twin; resolved twins leave no ghost.
   - _Requirements: R3.2, R3.3, R4.3 to R4.7_
