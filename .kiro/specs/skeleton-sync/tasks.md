@@ -39,7 +39,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. Tests and
   - Tests (`pair.test.ts`): edits on both sides while cut give `FOGGED` and `unacked` equal to each side's op count, `behind` 0 and the chip `Offline — N waiting`; after restore the view passes through `connecting` and `DEVELOPING`, then reaches `LIVE`; a conflicting edit gives `CONFLICT` and the chip with the conflict count; `FIXED` fires once after a partition or a returned conflict and not at start; the exchange holds the partition-era ops with their declared merge names and counts no duplicate; a reload of one replica mid-session leaves no false ack (peerAckVV drops, ops re-sent).
   - _Requirements: R10, R11, R12, R13, R15_
 
-- [ ] 8. Identity and ownership
+- [x] 8. Identity and ownership
   - `skeleton/src/sync/identity.ts`: `acquireIdentity` with injectable `storage` and `locks`, pair and single modes, `reset`, `release`, `?reset=1`.
   - Tests (`identity.test.ts`, stand-in `locks` with a held-name set and a Map-backed `storage`): the second tab with the same session id gets a new pair; a held single replica name gives a new replica id; `reset` deletes only this identity's databases (a second session's databases survive, checked with `fake-indexeddb`); a reset pair restarts at incarnation 1; `locks` undefined gives `exclusive: false`; the retry limit throws.
   - _Requirements: R14_
