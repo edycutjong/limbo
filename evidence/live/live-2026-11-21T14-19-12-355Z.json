@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-21T14:19:12.355Z",
+  "urls": {
+    "basecamp": "https://basecamp.limbo.edycu.dev/",
+    "aftershock": "https://aftershock.limbo.edycu.dev/"
+  },
+  "tests": [
+    {
+      "name": "basecamp: judge flow converges with no twin left",
+      "status": "passed"
+    },
+    {
+      "name": "basecamp: offline reload keeps the edit and the state",
+      "status": "passed"
+    },
+    {
+      "name": "basecamp: sw.js is revalidated",
+      "status": "passed"
+    },
+    {
+      "name": "aftershock: judge flow converges with no twin left",
+      "status": "failed"
+    }
+  ],
+  "passCount": 3
+}

@@ -1,5 +1,5 @@
 // ReplicaBody: one replica's body: grid, then the card of this replica's own selected sector.
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Inspector, useLimbo, type Id } from '../../../../skeleton/src/limbo/index.ts';
 import type { Op } from '../../../../skeleton/src/core/types.ts';
 import type { Replica } from '../../../../skeleton/src/sync/replica.ts';
@@ -30,6 +30,11 @@ export function ReplicaBody(p: { id: Id; selected?: string | undefined }): React
   const [inspector, setInspector] = useState(false);
   const scripted = useScripted().ids;
   const s = (replica as Replica<State>).state();
+  // The survey scene performs its edits on C3; open that sector on its own so the judge sees the twin without hunting for it.
+  const sceneSector = replica.log().find((o) => scripted.has(o.id))?.target.split('#')[0];
+  useEffect(() => {
+    if (sceneSector !== undefined) setSelected((cur) => cur ?? sceneSector);
+  }, [sceneSector]);
   const reported = Object.values(s.sectors).filter((x) => x.severity !== undefined).length;
   return (
     <div className="as-body">

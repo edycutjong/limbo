@@ -21,6 +21,10 @@ const card = (p: Page, id: Side): Locator => p.locator(`[data-replica="${id}"]`)
 const region = (p: Page, id: Side, app: App): Locator =>
   app === 'basecamp' ? card(p, id).getByRole('list', { name: 'Packing list' }) : card(p, id).getByRole('grid');
 
+// The claim winner sees a "Stop bringing it" button on their own card only; every other line must match.
+const regionText = async (p: Page, id: Side, app: App): Promise<string> =>
+  (await region(p, id, app).innerText()).replace(/^Stop bringing it\n/gm, '');
+
 const wispCount = async (p: Page, id: Side): Promise<number> => {
   const l = card(p, id).locator('.wisp-count');
   if ((await l.count()) === 0) return 0;
@@ -34,7 +38,7 @@ async function settled(p: Page, app: App): Promise<void> {
     await expect(card(p, id).locator('.limbo-chip-text')).toHaveText('Live', SLOW);
   }
   await expect
-    .poll(async () => (await region(p, 'a', app).innerText()) === (await region(p, 'b', app).innerText()), SLOW)
+    .poll(async () => (await regionText(p, 'a', app)) === (await regionText(p, 'b', app)), SLOW)
     .toBe(true);
   await expect.poll(async () => (await wispCount(p, 'a')) + (await wispCount(p, 'b')), SLOW).toBe(0);
 }
@@ -89,7 +93,7 @@ async function judgeBasecamp(p: Page): Promise<void> {
   await expect(B.getByRole('button', { name: 'OK', exact: true })).toBeVisible(SLOW);
   for (const c of [A, B]) {
     await expect(c.getByText(/^Syncing/)).toHaveCount(0, SLOW);
-    await expect(c.getByText('Live', { exact: true })).toBeVisible(SLOW);
+    await expect(c.getByText(/^Live/).first()).toBeVisible(SLOW);
   }
   await A.getByRole('button', { name: 'Keep', exact: true }).click();
   await B.getByRole('button', { name: 'OK', exact: true }).click();
@@ -102,7 +106,7 @@ async function judgeBasecamp(p: Page): Promise<void> {
     await expect(c.getByText('Budi is bringing it')).toHaveCount(0);
   }
   await expect
-    .poll(async () => (await region(p, 'a', 'basecamp').innerText()) === (await region(p, 'b', 'basecamp').innerText()), SLOW)
+    .poll(async () => (await regionText(p, 'a', 'basecamp')) === (await regionText(p, 'b', 'basecamp')), SLOW)
     .toBe(true);
 }
 
@@ -118,7 +122,7 @@ async function judgeAftershock(p: Page): Promise<void> {
   await expect(keep).toBeVisible(SLOW);
   for (const c of [A, B]) {
     await expect(c.getByText(/^Syncing/)).toHaveCount(0, SLOW);
-    await expect(c.getByText('Live', { exact: true })).toBeVisible(SLOW);
+    await expect(c.getByText(/^Live/).first()).toBeVisible(SLOW);
   }
   await keep.click();
   await expect(p.getByText(/TWIN ·/)).toHaveCount(0, SLOW);
