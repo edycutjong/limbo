@@ -19,7 +19,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: `sector.state.test.ts` for `severityOf` (max of several reports; a clear that saw a report removes it; a concurrent report survives the clear; a report made after the clear is kept; all cleared gives `undefined`; duplicates and order do not change it); the scaffolded props suite passes and the vacuity guard still reports.
   - _Requirements: R3.1, R3.8, R3.9, R6.1, R6.2_
 
-- [ ] 4. `sector.clear` and the severity companion
+- [x] 4. `sector.clear` and the severity companion
   - Create `ops/sector.clear.op.ts` (`merge: 'commutes'`, same `max` intent) and `sector.clear.props.ts`. Add `ops/sector.severity.props.test.ts` per design §9: `simulate` over `sector.report` and `sector.clear`, `maxIntent` over `config.orderings` runs, plus the local `clearAll` variant asserted to fail the oracle. State in the file that this covers what a per-op run of `sector.clear` cannot.
   - Tests: the scaffolded props suite passes; the companion passes on the real ops and fails on `clearAll`; a hand-built example shows a clear that saw `unsafe` lowers the severity and a concurrent `unsafe` report does not get cleared.
   - _Requirements: R3.2, R3.3, R6.2, R6.3, R6.7_
