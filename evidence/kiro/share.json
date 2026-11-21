@@ -1,0 +1,24 @@
+{
+  "generated_from": "fc86597de9f86587801883a52e59b3862fa2c09d",
+  "product_commits": 60,
+  "kiro_commits": 56,
+  "share": 0.9333,
+  "claude_direct_commits": [
+    {
+      "sha": "603993b22ed3488071811f6189967cb586007b01",
+      "subject": "kit: export deliveryOrder from the simulator for the in-page shuffle test (claude-direct, one word)"
+    },
+    {
+      "sha": "3489bc703f3bb5d2189f36ab8963a25612a0a177",
+      "subject": "kit: export makeRand from the simulator for the in-page link's chaos mode (claude-direct, one word)"
+    },
+    {
+      "sha": "cca30a00f5f0de579cb5215bd96dde62f61ee7ca",
+      "subject": "test: seeded fault for the Agent Stop gate"
+    },
+    {
+      "sha": "5601bf6a9dd2f7429b8001e20b56032a113a30f3",
+      "subject": "chore: scaffold pnpm workspace (skeleton, two apps, kit), MIT license, CI skeleton, Kiro run wrapper"
+    }
+  ]
+}
