@@ -41,7 +41,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: `wisps.test.tsx` gains a case: with 2 queued ops, `.limbo-wisp-summary` text is `2waiting` as separate `.wisp-count` ("2") and `.limbo-wisp-word` ("waiting"), and `.limbo-plate` text is `PLATE 7 · 2 WAITING`. Existing wisps, single, pair-view and app scene tests unchanged.
   - _Requirements: R3.1 to R3.3, R9.3_
 
-- [ ] 8. Fog veil
+- [x] 8. Fog veil
   - Replace the flat veil in `tokens.css` with the gradient and grain of design section 7, including the `haze` variant. Style `.limbo-fog-label` as a corner tag in `controls.css`.
   - Tests: `skeleton/src/limbo/fog-veil.test.ts` parses the veil percentages from `tokens.css` and requires `--ink` contrast ≥ 4.5:1 over the composited veil on `--card` and on `--bg`; asserts no `url(`, no `animation` on `.limbo-fog-veil` outside the existing `limbo-drain` rule; `fog.test.tsx` and `motion.test.tsx` unchanged and green.
   - _Requirements: R4.1 to R4.6, R6.2_

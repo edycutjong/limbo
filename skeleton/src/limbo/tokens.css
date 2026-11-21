@@ -114,7 +114,18 @@
 
 /* Motion (R14). Classes are added by the components only while data-motion="full". */
 .limbo-fog { position: relative; }
-.limbo-fog-veil { position: absolute; inset: 0; background: var(--before); opacity: .25; }
+/* Veil: static grain over a vertical gradient. Every layer is an alpha of a token. The percentages are read by fog-veil.test.ts. */
+.limbo-fog-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-conic-gradient(color-mix(in srgb, var(--ink) 5%, transparent) 0 25%, transparent 0 50%) 0 0 / 3px 3px,
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--before) 40%, transparent),
+      color-mix(in srgb, var(--fog-ink) 16%, transparent) 70%,
+      color-mix(in srgb, var(--before) 30%, transparent));
+}
+[data-fog="haze"] .limbo-fog-veil { opacity: .55; }
 .limbo-drain .limbo-fog-veil { animation: limbo-drain 600ms ease-out; }
 @keyframes limbo-drain { from { opacity: 0; } }
 .limbo-lift { animation: limbo-lift 900ms ease-in-out; }

@@ -186,3 +186,18 @@ button.ui-chip { cursor: pointer; }
   font-size: 15px;
   line-height: 1.4;
 }
+
+/* Fog label: a corner tag inside .limbo-fog */
+.limbo-fog-label {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  background: var(--bg);
+  color: var(--fog-ink);
+  border: 1px solid var(--before);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.35;
+}

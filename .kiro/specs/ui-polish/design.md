@@ -189,6 +189,7 @@ Filled in by each task. Format: file, lines before → after (non-blank, non-com
 | `skeleton/src/limbo/marks.tsx` | 2144 → 2149 total (+5 lines, multi-line summary markup; 21 files, unchanged) | R3 wisps markup |
 | `skeleton/src/limbo/tokens.css` | CSS, not counted | R2, R3, R4, R7 |
 | `skeleton/src/limbo/tokens.css` (task 2) | CSS, not counted; +2 lines at end (`:focus-visible` rule), `:root` untouched | R7.1 |
+| `skeleton/src/limbo/tokens.css` (task 8) | CSS, not counted; flat veil rule (1 line) → grain and gradient rule (+11 lines incl. the `haze` rule and a comment); `:root` untouched. Skeleton TS/TSX re-measured: 21 files, 2149 lines (unchanged) | R4.1 to R4.5 |
 
 Budget (limit 30 files, 2,400 lines): baseline recorded in task 1 in `evidence/ui-polish/baseline.md`; final in task 12. The expected delta is about +4 lines.
 
