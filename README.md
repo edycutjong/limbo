@@ -36,8 +36,8 @@ On a desktop-width window you get two replicas side by side: **Replica A — Sar
   [`evidence/convergence/full-2026-11-21.json`](evidence/convergence/full-2026-11-21.json) (log beside it).
 - Offline e2e: the lake-scene test (one page, the pair view) and the two-browser-context test (a real partition through a dev-only
   test relay, then convergence) each passed 10 of 10 repeats —
-  [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); a fresh-clone run at commit `fc86597` (before the
-  Inspector bugfix) —
+  [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); fresh-clone runs (before and after
+  the Inspector bugfix) —
   [`evidence/e2e/fresh-clone-2026-11-21.txt`](evidence/e2e/fresh-clone-2026-11-21.txt).
 - How much of the product code Kiro wrote: [`evidence/kiro/share.json`](evidence/kiro/share.json) (commits touching `skeleton/` or
   `apps/` that carry a `Kiro-Session` trailer). Every Kiro session: [`evidence/kiro/sessions.jsonl`](evidence/kiro/sessions.jsonl);

@@ -20,3 +20,22 @@ $ CI=1 pnpm e2e
   ✓  2 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
   ✓  3 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
   3 passed (11.2s)
+
+# Re-run after the Inspector bugfix: fresh clone at 7f838ff, 2026-11-21T09:36Z
+$ pnpm install --frozen-lockfile
+Done in 885ms using pnpm v10.34.5
+$ pnpm typecheck
+ok
+$ pnpm test
+ Test Files  58 passed (58)
+      Tests  500 passed (500)
+$ pnpm props
+ Test Files  15 passed (15)
+      Tests  227 passed (227)
+$ pnpm --filter @limbo/basecamp build
+✓ built in 821ms
+$ CI=1 pnpm e2e
+  ✓  1 [spike] › e2e/offline-spike.spec.ts:10:1 › two offline replicas converge after reconnect (1.6s)
+  ✓  2 [basecamp] › e2e/basecamp-offline.spec.ts:45:1 › lake scene in one page: partition, Play the lake scene, reconnect, resolve, converge (4.0s)
+  ✓  3 [basecamp] › e2e/basecamp-offline.spec.ts:239:1 › two contexts through the dev relay: partition, reconnect, converge (2.4s)
+  3 passed (11.4s)
