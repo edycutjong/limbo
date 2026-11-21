@@ -17,7 +17,7 @@ const def: OpDef<MoveState, KeyPayload> = {
   apply(s, op: Op<KeyPayload>) {
     const prev = s.moves?.[op.target]?.writes ?? {};
     const writes = { ...prev, [op.id]: op };
-    const key = causalLww(Object.values(writes)).value?.key ?? op.payload.key;
+    const key = causalLww(Object.values(writes)).value!.key;
     return { ...s, moves: { ...(s.moves ?? {}), [op.target]: { writes, key } } };
   },
   invariant(s) {

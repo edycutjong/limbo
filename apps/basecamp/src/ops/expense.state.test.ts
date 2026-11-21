@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Op } from '../../../../skeleton/src/core/types.ts';
-import { amountOf, firstAdd, initialMembers, present, sharesOf, type AddPayload } from './expense.state.ts';
+import { amountOf, firstAdd, initialMembers, memberInvariant, present, sharesOf, type AddPayload } from './expense.state.ts';
 
 let n = 0;
 function mk<P>(r: string, l: number, deps: Record<string, number>, payload: P, op = 'x'): Op<P> {
@@ -49,5 +49,18 @@ describe('amount and shares', () => {
   it('splits cents and reports the unallocated amount with no members', () => {
     expect(sharesOf(2500, ['budi', 'dewi', 'sari']).shares).toEqual({ budi: 834, dewi: 833, sari: 833 });
     expect(sharesOf(2500, [])).toEqual({ shares: {}, unallocated: 2500 });
+  });
+});
+
+describe('memberInvariant', () => {
+  it('accepts an empty state and string members', () => {
+    const a = mk('a', 1, {}, { member: 'sari' });
+    expect(memberInvariant({})).toBe(true);
+    expect(memberInvariant({ memberAdds: { [a.id]: a }, memberRemoves: {} })).toBe(true);
+  });
+  it('rejects a non-string member in an add or a remove', () => {
+    const bad = mk('a', 1, {}, { member: 5 as unknown as string });
+    expect(memberInvariant({ memberAdds: { [bad.id]: bad } })).toBe(`op ${bad.id} has a non-string member`);
+    expect(memberInvariant({ memberRemoves: { [bad.id]: bad } })).toBe(`op ${bad.id} has a non-string member`);
   });
 });

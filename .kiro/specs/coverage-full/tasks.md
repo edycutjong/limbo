@@ -31,7 +31,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green, then `pnp
   - Money cases use integer cents and `sum-split`. Assert shares sum to the amount.
   - _Requirements: R1, R2, R3, R4, R5, R6, R7.4_
 
-- [ ] 6. `apps/basecamp/src/ops/*`
+- [x] 6. `apps/basecamp/src/ops/*`
   - Files: `expense.add.op`, `expense.setAmount.op`, `expense.state`, `item.add.op`, `item.claims`, `item.life`, `item.move.op`, `item.rename.op`, `item.tick.op`. Extend the matching tests.
   - Ops keep their `merge` and `intent` (check against `kit/props/intents.json`). Assert `apply` and `invariant` results, and that applying the same op twice gives the same state.
   - Do not edit `registry.gen.ts`.
