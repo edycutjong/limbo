@@ -114,6 +114,7 @@
 .limbo-reset { min-width: 44px; min-height: 44px; justify-self: start; }
 .limbo-cord-caption { font-variant: small-caps; letter-spacing: .06em; font-size: 14px; color: var(--muted); margin: 0; }
 @media (min-width: 640px) and (max-width: 1023px) { .limbo-pair { grid-template-columns: 1fr; } }
+@media (max-width: 1023px) { .limbo-cord { order: -1; position: sticky; top: 0; z-index: 5; background: var(--card); padding: 8px; border-bottom: 1px solid var(--rule); } }
 @media (min-width: 1024px) { .limbo-pair { grid-template-columns: minmax(340px, 1fr) minmax(120px, 160px) minmax(340px, 1fr); align-items: start; } .limbo-reset { grid-column: 1 / -1; } }
 .limbo-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
