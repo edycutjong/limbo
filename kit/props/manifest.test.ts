@@ -20,6 +20,7 @@ const EXPECTED: Record<string, Intent['kind']> = {
   'sector.clear': 'max',
   'sector.count': 'set',
   'sector.need': 'add-remove',
+  'sector.unneed': 'add-remove',
   'sector.note': 'set',
 };
 const VALID_KINDS: readonly string[] = ['set', 'delta', 'add-remove', 'max', 'claim', 'life', 'split', 'move', 'create'];
@@ -31,10 +32,10 @@ function def(name: string, intent: Intent): OpDef {
 describe('intents.json (R13)', () => {
   const manifest = loadManifest();
 
-  it('holds exactly the 18 names with the required kinds', () => {
+  it('holds exactly the 19 names with the required kinds', () => {
     expect(manifest).toBeDefined();
     const kinds = Object.fromEntries(Object.entries(manifest ?? {}).map(([n, i]) => [n, i.kind]));
-    expect(Object.keys(EXPECTED)).toHaveLength(18);
+    expect(Object.keys(EXPECTED)).toHaveLength(19);
     expect(kinds).toEqual(EXPECTED);
   });
 

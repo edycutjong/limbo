@@ -29,7 +29,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: scaffolded props suites pass; the vacuity guard finds `lww-equal` and `lww-different`; invariants reject a float, a negative, 100001 and a 281-character note.
   - _Requirements: R3.4, R3.6, R3.8, R3.9, R6.2, R6.5_
 
-- [ ] 6. `sector.need` and `sector.unneed`
+- [x] 6. `sector.need` and `sector.unneed`
   - Resolve design §10 point 1 first. Default: create both ops (`commutes`, intent `add-remove` on `needs`) and make the two kit edits in this task only: add `"sector.unneed": { "kind": "add-remove" }` to `kit/props/intents.json`, and in `kit/props/manifest.test.ts` add the entry to `EXPECTED` and change the count from 18 to 19 in the name and in the assertion text. Weaken nothing else. If the owner chose the zero-edit alternative, create one op `sector.need { need, on }` instead and skip the kit edits. Say which in the task notes.
   - `*.props.ts` use `addRemoveIntent` with the add and remove roles (as BASECAMP's member ops) and a 2-value hot pool, so concurrent add and unneed of one need happen.
   - Tests: scaffolded props suites pass; `present` cases (an unneed that observed the add removes it; an add concurrent with an unneed survives; duplicate adds; unneed before add); manifest test passes with the new count.

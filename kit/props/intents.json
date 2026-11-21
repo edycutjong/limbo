@@ -16,5 +16,6 @@
   "sector.clear": { "kind": "max" },
   "sector.count": { "kind": "set" },
   "sector.need": { "kind": "add-remove" },
+  "sector.unneed": { "kind": "add-remove" },
   "sector.note": { "kind": "set" }
 }
