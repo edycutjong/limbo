@@ -43,7 +43,7 @@ describe('app assembly', () => {
     for (const id of ['a', 'b']) {
       const card = document.querySelector(`[data-replica="${id}"]`) as HTMLElement;
       const rows = within(card).getAllByRole('listitem').filter((li) => li.hasAttribute('data-item'));
-      expect(rows.map((r) => r.textContent)).toEqual(names);
+      expect(rows.map((r) => r.querySelector('[data-name]')!.textContent)).toEqual(names);
     }
   });
 

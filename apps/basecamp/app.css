@@ -7,3 +7,9 @@ body {
   margin: 0 auto;
   padding: 1.5rem 1rem;
 }
+.bc-row { display: flex; align-items: center; gap: 0.5rem; list-style: none; }
+.bc-list, .bc-expenses { padding: 0; margin: 0; }
+.bc-name { flex: 1; }
+.bc-claim { display: inline-flex; align-items: center; gap: 0.5rem; }
+.bc-add { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+.bc-add input { flex: 1; }

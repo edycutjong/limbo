@@ -59,7 +59,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests (`app.test.tsx`, jsdom, fake-indexeddb): both cards render the seeded list in the seed order; both chips read "Live"; the single layout shows below 640 px; `window.limbo` exists in test and the production check is in task 19; Reset demo deletes both databases and calls reload (injected).
   - _Requirements: R1.1, R13.1, R13.4, R13.5, R13.7, R9.1_
 
-- [ ] 12. `ItemRow`, `ClaimChip`, add field, empty state, keys
+- [x] 12. `ItemRow`, `ClaimChip`, add field, empty state, keys
   - `views/ItemRow.tsx`, `ClaimChip.tsx`, `AddItem.tsx`, and the empty state. Space ticks (explicit value), Delete deletes, both inactive in text inputs. Overflow menu with Rename and Delete.
   - Tests: tick sets `true` then `false`; units 2 shows "1 of 2 claimed" and a claim button for another member; "I'll bring it" → "Yours? waiting" while queued → "{Name} is bringing it" with "Stop bringing it" after sync; release lets the next claimant see "Now you're bringing it"; empty list shows "Nothing packed yet. Add the first thing."; every control is 44 px or larger; names render as text.
   - _Requirements: R3.5 to R3.7, R4.1, R4.2, R4.9 to R4.11, R17.2_
