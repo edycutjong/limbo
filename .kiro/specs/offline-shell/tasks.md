@@ -49,7 +49,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Run it against both deployed URLs with `LIMBO_LIVE_RECORD=1`. Store the two JSON records under `evidence/live/`. If a live run fails, report the failing step and stop; do not change a deployed app in this task.
   - _Requirements: R9.1, R9.2, R9.3, R9.4, R9.5, R9.6, R6.4_
 
-- [ ] 9. Final verification and record
+- [x] 9. Final verification and record
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm e2e`. Write the measured counts (unit, limbo and props test files and tests; e2e tests passed and skipped; skeleton files, lines and exports) to `evidence/offline-shell/final.md`, from the real run output. State that `skeleton/` has no changed file.
   - List every file changed outside `apps/basecamp` and `apps/aftershock`. Expected: `playwright.config.ts`, `e2e/offline-shell.spec.ts`, `e2e/live.spec.ts`, `package.json`, `pnpm-lock.yaml`, `apps/pwa-options.ts`, `apps/offline-shell.ts`, and files under `evidence/`. Any other file is a defect to explain or revert.
   - Add the one open point to the record: the in-page pair reconnects at boot, so "same wisp count" compares the settled count (design D4). A persisted cut needs a skeleton change and is a separate spec.
