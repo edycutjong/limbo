@@ -85,7 +85,7 @@ export function deliveryOrder(ops: readonly Op[], rand: Rand, dupRate: number): 
   const order: Op[] = [];
   while (left.length > 0) {
     const ready = left.filter(
-      (o) => (vv[o.stamp.r] ?? 0) === o.stamp.n - 1 && Object.keys(o.deps).every((r) => (vv[r] ?? 0) >= (o.deps[r] ?? 0)),
+      (o) => (vv[o.stamp.r] ?? 0) === o.stamp.n - 1 && Object.entries(o.deps).every(([r, n]) => (vv[r] ?? 0) >= n),
     );
     const o = rand.pick(ready); // never empty: the script is causally closed
     left.splice(left.indexOf(o), 1);
