@@ -60,6 +60,18 @@
         "chatSessionId": "sess_f9afa634-fe7e-4f95-bd19-4e40535e2545",
         "timestamp": 1795245433927
       }
+    ],
+    "6. Model: expenses, claims with units, lifeInfo, values; un-pend G20 and G21": [
+      {
+        "executionId": "c761ec2d-8f05-4c0a-81e4-ecfb13810602",
+        "chatSessionId": "sess_a62f3b7e-2e95-4ff9-8280-eb2766d9fa0d",
+        "timestamp": 1795245676940
+      },
+      {
+        "executionId": "c761ec2d-8f05-4c0a-81e4-ecfb13810602",
+        "chatSessionId": "sess_a62f3b7e-2e95-4ff9-8280-eb2766d9fa0d",
+        "timestamp": 1795245833391
+      }
     ]
   }
 }

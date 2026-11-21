@@ -37,11 +37,11 @@ describe('partialMatch', () => {
 });
 
 describe('golden files', () => {
-  it('loads G01..G21 with tuple stamps converted; G20 and G21 are pending', () => {
+  it('loads G01..G21 with tuple stamps converted; none is pending', () => {
     const gs = loadGoldens();
     expect(gs).toHaveLength(21);
     expect(gs[0]!.ops[0]!.stamp).toEqual({ l: 1, r: 's', n: 1 });
-    expect(gs.filter((g) => g.pending !== undefined).map((g) => g.file)).toEqual(['G20.json', 'G21.json']);
+    expect(gs.filter((g) => g.pending !== undefined).map((g) => g.file)).toEqual([]);
   });
   it('every history has at least one complete causal order', () => {
     for (const g of loadGoldens()) expect(countOrders(g.ops).orders, g.file).toBeGreaterThan(0);

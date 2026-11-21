@@ -1,0 +1,1 @@
+Run task 6 of the basecamp spec only. The `pending` field has already been removed from `kit/props/golden/G20.json` and `G21.json` by a kit change (that directory is protected, so do not edit it); do the rest of the task, including updating `kit/props/golden.test.ts` so it no longer lists them as pending. Never change the expectations in a golden file.
