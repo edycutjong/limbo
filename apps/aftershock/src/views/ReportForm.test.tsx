@@ -28,6 +28,13 @@ const mount = (r: Replica<State>, id: string) => {
 const names = (r: Replica<State>, from: number): string[] => r.applied().slice(from).map((o) => o.op);
 
 describe('ReportForm', () => {
+  it('the Re-inspection input is inside a .ui-check label', async () => {
+    const f = mount(await make('a'), 'C3');
+    const box = f.q('input[type="checkbox"]');
+    expect(box.closest('label.ui-check')).not.toBeNull();
+    expect(box.closest('label')!.textContent).toContain('Re-inspection');
+  });
+
   it('A saves C3 damaged, 2, "cracked stairwell": exactly report, count, note', async () => {
     const r = await make('a');
     const before = r.applied().length;

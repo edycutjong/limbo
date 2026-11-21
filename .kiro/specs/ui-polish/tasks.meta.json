@@ -108,6 +108,18 @@
         "chatSessionId": "sess_aa22bce9-631c-451b-8a1a-ebbd3f8d974c",
         "timestamp": 1795277919206
       }
+    ],
+    "10. AFTERSHOCK": [
+      {
+        "executionId": "d73af0da-d4c4-4e26-905e-14340e6f765e",
+        "chatSessionId": "sess_a88e8f73-97ef-43c4-95f9-651da8e89c0b",
+        "timestamp": 1795278109522
+      },
+      {
+        "executionId": "d73af0da-d4c4-4e26-905e-14340e6f765e",
+        "chatSessionId": "sess_a88e8f73-97ef-43c4-95f9-651da8e89c0b",
+        "timestamp": 1795278245305
+      }
     ]
   }
 }

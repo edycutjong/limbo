@@ -102,7 +102,7 @@ export function ReportForm(p: { replica: Replica<State>; id: string; sector: Sec
             type="button"
             role="radio"
             aria-checked={severity === v}
-            className="as-btn"
+            className="ui-btn"
             data-severity-option={v}
             onClick={() => edit({ severity: v })}
           >
@@ -114,17 +114,17 @@ export function ReportForm(p: { replica: Replica<State>; id: string; sector: Sec
 
       <div className="as-stepper">
         <label htmlFor={`as-count-${id}`}>People found</label>
-        <button type="button" className="as-btn" aria-label="Fewer people" onClick={() => step(-1)}>−</button>
+        <button type="button" className="ui-btn" aria-label="Fewer people" onClick={() => step(-1)}>−</button>
         <input
           id={`as-count-${id}`}
-          className="as-input"
+          className="ui-input"
           type="number"
           inputMode="numeric"
           step="any"
           value={count}
           onChange={(e) => edit({ count: e.target.value })}
         />
-        <button type="button" className="as-btn" aria-label="More people" onClick={() => step(1)}>+</button>
+        <button type="button" className="ui-btn" aria-label="More people" onClick={() => step(1)}>+</button>
       </div>
       {errors.count && <p role="alert" className="as-error" data-error="count">{errors.count}</p>}
 
@@ -133,7 +133,7 @@ export function ReportForm(p: { replica: Replica<State>; id: string; sector: Sec
           <button
             key={n}
             type="button"
-            className="as-btn"
+            className="ui-btn"
             aria-pressed={needOn(n)}
             data-need-option={n}
             onClick={() => edit({ needs: { ...draft.needs, [n]: !needOn(n) } })}
@@ -144,15 +144,15 @@ export function ReportForm(p: { replica: Replica<State>; id: string; sector: Sec
       </div>
 
       <label htmlFor={`as-note-${id}`}>Note</label>
-      <textarea id={`as-note-${id}`} className="as-input" value={note} onChange={(e) => edit({ note: e.target.value })} />
+      <textarea id={`as-note-${id}`} className="ui-input" value={note} onChange={(e) => edit({ note: e.target.value })} />
       {errors.note && <p role="alert" className="as-error" data-error="note">{errors.note}</p>}
 
-      <label className="as-check">
+      <label className="ui-check">
         <input type="checkbox" checked={draft.reinspect} onChange={(e) => edit({ reinspect: e.target.checked })} />
         Re-inspection
       </label>
 
-      <button type="submit" className="as-btn as-save" disabled={!dirty}>Save</button>
+      <button type="submit" className="ui-btn as-save" disabled={!dirty}>Save</button>
       {hint && <p role="status" className="as-hint" data-hint>{hint}</p>}
     </form>
   );

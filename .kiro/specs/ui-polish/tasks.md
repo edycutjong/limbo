@@ -51,7 +51,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The last 
   - Tests: unit tests of `withReplicas` in both apps (no param gives `replicas=2`; `1` and `2` are kept; other params are kept). `app.test.tsx` of each app: with no `replicas` param, both `[data-replica]` cards render and the "Cut link" button is present. Skeleton `pair-view.test.tsx` and `single.test.tsx` are unchanged. Reason for the commit: the apps now default to two replicas on phones so the first screen shows Cut link, fog, wisps and twins.
   - _Requirements: R5.1 to R5.5_
 
-- [ ] 10. AFTERSHOCK
+- [x] 10. AFTERSHOCK
   - `SectorCard.tsx`: one spaced tag per edited field (design section 9). `ReportForm.tsx`: `ui-btn`, `ui-input`, `ui-check` (Re-inspection label with a 44 px hit area). `SectorGrid.tsx` and `app.css`: gridcell hover with 1 px lift, selection as a border, delete the per-component focus outlines.
   - Update selectors of tests that use `.as-btn`, `.as-input` or `.as-check` to the new class names. No assertion changes.
   - Tests: `SectorCard.test.tsx`: two scripted fields render two tags, each with a field name and the text `scripted edit`. `ReportForm.test.tsx`: the Re-inspection input is inside a `.ui-check` label. `app.css` check in `controls.test.ts` or a sibling: `.as-cell:hover` has a `transform` and a `border-color` and uses `var(--ui-dur)`.

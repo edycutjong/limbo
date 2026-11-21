@@ -49,12 +49,14 @@ body {
   background: var(--card);
   font-size: 0.625rem;
   cursor: pointer;
+  transition: transform var(--ui-dur) var(--ui-ease), border-color var(--ui-dur) var(--ui-ease);
+}
+.as-cell:hover {
+  border-color: var(--muted);
+  transform: translateY(-1px);
 }
 .as-cell[aria-selected='true'] {
-  outline: 2px solid var(--twin);
-}
-.as-cell:focus-visible {
-  outline: 2px solid var(--ink);
+  border: 2px solid var(--twin);
 }
 .as-cell[data-severity='unsafe'] {
   border-color: var(--after);
@@ -83,23 +85,32 @@ body {
   gap: 0.5rem;
   align-items: center;
 }
-.as-btn,
-.as-input,
-.as-check {
+.as-form .ui-btn,
+.as-form .ui-input {
   min-width: 44px;
   min-height: 44px;
 }
-.as-check {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-.as-input {
+.as-form .ui-input {
   font-variant-numeric: tabular-nums;
 }
-.as-btn[aria-checked='true'],
-.as-btn[aria-pressed='true'] {
-  outline: 2px solid var(--ink);
+.as-form .ui-btn[aria-checked='true'],
+.as-form .ui-btn[aria-pressed='true'] {
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.as-scripted-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.as-scripted-tag {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--rule);
+  font-family: var(--font-data);
+  font-size: 0.75rem;
 }
 .as-error {
   font-weight: 600;

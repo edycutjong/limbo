@@ -71,6 +71,16 @@ describe('SectorCard', () => {
     expect(r.container.textContent).toContain('<i>x</i> 1');
   });
 
+  it('two scripted fields render two tags, each with a field name and "scripted edit"', () => {
+    const r = render(<SectorCard id="C3" sector={undefined} scripted={['note', 'needs']} />);
+    const tags = Array.from(r.container.querySelectorAll('.as-scripted-tag'));
+    expect(tags.length).toBe(2);
+    for (const t of tags) {
+      expect(t.querySelector('.as-scripted-field')!.textContent).not.toBe('');
+      expect(t.querySelector('[data-scripted]')!.textContent).toBe('scripted edit');
+    }
+  });
+
   it('two cards select different sectors independently', () => {
     const sectors = materialize(makeSeed()).sectors;
     function Pane() {

@@ -54,9 +54,16 @@ export function SectorCard(p: {
         </ul>
       )}
       {s?.note !== undefined && s.note !== '' && <p className="as-note" data-note>{s.note}</p>}
-      {(p.scripted ?? []).map((f) => (
-        <span key={f} className="as-scripted" data-scripted={f}>{SCRIPTED_TEXT}</span>
-      ))}
+      {(p.scripted ?? []).length > 0 && (
+        <div className="as-scripted-row">
+          {(p.scripted ?? []).map((f) => (
+            <span key={f} className="as-scripted-tag">
+              <span className="as-scripted-field">{f}</span>
+              <span className="as-scripted" data-scripted={f}>{SCRIPTED_TEXT}</span>
+            </span>
+          ))}
+        </div>
+      )}
       {p.children}
       {sev === 'unsafe' && <p className="as-instruction" data-instruction>{p.id} — do not enter</p>}
     </section>
