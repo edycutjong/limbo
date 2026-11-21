@@ -1,9 +1,21 @@
 {
-  "generated_from": "18c82edb715435422acb798e1982be6d8a9fb878",
-  "product_commits": 62,
-  "kiro_commits": 58,
-  "share": 0.9355,
+  "generated_from": "d0fd1eccbbb0971e00932e64fb217c96ee86d299",
+  "product_commits": 104,
+  "kiro_commits": 97,
+  "share": 0.9327,
   "claude_direct_commits": [
+    {
+      "sha": "4191fe71d7668b9130aaa26cd40e103e28502253",
+      "subject": "fix(ui): lever block first and sticky on stacked pair layouts (QA round 3; claude-direct ledger row), live e2e record 6/6"
+    },
+    {
+      "sha": "38c060dc3020b60c93a57b07fd2f5aadc5667d26",
+      "subject": "fix(ui): container-query row layout in BASECAMP, twin ghost as dashed outline only, landing iframe hidden on narrow screens (claude-direct, see ledger rows)"
+    },
+    {
+      "sha": "eda0a81b7b8682e2bd59bbdfc8256334cffee104",
+      "subject": "fix: open the scene's sector on both AFTERSHOCK cards; live e2e asserts 'Live · N conflicts' and ignores the winner-only 'Stop bringing it' button"
+    },
     {
       "sha": "603993b22ed3488071811f6189967cb586007b01",
       "subject": "kit: export deliveryOrder from the simulator for the in-page shuffle test (claude-direct, one word)"
