@@ -77,6 +77,18 @@
         "chatSessionId": "sess_2ceb9dfa-0a19-4fec-8f47-8d18ddedf7c5",
         "timestamp": 1795257042486
       }
+    ],
+    "7. Mixed-script hook": [
+      {
+        "executionId": "8bfe02ce-feac-4ea1-8569-f294fedd7e40",
+        "chatSessionId": "sess_25286725-00c1-4483-936f-928a063f154d",
+        "timestamp": 1795257389951
+      },
+      {
+        "executionId": "8bfe02ce-feac-4ea1-8569-f294fedd7e40",
+        "chatSessionId": "sess_25286725-00c1-4483-936f-928a063f154d",
+        "timestamp": 1795257575252
+      }
     ]
   }
 }

@@ -35,7 +35,7 @@ Each task ends with `pnpm typecheck && pnpm test && pnpm props` green. The e2e t
   - Tests: scaffolded props suites pass; `present` cases (an unneed that observed the add removes it; an add concurrent with an unneed survives; duplicate adds; unneed before add); manifest test passes with the new count.
   - _Requirements: R3.5, R3.7, R6.2_
 
-- [ ] 7. Mixed-script hook
+- [x] 7. Mixed-script hook
   - `ops/app.props.ts` exporting `app: AppProps = { materialize }` once the model of task 8 exists (create a stub model first only if needed, and replace it in task 8). A comment states that `AppProps` has no `max` or `add-remove` slot and that those intents run per op and in the companion.
   - Tests: `pnpm props` shows the `mixed aftershock` convergence, replay equivalence and idempotence passing, and the vacuity guard listing `lww-equal` and `lww-different` as applicable, the rest `n/a`.
   - _Requirements: R6.4, R6.5_
