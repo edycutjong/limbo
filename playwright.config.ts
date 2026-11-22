@@ -18,6 +18,7 @@ export default defineConfig<{ app: 'basecamp' | 'aftershock' }>({
     { name: 'ui-polish-aftershock', testMatch: 'ui-polish.spec.ts', use: { baseURL: 'http://localhost:5176', app: 'aftershock' } },
     // The static landing site with the /judge route (served by e2e/site-server.mjs, which mirrors Vercel cleanUrls).
     { name: 'judge', testMatch: 'judge.spec.ts', use: { baseURL: 'http://localhost:5179' } },
+    { name: 'landing', testMatch: 'landing.spec.ts', use: { baseURL: 'http://localhost:5179' } },
     // Deployed URLs come from env vars; no server and no baseURL.
     { name: 'live', testMatch: 'live.spec.ts' },
     { name: 'live-judge', testMatch: 'judge.spec.ts' }, // needs LIMBO_LIVE_LANDING; skipped otherwise
