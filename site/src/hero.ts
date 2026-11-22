@@ -46,7 +46,8 @@ export function memoryStore(): OpStore {
   };
 }
 
-export function newPair(pace: () => number = () => 0): Promise<Pair<State>> {
+/** `manual`: the link never pumps on its own (prerender steps it message by message). */
+export function newPair(pace: () => number = () => 0, manual = false): Promise<Pair<State>> {
   return createPair<State>({
     app: config.name,
     defs: config.defs,
@@ -54,7 +55,7 @@ export function newPair(pace: () => number = () => 0): Promise<Pair<State>> {
     twinCount: config.twinCount,
     seedOps: config.seedOps,
     store: () => memoryStore(),
-    schedule: (fn, delay) => void setTimeout(fn, delay + pace()),
+    schedule: manual ? () => undefined : (fn, delay) => void setTimeout(fn, delay + pace()),
   });
 }
 
@@ -140,21 +141,54 @@ export function limboList(c: CardData): string {
   return shown.join('');
 }
 
-/** Run the lake scene with no pacing: cut, the four partition edits, restore, settle. */
-export async function lakeNow(pair: Pair<State>): Promise<void> {
+/** The lake scene's partition half, with no pacing: cut, then the four offline edits. */
+export function lakeOffline(pair: Pair<State>): void {
   pair.cut();
   for (const step of lakeScript) step.run(step.replica === 'a' ? pair.a : pair.b);
+}
+
+/** The whole lake scene with no pacing: offline edits, restore, settle. */
+export async function lakeNow(pair: Pair<State>): Promise<void> {
+  lakeOffline(pair);
   pair.restore();
   await pair.settle();
 }
 
-/** The no-JS / print / first-capture markup: the lake scene settled with the twins waiting. */
-export async function prerender(): Promise<Record<Id, CardData>> {
-  const pair = await newPair();
-  await lakeNow(pair);
-  const out = { a: card(pair, 'a'), b: card(pair, 'b') };
+/** Tap Keep on Sari's tent twin and OK on Budi's lost claim, then settle. */
+export async function resolveNow(pair: Pair<State>): Promise<void> {
+  restoreItem(pair.a, 'tent');
+  releaseItem(pair.b, 'stove', 'budi');
+  await pair.settle();
+}
+
+export interface Prerender {
+  opening: Record<Id, CardData>;
+  settled: Record<Id, CardData>;
+  live: CardData;
+  developing: CardData;
+  fixed: CardData;
+}
+
+/** Real engine states for the markup: the page opens in limbo (link cut, edits waiting); the states strip and the
+ *  deck show the rest. Developing is caught by stepping the link one message at a time. */
+export async function prerender(): Promise<Prerender> {
+  const pair = await newPair(() => 0, true);
+  const live = card(pair, 'a');
+  lakeOffline(pair);
+  const opening = { a: card(pair, 'a'), b: card(pair, 'b') };
+  pair.restore();
+  let developing: CardData | undefined;
+  for (let i = 0; i < 200 && !developing && pair.link.pump(); i++) {
+    const c = card(pair, 'a');
+    if (c.axis === 'DEVELOPING') developing = c;
+  }
+  await pair.settle();
+  const settled = { a: card(pair, 'a'), b: card(pair, 'b') };
+  await resolveNow(pair);
+  const fixed = card(pair, 'a');
   pair.close();
-  return out;
+  if (!developing) throw new Error('prerender: never saw DEVELOPING');
+  return { opening, settled, live, developing, fixed };
 }
 
 // ---------- browser ----------
@@ -188,7 +222,7 @@ export function mount(root: HTMLElement): void {
       el.dataset.conflict = c.conflict;
       el.toggleAttribute('data-fixed', c.fixed);
       el.querySelector('.lb-chip')!.textContent = c.chip;
-      el.querySelector('.lb-count')!.textContent = String(c.waiting.length);
+      el.querySelectorAll('.lb-count').forEach((n) => (n.textContent = String(c.waiting.length)));
       const list = el.querySelector('.lb-list')!;
       if (last[id] !== c.html) {
         last[id] = c.html;
@@ -205,6 +239,7 @@ export function mount(root: HTMLElement): void {
     }
     const up = p.sessions.a.link() !== 'down';
     cord.dataset.link = up ? 'up' : 'down';
+    root.dataset.link = up ? 'up' : 'down';
     linkBtn.textContent = up ? 'Cut link' : 'Restore link';
     linkBtn.setAttribute('aria-pressed', String(!up));
   };
@@ -237,12 +272,41 @@ export function mount(root: HTMLElement): void {
     paint();
   };
 
+  // Restore the cut link, let the ops cross, then wait for the reader's taps; if nobody taps, settle it and say so.
+  const reconnect = async (mine: number): Promise<void> => {
+    const p = pair!;
+    const live = (): boolean => mine === run;
+    pace = full() ? 380 : 0;
+    root.dataset.phase = 'playing';
+    p.restore();
+    paint();
+    say('Link restored. The waiting ops cross over…');
+    // Let the paced link deliver on its own so each crossing is visible; settle() then flushes what is left.
+    for (let t = 0; full() && t < 12000 && p.link.pending() > 0; t += 100) await sleep(100);
+    if (!live()) return;
+    await p.settle();
+    await sleep(full() ? 1400 : 0);
+    if (!live()) return;
+    pace = 0;
+    root.dataset.phase = 'waiting';
+    say('Two twins came back. Tap Keep on the tent and OK on the stove.');
+    await sleep(full() ? 6500 : 0);
+    if (!live() || !full()) return;
+    root.dataset.phase = 'playing';
+    say('Nobody tapped, so we did: Sari keeps the tent, Budi accepts that Sari brings the stove.');
+    await resolveNow(p);
+    paint();
+    await sleep(2600);
+    if (!live()) return;
+    root.dataset.phase = 'yours';
+    say('Fixed: both phones agree. Press Reset, cut the link and try it yourself.');
+  };
+
   const scene = async (): Promise<void> => {
     await fresh();
     const mine = run;
     const p = pair!;
     const live = (): boolean => mine === run;
-    pace = full() ? 380 : 0;
     root.dataset.phase = 'playing';
     say('Both phones agree. Cutting the link…');
     await sleep(full() ? 1100 : 0);
@@ -260,15 +324,7 @@ export function mount(root: HTMLElement): void {
     }
     await sleep(full() ? 1200 : 0);
     if (!live()) return;
-    p.restore();
-    paint();
-    say('Link restored. The waiting ops cross over…');
-    await p.settle();
-    await sleep(full() ? 1400 : 0);
-    if (!live()) return;
-    pace = 0;
-    root.dataset.phase = 'yours';
-    say('Your turn: Keep or Delete the tent twin, and press OK on the lost claim.');
+    await reconnect(mine);
   };
 
   const act = (el: HTMLElement): void => {
@@ -279,11 +335,10 @@ export function mount(root: HTMLElement): void {
     const r = id === 'a' ? p.a : p.b;
     const target = el.dataset.id ?? '';
     const it = r.state().items[target];
-    if (root.dataset.phase === 'playing') {
-      run++; // the reader took over: stop the scripted timeline
-      pace = 0;
-      root.dataset.phase = 'yours';
-    }
+    // Any tap means the reader took over: stop the scripted timeline (autoplay, the scene, the auto-resolve).
+    run++;
+    pace = 0;
+    root.dataset.phase = 'yours';
     switch (el.dataset.act) {
       case 'link':
         if (p.sessions.a.link() === 'down') {
@@ -334,7 +389,7 @@ export function mount(root: HTMLElement): void {
   void (async () => {
     quiet = true;
     await fresh();
-    await lakeNow(pair!);
+    lakeOffline(pair!);
     paint();
     quiet = false;
     root.dataset.phase = 'yours';
@@ -344,7 +399,10 @@ export function mount(root: HTMLElement): void {
       (es) => {
         if (es.some((x) => x.isIntersecting)) {
           io.disconnect();
-          setTimeout(() => void scene(), 600);
+          const mine = run;
+          setTimeout(() => {
+            if (mine === run) void reconnect(mine);
+          }, 1600);
         }
       },
       { threshold: 0.35 },
