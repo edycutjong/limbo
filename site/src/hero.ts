@@ -102,7 +102,7 @@ function twins(id: Id, it: Item, s: State): string {
     out +=
       loser === me
         ? `<li class="lb-twin" data-twin="${it.id}:claim:${loser}"><span class="lb-ghost" aria-hidden="true">${esc(it.name)}</span>` +
-          `<p class="lb-cap"><b>Twin</b> · ${who(loser)} and ${winner} both claimed this · rule: <code>claim-one</code> picked ${winner} on both phones (lower Lamport stamp, then replica id)</p>` +
+          `<p class="lb-cap"><b>Twin</b> · ${who(loser)} and ${winner} both claimed this · rule: <code>claim-one</code> picked ${winner} on both replicas (lower Lamport stamp, then replica id)</p>` +
           `<p class="lb-btns"><button type="button" data-act="ok" data-id="${it.id}" data-who="${esc(loser)}">OK</button></p></li>`
         : `<li class="lb-note" data-twin="${it.id}:claim:${loser}">${who(loser)}'s claim lost · rule: <code>claim-one</code></li>`;
   }
@@ -299,7 +299,7 @@ export function mount(root: HTMLElement): void {
     await sleep(2600);
     if (!live()) return;
     root.dataset.phase = 'yours';
-    say('Fixed: both phones agree. Press Reset, cut the link and try it yourself.');
+    say('Fixed: both replicas agree. Press Reset, cut the link and try it yourself.');
   };
 
   const scene = async (): Promise<void> => {
@@ -308,7 +308,7 @@ export function mount(root: HTMLElement): void {
     const p = pair!;
     const live = (): boolean => mine === run;
     root.dataset.phase = 'playing';
-    say('Both phones agree. Cutting the link…');
+    say('Both replicas agree. Cutting the link…');
     await sleep(full() ? 1100 : 0);
     if (!live()) return;
     p.cut();
