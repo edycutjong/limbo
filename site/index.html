@@ -3,68 +3,579 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIMBO: when the connection dies, your app crosses over and comes back without losing an edit</title>
-<meta name="description" content="A local-first skeleton where every op declares its merge rule, plus a Kiro kit that blocks merges that diverge. Two apps built from it: BASECAMP and AFTERSHOCK.">
+<title>LIMBO: the signal died at the lake, the list kept every edit</title>
+<meta name="description" content="A local-first skeleton where every op declares its merge rule, two apps built on it, and the Kiro kit that built them. Cut the link and watch.">
+<meta name="author" content="edycutjong">
+<meta name="theme-color" content="#F2EADB">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://limbo.edycu.dev/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LIMBO">
+<meta property="og:title" content="LIMBO: the signal died at the lake. The list kept every edit.">
+<meta property="og:description" content="Cut the link, edit two replicas, reconnect: the tent returns as a ghost twin, one tap settles it.">
+<meta property="og:url" content="https://limbo.edycu.dev/">
+<meta property="og:image" content="https://limbo.edycu.dev/assets/og-image.png?v=8f609220be">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Two replica cards of a packing list: one fogged offline, one showing a blue ghost twin of the tent.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://limbo.edycu.dev/assets/og-image.png?v=8f609220be">
+<link rel="preload" href="/fonts/old-standard-tt-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/old-standard-tt-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/atkinson-hyperlegible-next-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.55 "Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif; }
-  main { max-width: 1040px; margin: 0 auto; padding: 48px 20px 64px; }
-  h1 { font:400 clamp(34px,6vw,56px)/1.1 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:0 0 12px; }
-  h2 { font:400 28px/1.2 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:40px 0 12px; }
-  .who { font-style: italic; color: var(--muted); margin: 0 0 24px; }
-  .cards { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
-  .card { border:1px solid var(--line); border-radius:6px; padding:20px; background:#FBF6EA; }
-  .card h3 { margin:0 0 6px; font:400 24px "Old Standard TT",Georgia,serif; }
-  a.btn { display:inline-block; min-height:44px; padding:10px 16px; margin-top:8px; border:2px solid var(--accent); border-radius:4px; color:var(--accent); text-decoration:none; font-weight:600; transition: background .15s, color .15s, transform .1s; }
-  a.btn:hover, a.btn:focus-visible { background:var(--accent); color:#fff; }
-  a.btn:active { transform: translateY(1px); }
-  a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-  iframe { width:100%; height:1100px; border:1px solid var(--line); border-radius:6px; background:#fff; }
-  .note { color:var(--muted); font-size:15px; }
-  .note a { color:var(--accent); transition: background .15s; }
-  .note a:hover { background:#E8DEC8; }
-  footer a { color:var(--accent); text-underline-offset:3px; transition: background .15s, color .15s; }
-  footer a:hover { background:#E8DEC8; color:var(--ink); }
-  .version-chip { border:1px solid var(--line); border-radius:999px; padding:2px 10px; font:14px ui-monospace,SFMono-Regular,Menlo,monospace; text-decoration:none; }
-  footer { margin-top:48px; color:var(--muted); font-size:15px; }
-  .only-narrow { display:none; }
-  @media (max-width: 700px) { iframe { display:none; } .only-narrow { display:block; } }
-  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-400-italic.woff2) format("woff2");font-style:italic;font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible Next";src:url(/fonts/atkinson-hyperlegible-next-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible Next";src:url(/fonts/atkinson-hyperlegible-next-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"DM Mono";src:url(/fonts/dm-mono-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"DM Mono";src:url(/fonts/dm-mono-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+:root{
+  --bg:#F2EADB;--card:#E8DDC9;--ink:#2A2019;--muted:#6B5B4B;--rule:#CDBFA8;
+  --live:#2F6B4F;--before:#8F989C;--fog-ink:#4E5A60;--developing:#80560F;--twin:#2F5D86;--after:#8A2E22;
+  --paper:#FAF5EA;--mat:#211A14;--mat-2:#2E251D;--mat-ink:#EFE6D4;--mat-muted:#C9BBA3;
+  --font-display:"Old Standard TT","Libre Caslon Text",Georgia,serif;
+  --font-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;
+  --font-data:"DM Mono",ui-monospace,monospace;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .33 0 0 0 0 .35 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{overflow-x:clip;-webkit-text-size-adjust:100%}
+::selection{background:var(--ink);color:var(--paper)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+code,.data{font-family:var(--font-data);font-size:.86em}
+
+/* ---------- hero instrument: two replica plates on one mount ---------- */
+.lb-viewer{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px;box-shadow:0 1px 0 #fff8 inset,0 34px 60px -34px #2a201980}
+.lb-viewer::before{content:"";position:absolute;inset:7px;border:1px dashed var(--rule);border-radius:10px;pointer-events:none}
+.lb-plate{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:12px 14px 14px;overflow:hidden;min-width:0;z-index:1}
+.lb-imprint{display:flex;align-items:center;gap:8px;font:600 14px/1.3 var(--font-body);color:var(--ink);min-height:26px}
+.lb-dot{width:9px;height:9px;border-radius:50%;background:var(--live);flex:none;transition:background .4s}
+[data-axis="FOGGED"] .lb-dot{background:var(--before)}
+[data-axis="DEVELOPING"] .lb-dot{background:var(--developing)}
+[data-conflict="CONFLICT"] .lb-chip{color:var(--twin)}
+.lb-sitter{font:italic 400 20px/1.2 var(--font-display);margin:4px 0 6px;color:var(--ink)}
+.lb-list{list-style:none;margin:0;padding:0;transition:filter .6s ease-out}
+.lb-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;align-items:center;gap:4px 10px;padding:7px 0;border-bottom:1px dashed var(--rule);font-size:15.5px;line-height:1.3}
+.lb-name{min-width:0}
+[data-ticked] .lb-name{text-decoration:line-through;text-decoration-color:var(--muted);text-decoration-thickness:1px}
+.lb-tick{all:unset;box-sizing:border-box;width:22px;height:22px;border:1.5px solid var(--ink);border-radius:4px;cursor:pointer;flex:none;display:grid;place-items:center;transition:background .15s,transform .1s;background:var(--paper)}
+.lb-tick:hover{background:var(--card)}
+.lb-tick:active{transform:scale(.92)}
+.lb-tick[aria-pressed="true"]::after{content:"";width:6px;height:11px;border:solid var(--ink);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.lb-tick:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.lb-who{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.lb-act,.lb-del,.lb-btns button,.lb-controls button,.lb-cord button{font:600 13.5px/1 var(--font-body);color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:999px;padding:7px 11px;min-height:32px;cursor:pointer;transition:background .15s,color .15s,transform .1s}
+.lb-del{border-color:transparent;background:transparent;color:var(--muted);font:400 20px/1 var(--font-body);width:32px;padding:0;display:grid;place-items:center}
+.lb-act:hover,.lb-btns button:hover,.lb-controls button:hover,.lb-cord button:hover{background:var(--ink);color:var(--paper)}
+.lb-del:hover{border-color:var(--rule);background:var(--card);color:var(--ink)}
+.lb-act:active,.lb-del:active,.lb-btns button:active,.lb-controls button:active,.lb-cord button:active{transform:translateY(1px)}
+/* the ghost twin: a double exposure, offset 6 px, cyanotype at 70 % (caption at full strength) */
+.lb-twin{position:relative;margin:8px 0 10px;padding:10px 12px 10px;border:1px dashed var(--twin);border-left:3px solid var(--twin);border-radius:6px;background:#2f5d860d}
+.lb-ghost{display:block;font:italic 400 20px/1.2 var(--font-display);color:var(--twin);opacity:.7;transform:translate(6px,4px);margin-bottom:6px}
+.lb-cap{margin:0 0 8px;font-size:14px;line-height:1.4;color:var(--ink)}
+.lb-cap b{color:var(--twin);letter-spacing:.06em;text-transform:uppercase;font-size:12.5px}
+.lb-btns{display:flex;gap:8px;margin:0}
+.lb-note{font-size:13.5px;color:var(--muted);padding:5px 0 6px 32px;border-bottom:1px dashed var(--rule)}
+.lb-enter{animation:lb-twin-in .7s cubic-bezier(.2,.7,.2,1) both}
+.lb-enter .lb-ghost{animation:lb-ghost-in .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes lb-twin-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes lb-ghost-in{from{opacity:0;transform:translate(0,0)}to{opacity:.7;transform:translate(6px,4px)}}
+/* in limbo: the queued ops and the merge each declares */
+.lb-limbo{margin-top:10px;border-top:1px solid var(--rule);padding-top:8px}
+.lb-limbo .lb-limbo-h{margin:0 0 4px;font:600 12.5px/1.2 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink)}
+.lb-limbo ol{list-style:none;margin:0;padding:0;font:12.5px/1.6 var(--font-data);color:var(--fog-ink);min-height:20px}
+.lb-limbo li span{color:var(--ink)}
+.lb-limbo .lb-empty{color:var(--muted);font-family:var(--font-body);font-style:italic}
+.lb-count{font-family:var(--font-data);font-weight:500;color:var(--ink)}
+/* fog: this replica is partitioned. Developing: ops crossing. Both read view.axis. */
+.lb-veil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s ease-in-out;background:radial-gradient(120% 90% at 50% 45%,#8f989c1f 30%,#8f989c99 100%),var(--grain);background-size:auto,160px;mix-blend-mode:multiply}
+[data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
+[data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
+[data-axis="DEVELOPING"] .lb-veil{opacity:.55;background:radial-gradient(120% 90% at 50% 40%,#e2a84b14 20%,#80560f33 100%)}
+.lb-fixed{position:absolute;right:12px;top:10px;font:700 22px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2.5px solid var(--after);border-radius:4px;padding:5px 9px 3px;transform:rotate(-7deg);opacity:0;pointer-events:none;z-index:2;background:#faf5eacc}
+[data-fixed] .lb-fixed{animation:lb-stamp .25s cubic-bezier(.3,1.4,.5,1) both,lb-settle .5s ease 2s both}
+@keyframes lb-stamp{from{opacity:0;transform:rotate(-7deg) scale(1.5)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
+@keyframes lb-settle{to{opacity:.9;transform:rotate(-7deg) scale(.8)}}
+/* the cord: the in-page simulated link */
+.lb-cord{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:3}
+.lb-cord::before,.lb-cord::after{content:"";position:absolute;z-index:0;left:50%;width:2px;margin-left:-1px;background:repeating-linear-gradient(var(--fog-ink) 0 7px,transparent 7px 12px);transition:height .4s ease}
+.lb-cord::before{top:8px;height:calc(50% - 40px)}
+.lb-cord::after{bottom:8px;height:calc(50% - 40px)}
+.lb-cord[data-link="down"]::before,.lb-cord[data-link="down"]::after{height:calc(50% - 74px)}
+.lb-cord button{position:relative;padding:9px 8px;font-size:13px;white-space:normal;width:68px;line-height:1.15;background:var(--paper)}
+.lb-cord small{position:absolute;top:calc(50% + 34px);background:var(--card);padding:3px 0;z-index:1;font:600 10.5px/1.25 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink);text-align:center;width:76px}
+.lb-wisp{position:absolute;top:50%;left:50%;font:500 11px/1 var(--font-data);color:var(--ink);background:var(--paper);border:1px solid var(--before);border-radius:999px;padding:4px 7px;white-space:nowrap;pointer-events:none;box-shadow:0 0 14px 4px #8f989c55;opacity:0;animation:lb-wisp-ab .8s cubic-bezier(.4,0,.2,1) both}
+.lb-wisp[data-to="a"]{animation-name:lb-wisp-ba}
+@keyframes lb-wisp-ab{0%{opacity:0;transform:translate(-160%,-50%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(60%,-50%)}}
+@keyframes lb-wisp-ba{0%{opacity:0;transform:translate(60%,-50%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-160%,-50%)}}
+.lb-controls{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;margin-top:14px}
+.lb-controls button{font-size:14.5px;padding:10px 16px;min-height:42px}
+.lb-controls button.lb-primary{background:var(--ink);color:var(--paper)}
+.lb-controls button.lb-primary:hover{background:#4A3A2E;border-color:#4A3A2E}
+.lb-status{flex:1 1 220px;font:italic 400 17px/1.35 var(--font-display);color:var(--muted);min-height:1.35em}
+@media (max-width:760px){
+  .lb-viewer{grid-template-columns:minmax(0,1fr);padding:12px}
+  .lb-cord{flex-direction:row;height:64px}
+  .lb-cord::before,.lb-cord::after{top:50%;left:8px;width:calc(50% - 50px);height:2px;margin:0;background:repeating-linear-gradient(90deg,var(--fog-ink) 0 7px,transparent 7px 12px)}
+  .lb-cord::after{left:auto;right:8px;bottom:auto}
+  .lb-cord[data-link="down"]::before,.lb-cord[data-link="down"]::after{height:2px;width:calc(50% - 86px)}
+  .lb-cord button{width:auto;padding:9px 14px}
+  .lb-cord small{position:static;width:auto;max-width:110px;text-align:left}
+  .lb-wisp{animation-name:lb-wisp-down}
+  .lb-wisp[data-to="a"]{animation-name:lb-wisp-up}
+  @keyframes lb-wisp-down{0%{opacity:0;transform:translate(-50%,-160%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-50%,60%)}}
+  @keyframes lb-wisp-up{0%{opacity:0;transform:translate(-50%,60%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-50%,-160%)}}
+}
+
+/* ---------- terminal replay (re-set from the hook log) ---------- */
+.term{background:#17120E;color:#E9DFCC;border-radius:10px;border:1px solid #3b3027;font:13px/1.6 var(--font-data);overflow:hidden;box-shadow:0 30px 60px -30px #000c}
+.term-bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #3b3027;color:#BFAF95;font:12px/1.3 var(--font-data)}
+.term-bar i{width:9px;height:9px;border-radius:50%;background:#4a3d32;flex:none}
+.term-body{padding:12px 14px 14px;margin:0;white-space:pre-wrap;word-break:break-word;min-height:200px}
+.term .t-time{color:#9E8F79}
+.term .t-hook{color:#E9DFCC}
+.term .t-fail{color:#FFF6E6;font-weight:500}
+.term .t-block{color:#17120E;background:#EFE6D4;padding:0 5px;border-radius:2px;font-weight:500;letter-spacing:.04em}
+.term .t-pass{color:#E9DFCC}
+.term .t-say{color:#D9C6A3;font-family:var(--font-body);font-style:italic;font-size:13.5px}
+.term-line{display:block}
+.term-body.play .term-line{opacity:0}
+.term-body.play .term-line.on{opacity:1;transition:opacity .25s}
+.term-src{padding:8px 14px 12px;color:#9E8F79;font:11.5px/1.45 var(--font-body);border-top:1px dashed #3b3027}
+
+.version-chip{font:500 12.5px/1 var(--font-data);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:5px 9px;text-decoration:none;transition:background .15s,color .15s}
+.version-chip:hover{background:var(--ink);color:var(--paper)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  [data-fixed] .lb-fixed{opacity:1}
+  .lb-enter .lb-ghost{opacity:.7}
+  .term-body.play .term-line{opacity:1}
+}
+@media print{
+  .lb-veil,.lb-wisp{display:none}
+  *{animation:none!important;transition:none!important}
+  .term-body .term-line{opacity:1!important}
+}
+.lb-limbo{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px}
+.lb-limbo .lb-limbo-h{margin:0}
+.lb-limbo ol{flex:1 0 100%}
+.lb-limbo ol:has(.lb-empty){flex:0 1 auto;min-height:0}
+
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 var(--font-body)}
+a{color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1px;transition:color .15s,background .15s}
+a:hover{color:var(--ink);text-decoration-thickness:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 40px}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:4px;z-index:9}
+.skip:focus{left:8px}
+/* header */
+.top{display:flex;align-items:center;gap:22px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.brand img{width:34px;height:34px}
+.brand span{font:700 21px/1 var(--font-display);letter-spacing:.2em}
+.top nav{display:flex;gap:20px;font-size:15.5px}
+.top nav a{text-decoration:none;color:var(--muted);padding:6px 2px}
+.top nav a:hover{color:var(--ink)}
+.judge-link{font:600 15px/1 var(--font-body);text-decoration:none;border:1.5px solid var(--ink);border-radius:999px;padding:10px 16px}
+.judge-link:hover{background:var(--ink);color:var(--paper)}
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,4.6fr) minmax(0,7.4fr);gap:44px;align-items:start;padding-block:22px 56px}
+.plate-no{font:400 15px/1.3 var(--font-display);font-variant:small-caps;letter-spacing:.12em;color:var(--muted);margin:0 0 14px;text-transform:lowercase}
+h1{font:400 clamp(40px,4.6vw,64px)/1.03 var(--font-display);margin:0 0 20px;letter-spacing:-.005em}
+h1 em{display:block;font-style:italic;background:linear-gradient(100deg,var(--ink) 0 45%,var(--before) 62%,#b9bfc1 80%) 0 0/240% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;animation:develop 2.6s cubic-bezier(.3,0,.2,1) .5s both;padding-bottom:.06em}
+@keyframes develop{from{background-position:100% 0}to{background-position:0 0}}
+.lede{color:var(--muted);margin:0 0 22px;max-width:42ch;font-size:18.5px}
+.lede b{color:var(--ink);font:700 1.06em/1 var(--font-display)}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:11px 18px;border:2px solid var(--ink);border-radius:6px;font:700 16px/1.1 var(--font-body);text-decoration:none;color:var(--ink);background:transparent;transition:background .15s,color .15s,transform .1s}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:#4A3A2E;border-color:#4A3A2E;color:var(--paper)}
+.hero-note{margin:18px 0 0;font-size:14.5px;color:var(--muted);max-width:44ch}
+/* receipts */
+.receipts{background:var(--card);border-block:1px solid var(--rule)}
+.receipts ol{list-style:none;margin:0 auto;padding-block:34px 30px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px}
+.receipts li{border-left:1px solid var(--rule);padding-left:18px}
+.receipts .n{display:block;font:400 clamp(38px,4vw,54px)/1 var(--font-display);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em}
+.receipts .l{display:block;margin:8px 0 6px;font-size:15.5px;line-height:1.4}
+.receipts .p{font:12px/1.4 var(--font-data);color:var(--muted);word-break:break-all}
+.receipts .p a{color:var(--muted)}
+/* sections */
+section.s{padding:84px 0 0}
+.s-head{max-width:760px;margin:0 0 34px}
+.s-head h2{font:400 clamp(32px,3.4vw,46px)/1.08 var(--font-display);margin:6px 0 12px}
+.s-head h2 i{font-style:italic}
+.s-head p{margin:0;color:var(--muted);max-width:62ch}
+/* states strip: cabinet cards */
+.states{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;list-style:none;margin:0;padding:0}
+.cab{background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:10px 10px 14px;box-shadow:0 18px 30px -24px #2a201977}
+.cab-plate{position:relative;height:118px;border-radius:3px;background:var(--bg);border:1px solid var(--rule);overflow:hidden;padding:12px 12px}
+.cab-plate i{display:block;height:9px;border-radius:3px;background:var(--rule);margin:8px 0;width:78%}
+.cab-plate i:nth-child(2){width:60%}.cab-plate i:nth-child(3){width:70%}
+.cab-plate b{position:absolute;inset:0}
+.cab.fog .cab-plate b{background:radial-gradient(120% 90% at 50% 45%,#8f989c22 30%,#8f989cbb),var(--grain);background-size:auto,160px;mix-blend-mode:multiply}
+.cab.dev .cab-plate b{background:radial-gradient(120% 90% at 50% 40%,#e2a84b18 20%,#80560f44)}
+.cab.twin .cab-plate i:nth-child(2){position:relative;background:transparent;border:1px dashed var(--twin)}
+.cab.twin .cab-plate i:nth-child(2)::after{content:"";position:absolute;inset:0;background:var(--twin);opacity:.55;transform:translate(6px,4px);border-radius:3px}
+.cab.fixed .cab-plate b::after{content:"FIXED";position:absolute;right:10px;bottom:12px;font:700 15px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2px solid var(--after);border-radius:3px;padding:4px 6px 2px;transform:rotate(-7deg)}
+.cab.live .cab-plate b::after{content:"";position:absolute;left:12px;bottom:14px;width:9px;height:9px;border-radius:50%;background:var(--live)}
+.cab h3{font:italic 400 22px/1.15 var(--font-display);margin:12px 2px 2px}
+.cab .k{font:600 12px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink);margin:0 2px}
+.cab p{margin:6px 2px 0;font-size:14.5px;line-height:1.45;color:var(--muted)}
+/* merge rules bento */
+.rules{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+.rule{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:22px 22px 20px;grid-column:span 2}
+.rule.big{grid-column:span 3;padding:26px}
+.rule code.r{display:inline-block;font:500 13.5px/1 var(--font-data);color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:6px 10px}
+.rule h3{font:400 26px/1.15 var(--font-display);margin:14px 0 8px}
+.rule.big h3{font-size:31px}
+.rule p{margin:0;color:var(--muted);font-size:16.5px}
+.rule .ex{margin-top:12px;font-size:14px;color:var(--fog-ink)}
+.rule.big figure{margin:16px 0 0}
+.rule.big img{width:100%;height:auto;display:block;border-radius:5px;border:1px solid var(--rule)}
+.rule figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+/* skeleton crew */
+.crew{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:28px;align-items:start}
+.skel{background:var(--ink);color:var(--paper);border-radius:10px;padding:26px}
+.skel h3{font:400 30px/1.1 var(--font-display);margin:0 0 6px}
+.skel p{margin:0 0 16px;color:#d8ccb7;font-size:16px}
+.skel dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15.5px}
+.skel dt{font:500 15px/1.5 var(--font-data);text-align:right}
+.skel dd{margin:0;color:#d8ccb7}
+.skel ol{margin:16px 0 0;padding-left:20px;color:#d8ccb7;font-size:15.5px}
+.apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.app{background:var(--paper);border:1px solid var(--rule);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.app img{width:100%;height:auto;display:block;border-bottom:1px solid var(--rule)}
+.app div{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.app h3{font:400 26px/1.1 var(--font-display);margin:0;letter-spacing:.06em}
+.app p{margin:0;color:var(--muted);font-size:15.5px}
+.app .btn{align-self:flex-start;margin-top:auto;font-size:15px;min-height:42px;padding:9px 14px}
+/* kiro band: the darkroom mat */
+.kiro{margin-top:96px;background:var(--mat);color:var(--mat-ink);padding:84px 0;position:relative;overflow:hidden}
+.kiro::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 78% 20%,#5a4632aa,transparent 70%),radial-gradient(40% 50% at 10% 90%,#3a2d2288,transparent 70%);pointer-events:none}
+.kiro .wrap{position:relative}
+.kiro .s-head h2{color:var(--mat-ink)}
+.kiro .s-head p,.kiro .plate-no{color:var(--mat-muted)}
+.kiro a{color:var(--mat-ink)}
+.kiro a:hover{color:#fff}
+.kiro-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:32px;align-items:start}
+.ledger{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 20px}
+.ledger li{border-top:1px solid #4a3d32;padding-top:12px}
+.ledger .n{display:block;font:400 40px/1 var(--font-display);font-variant-numeric:lining-nums tabular-nums;color:var(--mat-ink)}
+.ledger .l{display:block;margin-top:6px;font-size:14.5px;line-height:1.4;color:var(--mat-muted)}
+.bars{list-style:none;margin:22px 0 0;padding:0;font:12px/1.2 var(--font-data);color:var(--mat-muted)}
+.bars li{display:grid;grid-template-columns:110px 1fr 46px;gap:10px;align-items:center;margin:5px 0}
+.bars s{display:block;height:7px;background:#5a4b3d;border-radius:2px;text-decoration:none}
+.bars s b{display:block;height:100%;background:var(--mat-ink);border-radius:2px;width:var(--w);transform-origin:left}
+.bars span:last-child{text-align:right;color:var(--mat-ink)}
+.kit{margin:28px 0 0;padding:0;list-style:none;font-size:15px;color:var(--mat-muted)}
+.kit li{padding:9px 0;border-top:1px dashed #4a3d32}
+.kit code{color:var(--mat-ink)}
+.workflow{margin:22px 0 0;font-size:15px;color:var(--mat-muted);max-width:60ch}
+/* honest + A/B */
+.honest{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:40px;align-items:start}
+.quotes{list-style:none;margin:0;padding:0}
+.quotes li{padding:20px 0;border-top:1px solid var(--rule)}
+.quotes q{display:block;font:italic 400 clamp(23px,2.2vw,29px)/1.25 var(--font-display);quotes:"\201C" "\201D"}
+.quotes small{display:block;margin-top:8px;font-size:13.5px;color:var(--muted)}
+.ab{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:24px}
+.ab h3{font:400 26px/1.15 var(--font-display);margin:0 0 10px}
+.ab .arms{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.ab .arms div{border:1px solid var(--rule);border-radius:6px;padding:12px;text-align:center}
+.ab .arms b{display:block;font:400 34px/1 var(--font-display)}
+.ab .arms span{font-size:13.5px;color:var(--muted)}
+.ab p{margin:8px 0 0;font-size:15.5px;color:var(--muted)}
+/* faq */
+.faq{max-width:860px}
+.faq details{border-top:1px solid var(--rule);padding:4px 0}
+.faq details:last-child{border-bottom:1px solid var(--rule)}
+.faq summary{cursor:pointer;list-style:none;padding:16px 36px 16px 0;position:relative;font:400 23px/1.25 var(--font-display);transition:color .15s}
+.faq summary:hover{color:var(--muted)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:12px;font:400 28px/1 var(--font-display);color:var(--muted);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 18px;color:var(--muted);max-width:68ch}
+/* closing + footer */
+.closing{margin-top:96px;background:var(--card);border-top:1px solid var(--rule);padding:64px 0 28px}
+.closing h2{font:400 clamp(32px,3.6vw,48px)/1.08 var(--font-display);margin:0 0 18px;max-width:22ch}
+.closing h2 em{font-style:italic}
+.foot{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);font-size:14.5px;color:var(--muted)}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--ink)}
+@media (max-width:1100px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:28px}
+  .lede{max-width:60ch}
+  .states{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .crew,.kiro-grid,.honest{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:760px){
+  body{font-size:17px}
+  .wrap{padding:0 18px}
+  .top nav{display:none}
+  .hero{padding-block:6px 40px;gap:16px}
+  .hero>div:first-child{display:contents}
+  .hero .plate-no{order:1;margin:0}
+  .hero h1{order:2;margin:0}
+  .hero>div:last-child{order:3}
+  .hero .lede{order:4;margin:6px 0 0}
+  .hero .cta{order:5}
+  .hero>div:first-child .hero-note{order:6}
+  .receipts ol{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px;padding-block:26px}
+  .receipts li{padding-left:12px}
+  .states{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .rules{grid-template-columns:minmax(0,1fr)}
+  .rule,.rule.big{grid-column:auto;padding:18px}
+  .apps{grid-template-columns:minmax(0,1fr)}
+  .ledger{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .ledger .n{font-size:32px}
+  .bars li{grid-template-columns:96px 1fr 40px}
+  section.s{padding-top:64px}
+  .kiro{padding:64px 0;margin-top:72px}
+}
+@media (max-width:420px){.receipts .n{font-size:34px}.states{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){h1 em{background-position:0 0}}
+@media print{.top nav,.lb-controls,.skip{display:none}.kiro{background:#fff;color:#000}h1 em{background-position:0 0}}
+
+.kiro :focus-visible{outline-color:var(--mat-ink)}
+.kiro .s-head h2 i{color:var(--mat-ink)}
+
+.term{margin:0}
+.rule .claimdemo{margin-top:16px;pointer-events:none}
+.rule .claimdemo .lb-viewer{padding:12px;box-shadow:none}
+.rule .claimdemo figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+
+.cab-plate{padding:0}
+.cab-svg{display:block;width:100%;height:100%}
+
+.kiro .term{font-size:12.5px}
+
 </style>
 </head>
 <body>
-<main>
-  <h1>LIMBO</h1>
-  <p class="who">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
-  <p>When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit. LIMBO is a small local-first skeleton in which every op declares its merge rule, plus a <code>/.kiro</code> kit that makes Kiro good at the merge logic that looks right and diverges when operations arrive in a different order.</p>
-
-  <h2>Two apps, one skeleton</h2>
-  <div class="cards">
-    <section class="card">
-      <h3>BASECAMP</h3>
-      <p>A group trip list: ticks, claims on the last stove, delete-versus-edit twins, reorder, shared expenses.</p>
-      <a class="btn" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
-    </section>
-    <section class="card">
-      <h3>AFTERSHOCK</h3>
-      <p>A sector report form whose entries merge into a shared grid. Demonstration data shape, not used in the field.</p>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wrap top">
+  <a class="brand" href="/" aria-label="LIMBO home"><img src="/assets/icon.svg" alt="" width="34" height="34"><span>LIMBO</span></a>
+  <nav aria-label="Sections"><a href="#try">Try it</a><a href="#rules">Merge rules</a><a href="#crew">Two apps</a><a href="#kiro">How Kiro built it</a><a href="#faq">FAQ</a><a href="/deck/">Deck</a></nav>
+  <a class="judge-link" href="/judge">For judges</a>
+</header>
+<main id="main">
+<section class="wrap hero" id="try" aria-labelledby="h1">
+  <div>
+    <p class="plate-no">Kiroween 2026 · Skeleton Crew</p>
+    <h1 id="h1">The signal died at the lake. <em>The list kept every edit.</em></h1>
+    <p class="lede">Sari ticked the tent while Budi deleted it, both offline. LIMBO is a local-first skeleton in which every op declares its merge rule, so on reconnect the tent comes back as a ghost twin and one tap settles it. <b>10,000 random orderings, 0 divergences.</b> <b>93.28% of product commits</b> came from Kiro sessions.</p>
+    <div class="cta">
+      <a class="btn solid" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
       <a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a>
-    </section>
+    </div>
+    <p class="hero-note">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
   </div>
+  <div>
+    <div class="lb-viewer" data-hero data-phase="settled" aria-label="Two replicas of BASECAMP joined by a simulated link">
+      <article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CONFLICT" aria-label="Replica A, Sari">
+        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live · 2 conflicts</span></header>
+        <p class="lb-sitter">Replica A — Sari</p>
+        <ul class="lb-list" aria-label="Sari's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-note" data-twin="stove:claim:budi">Budi's claim lost · rule: <code>claim-one</code></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">0</span> waiting</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+        <span class="lb-fixed" aria-hidden="true">FIXED</span>
+        <div class="lb-veil" aria-hidden="true"></div>
+      </article>
+      <div class="lb-cord" data-link="up">
+        <button type="button" data-act="link" aria-pressed="false">Cut link</button>
+        <small>simulated link</small>
+      </div>
+      <article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT" aria-label="Replica B, Budi">
+        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live · 2 conflicts</span></header>
+        <p class="lb-sitter">Replica B — Budi</p>
+        <ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">0</span> waiting</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+        <span class="lb-fixed" aria-hidden="true">FIXED</span>
+        <div class="lb-veil" aria-hidden="true"></div>
+      </article>
+      <div class="lb-controls">
+        <button type="button" class="lb-primary" data-act="scene">Play the lake scene</button>
+        <button type="button" data-act="reset">Reset</button>
+        <p class="lb-status" aria-live="polite">The lake scene, settled: two twins wait for one tap each.</p>
+      </div>
+    </div>
+    <p class="hero-note">This is BASECAMP's own op code and the LIMBO skeleton, running in this page: two replicas in memory, joined by a simulated link that is slowed so you can watch ops cross. The apps above store to IndexedDB and reopen offline.</p>
+  </div>
+</section>
 
-  <h2>Try it here: cut the link, edit on both sides, reconnect</h2>
-  <p class="note">This is the real BASECAMP app in its two-replica view. The link between the two replicas is a <strong>simulated link</strong> inside the page: press Cut link, make conflicting edits, then restore it.</p>
-  <p class="only-narrow"><a class="btn" href="https://basecamp.limbo.edycu.dev/?replicas=2">Open the two-replica BASECAMP</a></p>
-  <p class="note"><a href="https://basecamp.limbo.edycu.dev/?replicas=2">Open it full screen</a></p>
-  <iframe src="https://basecamp.limbo.edycu.dev/?replicas=2" title="BASECAMP, two replicas joined by a simulated link" loading="lazy"></iframe>
+<section class="receipts" aria-label="Receipts">
+  <ol class="wrap">
+    <li><span class="n" data-count="10000">10,000</span><span class="l">random orderings of 3 replicas, 0 divergences</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">evidence/convergence/full-2026-11-22.json</a></span></li>
+    <li><span class="n" data-count="93.28" data-dec="2" data-suffix="%">93.28%</span><span class="l">of product commits came from Kiro sessions (111 of 119)</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">evidence/kiro/share.json</a></span></li>
+    <li><span class="n" data-count="1770">1,770</span><span class="l">Kiro hook fires, 2 of them Agent Stop blocks</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">evidence/kiro/tally.json</a></span></li>
+    <li><span class="n" data-count="1393">1,393</span><span class="l">tests passing, 100% line and branch coverage on the skeleton and app domain modules</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">evidence/ci/latest.json</a></span></li>
+  </ol>
+</section>
 
-  <footer>Source: <a href="https://github.com/edycutjong/limbo">github.com/edycutjong/limbo</a> (MIT). Built with Kiro for the Kiroween hackathon, Skeleton Crew category. <a class="version-chip" id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a> · <a href="/judge">For judges</a></footer>
+<section class="wrap s" aria-labelledby="states-h">
+  <div class="s-head">
+    <p class="plate-no">Plate II · The five states</p>
+    <h2 id="states-h">The fog is not a skin. <i>It is the sync state.</i></h2>
+    <p>Each look in the hero turns on from one value the skeleton computes. Nothing here is decoration.</p>
+  </div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fogg" cx="50%" cy="45%" r="75%"><stop offset="30%" stop-color="#8F989C" stop-opacity=".12"/><stop offset="100%" stop-color="#8F989C" stop-opacity=".75"/></radialGradient><radialGradient id="devg" cx="50%" cy="40%" r="75%"><stop offset="20%" stop-color="#80560F" stop-opacity=".05"/><stop offset="100%" stop-color="#80560F" stop-opacity=".3"/></radialGradient></defs></svg><ol class="states">
+    <li class="cab live"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><circle cx="19" cy="96" r="5" fill="#2F6B4F"/></svg></div><h3>Live</h3><p class="k">Link up, all acknowledged</p><p>The other phone has every op this one made.</p></li>
+    <li class="cab fog"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect width="200" height="118" fill="url(#fogg)"/></svg></div><h3>Fogged</h3><p class="k">Link down</p><p>The plate fogs from the edges. The count is ops the other phone has not acknowledged.</p></li>
+    <li class="cab dev"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect width="200" height="118" fill="url(#devg)"/></svg></div><h3>Developing</h3><p class="k">Link up, ops crossing</p><p>A thin amber haze while ops are unacknowledged, behind or buffered.</p></li>
+    <li class="cab twin"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="none" stroke="#2F5D86" stroke-dasharray="3 2"/><rect x="20" y="44" width="112" height="9" rx="3" fill="#2F5D86" opacity=".55"/></svg></div><h3>Double exposure</h3><p class="k">A conflict surfaced</p><p>The ghost twin: two exposures of one item, side by side, until you pick.</p></li>
+    <li class="cab fixed"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><g transform="rotate(-7 160 96)"><rect x="124" y="84" width="66" height="24" rx="3" fill="none" stroke="#8A2E22" stroke-width="2"/><text x="157" y="101" text-anchor="middle" font-family="Old Standard TT,Georgia,serif" font-weight="700" font-size="14" letter-spacing="2" fill="#8A2E22">FIXED</text></g></svg></div><h3>Fixed</h3><p class="k">Live and clear again</p><p>The stamp fires once after fog or a conflict, when both phones agree. No clock.</p></li>
+  </ol>
+</section>
+
+<section class="wrap s" id="rules" aria-labelledby="rules-h">
+  <div class="s-head">
+    <p class="plate-no">Plate III · Merge rules</p>
+    <h2 id="rules-h">Every op says how it merges before it ships.</h2>
+    <p>The kit refuses an op that converges on the wrong answer. No rule reads a wall clock: order comes from causal context.</p>
+  </div>
+  <div class="rules">
+    <article class="rule big"><code class="r">resurrect</code><h3>Deleted while edited: it comes back.</h3><p>The deleted item returns as a ghost twin beside the edited one. One tap keeps or drops it, and every replica holds the same list afterwards.</p><figure><img src="/assets/basecamp-twin.webp" alt="BASECAMP after reconnect: the tent shows a twin card on both replicas with Keep and Delete." width="1400" height="785" loading="lazy"><figcaption>Live BASECAMP, both replicas after reconnect.</figcaption></figure></article>
+    <article class="rule big"><code class="r">claim-one</code><h3>Two offline claims: one winner, named.</h3><p>No CRDT can stop two offline people from claiming the last stove. Offline claims are provisional; on reconnect the rule picks one claimant the same way on every phone (lower Lamport stamp, then replica id), and the other person sees a twin naming the winner.</p><p class="ex">Property: after convergence, exactly one claimant on every replica.</p><figure class="claimdemo" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul></article></div><figcaption>Rendered at build time by the same engine as the hero: Budi's view after the lake scene.</figcaption></figure></article>
+    <article class="rule"><code class="r">causal-lww</code><h3>Ticks, names, notes</h3><p>The write that had seen the other wins. A clock never decides.</p></article>
+    <article class="rule"><code class="r">commutes</code><h3>Counts and shares</h3><p>Both edits count. Severity takes the worse; expense shares sum to the total in whole cents.</p></article>
+    <article class="rule"><code class="r">ordered-move</code><h3>Reorder</h3><p>Two concurrent moves land in one stable order, with no twin.</p></article>
+  </div>
+</section>
+
+<section class="wrap s" id="crew" aria-labelledby="crew-h">
+  <div class="s-head">
+    <h2 id="crew-h">One skeleton. <i>Two apps, two folders.</i></h2>
+    <p>Each app lives in its own folder and supplies five things. Everything else, from the op layer to the fog, comes from the skeleton.</p>
+  </div>
+  <div class="crew">
+    <div class="skel">
+      <h3>skeleton/</h3>
+      <p>Op layer and named merges, replica and links, the local store, and the Limbo layer: fog, twins, inspector.</p>
+      <dl>
+        <dt>24</dt><dd>production files</dd>
+        <dt>2,520</dt><dd>non-blank TS/TSX lines</dd>
+        <dt>15</dt><dd>exported values</dd>
+        <dt>34</dt><dd>test files beside them</dd>
+      </dl>
+      <ol><li>a model</li><li>ops, each with a declared merge</li><li>a seed script</li><li>views</li><li>a config</li></ol>
+    </div>
+    <div class="apps">
+      <article class="app"><img src="/assets/basecamp-fogged.webp" alt="BASECAMP with the link cut: both replica cards fogged, waiting edits counted." width="1400" height="785" loading="lazy"><div><h3>BASECAMP</h3><p>A group trip list: ticks, claims on the last stove, delete-versus-edit twins, reorder, shared expenses. 12 ops.</p><a class="btn" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a></div></article>
+      <article class="app"><img src="/assets/aftershock.webp" alt="AFTERSHOCK: two replicas of a sector grid with SAFE, DAMAGED and NO REPORT cells." width="1400" height="875" loading="lazy"><div><h3>AFTERSHOCK</h3><p>A field form whose sector reports merge into a shared grid. Demonstration data shape, not used in the field. 6 ops.</p><a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="kiro" id="kiro" aria-labelledby="kiro-h">
+  <div class="wrap">
+    <div class="s-head">
+      <p class="plate-no">Plate IV · How Kiro built this</p>
+      <h2 id="kiro-h">Kiro wrote the code. <i>The hooks kept the ledger.</i></h2>
+      <p>Headless Kiro CLI sessions ran tasks from Kiro-authored specs. Each hook logged its fires, and the Agent Stop gate refused "done" while a property failed.</p>
+    </div>
+    <div class="kiro-grid">
+      <div>
+        <figure class="term" aria-label="Replay of Kiro session sess_545bc98d"><div class="term-bar"><i></i><i></i><i></i>kiro-cli 3.3.0 · --v3 --no-interactive · merge-kit task 12 · 4.6864 credits · 294 s</div><pre class="term-body"><span class="term-line"><span class="t-time">09:43:14</span>  <span class="t-hook">PreTaskExec    task-start       </span> merge-kit task 12 · logged</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileCreate op-scaffold      </span> item.rename.op.ts · scaffolded</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.rename.op.ts · pass</span><span class="term-line"><span class="t-time">09:43:45</span>  <span class="t-hook">PreToolUse     guard-shell      </span> $ pnpm test … ; pnpm props … · allow</span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; convergence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; replay equivalence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; idempotence</span></span><span class="term-line"><span class="t-time">09:45:26</span>  <span class="t-hook">Stop           stop-gate        </span> <span class="t-block">BLOCK 1/3</span> · 24.9 s</span><span class="term-line">          <span class="t-say">kiro: “item.tick.op.ts stores at: Date.now() in its state. Replicas that apply the same op end up with different states.”</span></span><span class="term-line"><span class="t-time">09:45:55</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.tick.op.ts · pass</span><span class="term-line"><span class="t-time">09:47:12</span>  <span class="t-hook">PostTaskExec   props-after-task </span> <span class="t-pass">pass</span> · 26.1 s</span><span class="term-line">          <span class="t-say">kiro: “I removed Date.now() and at. … pnpm props: 157 pass and 2 are skipped.”</span></span></pre><figcaption class="term-src">Re-set from <code>evidence/kiro/hooks.jsonl</code> (session sess_545bc98d, 2026-11-15, times UTC) and the agent's own words in <code>evidence/kiro/g2/kiro-closing.txt</code>; lines selected, long commands cut at “…”. The <code>Date.now()</code> fault was seeded on purpose (commit <code>cca30a0</code>) to prove the gate fires.</figcaption></figure>
+      </div>
+      <div>
+        <ol class="ledger">
+          <li><span class="n">188</span><span class="l">Kiro sessions, 659.11 credits</span></li>
+          <li><span class="n">173</span><span class="l">sessions on 11 Kiro specs (155 ran a numbered task)</span></li>
+          <li><span class="n">187</span><span class="l">of 188 sessions loaded the steering</span></li>
+          <li><span class="n">3</span><span class="l">commands the shell guard denied</span></li>
+        </ol>
+        <ul class="bars" aria-label="Hook fires by trigger"><li><span>PreToolUse</span><s><b style="--w:100.0%"></b></s><span>1,226</span></li><li><span>Stop</span><s><b style="--w:15.0%"></b></s><span>184</span></li><li><span>PreTaskExec</span><s><b style="--w:12.0%"></b></s><span>147</span></li><li><span>PostTaskExec</span><s><b style="--w:11.3%"></b></s><span>139</span></li><li><span>SessionStart</span><s><b style="--w:3.3%"></b></s><span>41</span></li><li><span>PostFileSave</span><s><b style="--w:1.1%"></b></s><span>13</span></li><li><span>PostFileCreate</span><s><b style="--w:1.0%"></b></s><span>12</span></li><li><span>PostToolUse</span><s><b style="--w:0.8%"></b></s><span>8</span></li></ul>
+        <ul class="kit">
+          <li><code>.kiro/steering/</code> 6 files, incl. <code>local-first.md</code> on <code>**/ops/**</code></li>
+          <li><code>.kiro/hooks/</code> 8 hooks, incl. the shell guard, op scaffold and lint, properties after each task, and the Stop gate</li>
+          <li><code>.kiro/agents/</code> 2 custom agents · <code>.kiro/specs/</code> 11 specs · 1 MCP server (8 calls)</li>
+        </ul>
+        <p class="workflow">The honest workflow: Claude Code wrote each brief, launched the Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with its reason.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap s" aria-labelledby="honest-h">
+  <div class="s-head">
+    <h2 id="honest-h">What we measured, <i>and what we did not.</i></h2>
+  </div>
+  <div class="honest">
+    <ul class="quotes">
+      <li><q>Convergence is measured, property-tested, not proven.</q><small>README, The Solution · 10,000 orderings, seed 20251031, Yjs 13.6.33</small></li>
+      <li><q>No CRDT can stop two offline people from claiming the last stove.</q><small>README, The merge rules</small></li>
+      <li><q>So we claim nothing about the kit improving correctness here.</q><small>README, A/B pilot</small></li>
+    </ul>
+    <aside class="ab" aria-labelledby="ab-h">
+      <h3 id="ab-h">The experiment found no effect</h3>
+      <p>20 runs of an op-writing task, with and without the kit, pre-registered before run 1.</p>
+      <div class="arms"><div><b>0 of 10</b><span>held-out failures, no kit</span></div><div><b>0 of 10</b><span>held-out failures, kit</span></div></div>
+      <p>Fisher exact p = 1; 95% interval 0 to 28% in each arm. All 8 Agent Stop blocks in the kit arm were false alarms from its own vacuity guard, and 2 of 10 kit runs edited that guard. <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/summary.md">Read the summary</a>.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="wrap s" id="faq" aria-labelledby="faq-h">
+  <div class="s-head"><h2 id="faq-h">Questions a judge asks first</h2></div>
+  <div class="faq">
+    <details><summary>Is the demo on this page real?</summary><p>Yes. It bundles BASECAMP's ops and the LIMBO skeleton unchanged (<code>site/src/hero.ts</code>). Two replicas run in memory; the link between them is simulated in the page, because DevTools "offline" does not cut it.</p></details>
+    <details><summary>Is it really offline?</summary><p>Each app is a PWA: after one visit it reopens in airplane mode, with its edits kept in IndexedDB. Live end-to-end tests against both deployed apps passed 6 of 6, offline reload included. Not built: a relay between two devices; the replicas sync inside one page.</p></details>
+    <details><summary>Can two offline people both claim the last stove?</summary><p>Both claims are provisional. On reconnect, <code>claim-one</code> keeps exactly one claimant on every replica and shows the other person a twin that names the winner.</p></details>
+    <details><summary>Did Kiro really write the code?</summary><p>111 of 119 commits in <code>skeleton/</code> and <code>apps/</code> carry a <code>Kiro-Session</code> trailer that maps to a row in <code>evidence/kiro/sessions.jsonl</code>. The other 8 are listed in <code>share.json</code>.</p></details>
+    <details><summary>Does the kit make Kiro better?</summary><p>Our pre-registered pilot found no measurable effect (0 of 10 vs 0 of 10). What it did show was a gap in the gate, which we then closed (the fix has not been re-piloted).</p></details>
+    <details><summary>Can I build my own app on the skeleton?</summary><p>Supply a model, ops with declared merges, a seed, views and a config, as both apps do. <code>docs/ADOPT.md</code> walks through it, and the kit's property suite runs over every registered op.</p></details>
+  </div>
+</section>
+
+<section class="closing" aria-labelledby="close-h">
+  <div class="wrap">
+    <h2 id="close-h">Cut the link yourself. <em>Watch the tent come back.</em></h2>
+    <div class="cta">
+      <a class="btn solid" href="#try">Back to the demo</a>
+      <a class="btn" href="/judge">The 60-second judge path</a>
+      <a class="btn" href="/deck/">Pitch deck</a>
+    </div>
+    <footer class="foot">
+      <span>LIMBO · MIT · built with Kiro for Kiroween, Skeleton Crew</span>
+      <a href="https://github.com/edycutjong/limbo">Source on GitHub</a>
+      <a href="/judge">For judges</a>
+      <a class="version-chip" id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a>
+      <span>Figures from <code>evidence/</code> at b1bf822 (2026-11-22)</span>
+    </footer>
+  </div>
+</section>
 </main>
 <script>
-// Version chip: the baked text stays if the request fails (offline, rate limit, private repo).
+(function(){
+  // count-ups: the markup already holds the final value; this only replays it once, on first view
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els=[].slice.call(document.querySelectorAll('[data-count]'));
+  if(!reduce&&'IntersectionObserver' in window){
+    var fmt=function(v,d){return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});};
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){
+      if(!e.isIntersecting)return; io.unobserve(e.target);
+      var el=e.target,to=+el.dataset.count,d=+(el.dataset.dec||0),suf=el.dataset.suffix||'',t0=null,fin=el.textContent;
+      function step(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/1400),v=to*(1-Math.pow(1-k,3));el.textContent=k<1?fmt(v,d)+suf:fin;if(k<1)requestAnimationFrame(step);}
+      requestAnimationFrame(step);
+    });},{threshold:.6});
+    els.forEach(function(el){io.observe(el);});
+  }
+  // terminal replay: lines appear in their recorded order; the markup shows them all without JS
+  var term=document.querySelector('.term-body');
+  if(term&&!reduce&&'IntersectionObserver' in window){
+    var lines=[].slice.call(term.querySelectorAll('.term-line'));
+    var tio=new IntersectionObserver(function(es){if(!es[0].isIntersecting)return;tio.disconnect();
+      term.classList.add('play');lines.forEach(function(l,i){setTimeout(function(){l.classList.add('on');if(i===lines.length-1)setTimeout(function(){term.classList.remove('play');},400);},280*i);});
+    },{threshold:.4});
+    tio.observe(term);
+  }
+  addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=true;});});
+})();
 fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
   .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
 </script>
+<script src="/assets/hero.js?v=d6241fecf8" defer></script>
 </body>
 </html>
