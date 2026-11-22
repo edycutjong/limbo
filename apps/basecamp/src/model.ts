@@ -90,7 +90,7 @@ interface AddPayload {
 const byStamp = (a: Op, b: Op): number =>
   a.stamp.l !== b.stamp.l ? a.stamp.l - b.stamp.l : a.stamp.r !== b.stamp.r ? (a.stamp.r < b.stamp.r ? -1 : 1) : a.stamp.n - b.stamp.n;
 
-const EDIT_KIND: Record<string, EditKind> = {
+export const EDIT_KIND: Record<string, EditKind> = {
   'item.add': 'add',
   'item.restore': 'restore',
   'item.rename': 'rename',
@@ -133,7 +133,7 @@ function expenseOf(id: string, group: Op[]): Expense | undefined {
 
 const EDIT_OPS = new Set(['item.add', 'item.restore', 'item.rename', 'item.tick', 'item.claim']);
 
-function lifeKind(op: Op): LifeOp['kind'] | undefined {
+export function lifeKind(op: Op): LifeOp['kind'] | undefined {
   switch (op.op) {
     case 'item.add':
       return 'create';

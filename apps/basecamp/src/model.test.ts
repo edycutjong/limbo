@@ -1,7 +1,8 @@
 // Model tests (task 6): expense fold, claims with units, lifeInfo, values. Hand-built causal histories.
 import { describe, expect, it } from 'vitest';
 import type { Op } from '../../../skeleton/src/core/types.ts';
-import { materialize } from './model.ts';
+import { EDIT_KIND, lifeKind, materialize } from './model.ts';
+import { ops } from './ops/registry.gen.ts';
 
 function op(r: string, n: number, l: number, deps: Record<string, number>, name: string, target: string, payload: unknown): Op {
   return { id: `${r}:${n}`, op: name, target, payload, stamp: { l, r, n }, deps };
@@ -150,5 +151,34 @@ describe('frontier ordering and edit kinds', () => {
     expect(kinds(op('a', 1, 2, { s: 1 }, 'item.rename', 'i', { name: 'x' }))).toEqual(['rename']);
     expect(kinds(op('a', 1, 2, { s: 1 }, 'item.claim', 'i', { who: 'sari' }))).toEqual(['claim']);
     expect(kinds(op('a', 1, 2, { s: 1 }, 'item.restore', 'i', {}))).toEqual(['restore']);
+    expect(kinds(op('a', 1, 2, { s: 1 }, 'item.add', 'i', { name: 'x', key: 'a1', units: 1 }))).toEqual(['add']);
+    expect(kinds(op('a', 1, 2, { s: 1 }, 'item.tick', 'i', { ticked: true }))).toEqual(['tick']);
+  });
+});
+
+describe('edit-op lookup and register invariant', () => {
+  const kindsAllowed = ['add', 'restore', 'rename', 'tick', 'claim'];
+  const stub = (name: string): Op => op('x', 1, 1, {}, name, 'i', {});
+
+  it('every op lifeKind treats as an edit has an EDIT_KIND entry', () => {
+    const names = [...new Set([...ops.map((o) => o.name), ...Object.keys(EDIT_KIND)])];
+    for (const n of names) {
+      if (lifeKind(stub(n)) === 'edit') expect(kindsAllowed).toContain(EDIT_KIND[n]);
+    }
+    expect(lifeKind(stub('item.add'))).toBe('create');
+    expect(lifeKind(stub('item.restore'))).toBe('restore');
+    expect(lifeKind(stub('item.delete'))).toBe('delete');
+    for (const n of ['item.move', 'item.release', 'expense.add']) expect(lifeKind(stub(n))).toBeUndefined();
+  });
+
+  it("a group holding only an item's add materialises name and position from it", () => {
+    const s = materialize([op('s', 1, 1, {}, 'item.add', 'i', { name: 'tent', key: 'a0', units: 1 })]);
+    expect(s.items.i!.name).toBe('tent');
+    expect(s.items.i!.pos).toBe('a0');
+    expect(s.items.i!.values.name).toEqual([]);
+  });
+
+  it('a group holding only an expense.add materialises the amount from it', () => {
+    expect(materialize([addExpense(['sari'], 4200)]).expenses.e!.amountCents).toBe(4200);
   });
 });

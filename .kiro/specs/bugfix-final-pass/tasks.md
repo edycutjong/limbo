@@ -22,7 +22,7 @@ Order: D1, D2, then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props` green.
   - _Requirements: D1 1.6 to 1.10; Unchanged 1.11 to 1.17_
 
-- [ ] 3. D2 (part 1): tests for the edit-op lookup and the register invariant
+- [x] 3. D2 (part 1): tests for the edit-op lookup and the register invariant
   - In `apps/basecamp/src/model.test.ts`:
     - add "every op `lifeKind` treats as an edit has an `EDIT_KIND` entry", over the op names in `ops` (`registry.gen.ts`) and every `EDIT_KIND` key, plus the `create`, `restore`, `delete` and `undefined` classifications in `design.md`;
     - add "a group holding only an item's add materialises name and position from it" and the expense twin (amount from the only `expense.add`);

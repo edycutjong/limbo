@@ -24,6 +24,18 @@
         "chatSessionId": "sess_333741ec-6873-4614-bac8-9e2f7bcafaef",
         "timestamp": 1795327795176
       }
+    ],
+    "3. D2 (part 1): tests for the edit-op lookup and the register invariant": [
+      {
+        "executionId": "db1b3b42-7712-439e-a57f-eaec8152efb9",
+        "chatSessionId": "sess_e619dcb3-2396-450b-8c8c-21fa964c0744",
+        "timestamp": 1795328144563
+      },
+      {
+        "executionId": "db1b3b42-7712-439e-a57f-eaec8152efb9",
+        "chatSessionId": "sess_e619dcb3-2396-450b-8c8c-21fa964c0744",
+        "timestamp": 1795328311307
+      }
     ]
   }
 }
