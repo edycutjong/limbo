@@ -40,7 +40,7 @@ Order: D1, D2, then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props` green.
   - _Requirements: D2 2.5, 2.6; Unchanged 2.9 to 2.13_
 
-- [ ] 5. Cross-cutting pass
+- [x] 5. Cross-cutting pass
   - Run `pnpm typecheck && pnpm test && pnpm props && pnpm test:coverage && pnpm e2e`.
   - `pnpm test:coverage`: 100% on lines, statements, functions and branches, with `vitest.config.ts` untouched. `pnpm e2e`: if it exceeds the session time, report it as not run, never as passed.
   - Grep the touched files for `Date.now|new Date|performance.now|Math.random|randomUUID|toLocale`: no hit.

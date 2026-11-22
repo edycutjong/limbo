@@ -98,3 +98,26 @@ D2 has no runtime failure today, because the two lists agree. The red step is th
 - `pnpm e2e` is run in full. If it exceeds the session time, report it as not run, never as passed.
 - Grep the touched files for `Date.now|new Date|performance.now|Math.random|randomUUID|toLocale`: no hit.
 - Skeleton budget is unaffected because `skeleton/` is untouched; confirm with `git`-free means (file list and the measuring command in `evidence/budget-basecamp-baseline.md`).
+
+---
+
+## Results
+
+Measured at task 5 (2026-11-22), repo root, no git.
+
+| Command | Result |
+| --- | --- |
+| `pnpm typecheck` | no errors |
+| `pnpm test` (`unit` + `limbo` projects) | 103 files passed, 1040 tests passed, 0 failed |
+| `pnpm props` | 22 files passed, 359 tests passed, 9 skipped (368). The 9 skips are in the existing property suite; none were added by this spec. |
+| `pnpm test:coverage` (all projects) | 125 files passed, 1399 tests passed, 9 skipped (1408). Statements 100% (2676/2676), branches 100% (1465/1465), functions 100% (316/316), lines 100% (2676/2676). `vitest.config.ts` untouched. |
+| `pnpm e2e` | 26 passed, 10 skipped, 0 failed (47.2 s). The 10 skips are the `live` and `live-judge` projects (they need the live URL) and one `ui-polish-aftershock` desktop case that skips by design. Live-site checks are therefore not run. |
+
+Cross-cutting checks:
+
+- Grep of `SectorGrid.tsx`, `SectorGrid.test.tsx`, `model.ts`, `model.test.ts` for `Date.now|new Date|performance.now|Math.random|randomUUID|toLocale`: no hit.
+- Grep of `e2e/`, `apps/*/src`, `skeleton/src` for `not reported`: no hit.
+- `skeleton/`: no file has a modification time later than this spec's `bugfix.md` (12:51 on 2026-11-22), and `package.json` (07:29) and `vitest.config.ts` (03:56) are older than the spec. This is a timestamp check, not a diff, because git is not run.
+- Skeleton budget, measured with the command in `evidence/budget-basecamp-baseline.md`: 21 files, 2189 non-blank, non-comment lines. The last recorded figure in that file is 2142 (after bugfix-inspector-resolved task 2). The 47-line difference predates this spec (no skeleton file changed during it) and is not recorded in `evidence/`. It is within the 30-file, 2,400-line budget.
+- Axe audit on the live AFTERSHOCK page (`/` and `/?replicas=2`, both replicas): not run. axe is not a dependency of this repo. The owner is asked to run it and expect `label-content-name-mismatch` to pass on all 24 cells.
+- `evidence/` was not written (this session's rules do not allow it).
