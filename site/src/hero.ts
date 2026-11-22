@@ -102,7 +102,7 @@ function twins(id: Id, it: Item, s: State): string {
     out +=
       loser === me
         ? `<li class="lb-twin" data-twin="${it.id}:claim:${loser}"><span class="lb-ghost" aria-hidden="true">${esc(it.name)}</span>` +
-          `<p class="lb-cap"><b>Twin</b> · ${who(loser)} and ${winner} both claimed this · rule: <code>claim-one</code> picked ${winner} on both replicas (lower Lamport stamp, then replica id)</p>` +
+          `<p class="lb-cap"><b>Twin</b> · ${who(loser)} and ${winner} both claimed this · rule: <code>claim-one</code> picks ${winner} on every replica (lower Lamport stamp, then replica id)</p>` +
           `<p class="lb-btns"><button type="button" data-act="ok" data-id="${it.id}" data-who="${esc(loser)}">OK</button></p></li>`
         : `<li class="lb-note" data-twin="${it.id}:claim:${loser}">${who(loser)}'s claim lost · rule: <code>claim-one</code></li>`;
   }
@@ -186,13 +186,27 @@ export async function prerender(): Promise<Prerender> {
   const settled = { a: card(pair, 'a'), b: card(pair, 'b') };
   await resolveNow(pair);
   const fixed = card(pair, 'a');
+  if (!fixed.fixed || !card(pair, 'b').fixed) throw new Error('prerender: the replicas did not both reach FIXED');
   pair.close();
   if (!developing) throw new Error('prerender: never saw DEVELOPING');
   return { opening, settled, live, developing, fixed };
 }
 
 // ---------- browser ----------
-const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
+/** Resolves once the tab is visible (at once when it already is). */
+const visible = (): Promise<void> =>
+  typeof document === 'undefined' || !document.hidden
+    ? Promise.resolve()
+    : new Promise((r) => {
+        const on = (): void => {
+          if (document.hidden) return;
+          document.removeEventListener('visibilitychange', on);
+          r();
+        };
+        document.addEventListener('visibilitychange', on);
+      });
+/** A timeline pause that also holds while the tab is hidden, so nobody returns to a scene that played unseen. */
+const sleep = (ms: number): Promise<void> => new Promise<void>((r) => setTimeout(r, ms)).then(visible);
 
 export function mount(root: HTMLElement): void {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -226,7 +240,10 @@ export function mount(root: HTMLElement): void {
       const list = el.querySelector('.lb-list')!;
       if (last[id] !== c.html) {
         last[id] = c.html;
+        const had = document.activeElement instanceof HTMLElement && list.contains(document.activeElement) ? document.activeElement : null;
+        const again = had ? `[data-act="${had.dataset.act ?? ''}"][data-id="${CSS.escape(had.dataset.id ?? '')}"]` : '';
         list.innerHTML = c.html;
+        if (had) (list.querySelector<HTMLElement>(again) ?? linkBtn).focus({ preventScroll: true });
         list.querySelectorAll<HTMLElement>('[data-twin]').forEach((t) => {
           const k = `${id}:${t.dataset.twin}`;
           if (!seen.has(k) && !quiet) t.classList.add('lb-enter');
@@ -254,15 +271,22 @@ export function mount(root: HTMLElement): void {
       w.style.animationDelay = `${i * 140}ms`;
       w.style.top = `calc(50% + ${(i - (ops.length - 1) / 2) * 30}px)`;
       w.addEventListener('animationend', () => w.remove());
+      setTimeout(() => w.remove(), 4000 + i * 140); // animation cancelled (hidden tab, reduced motion mid-flight)
       cord.appendChild(w);
     });
   };
 
-  const fresh = async (): Promise<void> => {
-    run++;
+  /** Replace the pair. Returns this call's run token; a call overtaken while it awaited closes its own pair. */
+  const fresh = async (): Promise<number> => {
+    const mine = ++run;
     pair?.close();
+    pair = undefined;
     seen = new Set();
     const p = await newPair(() => pace);
+    if (mine !== run) {
+      p.close();
+      return mine;
+    }
     pair = p;
     for (const id of IDS) {
       p.sessions[id].onCross((ops) => wisp(id, ops));
@@ -270,12 +294,12 @@ export function mount(root: HTMLElement): void {
       p.sessions[id].subscribe(paint);
     }
     paint();
+    return mine;
   };
 
   // Restore the cut link, let the ops cross, then wait for the reader's taps; if nobody taps, settle it and say so.
-  const reconnect = async (mine: number): Promise<void> => {
-    const p = pair!;
-    const live = (): boolean => mine === run;
+  const reconnect = async (mine: number, p: Pair<State>): Promise<void> => {
+    const live = (): boolean => mine === run && pair === p;
     pace = full() ? 380 : 0;
     root.dataset.phase = 'playing';
     p.restore();
@@ -299,21 +323,23 @@ export function mount(root: HTMLElement): void {
     await sleep(2600);
     if (!live()) return;
     root.dataset.phase = 'yours';
-    say('Fixed: both replicas agree. Press Reset, cut the link and try it yourself.');
+    // Say "agree" only when both replicas' own views report FIXED.
+    if (card(p, 'a').fixed && card(p, 'b').fixed) say('Fixed: both replicas agree. Press Reset, cut the link and try it yourself.');
+    else say('Still settling. Tap Keep or OK to finish it yourself.');
   };
 
   const scene = async (): Promise<void> => {
-    await fresh();
-    const mine = run;
-    const p = pair!;
-    const live = (): boolean => mine === run;
+    const mine = await fresh();
+    const p = pair;
+    if (mine !== run || !p) return;
+    const live = (): boolean => mine === run && pair === p;
     root.dataset.phase = 'playing';
     say('Both replicas agree. Cutting the link…');
     await sleep(full() ? 1100 : 0);
     if (!live()) return;
     p.cut();
     paint();
-    say('Link cut. Each phone keeps working on its own.');
+    say('Link cut. Each replica keeps working on its own.');
     const lines = ['Sari ticks the tent.', 'Budi deletes the tent.', 'Sari claims the last stove.', 'Budi claims it too.'];
     for (let i = 0; i < lakeScript.length; i++) {
       await sleep(full() ? 1000 : 0);
@@ -324,7 +350,7 @@ export function mount(root: HTMLElement): void {
     }
     await sleep(full() ? 1200 : 0);
     if (!live()) return;
-    await reconnect(mine);
+    await reconnect(mine, p);
   };
 
   const act = (el: HTMLElement): void => {
@@ -371,7 +397,8 @@ export function mount(root: HTMLElement): void {
         void scene();
         return;
       case 'reset':
-        void fresh().then(() => {
+        void fresh().then((mine) => {
+          if (mine !== run) return;
           root.dataset.phase = 'yours';
           say('Reset to the seed list. Cut the link and edit both cards.');
         });
@@ -388,9 +415,11 @@ export function mount(root: HTMLElement): void {
   // First paint: reach the same state the markup shows, so the page and the engine agree.
   void (async () => {
     quiet = true;
-    await fresh();
-    lakeOffline(pair!);
-    paint();
+    const first = await fresh();
+    if (first === run && pair) {
+      lakeOffline(pair);
+      paint();
+    }
     quiet = false;
     root.dataset.phase = 'yours';
     root.dataset.ready = '';
@@ -400,8 +429,9 @@ export function mount(root: HTMLElement): void {
         if (es.some((x) => x.isIntersecting)) {
           io.disconnect();
           const mine = run;
+          const p = pair;
           setTimeout(() => {
-            if (mine === run) void reconnect(mine);
+            if (mine === run && p && pair === p) void reconnect(mine, p);
           }, 1600);
         }
       },
