@@ -87,16 +87,17 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 .lb-veil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s ease-in-out;background:radial-gradient(120% 90% at 50% 45%,#8f989c1f 30%,#8f989c99 100%),var(--grain);background-size:auto,160px;mix-blend-mode:multiply}
 [data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
 [data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
-[data-axis="DEVELOPING"] .lb-veil{opacity:.55;background:radial-gradient(120% 90% at 50% 40%,#e2a84b14 20%,#80560f33 100%)}
+[data-axis="DEVELOPING"] .lb-veil{opacity:.8;background:radial-gradient(120% 90% at 50% 40%,#e2a84b1f 20%,#80560f4d 100%)}
+[data-axis="DEVELOPING"] .lb-chip{color:var(--developing)}
 /* FIXED: lands big across the plate on the signature event, then settles to a small mark in the corner (design §4) */
-.lb-fixed{position:absolute;left:50%;top:44%;font:700 54px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5ead9;box-shadow:0 0 0 6px #faf5ea99;white-space:nowrap}
+.lb-fixed{position:absolute;left:50%;top:64%;font:700 46px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5eaf2;box-shadow:0 0 0 8px #faf5eacc;white-space:nowrap}
 [data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2.2s both}
 @keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
-@keyframes lb-settle{to{opacity:.95;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}}
 /* the plate number: how many ops wait in limbo on this replica (pair.queued) */
-.lb-big{position:absolute;right:14px;top:8px;display:flex;align-items:baseline;gap:6px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
-.lb-big b{font:400 46px/1 var(--font-display);font-variant-numeric:lining-nums}
-.lb-big i{font:italic 400 18px/1 var(--font-display)}
+.lb-big{position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);display:flex;align-items:baseline;gap:10px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
+.lb-big b{font:400 96px/1 var(--font-display);font-variant-numeric:lining-nums}
+.lb-big i{font:italic 400 26px/1 var(--font-display)}
 [data-axis="FOGGED"] .lb-big,[data-axis="DEVELOPING"] .lb-big{opacity:1}
 [data-axis="DEVELOPING"] .lb-big{color:var(--developing)}
 /* the cord: the in-page simulated link */
@@ -151,7 +152,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}
+  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}
   .lb-enter .lb-ghost{opacity:.7}
   .term-body.play .term-line{opacity:1}
 }
@@ -164,6 +165,13 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 .lb-limbo .lb-limbo-h{margin:0}
 .lb-limbo ol{flex:1 0 100%}
 .lb-limbo ol:has(.lb-empty){flex:0 1 auto;min-height:0}
+.lb-big{white-space:nowrap}
+@media (max-width:760px){
+  .lb-big{left:auto;right:12px;top:8px;transform:none;gap:6px}
+  .lb-big b{font-size:40px}
+  .lb-big i{font-size:17px}
+  .lb-fixed{top:50%;font-size:38px}
+}
 
 html,body{margin:0;height:100%;background:#15100c;color:var(--ink);font-family:var(--font-body);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .viewport{position:fixed;inset:0;overflow:hidden}
@@ -355,6 +363,22 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
 .cover h1{font-size:104px;max-width:11.5ch;margin-bottom:24px}
 .cover .who{font-size:26px}
 
+.static-viewer.mini .lb-viewer{padding:10px}
+.static-viewer.mini .lb-plate{min-height:430px}
+.static-viewer.mini .lb-row{font-size:19px}
+.static-viewer.mini .lb-cap{font-size:17px}
+.static-viewer.mini .lb-sitter{font-size:24px}
+.static-viewer.mini .lb-imprint{font-size:17px}
+.hold-stamp .lb-fixed{animation:none;opacity:1;top:72%}
+.static-viewer .lb-big{top:72%}
+.flow li{justify-content:space-between;min-height:360px}
+.flow b{font-size:46px}
+.flow span{font-size:28px}
+.cover h1{font-size:96px;max-width:12ch}
+.static-viewer .lb-big{top:auto;bottom:26px;transform:translateX(-50%)}
+.static-viewer .lb-big b{font-size:80px}
+.hold-stamp .lb-fixed{top:auto;bottom:44px;transform:translateX(-50%) rotate(-7deg)}
+
 </style>
 </head>
 <body>
@@ -366,7 +390,7 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <div class="row">
     <div>
       <p class="eyebrow">Kiroween 2026 · Skeleton Crew</p>
-      <h1>The signal died. <em>No edit vanished in silence.</em></h1>
+      <h1>The signal died. <em>The conflicts came back as ghosts.</em></h1>
       <p class="who">A local-first skeleton where every op declares its merge rule, and two apps built from it.</p>
     </div>
     <div class="static-viewer" inert><div class="lb-viewer"><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-note" data-twin="stove:claim:budi">Budi's claim lost · rule: <code>claim-one</code></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article><div class="lb-cord" data-link="up"><small>simulated link</small></div><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div></div>
@@ -400,12 +424,12 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <p class="eyebrow">Three plates</p>
   <h2>Fogged. Twinned. <em>Fixed.</em></h2>
   <div class="three">
-    <figure><img src="/assets/crop-fogged-a.webp" alt="Replica A fogged with the link cut, Offline — 2 waiting." width="1000" height="820" loading="lazy"><div class="n"><b>1</b><span>Fogged</span></div><p>Link cut. Each phone keeps working and counts what waits.</p></figure>
-    <figure><img src="/assets/crop-twin-b.webp" alt="Replica B after reconnect: the tent twin with Keep and Delete, and the stove claim twin." width="1000" height="980" loading="lazy"><div class="n"><b>2</b><span>Twinned</span></div><p>Reconnected. The deleted tent returns as a ghost twin.</p></figure>
-    <figure><img src="/assets/crop-fixed-a.webp" alt="Replica A after the twins are settled: Live, with the FIXED stamp." width="1000" height="820" loading="lazy"><div class="n"><b>3</b><span>Fixed</span></div><p>One tap each. Both phones agree; the stamp fires.</p></figure>
+    <figure><div class="static-viewer mini" inert><article class="lb-plate" data-replica="a" data-axis="FOGGED" data-conflict="CLEAR"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Offline — 2 waiting</span></header><span class="lb-big" aria-hidden="true"><b>2</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><div class="n"><b>1</b><span>Fogged</span></div><p>Link cut. Each phone keeps working and counts what waits.</p></figure>
+    <figure><div class="static-viewer mini" inert><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><div class="n"><b>2</b><span>Twinned</span></div><p>Reconnected. The deleted tent returns as a ghost twin.</p></figure>
+    <figure><div class="static-viewer mini" inert><div class="hold-stamp"><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CLEAR" data-fixed><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div></div><div class="n"><b>3</b><span>Fixed</span></div><p>One tap each. Both phones agree; the stamp fires.</p></figure>
   </div>
   <div class="foot"><span class="brand">LIMBO</span><span></span></div>
-  <aside class="speaker-notes">Three captures of the live app. Every look maps to a value: fog is the link state, the count is unacknowledged ops, the twin is a surfaced conflict, FIXED fires once both phones agree.</aside>
+  <aside class="speaker-notes">Three states rendered by the same engine as the landing hero. Every look maps to a value: fog is the link state, the count is unacknowledged ops, the twin is a surfaced conflict, FIXED fires once both phones agree.</aside>
 </section>
 
 <section class="slide" aria-label="5: Merge rules">
@@ -413,7 +437,7 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <h2>Every op declares its merge.</h2>
   <ol class="flow">
     <li><code>causal-lww</code><b>Ticks, names</b><span>The write that saw the other wins; concurrent ones twin.</span></li>
-    <li><code>commutes</code><b>Counts, shares</b><span>Both edits count.</span></li>
+    <li><code>commutes</code><b>Adds, shares</b><span>Both edits count.</span></li>
     <li><code>claim-one</code><b>Claims</b><span>One winner; the other sees a twin.</span></li>
     <li><code>resurrect</code><b>Delete vs edit</b><span>It returns as a ghost twin.</span></li>
     <li><code>ordered-move</code><b>Reorder</b><span>One stable order.</span></li>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIMBO: the signal died at the lake, and no edit vanished in silence</title>
+<title>LIMBO: the signal died at the lake, and the conflicts came back as ghosts</title>
 <meta name="description" content="A local-first skeleton where every op declares its merge rule, two apps built on it, and the Kiro kit that built them. Cut the link and watch.">
 <meta name="author" content="edycutjong">
 <meta name="theme-color" content="#F2EADB">
@@ -11,7 +11,7 @@
 <link rel="canonical" href="https://limbo.edycu.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LIMBO">
-<meta property="og:title" content="LIMBO: the signal died at the lake. No edit vanished in silence.">
+<meta property="og:title" content="LIMBO: the signal died at the lake. The conflicts came back as ghosts.">
 <meta property="og:description" content="Cut the link, edit two replicas, reconnect: the tent returns as a ghost twin, one tap settles it.">
 <meta property="og:url" content="https://limbo.edycu.dev/">
 <meta property="og:image" content="https://limbo.edycu.dev/assets/og-image.png?v=34bbb5cfac">
@@ -93,16 +93,17 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 .lb-veil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s ease-in-out;background:radial-gradient(120% 90% at 50% 45%,#8f989c1f 30%,#8f989c99 100%),var(--grain);background-size:auto,160px;mix-blend-mode:multiply}
 [data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
 [data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
-[data-axis="DEVELOPING"] .lb-veil{opacity:.55;background:radial-gradient(120% 90% at 50% 40%,#e2a84b14 20%,#80560f33 100%)}
+[data-axis="DEVELOPING"] .lb-veil{opacity:.8;background:radial-gradient(120% 90% at 50% 40%,#e2a84b1f 20%,#80560f4d 100%)}
+[data-axis="DEVELOPING"] .lb-chip{color:var(--developing)}
 /* FIXED: lands big across the plate on the signature event, then settles to a small mark in the corner (design §4) */
-.lb-fixed{position:absolute;left:50%;top:44%;font:700 54px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5ead9;box-shadow:0 0 0 6px #faf5ea99;white-space:nowrap}
+.lb-fixed{position:absolute;left:50%;top:64%;font:700 46px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5eaf2;box-shadow:0 0 0 8px #faf5eacc;white-space:nowrap}
 [data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2.2s both}
 @keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
-@keyframes lb-settle{to{opacity:.95;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}}
 /* the plate number: how many ops wait in limbo on this replica (pair.queued) */
-.lb-big{position:absolute;right:14px;top:8px;display:flex;align-items:baseline;gap:6px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
-.lb-big b{font:400 46px/1 var(--font-display);font-variant-numeric:lining-nums}
-.lb-big i{font:italic 400 18px/1 var(--font-display)}
+.lb-big{position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);display:flex;align-items:baseline;gap:10px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
+.lb-big b{font:400 96px/1 var(--font-display);font-variant-numeric:lining-nums}
+.lb-big i{font:italic 400 26px/1 var(--font-display)}
 [data-axis="FOGGED"] .lb-big,[data-axis="DEVELOPING"] .lb-big{opacity:1}
 [data-axis="DEVELOPING"] .lb-big{color:var(--developing)}
 /* the cord: the in-page simulated link */
@@ -157,7 +158,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}
+  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}
   .lb-enter .lb-ghost{opacity:.7}
   .term-body.play .term-line{opacity:1}
 }
@@ -170,6 +171,13 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 .lb-limbo .lb-limbo-h{margin:0}
 .lb-limbo ol{flex:1 0 100%}
 .lb-limbo ol:has(.lb-empty){flex:0 1 auto;min-height:0}
+.lb-big{white-space:nowrap}
+@media (max-width:760px){
+  .lb-big{left:auto;right:12px;top:8px;transform:none;gap:6px}
+  .lb-big b{font-size:40px}
+  .lb-big i{font-size:17px}
+  .lb-fixed{top:50%;font-size:38px}
+}
 
 body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 var(--font-body)}
 a{color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1px;transition:color .15s,background .15s}
@@ -191,7 +199,7 @@ a:hover{color:var(--ink);text-decoration-thickness:2px}
 .hero{display:grid;grid-template-columns:minmax(0,4.6fr) minmax(0,7.4fr);gap:44px;align-items:start;padding-block:22px 56px}
 .plate-no{font:400 15px/1.3 var(--font-display);font-variant:small-caps;letter-spacing:.12em;color:var(--muted);margin:0 0 14px;text-transform:lowercase}
 h1{font:400 clamp(40px,4.6vw,64px)/1.03 var(--font-display);margin:0 0 20px;letter-spacing:-.005em}
-h1 em{display:block;font-style:italic;background:linear-gradient(100deg,var(--ink) 0 45%,var(--before) 62%,#b9bfc1 80%) 0 0/240% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;animation:develop 2.6s cubic-bezier(.3,0,.2,1) .5s both;padding-bottom:.06em}
+h1 em{display:block;font-style:italic;background:linear-gradient(100deg,var(--ink) 0 45%,var(--fog-ink) 62%,#6f7a80 80%) 0 0/240% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;animation:develop 2.6s cubic-bezier(.3,0,.2,1) .5s both;padding-bottom:.06em}
 @keyframes develop{from{background-position:100% 0}to{background-position:0 0}}
 .lede{color:var(--muted);margin:0 0 22px;max-width:42ch;font-size:18.5px}
 .lede b{color:var(--ink);font:700 1.06em/1 var(--font-display)}
@@ -233,7 +241,7 @@ section.s{padding:84px 0 0}
 .cab .k{font:600 12px/1.3 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink);margin:0 2px}
 .cab p{margin:6px 2px 0;font-size:14.5px;line-height:1.45;color:var(--muted)}
 /* merge rules bento */
-.rules{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
+.rules{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px;align-items:start}
 .rule{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:22px 22px 20px;grid-column:span 2}
 .rule.big{grid-column:span 3;padding:26px}
 .rule code.r{display:inline-block;font:500 13.5px/1 var(--font-data);color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:6px 10px}
@@ -368,16 +376,17 @@ section.s{padding:84px 0 0}
 .who{font-size:19px;line-height:1.5;color:var(--ink);margin:0 0 14px;max-width:40ch;padding-left:14px;border-left:3px solid var(--rule)}
 .proof{margin:18px 0 0;font-size:15px;color:var(--muted)}
 .proof b{font:700 1.08em/1 var(--font-display);color:var(--ink)}
-@media (min-width:761px){.lb-list{min-height:455px}}
+@media (min-width:761px){.lb-list{min-height:440px}}
 /* states strip: real engine plates at cabinet-card size */
-.cab-plate{height:210px;padding:0;background:var(--card)}
-.cab-plate .lb-plate{width:200%;zoom:.5;border:0;border-radius:0;min-height:420px}
+.cab-plate{height:236px;padding:0;background:var(--card)}
+.cab-plate .lb-plate{width:172%;zoom:.58;border:0;border-radius:0;min-height:407px}
 .cab-plate .lb-list{min-height:0}
 .cab-plate .lb-row:nth-child(n+4),.cab-plate .lb-limbo{display:none}
 .cab-plate .lb-big{right:10px}
-.cab-plate .lb-fixed{animation:none;opacity:1;left:auto;right:-6px;top:58%;transform:rotate(-7deg) scale(.9)}
-@media (max-width:760px){.hero .who{order:3}.hero>div:last-child{order:4}.hero .lede{order:5}.hero .cta{order:6}.hero .proof{order:7}
-  .lb-big b{font-size:34px}.lb-fixed{font-size:40px}}
+.cab-plate .lb-fixed{animation:none;opacity:1;left:50%;top:70%;transform:translate(-50%,-50%) rotate(-7deg) scale(.9)}
+.cab-plate .lb-big{top:72%}
+@media (max-width:760px){.lb-big b{font-size:40px}.hero .who{order:3}.hero>div:last-child{order:4}.hero .lede{order:5}.hero .cta{order:6}.hero .proof{order:7}
+  .lb-fixed{font-size:38px}}
 
 </style>
 </head>
@@ -392,7 +401,7 @@ section.s{padding:84px 0 0}
 <section class="wrap hero" id="try" aria-labelledby="h1">
   <div>
     <p class="plate-no">A local-first skeleton, two apps, one Kiro kit</p>
-    <h1 id="h1">The signal died at the lake. <em>No edit vanished in silence.</em></h1>
+    <h1 id="h1">The signal died at the lake. <em>The conflicts came back as ghosts.</em></h1>
     <p class="who">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
     <p class="lede">Sari ticked the tent while Budi deleted it, both offline. Every op in LIMBO declares its merge rule, so on reconnect the tent comes back as a ghost twin and one tap settles it.</p>
     <div class="cta">
@@ -408,7 +417,7 @@ section.s{padding:84px 0 0}
         <span class="lb-big" aria-hidden="true"><b class="lb-count">2</b><i>in limbo</i></span>
         <p class="lb-sitter">Replica A — Sari</p>
         <ul class="lb-list" aria-label="Sari's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
-        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">2</span> waiting</p><ol><li><span>item.tick</span> tent · <code>causal-lww</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo, with their rules</p><ol><li><span>item.tick</span> tent · <code>causal-lww</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
         <span class="lb-fixed" aria-hidden="true">FIXED</span>
         <div class="lb-veil" aria-hidden="true"></div>
       </article>
@@ -421,7 +430,7 @@ section.s{padding:84px 0 0}
         <span class="lb-big" aria-hidden="true"><b class="lb-count">2</b><i>in limbo</i></span>
         <p class="lb-sitter">Replica B — Budi</p>
         <ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Budi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li><li class="lb-row" data-id="headlamps"><button type="button" class="lb-tick" data-act="tick" data-id="headlamps" aria-pressed="false" aria-label="Tick Headlamps ×4"></button><span class="lb-name">Headlamps ×4</span><button type="button" class="lb-del" data-act="del" data-id="headlamps" aria-label="Delete Headlamps ×4" title="Delete">×</button></li></ul>
-        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">2</span> waiting</p><ol><li><span>item.delete</span> tent · <code>resurrect</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo, with their rules</p><ol><li><span>item.delete</span> tent · <code>resurrect</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
         <span class="lb-fixed" aria-hidden="true">FIXED</span>
         <div class="lb-veil" aria-hidden="true"></div>
       </article>
@@ -466,11 +475,11 @@ section.s{padding:84px 0 0}
     <p>The kit refuses an op that converges on the wrong answer. No rule reads a wall clock: order comes from causal context.</p>
   </div>
   <div class="rules">
-    <article class="rule big"><code class="r">resurrect</code><h3>Deleted while edited elsewhere: it comes back.</h3><p>The deleted item returns as a ghost twin beside the edited one. One tap keeps or drops it, and every replica holds the same list afterwards.</p><figure><img src="/assets/basecamp-twin.webp" alt="BASECAMP after reconnect: the tent shows a twin card on both replicas with Keep and Delete." width="1400" height="785" loading="lazy"><figcaption>Live BASECAMP, both replicas after reconnect.</figcaption></figure></article>
-    <article class="rule big"><code class="r">claim-one</code><h3>Two offline claims: one winner, named.</h3><p>No CRDT can stop two offline people from claiming the last stove. Claims stay provisional; on reconnect every phone picks the same winner (lower Lamport stamp, then replica id), and the loser sees a twin naming them.</p><p class="ex">Property: after convergence every replica names the same winners, never more than the item has units.</p><figure class="claimdemo" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><figcaption>Budi's view after the lake scene, rendered by the hero's engine.</figcaption></figure></article>
+    <article class="rule big"><code class="r">resurrect</code><h3>Deleted while edited elsewhere: it comes back.</h3><p>The deleted item returns as a ghost twin beside the edited one. One tap keeps or drops it, and every replica holds the same list afterwards.</p><figure><img src="/assets/crop-twin-b.webp" alt="BASECAMP replica B after reconnect: the tent twin with Keep and Delete, and the stove claim twin." width="1000" height="980" loading="lazy"><figcaption>Live BASECAMP, Budi's phone after reconnect.</figcaption></figure></article>
+    <article class="rule big"><code class="r">claim-one</code><h3>Two offline claims: one winner, named.</h3><p>No CRDT can stop two offline people from claiming the last stove. Claims stay provisional; on reconnect every phone picks the same winner (lower Lamport stamp, then replica id), and the loser sees a twin naming them.</p><p class="ex">Property: after convergence every replica names the same winners, never more than the item has units.</p><figure class="claimdemo" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><figcaption>Budi's view of the stove after the lake scene, rendered by the hero's engine.</figcaption></figure></article>
     <article class="rule"><code class="r">causal-lww</code><h3>Ticks, names, notes</h3><p>The write that had seen the other wins. Concurrent edits that differ come back as a twin. A clock never decides.</p></article>
-    <article class="rule"><code class="r">commutes</code><h3>Counts and shares</h3><p>Both edits count. Severity takes the worse; expense shares sum to the total in whole cents.</p></article>
-    <article class="rule"><code class="r">ordered-move</code><h3>Reorder</h3><p>Two concurrent moves land in one stable order, with no twin.</p></article>
+    <article class="rule"><code class="r">commutes</code><h3>Adds and shares</h3><p>Both edits count. Severity takes the worse; expense shares sum to the total in whole cents.</p></article>
+    <article class="rule"><code class="r">ordered-move</code><h3>Reorder</h3><p>Two concurrent moves land in one stable order. The losing move is not shown as a twin.</p></article>
   </div>
 </section>
 
@@ -534,7 +543,7 @@ section.s{padding:84px 0 0}
   </div>
   <div class="honest">
     <ul class="quotes">
-      <li><q>Convergence is measured, property-tested, not proven.</q><small>README, The number · 10,000 orderings, seed 20251031, Yjs 13.6.33</small></li>
+      <li><q>Convergence is measured, property-tested, not proven.</q><small>README, The Solution · figures in The number: 10,000 orderings, seed 20251031, Yjs 13.6.33</small></li>
       <li><q>No CRDT can stop two offline people from claiming the last stove.</q><small>README, The merge rules</small></li>
       <li><q>So we claim nothing about the kit improving correctness here.</q><small>README, How Kiro built this</small></li>
     </ul>
