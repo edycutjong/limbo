@@ -11,7 +11,7 @@ const GLYPH: Record<Severity, string> = { safe: '✓', damaged: '▲', unsafe: '
 
 /** Accessible name of one cell (R17.3). */
 export function cellLabel(id: string, s: Sector | undefined): string {
-  if (s?.severity === undefined) return `${id}, not reported`;
+  if (s?.severity === undefined) return `${id}, no report`;
   return `${id}, ${WORD[s.severity]}, ${s.total} people reported`;
 }
 
@@ -94,9 +94,16 @@ export function SectorGrid(p: {
                 onClick={() => { setActive(i); p.onSelect(id); }}
               >
                 <span className="as-cell-id">{id}</span>
+                {' '}
                 <span aria-hidden="true" className="as-cell-glyph">{sev ? GLYPH[sev] : '–'}</span>
+                {' '}
                 <span className="as-cell-word">{sev ? WORD[sev] : 'NO REPORT'}</span>
-                {sev !== undefined && hasCount && <span className="as-cell-total">{s!.total}</span>}
+                {sev !== undefined && hasCount && (
+                  <>
+                    {' '}
+                    <span className="as-cell-total">{s!.total}</span>
+                  </>
+                )}
               </div>
             );
           })}

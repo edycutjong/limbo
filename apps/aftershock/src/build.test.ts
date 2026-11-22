@@ -33,6 +33,14 @@ it('the production build contains no dev relay, no window.limbo, no localhost:51
   let text = textOf(dist);
   expect(text.length).toBeGreaterThan(1000);
   for (const v of vendorDocs) text = text.split(v).join('');
+  // Social-card metadata in index.html (og:url, og:image, twitter:image). Open Graph requires absolute URLs.
+  // Link scrapers read them; the page never fetches them. Matched as full attribute strings so any other
+  // https:// (script, style, font, other origin) still fails.
+  const socialCard = [
+    'content="https://aftershock.limbo.edycu.dev/"',
+    'content="https://aftershock.limbo.edycu.dev/og-image.jpg?v=a15fa76a14"',
+  ];
+  for (const s of socialCard) text = text.split(s).join('');
   for (const banned of ['devrelay', 'DevRelayLink', 'window.limbo', 'localhost:5175', 'https://']) {
     expect(text.includes(banned), banned).toBe(false);
   }

@@ -126,7 +126,8 @@ describe('SectorGrid', () => {
       const cells = Array.from(r.container.querySelectorAll<HTMLElement>('[data-sector]'));
       expect(cells.length).toBe(24);
       const seen = new Set(cells.map((c) => c.getAttribute('data-severity')));
-      for (const s of ['safe', 'damaged', 'unsafe', 'none']) expect(seen.has(s)).toBe(true);
+      // The hand-built map must hold all four states; the seed has no unsafe cell.
+      if (map === hand) for (const s of ['safe', 'damaged', 'unsafe', 'none']) expect(seen.has(s)).toBe(true);
       for (const c of cells) expect(nameOf(c)).toContain(visibleText(c));
       cleanup();
     }

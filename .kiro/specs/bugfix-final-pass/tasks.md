@@ -14,7 +14,7 @@ Order: D1, D2, then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props` (the red tests are expected until task 2).
   - _Requirements: D1 1.6 to 1.10_
 
-- [ ] 2. D1 (part 2): fix the cell text and the unreported label
+- [x] 2. D1 (part 2): fix the cell text and the unreported label
   - `SectorGrid.tsx`: put `{' '}` between the id, glyph, word and total spans. `cellLabel`: unreported returns `${id}, no report`. No CSS change.
   - Update R17.3 in `.kiro/specs/aftershock/requirements.md` (line 177) to "no report".
   - Grep `e2e/`, `apps/*/src` and `skeleton/src` for `not reported`: no hit left in code or tests.

@@ -174,7 +174,7 @@ Setup: pair view, replica `a` = Sari, replica `b` = Budi, fresh databases, seede
 
 1. Severity shall be conveyed by a word and a glyph, never by colour alone. Every conflict shall have a word and an icon (the layer's `Twin` provides this).
 2. The UI shall be operable by keyboard: grid (arrows, Enter, Space), report form, **Keep this note**, **Keep this count**, Inspector (`I`), link (`L`).
-3. The grid shall have an accessible name ("Block 7 survey, sectors A1 to F4"), and each cell the name "`<id>`, `<WORD>`, `<n>` people reported" (or "not reported").
+3. The grid shall have an accessible name ("Block 7 survey, sectors A1 to F4"), and each cell the name "`<id>`, `<WORD>`, `<n>` people reported" (or "`<id>`, no report").
 4. Counts and totals shall use tabular numerals.
 5. The page shall have one `<h1>` and a landmark `main`.
 
