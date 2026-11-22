@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 // LIMBO_LIVE_LANDING is set (the `live` project).
 
 const CLAIM = 'When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.';
-const SECTIONS = ['The 60-second path', 'The receipts', 'Where Kiro did the work', 'Reproduce it', 'Honest limits', 'Links'];
+const SECTIONS = ['The judge path', 'The receipts', 'Where Kiro did the work', 'Reproduce it', 'Honest limits', 'Links'];
 
 const base = process.env['LIMBO_LIVE_LANDING'];
 

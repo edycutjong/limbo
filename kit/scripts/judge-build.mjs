@@ -31,7 +31,7 @@ const path = [
   ['Now your own edit, not the scene: type an item into <strong>Add an item</strong> on REPLICA A (it appears on B), press <strong>Cut link</strong>, tick it on A and delete it on B (<strong>⋯</strong> then <strong>Delete</strong>), press <strong>Restore link</strong>. It comes back as a twin on both cards (rule: resurrect); <strong>Keep</strong> settles it.',
    'Now your own edit, not the scene: type an item into **Add an item** on REPLICA A (it appears on B), press **Cut link**, tick it on A and delete it on B (**⋯** then **Delete**), press **Restore link**. It comes back as a twin on both cards (rule: resurrect); **Keep** settles it.'],
   [`Open <a href="${URLS.aftershock}">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note by tapping either <strong>Keep … note</strong> button on the twin card.`, `Open [AFTERSHOCK](${URLS.aftershock}) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note by tapping either **Keep … note** button on the twin card.`],
-  ['Optional: press <strong>Run shuffle test</strong> in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.', 'Optional: press **Run shuffle test** in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.'],
+  ['Then press <strong>Run shuffle test</strong> in either page\'s shuffle section: it replays the on-screen ops in random causal orders in your browser (the same ops replayed, not the 10,000-ordering run).', 'Then press **Run shuffle test** in either page\'s shuffle section: it replays the on-screen ops in random causal orders in your browser (the same ops replayed, not the 10,000-ordering run).'],
 ];
 
 const receipts = [
@@ -65,6 +65,7 @@ const kiro = [
   ['.kiro/specs/', 'requirements, design and tasks for each feature, authored by Kiro sessions from an orchestrator brief. Start with .kiro/specs/basecamp/ or coverage-full/.'],
   ['.kiro/steering/', 'the rules Kiro was held to: local-first.md (no wall clock, commute or declare the merge) and testing.md (properties first).'],
   ['.kiro/hooks/ and .kiro/agents/', 'the hooks that ran the convergence properties after each task and blocked the agent from stopping while one failed.'],
+  ['.kiro/hooks/stop-gate.json', `blocked Kiro from finishing ${tally.agent_stop_blocks_hooklog} times. Once unplanned: in merge-kit task 9.5 the shared property suite ran the new item.move op without its own payload generator, and Kiro wired it in (commit 651730d). Once on a wall-clock fault seeded on purpose (commit cca30a0); that is the session the video replays.`],
   ['evidence/kiro/sessions.jsonl', 'one row per Kiro session (spec, task, credits, hooks fired, outcome). Hand edits are logged as claude-direct rows. hooks.jsonl is written only by the hook scripts.'],
 ];
 
@@ -82,8 +83,8 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIMBO for judges: the 60-second path, the receipts, the limits</title>
-<meta name="description" content="${esc(CLAIM)} The 60-second judge path, the measured receipts and the honest limits.">
+<title>LIMBO for judges: the judge path, the receipts, the limits</title>
+<meta name="description" content="${esc(CLAIM)} The judge path (no install, no login), the measured receipts and the honest limits.">
 <style>
   :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
   * { box-sizing: border-box; }
@@ -113,7 +114,7 @@ const html = `<!doctype html>
   <p class="version"><a id="version" href="${REPO}/releases/latest">v${json('package.json').version}</a> · <a href="${URLS.landing}">landing page</a></p>
   <p class="claim">${esc(CLAIM)}</p>
 
-  <h2>The 60-second path</h2>
+  <h2>The judge path</h2>
   <p class="note">No setup, no keys, no cloning.</p>
   <ol>
 ${path.map(([h]) => `    <li>${h}</li>`).join('\n')}
@@ -160,7 +161,7 @@ Live page: https://limbo.edycu.dev/judge (this file is its mirror; both are gene
 
 > ${CLAIM}
 
-## The 60-second path
+## The judge path
 
 No setup, no keys, no cloning.
 

@@ -456,7 +456,7 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
     <div>
       <p class="eyebrow">The honest part</p>
       <h2>Two claims. <em>One winner, named.</em></h2>
-      <p class="body">No CRDT can stop two offline people claiming the last stove. Claims stay provisional; on reconnect every phone picks the same winner, and the loser is told.</p>
+      <p class="body">No CRDT can stop two offline people claiming the last stove. Claims stay provisional; on reconnect every replica picks the same winner, and the loser is told.</p>
     </div>
     <div class="static-viewer big" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picks Sari on every replica (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div></div>
   </div>
@@ -468,7 +468,7 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <p class="eyebrow">Skeleton Crew</p>
   <h2>One skeleton, <em>two apps.</em></h2>
   <div class="row">
-    <div class="skelbox"><h3>skeleton/</h3><dl><dt>24</dt><dd>non-test files</dd><dt>2,520</dt><dd>non-blank lines</dd><dt>15</dt><dd>main-entry exports</dd></dl></div>
+    <div class="skelbox"><h3>skeleton/</h3><dl><dt>21</dt><dd>files (budget 30)</dd><dt>2,189</dt><dd>lines (budget 2,400)</dd><dt>15</dt><dd>main-entry exports</dd></dl></div>
     <div class="twoapps">
       <figure><img src="/assets/crop-twin-b.webp" alt="BASECAMP replica B after reconnect, with two twins." width="1000" height="980" loading="lazy"><figcaption><b>BASECAMP</b>trip list · 12 ops</figcaption></figure>
       <figure><img src="/assets/crop-aftershock-a.webp" alt="AFTERSHOCK replica A: a 6 by 4 sector grid with SAFE, DAMAGED and NO REPORT cells." width="1000" height="886" loading="lazy"><figcaption><b>AFTERSHOCK</b>field form · 6 ops · demo data</figcaption></figure>

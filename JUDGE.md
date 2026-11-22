@@ -4,7 +4,7 @@ Live page: https://limbo.edycu.dev/judge (this file is its mirror; both are gene
 
 > When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.
 
-## The 60-second path
+## The judge path
 
 No setup, no keys, no cloning.
 
@@ -15,7 +15,7 @@ No setup, no keys, no cloning.
 5. Tap **Keep** on the twin and **OK** on the lost claim. The fog lifts and the **FIXED** stamp appears: both replicas hold the same list.
 6. Now your own edit, not the scene: type an item into **Add an item** on REPLICA A (it appears on B), press **Cut link**, tick it on A and delete it on B (**⋯** then **Delete**), press **Restore link**. It comes back as a twin on both cards (rule: resurrect); **Keep** settles it.
 7. Open [AFTERSHOCK](https://aftershock.limbo.edycu.dev/?replicas=2) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note by tapping either **Keep … note** button on the twin card.
-8. Optional: press **Run shuffle test** in either page's shuffle section to replay the on-screen ops in random causal orders in your browser.
+8. Then press **Run shuffle test** in either page's shuffle section: it replays the on-screen ops in random causal orders in your browser (the same ops replayed, not the 10,000-ordering run).
 
 ## The receipts
 
@@ -32,6 +32,7 @@ No setup, no keys, no cloning.
 - `.kiro/specs/`: requirements, design and tasks for each feature, authored by Kiro sessions from an orchestrator brief. Start with .kiro/specs/basecamp/ or coverage-full/.
 - `.kiro/steering/`: the rules Kiro was held to: local-first.md (no wall clock, commute or declare the merge) and testing.md (properties first).
 - `.kiro/hooks/ and .kiro/agents/`: the hooks that ran the convergence properties after each task and blocked the agent from stopping while one failed.
+- `.kiro/hooks/stop-gate.json`: blocked Kiro from finishing 2 times. Once unplanned: in merge-kit task 9.5 the shared property suite ran the new item.move op without its own payload generator, and Kiro wired it in (commit 651730d). Once on a wall-clock fault seeded on purpose (commit cca30a0); that is the session the video replays.
 - `evidence/kiro/sessions.jsonl`: one row per Kiro session (spec, task, credits, hooks fired, outcome). Hand edits are logged as claude-direct rows. hooks.jsonl is written only by the hook scripts.
 
 ## Reproduce it

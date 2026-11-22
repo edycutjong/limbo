@@ -2,12 +2,13 @@
   <img src="docs/assets/icon.svg" alt="LIMBO icon" width="144">
   <h1>LIMBO 🌫️</h1>
   <p><em>The signal died at the lake. The conflicts came back as ghosts.</em></p>
+  <p><strong>A shared list breaks when the signal does, and last-write-wins quietly drops an edit.</strong> LIMBO is a local-first skeleton where every op declares how it merges, so an item deleted while it was edited comes back as a ghost twin. Built: <code>skeleton/</code>, <code>apps/basecamp/</code>, <code>apps/aftershock/</code>, and the <code>/.kiro</code> kit under which Kiro built them.</p>
   <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two replicas, drawn as phones, fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
 
   <br/>
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
-  [![For judges](https://img.shields.io/badge/For_judges-60_second_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
+  [![For judges](https://img.shields.io/badge/For_judges-the_judge_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
   [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
 
   <br/>
