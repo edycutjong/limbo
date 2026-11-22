@@ -11,6 +11,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "site:hero": "node kit/scripts/site-hero.mjs",
     "test": "vitest run --project unit --project limbo",
     "props": "vitest run --project props",
     "props:full": "node kit/scripts/props-full.mjs",
@@ -23,7 +24,7 @@
     "test:coverage": "vitest run --coverage",
     "coverage:gaps": "node kit/scripts/coverage-gaps.mjs",
     "kiro:check": "node kit/scripts/kiro-root-check.mjs",
-    "e2e:ci": "playwright test --project=spike --project=basecamp --project=aftershock --project=basecamp-shell --project=aftershock-shell --project=ui-polish-basecamp --project=ui-polish-aftershock --project=judge"
+    "e2e:ci": "playwright test --project=spike --project=basecamp --project=aftershock --project=basecamp-shell --project=aftershock-shell --project=ui-polish-basecamp --project=ui-polish-aftershock --project=judge --project=landing"
   },
   "devDependencies": {
     "@playwright/test": "1.59.1",
