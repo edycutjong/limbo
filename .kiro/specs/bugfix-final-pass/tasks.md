@@ -32,7 +32,7 @@ Order: D1, D2, then the cross-cutting pass.
   - Run `pnpm typecheck && pnpm test && pnpm props`. The characterisation tests pass today; say so in the record, since D2 has no runtime failure.
   - _Requirements: D2 2.7, 2.8; Unchanged 2.9 to 2.13_
 
-- [ ] 4. D2 (part 2): one source of truth and the invariant comments
+- [x] 4. D2 (part 2): one source of truth and the invariant comments
   - `model.ts`: `const EDIT_KIND = { ... } as const satisfies Record<string, EditKind>;` and `const EDIT_OPS = new Set<string>(Object.keys(EDIT_KIND));` so no second list of names exists. Keep `EDIT_KIND[o.op]!` (no fallback branch).
   - Add the three one-line invariant comments at `amount.value!`, `name.value!` and `pos.value!` as worded in `design.md`.
   - Re-run the mutation check from task 3 as a compile-time check: there is no second literal left to edit.

@@ -90,13 +90,16 @@ interface AddPayload {
 const byStamp = (a: Op, b: Op): number =>
   a.stamp.l !== b.stamp.l ? a.stamp.l - b.stamp.l : a.stamp.r !== b.stamp.r ? (a.stamp.r < b.stamp.r ? -1 : 1) : a.stamp.n - b.stamp.n;
 
-export const EDIT_KIND: Record<string, EditKind> = {
+const EDIT_LITERAL = {
   'item.add': 'add',
   'item.restore': 'restore',
   'item.rename': 'rename',
   'item.tick': 'tick',
   'item.claim': 'claim',
-};
+} as const satisfies Record<string, EditKind>;
+
+/** The only list of edit op names; indexed by op name, so a lookup is `EditKind | undefined` to the compiler. */
+export const EDIT_KIND: Readonly<Record<string, EditKind>> = EDIT_LITERAL;
 
 const claimInfo = (o: Op<ClaimPayload>): ClaimInfo => ({ who: o.payload.who, op: o.id, stamp: o.stamp });
 
@@ -119,6 +122,7 @@ function expenseOf(id: string, group: Op[]): Expense | undefined {
     op: o,
   }));
   const members = present(adds, removes);
+  // amountOf seeds the write list with the first add, and the buffer never applies a dep cycle, so the join has a winner
   const amountCents = amount.value!.amountCents;
   return {
     id,
@@ -131,7 +135,7 @@ function expenseOf(id: string, group: Op[]): Expense | undefined {
   };
 }
 
-const EDIT_OPS = new Set(['item.add', 'item.restore', 'item.rename', 'item.tick', 'item.claim']);
+const EDIT_OPS = new Set<string>(Object.keys(EDIT_LITERAL));
 
 export function lifeKind(op: Op): LifeOp['kind'] | undefined {
   switch (op.op) {
@@ -205,6 +209,7 @@ export function materialize(ops: readonly Op[]): State {
 
     items[id] = {
       id,
+      // nameWrites spreads adds (never empty here), so the join always has a winner
       name: name.value!.name,
       ticked: tick.value?.ticked ?? false,
       units,
@@ -213,6 +218,7 @@ export function materialize(ops: readonly Op[]): State {
       fieldTwins: fields,
       winners: claim.winners.map((w) => w.payload.who),
       losers: claim.losers.map((l) => l.payload.who),
+      // keyWrites spreads adds (never empty here), so the join always has a winner
       pos: pos.value!.key,
       claims: { winners: claim.winners.map(claimInfo), losers: claim.losers.map(claimInfo) },
       ...(life.active.length === 0
