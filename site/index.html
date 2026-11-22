@@ -408,7 +408,7 @@ section.s{padding:84px 0 0}
       <a class="btn solid" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
       <a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a>
     </div>
-    <p class="proof"><b>10,000</b> random orderings, <b>0</b> divergences · <b>93.28%</b> of product commits from Kiro sessions</p>
+    <p class="proof"><b>10,000</b> random orderings, <b>0</b> divergences · <b>92.74%</b> of product commits from Kiro sessions</p>
   </div>
   <div>
     <div class="lb-viewer" data-hero data-phase="settled" data-link="down" aria-label="Two replicas of BASECAMP joined by a simulated link">
@@ -447,9 +447,9 @@ section.s{padding:84px 0 0}
 <section class="receipts" aria-label="Receipts">
   <ol class="wrap">
     <li><span class="n" data-count="10000">10,000</span><span class="l">random orderings of 3 replicas, 0 divergences</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">evidence/<wbr>convergence/<wbr>full-2026-11-22.json</a></span></li>
-    <li><span class="n" data-count="93.28" data-dec="2" data-suffix="%">93.28%</span><span class="l">of product commits came from Kiro sessions (111 of 119)</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">evidence/<wbr>kiro/<wbr>share.json</a></span></li>
-    <li><span class="n" data-count="1770">1,770</span><span class="l">Kiro hook fires, 2 of them Agent Stop blocks</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">evidence/<wbr>kiro/<wbr>tally.json</a></span></li>
-    <li><span class="n" data-count="1393">1,393</span><span class="l">tests passing, 100% line and branch coverage on the skeleton and app domain modules</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">evidence/<wbr>ci/<wbr>latest.json</a></span></li>
+    <li><span class="n" data-count="92.74" data-dec="2" data-suffix="%">92.74%</span><span class="l">of product commits came from Kiro sessions (115 of 124)</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">evidence/<wbr>kiro/<wbr>share.json</a></span></li>
+    <li><span class="n" data-count="1824">1,824</span><span class="l">Kiro hook fires, 2 of them Agent Stop blocks</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">evidence/<wbr>kiro/<wbr>tally.json</a></span></li>
+    <li><span class="n" data-count="1399">1,399</span><span class="l">tests passing, 100% line and branch coverage on the skeleton and app domain modules</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">evidence/<wbr>ci/<wbr>latest.json</a></span></li>
   </ol>
 </section>
 
@@ -520,18 +520,18 @@ section.s{padding:84px 0 0}
         <ul class="kit">
           <li><code>.kiro/steering/</code> 6 files: <code>local-first.md</code> always on, <code>ops-guide.md</code> on <code>**/ops/**</code></li>
           <li><code>.kiro/hooks/</code> 8 hooks, incl. the shell guard, op scaffold and lint, properties after each task, and the Stop gate</li>
-          <li><code>.kiro/agents/</code> 2 custom agents · <code>.kiro/specs/</code> 11 specs · 1 MCP server (8 calls)</li>
+          <li><code>.kiro/agents/</code> 2 custom agents · <code>.kiro/specs/</code> 12 specs · 1 MCP server (8 calls)</li>
         </ul>
       </div>
       <div>
         <ol class="ledger">
-          <li><span class="n">188</span><span class="l">Kiro sessions, 659.11 credits</span></li>
-          <li><span class="n">173</span><span class="l">sessions on 11 Kiro specs (155 ran a numbered task)</span></li>
-          <li><span class="n">187</span><span class="l">of 188 sessions loaded the steering</span></li>
-          <li><span class="n">3</span><span class="l">commands the shell guard denied</span></li>
+          <li><span class="n">194</span><span class="l">Kiro sessions, 679.87 credits</span></li>
+          <li><span class="n">179</span><span class="l">sessions on 12 Kiro specs (160 ran a numbered task)</span></li>
+          <li><span class="n">193</span><span class="l">of 194 sessions loaded the steering</span></li>
+          <li><span class="n">4</span><span class="l">commands the shell guard denied</span></li>
         </ol>
-        <ul class="bars" aria-label="Hook fires by trigger"><li><span>PreToolUse</span><s><b style="--w:100.0%"></b></s><span>1,226</span></li><li><span>Stop</span><s><b style="--w:15.0%"></b></s><span>184</span></li><li><span>PreTaskExec</span><s><b style="--w:12.0%"></b></s><span>147</span></li><li><span>PostTaskExec</span><s><b style="--w:11.3%"></b></s><span>139</span></li><li><span>SessionStart</span><s><b style="--w:3.3%"></b></s><span>41</span></li><li><span>PostFileSave</span><s><b style="--w:1.1%"></b></s><span>13</span></li><li><span>PostFileCreate</span><s><b style="--w:1.0%"></b></s><span>12</span></li><li><span>PostToolUse</span><s><b style="--w:0.8%"></b></s><span>8</span></li></ul>
-        <p class="workflow">The honest workflow: an outside orchestrator wrote each brief, launched the Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with its reason.</p>
+        <ul class="bars" aria-label="Hook fires by trigger"><li><span>PreToolUse</span><s><b style="--w:100.0%"></b></s><span>1,261</span></li><li><span>Stop</span><s><b style="--w:15.1%"></b></s><span>191</span></li><li><span>PreTaskExec</span><s><b style="--w:12.1%"></b></s><span>153</span></li><li><span>PostTaskExec</span><s><b style="--w:11.4%"></b></s><span>144</span></li><li><span>SessionStart</span><s><b style="--w:3.3%"></b></s><span>42</span></li><li><span>PostFileSave</span><s><b style="--w:1.0%"></b></s><span>13</span></li><li><span>PostFileCreate</span><s><b style="--w:1.0%"></b></s><span>12</span></li><li><span>PostToolUse</span><s><b style="--w:0.8%"></b></s><span>8</span></li></ul>
+        <p class="workflow">The honest workflow: an outside orchestrator wrote each brief, launched the Kiro session, reviewed the diff and committed. 16 ledger rows are edits made outside Kiro, each with its reason.</p>
       </div>
     </div>
   </div>
@@ -562,7 +562,7 @@ section.s{padding:84px 0 0}
     <details><summary>Is the demo on this page real?</summary><p>Yes. It bundles BASECAMP's ops and the LIMBO skeleton unchanged (<code>site/src/hero.ts</code>). The link between the two replicas is simulated, because DevTools "offline" does not cut it.</p></details>
     <details><summary>Is it really offline?</summary><p>Each app is a PWA: after one visit it reopens in airplane mode, with its edits kept in IndexedDB. Live end-to-end tests against both deployed apps passed 6 of 6, offline reload included. Not built: a relay between two devices; the replicas sync inside one page.</p></details>
     <details><summary>Can two offline people both claim the last stove?</summary><p>Both claims are provisional. On reconnect, <code>claim-one</code> keeps exactly one claimant on every replica and shows the other person a twin that names the winner.</p></details>
-    <details><summary>Did Kiro really write the code?</summary><p>111 of 119 commits in <code>skeleton/</code> and <code>apps/</code> carry a <code>Kiro-Session</code> trailer that maps to a row in <code>evidence/kiro/sessions.jsonl</code>. The other 8 are listed in <code>share.json</code>.</p></details>
+    <details><summary>Did Kiro really write the code?</summary><p>115 of 124 commits in <code>skeleton/</code> and <code>apps/</code> carry a <code>Kiro-Session</code> trailer that maps to a row in <code>evidence/kiro/sessions.jsonl</code>. The other 9 are listed in <code>share.json</code>.</p></details>
     <details><summary>Does the kit make Kiro better?</summary><p>Our pre-registered pilot found no measurable effect (0 of 10 vs 0 of 10). What it did show was a gap in the gate, which we then closed (the fix has not been re-piloted).</p></details>
     <details><summary>Can I build my own app on the skeleton?</summary><p>Supply a model, ops with declared merges, a seed, views and a config. <code>docs/ADOPT.md</code> walks through it; the property suite runs over every registered op.</p></details>
   </div>
@@ -581,7 +581,7 @@ section.s{padding:84px 0 0}
       <a href="https://github.com/edycutjong/limbo">Source on GitHub</a>
       <a href="/judge">For judges</a>
       <a class="version-chip" id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a>
-      <span>Figures from <code>evidence/</code> at b86bb26 (2026-11-22)</span>
+      <span>Figures from <code>evidence/</code> at 7e51354 (2026-11-22)</span>
     </footer>
   </div>
 </section>
@@ -615,6 +615,6 @@ section.s{padding:84px 0 0}
 fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
   .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
 </script>
-<script src="/assets/hero.js?v=ddb3c932d9" defer></script>
+<script src="/assets/hero.js?v=51b31a3fb9" defer></script>
 </body>
 </html>
