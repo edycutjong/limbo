@@ -17,7 +17,7 @@
 <meta property="og:image" content="https://limbo.edycu.dev/assets/og-image.png?v=34bbb5cfac">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Two replica cards of a packing list: one fogged offline, one showing a blue ghost twin of the tent.">
+<meta property="og:image:alt" content="Two replica cards of a packing list, Sari and Budi, reconnected: each shows the deleted tent as a blue ghost twin with a Keep button.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://limbo.edycu.dev/assets/og-image.png?v=34bbb5cfac">
 <link rel="preload" href="/fonts/old-standard-tt-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -99,7 +99,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 .lb-fixed{position:absolute;left:50%;top:64%;font:700 46px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5eaf2;box-shadow:0 0 0 8px #faf5eacc;white-space:nowrap}
 [data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2.2s both}
 @keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
-@keyframes lb-settle{to{opacity:.95;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 96px);top:calc(100% - 132px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}}
 /* the plate number: how many ops wait in limbo on this replica (pair.queued) */
 .lb-big{position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);display:flex;align-items:baseline;gap:10px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
 .lb-big b{font:400 96px/1 var(--font-display);font-variant-numeric:lining-nums}
@@ -158,7 +158,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 96px);top:calc(100% - 64px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}
+  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 96px);top:calc(100% - 132px);transform:translate(-50%,-50%) rotate(-7deg) scale(.62)}
   .lb-enter .lb-ghost{opacity:.7}
   .term-body.play .term-line{opacity:1}
 }
@@ -403,7 +403,7 @@ section.s{padding:84px 0 0}
     <p class="plate-no">A local-first skeleton, two apps, one Kiro kit</p>
     <h1 id="h1">The signal died at the lake. <em>The conflicts came back as ghosts.</em></h1>
     <p class="who">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
-    <p class="lede">Sari ticked the tent while Budi deleted it, both offline. Every op in LIMBO declares its merge rule, so on reconnect the tent comes back as a ghost twin and one tap settles it.</p>
+    <p class="lede">Sari ticked the tent while Budi deleted it, and both claimed the last stove, offline. Every op in LIMBO declares its merge rule, so on reconnect the tent returns as a ghost twin on both phones, Budi's losing claim as a twin on his, and one tap settles each.</p>
     <div class="cta">
       <a class="btn solid" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
       <a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a>
