@@ -88,10 +88,17 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 [data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
 [data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
 [data-axis="DEVELOPING"] .lb-veil{opacity:.55;background:radial-gradient(120% 90% at 50% 40%,#e2a84b14 20%,#80560f33 100%)}
-.lb-fixed{position:absolute;right:12px;top:10px;font:700 22px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2.5px solid var(--after);border-radius:4px;padding:5px 9px 3px;transform:rotate(-7deg);opacity:0;pointer-events:none;z-index:2;background:#faf5eacc}
-[data-fixed] .lb-fixed{animation:lb-stamp .25s cubic-bezier(.3,1.4,.5,1) both,lb-settle .5s ease 2s both}
-@keyframes lb-stamp{from{opacity:0;transform:rotate(-7deg) scale(1.5)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
-@keyframes lb-settle{to{opacity:.9;transform:rotate(-7deg) scale(.8)}}
+/* FIXED: lands big across the plate on the signature event, then settles to a small mark in the corner (design §4) */
+.lb-fixed{position:absolute;left:50%;top:44%;font:700 54px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5ead9;box-shadow:0 0 0 6px #faf5ea99;white-space:nowrap}
+[data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2.2s both}
+@keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}}
+/* the plate number: how many ops wait in limbo on this replica (pair.queued) */
+.lb-big{position:absolute;right:14px;top:8px;display:flex;align-items:baseline;gap:6px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
+.lb-big b{font:400 46px/1 var(--font-display);font-variant-numeric:lining-nums}
+.lb-big i{font:italic 400 18px/1 var(--font-display)}
+[data-axis="FOGGED"] .lb-big,[data-axis="DEVELOPING"] .lb-big{opacity:1}
+[data-axis="DEVELOPING"] .lb-big{color:var(--developing)}
 /* the cord: the in-page simulated link */
 .lb-cord{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:3}
 .lb-cord::before,.lb-cord::after{content:"";position:absolute;z-index:0;left:50%;width:2px;margin-left:-1px;background:repeating-linear-gradient(var(--fog-ink) 0 7px,transparent 7px 12px);transition:height .4s ease}
@@ -144,7 +151,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-fixed] .lb-fixed{opacity:1}
+  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}
   .lb-enter .lb-ghost{opacity:.7}
   .term-body.play .term-line{opacity:1}
 }
@@ -330,6 +337,24 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
 .static-viewer.big{zoom:1.18}
 .ab .arms b{font-size:118px;white-space:nowrap}
 
+.stop .side{margin:0 0 22px;max-width:62ch;font-size:26px}
+.stop .side .hint{display:inline;margin:0 0 0 12px}
+.stop .term{font-size:22px;line-height:1.5}
+.stop .term .t-say{font-size:22px}
+.stop .term-bar{font-size:18px}
+.stop .term-src{font-size:17px}
+.ui{background:#1e1813e6;padding:6px;border-radius:12px;border:1px solid #4a3d32}
+.ui .count{font-size:15px}
+.three p{font-size:26px}
+.three .n span{font-size:40px}
+.twoapps figcaption{font-size:26px}
+.twoapps figcaption b{font-size:36px}
+.flow li{min-height:400px}
+.static-viewer.big{zoom:1.4}
+
+.cover h1{font-size:104px;max-width:11.5ch;margin-bottom:24px}
+.cover .who{font-size:26px}
+
 </style>
 </head>
 <body>
@@ -341,10 +366,10 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <div class="row">
     <div>
       <p class="eyebrow">Kiroween 2026 · Skeleton Crew</p>
-      <h1>The signal died. <em>The list kept every edit.</em></h1>
+      <h1>The signal died. <em>No edit vanished in silence.</em></h1>
       <p class="who">A local-first skeleton where every op declares its merge rule, and two apps built from it.</p>
     </div>
-    <div class="static-viewer" inert><div class="lb-viewer"><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-note" data-twin="stove:claim:budi">Budi's claim lost · rule: <code>claim-one</code></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul></article><div class="lb-cord" data-link="up"><small>simulated link</small></div><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul></article></div></div>
+    <div class="static-viewer" inert><div class="lb-viewer"><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-note" data-twin="stove:claim:budi">Budi's claim lost · rule: <code>claim-one</code></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article><div class="lb-cord" data-link="up"><small>simulated link</small></div><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div></div>
   </div>
   <div class="foot"><span class="brand">LIMBO</span><span>limbo.edycu.dev · <a class="version-chip" data-version href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a></span></div>
   <aside class="speaker-notes">This is the real lake scene, rendered by the skeleton itself: Sari ticked the tent while Budi deleted it, both offline. After reconnect the tent waits as a ghost twin on both phones.</aside>
@@ -353,9 +378,9 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
 <section class="slide hook" aria-label="2: Hook">
   <p class="eyebrow">Two exposures of one tent</p>
   <p class="big">Sari ticks the tent. Budi deletes it. <em>Both are offline.</em></p>
-  <p class="body">The usual fix, last-write-wins, quietly drops one of those edits. Nobody is told which.</p>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 02</span></div>
-  <aside class="speaker-notes">Shared lists break exactly where people need them: campsites, field work, basements. Most sync layers resolve this by timestamp and silently lose one edit.</aside>
+  <p class="body">The usual fix, last-write-wins, quietly drops one of those edits.</p>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
+  <aside class="speaker-notes">Shared lists break exactly where people need them: campsites, field work, basements. A timestamp rule picks one edit and silently drops the other.</aside>
 </section>
 
 <section class="slide" aria-label="3: Who">
@@ -367,8 +392,8 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
     </div>
     <figure class="shot"><img src="/assets/crop-fogged-a.webp" alt="BASECAMP replica A with the link cut: fogged, Offline — 2 waiting." width="1000" height="820" loading="lazy"><figcaption>Live BASECAMP, link cut.</figcaption></figure>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 03</span></div>
-  <aside class="speaker-notes">Sari glances for two seconds: is my tick saved, is it shared, who brings the stove. The fog answers the first two without a banner.</aside>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
+  <aside class="speaker-notes">Sari wants two answers: is my tick shared yet, and who brings the stove. The fog and the waiting count answer the first without a banner.</aside>
 </section>
 
 <section class="slide" aria-label="4: The moment">
@@ -379,21 +404,21 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
     <figure><img src="/assets/crop-twin-b.webp" alt="Replica B after reconnect: the tent twin with Keep and Delete, and the stove claim twin." width="1000" height="980" loading="lazy"><div class="n"><b>2</b><span>Twinned</span></div><p>Reconnected. The deleted tent returns as a ghost twin.</p></figure>
     <figure><img src="/assets/crop-fixed-a.webp" alt="Replica A after the twins are settled: Live, with the FIXED stamp." width="1000" height="820" loading="lazy"><div class="n"><b>3</b><span>Fixed</span></div><p>One tap each. Both phones agree; the stamp fires.</p></figure>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 04</span></div>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">Three captures of the live app. Every look maps to a value: fog is the link state, the count is unacknowledged ops, the twin is a surfaced conflict, FIXED fires once both phones agree.</aside>
 </section>
 
 <section class="slide" aria-label="5: Merge rules">
-  <p class="eyebrow">The fixer: merge rules</p>
+  <p class="eyebrow">The fixer</p>
   <h2>Every op declares its merge.</h2>
   <ol class="flow">
-    <li><code>causal-lww</code><b>Ticks, names</b><span>The write that saw the other wins.</span></li>
+    <li><code>causal-lww</code><b>Ticks, names</b><span>The write that saw the other wins; concurrent ones twin.</span></li>
     <li><code>commutes</code><b>Counts, shares</b><span>Both edits count.</span></li>
     <li><code>claim-one</code><b>Claims</b><span>One winner; the other sees a twin.</span></li>
     <li><code>resurrect</code><b>Delete vs edit</b><span>It returns as a ghost twin.</span></li>
     <li><code>ordered-move</code><b>Reorder</b><span>One stable order.</span></li>
   </ol>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 05</span></div>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">The kit refuses an op that converges on the wrong answer, and no rule reads a wall clock: order comes from causal context.</aside>
 </section>
 
@@ -404,9 +429,9 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
       <h2>Two claims. <em>One winner, named.</em></h2>
       <p class="body">No CRDT can stop two offline people claiming the last stove. Claims stay provisional; on reconnect every phone picks the same winner, and the loser is told.</p>
     </div>
-    <div class="static-viewer big" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul></article></div></div>
+    <div class="static-viewer big" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div></div>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 06</span></div>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">That needs coordination, so we do not pretend. The order is the lower Lamport stamp, then replica id. The property checked: after convergence, exactly one claimant on every replica.</aside>
 </section>
 
@@ -414,13 +439,13 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <p class="eyebrow">Skeleton Crew</p>
   <h2>One skeleton, <em>two apps.</em></h2>
   <div class="row">
-    <div class="skelbox"><h3>skeleton/</h3><dl><dt>24</dt><dd>production files</dd><dt>2,520</dt><dd>non-blank lines</dd><dt>15</dt><dd>exported values</dd></dl></div>
+    <div class="skelbox"><h3>skeleton/</h3><dl><dt>24</dt><dd>non-test files</dd><dt>2,520</dt><dd>non-blank lines</dd><dt>15</dt><dd>main-entry exports</dd></dl></div>
     <div class="twoapps">
       <figure><img src="/assets/crop-twin-b.webp" alt="BASECAMP replica B after reconnect, with two twins." width="1000" height="980" loading="lazy"><figcaption><b>BASECAMP</b>trip list · 12 ops</figcaption></figure>
       <figure><img src="/assets/crop-aftershock-a.webp" alt="AFTERSHOCK replica A: a 6 by 4 sector grid with SAFE, DAMAGED and NO REPORT cells." width="1000" height="886" loading="lazy"><figcaption><b>AFTERSHOCK</b>field form · 6 ops · demo data</figcaption></figure>
     </div>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 07</span></div>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">Each app is its own folder and supplies five things: a model, ops, a seed, views, a config. AFTERSHOCK shows demonstration data; no field use is claimed.</aside>
 </section>
 
@@ -428,13 +453,13 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
   <p class="eyebrow">The proof print</p>
   <p class="figure">10,000<small>random orderings of 3 replicas, 0 divergences</small></p>
   <p class="meta">seed 20251031 · Yjs 13.6.33 · every op of both apps · evidence/convergence/full-2026-11-22.json</p>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 08</span></div>
-  <aside class="speaker-notes">Measured and property-tested, not proven. Reproduce with pnpm props:full; it takes about twenty minutes on a laptop.</aside>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
+  <aside class="speaker-notes">Measured and property-tested, not proven. Reproduce with pnpm props:full; it takes about 22 minutes on a laptop.</aside>
 </section>
 
 <section class="slide mat kiro wide" aria-label="9: How Kiro built it">
   <p class="eyebrow">How Kiro built it</p>
-  <h2>Kiro wrote it. <em>Hooks logged it.</em></h2>
+  <h2>Kiro sessions, <em>logged by hooks.</em></h2>
   <div class="row">
     <ol class="ledger">
       <li><span class="n">93.28%</span><span class="l">of product commits from Kiro sessions</span></li>
@@ -444,18 +469,16 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
     </ol>
     <ul class="bars" aria-label="Hook fires by trigger"><li><span>PreToolUse</span><s><b style="--w:100.0%"></b></s><span>1,226</span></li><li><span>Stop</span><s><b style="--w:15.0%"></b></s><span>184</span></li><li><span>PreTaskExec</span><s><b style="--w:12.0%"></b></s><span>147</span></li><li><span>PostTaskExec</span><s><b style="--w:11.3%"></b></s><span>139</span></li><li><span>SessionStart</span><s><b style="--w:3.3%"></b></s><span>41</span></li><li><span>PostFileSave</span><s><b style="--w:1.1%"></b></s><span>13</span></li><li><span>PostFileCreate</span><s><b style="--w:1.0%"></b></s><span>12</span></li><li><span>PostToolUse</span><s><b style="--w:0.8%"></b></s><span>8</span></li></ul>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 09</span></div>
-  <aside class="speaker-notes">Claude Code orchestrated: it wrote the briefs, launched each Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with a reason.</aside>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
+  <aside class="speaker-notes">An outside orchestrator wrote the briefs, launched each Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with a reason.</aside>
 </section>
 
 <section class="slide mat stop" aria-label="10: The Agent Stop block" data-steps="12">
   <p class="eyebrow">One session, replayed</p>
   <h2>The gate said: <em>not done.</em></h2>
-  <div class="row">
-    <figure class="term" aria-label="Replay of Kiro session sess_545bc98d"><div class="term-bar"><i></i><i></i><i></i>kiro-cli 3.3.0 · --v3 --no-interactive · merge-kit task 12 · 4.6864 credits · 294 s</div><pre class="term-body"><span class="term-line"><span class="t-time">09:43:14</span>  <span class="t-hook">PreTaskExec    task-start       </span> merge-kit task 12 · logged</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileCreate op-scaffold      </span> item.rename.op.ts · scaffolded</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.rename.op.ts · pass</span><span class="term-line"><span class="t-time">09:43:45</span>  <span class="t-hook">PreToolUse     guard-shell      </span> $ pnpm test … ; pnpm props … · allow</span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; convergence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; replay equivalence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; idempotence</span></span><span class="term-line"><span class="t-time">09:45:26</span>  <span class="t-hook">Stop           stop-gate        </span> <span class="t-block">BLOCK 1/3</span> · 24.9 s</span><span class="term-line">          <span class="t-say">kiro: “item.tick.op.ts stores at: Date.now() in its state. Replicas that apply the same op end up with different states.”</span></span><span class="term-line"><span class="t-time">09:45:55</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.tick.op.ts · pass</span><span class="term-line"><span class="t-time">09:47:12</span>  <span class="t-hook">PostTaskExec   props-after-task </span> <span class="t-pass">pass</span> · 26.1 s</span><span class="term-line">          <span class="t-say">kiro: “I removed Date.now() and at. … pnpm props: 157 pass and 2 are skipped.”</span></span></pre><figcaption class="term-src">Re-set from <code>evidence/kiro/hooks.jsonl</code> (session sess_545bc98d, 2026-11-15, times UTC) and the agent's own words in <code>evidence/kiro/g2/kiro-closing.txt</code>; lines selected, long commands cut at “…”. The <code>Date.now()</code> fault was seeded on purpose (commit <code>cca30a0</code>) to prove the gate fires.</figcaption></figure>
-    <div class="side"><p>Kiro added an op, ran the properties, and tried to finish. <b>The Stop hook blocked it</b> until the seeded clock fault was gone.</p><p class="hint">→ steps through the session</p></div>
-  </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 10</span></div>
+  <p class="side">Kiro added an op and tried to finish. <b>The Stop hook blocked it once</b>; Kiro removed the seeded clock fault and the properties passed. <span class="hint">→ steps through the session</span></p>
+  <figure class="term" aria-label="Replay of Kiro session sess_545bc98d"><div class="term-bar"><i></i><i></i><i></i>kiro-cli 3.3.0 · --v3 --no-interactive · merge-kit task 12 · 4.6864 credits · 294 s</div><pre class="term-body"><span class="term-line"><span class="t-time">09:43:14</span>  <span class="t-hook">PreTaskExec    task-start       </span> merge-kit task 12 · logged</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileCreate op-scaffold      </span> item.rename.op.ts · scaffolded</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.rename.op.ts · pass</span><span class="term-line"><span class="t-time">09:43:45</span>  <span class="t-hook">PreToolUse     guard-shell      </span> $ pnpm test … ; pnpm props … · allow</span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; convergence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; replay equivalence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; idempotence</span></span><span class="term-line"><span class="t-time">09:45:26</span>  <span class="t-hook">Stop           stop-gate        </span> <span class="t-block">BLOCK 1/3</span> · 24.9 s</span><span class="term-line">          <span class="t-say">kiro: “item.tick.op.ts stores at: Date.now() in its state. Replicas that apply the same op end up with different states.”</span></span><span class="term-line"><span class="t-time">09:45:55</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.tick.op.ts · pass</span><span class="term-line"><span class="t-time">09:47:12</span>  <span class="t-hook">PostTaskExec   props-after-task </span> <span class="t-pass">pass</span> · 26.1 s</span><span class="term-line">          <span class="t-say">kiro: “I removed Date.now() and at. … pnpm props: 157 pass and 2 are skipped.”</span></span></pre><figcaption class="term-src">Re-set from <code>evidence/kiro/hooks.jsonl</code> (session sess_545bc98d, 2026-11-15, times UTC) and the agent's own words in <code>evidence/kiro/g2/kiro-closing.txt</code>; lines selected, long commands cut at “…”. The <code>Date.now()</code> fault was seeded on purpose (commit <code>cca30a0</code>) to prove the gate fires.</figcaption></figure>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">Press right arrow to step through the recorded hook rows. The Date.now() fault was seeded on purpose to prove the gate fires; Kiro found it, fixed it, and the properties passed.</aside>
 </section>
 
@@ -466,7 +489,7 @@ body.debug-contrast .slide *{outline:1px dashed #e94}
     <div class="arms"><div><b>0 of 10</b><span>failures, no kit</span></div><div><b>0 of 10</b><span>failures, with kit</span></div></div>
     <div><p class="body">20 pre-registered runs. Kit arm: 8 false-alarm Stop blocks; 2 runs edited the guard.</p><p class="stat">Fisher p = 1 · 95% CI 0–28% per arm</p></div>
   </div>
-  <div class="foot"><span class="brand">LIMBO</span><span>Plate 11</span></div>
+  <div class="foot"><span class="brand">LIMBO</span><span></span></div>
   <aside class="speaker-notes">We publish it whatever it shows. So we claim nothing about the kit improving correctness; the gap it exposed was closed afterwards and not re-piloted.</aside>
 </section>
 

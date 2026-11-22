@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIMBO: the signal died at the lake, the list kept every edit</title>
+<title>LIMBO: the signal died at the lake, and no edit vanished in silence</title>
 <meta name="description" content="A local-first skeleton where every op declares its merge rule, two apps built on it, and the Kiro kit that built them. Cut the link and watch.">
 <meta name="author" content="edycutjong">
 <meta name="theme-color" content="#F2EADB">
@@ -11,7 +11,7 @@
 <link rel="canonical" href="https://limbo.edycu.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LIMBO">
-<meta property="og:title" content="LIMBO: the signal died at the lake. The list kept every edit.">
+<meta property="og:title" content="LIMBO: the signal died at the lake. No edit vanished in silence.">
 <meta property="og:description" content="Cut the link, edit two replicas, reconnect: the tent returns as a ghost twin, one tap settles it.">
 <meta property="og:url" content="https://limbo.edycu.dev/">
 <meta property="og:image" content="https://limbo.edycu.dev/assets/og-image.png?v=34bbb5cfac">
@@ -94,10 +94,17 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 [data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
 [data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
 [data-axis="DEVELOPING"] .lb-veil{opacity:.55;background:radial-gradient(120% 90% at 50% 40%,#e2a84b14 20%,#80560f33 100%)}
-.lb-fixed{position:absolute;right:12px;top:10px;font:700 22px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2.5px solid var(--after);border-radius:4px;padding:5px 9px 3px;transform:rotate(-7deg);opacity:0;pointer-events:none;z-index:2;background:#faf5eacc}
-[data-fixed] .lb-fixed{animation:lb-stamp .25s cubic-bezier(.3,1.4,.5,1) both,lb-settle .5s ease 2s both}
-@keyframes lb-stamp{from{opacity:0;transform:rotate(-7deg) scale(1.5)}to{opacity:1;transform:rotate(-7deg) scale(1)}}
-@keyframes lb-settle{to{opacity:.9;transform:rotate(-7deg) scale(.8)}}
+/* FIXED: lands big across the plate on the signature event, then settles to a small mark in the corner (design §4) */
+.lb-fixed{position:absolute;left:50%;top:44%;font:700 54px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5ead9;box-shadow:0 0 0 6px #faf5ea99;white-space:nowrap}
+[data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2.2s both}
+@keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}}
+/* the plate number: how many ops wait in limbo on this replica (pair.queued) */
+.lb-big{position:absolute;right:14px;top:8px;display:flex;align-items:baseline;gap:6px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none}
+.lb-big b{font:400 46px/1 var(--font-display);font-variant-numeric:lining-nums}
+.lb-big i{font:italic 400 18px/1 var(--font-display)}
+[data-axis="FOGGED"] .lb-big,[data-axis="DEVELOPING"] .lb-big{opacity:1}
+[data-axis="DEVELOPING"] .lb-big{color:var(--developing)}
 /* the cord: the in-page simulated link */
 .lb-cord{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:3}
 .lb-cord::before,.lb-cord::after{content:"";position:absolute;z-index:0;left:50%;width:2px;margin-left:-1px;background:repeating-linear-gradient(var(--fog-ink) 0 7px,transparent 7px 12px);transition:height .4s ease}
@@ -150,7 +157,7 @@ code,.data{font-family:var(--font-data);font-size:.86em}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  [data-fixed] .lb-fixed{opacity:1}
+  [data-fixed] .lb-fixed{opacity:1;left:calc(100% - 62px);top:26px;transform:translate(-50%,-50%) rotate(-7deg) scale(.4)}
   .lb-enter .lb-ghost{opacity:.7}
   .term-body.play .term-line{opacity:1}
 }
@@ -352,6 +359,26 @@ section.s{padding:84px 0 0}
 
 .kiro .term{font-size:12.5px}
 
+/* hero world: albumen sheen always; a silver vignette over the whole hero while the simulated link is down */
+.hero{position:relative;isolation:isolate}
+.hero::before,.hero::after{content:"";position:absolute;top:-90px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none}
+.hero::before{background:radial-gradient(60% 70% at 18% 20%,#fffaf0 0,transparent 70%)}
+.hero::after{background:radial-gradient(120% 95% at 50% 40%,transparent 45%,#8f989c55 100%);opacity:0;transition:opacity .9s ease-in-out}
+.hero:has([data-hero][data-link="down"])::after{opacity:1;transition-duration:.6s}
+.who{font-size:19px;line-height:1.5;color:var(--ink);margin:0 0 14px;max-width:40ch;padding-left:14px;border-left:3px solid var(--rule)}
+.proof{margin:18px 0 0;font-size:15px;color:var(--muted)}
+.proof b{font:700 1.08em/1 var(--font-display);color:var(--ink)}
+@media (min-width:761px){.lb-list{min-height:455px}}
+/* states strip: real engine plates at cabinet-card size */
+.cab-plate{height:210px;padding:0;background:var(--card)}
+.cab-plate .lb-plate{width:200%;zoom:.5;border:0;border-radius:0;min-height:420px}
+.cab-plate .lb-list{min-height:0}
+.cab-plate .lb-row:nth-child(n+4),.cab-plate .lb-limbo{display:none}
+.cab-plate .lb-big{right:10px}
+.cab-plate .lb-fixed{animation:none;opacity:1;left:auto;right:-6px;top:58%;transform:rotate(-7deg) scale(.9)}
+@media (max-width:760px){.hero .who{order:3}.hero>div:last-child{order:4}.hero .lede{order:5}.hero .cta{order:6}.hero .proof{order:7}
+  .lb-big b{font-size:34px}.lb-fixed{font-size:40px}}
+
 </style>
 </head>
 <body>
@@ -364,53 +391,56 @@ section.s{padding:84px 0 0}
 <main id="main">
 <section class="wrap hero" id="try" aria-labelledby="h1">
   <div>
-    <p class="plate-no">Kiroween 2026 · Skeleton Crew</p>
-    <h1 id="h1">The signal died at the lake. <em>The list kept every edit.</em></h1>
-    <p class="lede">Sari ticked the tent while Budi deleted it, both offline. LIMBO is a local-first skeleton in which every op declares its merge rule, so on reconnect the tent comes back as a ghost twin and one tap settles it. <b>10,000 random orderings, 0 divergences.</b> <b>93.28% of product commits</b> came from Kiro sessions.</p>
+    <p class="plate-no">A local-first skeleton, two apps, one Kiro kit</p>
+    <h1 id="h1">The signal died at the lake. <em>No edit vanished in silence.</em></h1>
+    <p class="who">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
+    <p class="lede">Sari ticked the tent while Budi deleted it, both offline. Every op in LIMBO declares its merge rule, so on reconnect the tent comes back as a ghost twin and one tap settles it.</p>
     <div class="cta">
       <a class="btn solid" href="https://basecamp.limbo.edycu.dev/">Open BASECAMP</a>
       <a class="btn" href="https://aftershock.limbo.edycu.dev/">Open AFTERSHOCK</a>
     </div>
-    <p class="hero-note">For people whose shared list or form breaks when the signal does, and for builders who need offline merges that do not diverge.</p>
+    <p class="proof"><b>10,000</b> random orderings, <b>0</b> divergences · <b>93.28%</b> of product commits from Kiro sessions</p>
   </div>
   <div>
-    <div class="lb-viewer" data-hero data-phase="settled" aria-label="Two replicas of BASECAMP joined by a simulated link">
-      <article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CONFLICT" aria-label="Replica A, Sari">
-        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live · 2 conflicts</span></header>
+    <div class="lb-viewer" data-hero data-phase="settled" data-link="down" aria-label="Two replicas of BASECAMP joined by a simulated link">
+      <article class="lb-plate" data-replica="a" data-axis="FOGGED" data-conflict="CLEAR" aria-label="Replica A, Sari">
+        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Offline — 2 waiting</span></header>
+        <span class="lb-big" aria-hidden="true"><b class="lb-count">2</b><i>in limbo</i></span>
         <p class="lb-sitter">Replica A — Sari</p>
-        <ul class="lb-list" aria-label="Sari's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-note" data-twin="stove:claim:budi">Budi's claim lost · rule: <code>claim-one</code></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
-        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">0</span> waiting</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+        <ul class="lb-list" aria-label="Sari's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">2</span> waiting</p><ol><li><span>item.tick</span> tent · <code>causal-lww</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
         <span class="lb-fixed" aria-hidden="true">FIXED</span>
         <div class="lb-veil" aria-hidden="true"></div>
       </article>
-      <div class="lb-cord" data-link="up">
-        <button type="button" data-act="link" aria-pressed="false">Cut link</button>
+      <div class="lb-cord" data-link="down">
+        <button type="button" data-act="link" aria-pressed="true">Restore link</button>
         <small>simulated link</small>
       </div>
-      <article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT" aria-label="Replica B, Budi">
-        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live · 2 conflicts</span></header>
+      <article class="lb-plate" data-replica="b" data-axis="FOGGED" data-conflict="CLEAR" aria-label="Replica B, Budi">
+        <header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Offline — 2 waiting</span></header>
+        <span class="lb-big" aria-hidden="true"><b class="lb-count">2</b><i>in limbo</i></span>
         <p class="lb-sitter">Replica B — Budi</p>
-        <ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
-        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">0</span> waiting</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+        <ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Budi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li><li class="lb-row" data-id="headlamps"><button type="button" class="lb-tick" data-act="tick" data-id="headlamps" aria-pressed="false" aria-label="Tick Headlamps ×4"></button><span class="lb-name">Headlamps ×4</span><button type="button" class="lb-del" data-act="del" data-id="headlamps" aria-label="Delete Headlamps ×4" title="Delete">×</button></li></ul>
+        <div class="lb-limbo"><p class="lb-limbo-h">In limbo: <span class="lb-count">2</span> waiting</p><ol><li><span>item.delete</span> tent · <code>resurrect</code> · l16</li><li><span>item.claim</span> stove · <code>claim-one</code> · l17</li></ol></div>
         <span class="lb-fixed" aria-hidden="true">FIXED</span>
         <div class="lb-veil" aria-hidden="true"></div>
       </article>
       <div class="lb-controls">
         <button type="button" class="lb-primary" data-act="scene">Play the lake scene</button>
         <button type="button" data-act="reset">Reset</button>
-        <p class="lb-status" aria-live="polite">The lake scene, settled: two twins wait for one tap each.</p>
+        <p class="lb-status" aria-live="polite">The link is cut. Each phone kept working; its edits wait in limbo.</p>
       </div>
     </div>
-    <p class="hero-note">This is BASECAMP's own op code and the LIMBO skeleton, running in this page: two replicas in memory, joined by a simulated link that is slowed so you can watch ops cross. The apps above store to IndexedDB and reopen offline.</p>
+    <p class="hero-note">BASECAMP's own op code and the LIMBO skeleton, running in this page: two in-memory replicas and a simulated link, slowed during the scene so you can watch ops cross.</p>
   </div>
 </section>
 
 <section class="receipts" aria-label="Receipts">
   <ol class="wrap">
-    <li><span class="n" data-count="10000">10,000</span><span class="l">random orderings of 3 replicas, 0 divergences</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">evidence/convergence/full-2026-11-22.json</a></span></li>
-    <li><span class="n" data-count="93.28" data-dec="2" data-suffix="%">93.28%</span><span class="l">of product commits came from Kiro sessions (111 of 119)</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">evidence/kiro/share.json</a></span></li>
-    <li><span class="n" data-count="1770">1,770</span><span class="l">Kiro hook fires, 2 of them Agent Stop blocks</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">evidence/kiro/tally.json</a></span></li>
-    <li><span class="n" data-count="1393">1,393</span><span class="l">tests passing, 100% line and branch coverage on the skeleton and app domain modules</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">evidence/ci/latest.json</a></span></li>
+    <li><span class="n" data-count="10000">10,000</span><span class="l">random orderings of 3 replicas, 0 divergences</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">evidence/<wbr>convergence/<wbr>full-2026-11-22.json</a></span></li>
+    <li><span class="n" data-count="93.28" data-dec="2" data-suffix="%">93.28%</span><span class="l">of product commits came from Kiro sessions (111 of 119)</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">evidence/<wbr>kiro/<wbr>share.json</a></span></li>
+    <li><span class="n" data-count="1770">1,770</span><span class="l">Kiro hook fires, 2 of them Agent Stop blocks</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">evidence/<wbr>kiro/<wbr>tally.json</a></span></li>
+    <li><span class="n" data-count="1393">1,393</span><span class="l">tests passing, 100% line and branch coverage on the skeleton and app domain modules</span><span class="p"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">evidence/<wbr>ci/<wbr>latest.json</a></span></li>
   </ol>
 </section>
 
@@ -418,14 +448,14 @@ section.s{padding:84px 0 0}
   <div class="s-head">
     <p class="plate-no">Plate II · The five states</p>
     <h2 id="states-h">The fog is not a skin. <i>It is the sync state.</i></h2>
-    <p>Each look in the hero turns on from one value the skeleton computes. Nothing here is decoration.</p>
+    <p>Each look turns on from one value the skeleton computes. The plates below are real engine states, rendered at build time.</p>
   </div>
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="fogg" cx="50%" cy="45%" r="75%"><stop offset="30%" stop-color="#8F989C" stop-opacity=".12"/><stop offset="100%" stop-color="#8F989C" stop-opacity=".75"/></radialGradient><radialGradient id="devg" cx="50%" cy="40%" r="75%"><stop offset="20%" stop-color="#80560F" stop-opacity=".05"/><stop offset="100%" stop-color="#80560F" stop-opacity=".3"/></radialGradient></defs></svg><ol class="states">
-    <li class="cab live"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><circle cx="19" cy="96" r="5" fill="#2F6B4F"/></svg></div><h3>Live</h3><p class="k">Link up, all acknowledged</p><p>The other phone has every op this one made.</p></li>
-    <li class="cab fog"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect width="200" height="118" fill="url(#fogg)"/></svg></div><h3>Fogged</h3><p class="k">Link down</p><p>The plate fogs from the edges. The count is ops the other phone has not acknowledged.</p></li>
-    <li class="cab dev"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect width="200" height="118" fill="url(#devg)"/></svg></div><h3>Developing</h3><p class="k">Link up, ops crossing</p><p>A thin amber haze while ops are unacknowledged, behind or buffered.</p></li>
-    <li class="cab twin"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="none" stroke="#2F5D86" stroke-dasharray="3 2"/><rect x="20" y="44" width="112" height="9" rx="3" fill="#2F5D86" opacity=".55"/></svg></div><h3>Double exposure</h3><p class="k">A conflict surfaced</p><p>The ghost twin: two exposures of one item, side by side, until you pick.</p></li>
-    <li class="cab fixed"><div class="cab-plate"><svg class="cab-svg" viewBox="0 0 200 118" aria-hidden="true"><rect x="14" y="18" width="150" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="40" width="112" height="9" rx="3" fill="#CDBFA8"/><rect x="14" y="62" width="132" height="9" rx="3" fill="#CDBFA8"/><g transform="rotate(-7 160 96)"><rect x="124" y="84" width="66" height="24" rx="3" fill="none" stroke="#8A2E22" stroke-width="2"/><text x="157" y="101" text-anchor="middle" font-family="Old Standard TT,Georgia,serif" font-weight="700" font-size="14" letter-spacing="2" fill="#8A2E22">FIXED</text></g></svg></div><h3>Fixed</h3><p class="k">Live and clear again</p><p>The stamp fires once after fog or a conflict, when both phones agree. No clock.</p></li>
+  <ol class="states">
+    <li class="cab live"><div class="cab-plate" inert><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CLEAR"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent"><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="false" aria-label="Tick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-act" data-act="claim" data-id="tent">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)</span><button type="button" class="lb-act" data-act="claim" data-id="stove">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><h3>Live</h3><p class="k">Link up, all acknowledged</p><p>The other phone has every op made here.</p></li>
+    <li class="cab fog"><div class="cab-plate" inert><article class="lb-plate" data-replica="a" data-axis="FOGGED" data-conflict="CLEAR"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Offline — 2 waiting</span></header><span class="lb-big" aria-hidden="true"><b>2</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><h3>Fogged</h3><p class="k">Link down or reconnecting</p><p>The count is ops the other phone has not acknowledged.</p></li>
+    <li class="cab dev"><div class="cab-plate" inert><article class="lb-plate" data-replica="a" data-axis="DEVELOPING" data-conflict="CLEAR"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Syncing 4…</span></header><span class="lb-big" aria-hidden="true"><b>2</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><h3>Developing</h3><p class="k">Link up, ops crossing</p><p>Amber haze while ops are still crossing.</p></li>
+    <li class="cab twin"><div class="cab-plate" inert><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><button type="button" data-act="keep" data-id="tent">Keep</button><button type="button" data-act="drop" data-id="tent">Delete</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><h3>Double exposure</h3><p class="k">A conflict surfaced</p><p>Two exposures of one item, until you pick.</p></li>
+    <li class="cab fixed"><div class="cab-plate" inert><article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CLEAR" data-fixed><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica A — Sari</p><ul class="lb-list"><li class="lb-row" data-id="tent" data-ticked><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="true" aria-label="Untick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><h3>Fixed</h3><p class="k">Live and clear again</p><p>Fires once after fog or a conflict clears. No clock.</p></li>
   </ol>
 </section>
 
@@ -436,9 +466,9 @@ section.s{padding:84px 0 0}
     <p>The kit refuses an op that converges on the wrong answer. No rule reads a wall clock: order comes from causal context.</p>
   </div>
   <div class="rules">
-    <article class="rule big"><code class="r">resurrect</code><h3>Deleted while edited: it comes back.</h3><p>The deleted item returns as a ghost twin beside the edited one. One tap keeps or drops it, and every replica holds the same list afterwards.</p><figure><img src="/assets/basecamp-twin.webp" alt="BASECAMP after reconnect: the tent shows a twin card on both replicas with Keep and Delete." width="1400" height="785" loading="lazy"><figcaption>Live BASECAMP, both replicas after reconnect.</figcaption></figure></article>
-    <article class="rule big"><code class="r">claim-one</code><h3>Two offline claims: one winner, named.</h3><p>No CRDT can stop two offline people from claiming the last stove. Offline claims are provisional; on reconnect the rule picks one claimant the same way on every phone (lower Lamport stamp, then replica id), and the other person sees a twin naming the winner.</p><p class="ex">Property: after convergence, exactly one claimant on every replica.</p><figure class="claimdemo" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul></article></div><figcaption>Rendered at build time by the same engine as the hero: Budi's view after the lake scene.</figcaption></figure></article>
-    <article class="rule"><code class="r">causal-lww</code><h3>Ticks, names, notes</h3><p>The write that had seen the other wins. A clock never decides.</p></article>
+    <article class="rule big"><code class="r">resurrect</code><h3>Deleted while edited elsewhere: it comes back.</h3><p>The deleted item returns as a ghost twin beside the edited one. One tap keeps or drops it, and every replica holds the same list afterwards.</p><figure><img src="/assets/basecamp-twin.webp" alt="BASECAMP after reconnect: the tent shows a twin card on both replicas with Keep and Delete." width="1400" height="785" loading="lazy"><figcaption>Live BASECAMP, both replicas after reconnect.</figcaption></figure></article>
+    <article class="rule big"><code class="r">claim-one</code><h3>Two offline claims: one winner, named.</h3><p>No CRDT can stop two offline people from claiming the last stove. Claims stay provisional; on reconnect every phone picks the same winner (lower Lamport stamp, then replica id), and the loser sees a twin naming them.</p><p class="ex">Property: after convergence every replica names the same winners, never more than the item has units.</p><figure class="claimdemo" inert><div class="lb-viewer" style="grid-template-columns:minmax(0,1fr)"><article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT"><header class="lb-imprint"><span class="lb-dot"></span><span class="lb-chip">Live · 2 conflicts</span></header><span class="lb-big" aria-hidden="true"><b>0</b><i>in limbo</i></span><p class="lb-sitter">Replica B — Budi</p><ul class="lb-list"><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picked Sari on both phones (lower Lamport stamp, then replica id)</p><p class="lb-btns"><button type="button" data-act="ok" data-id="stove" data-who="budi">OK</button></p></li></ul><span class="lb-fixed" aria-hidden="true">FIXED</span><div class="lb-veil" aria-hidden="true"></div></article></div><figcaption>Budi's view after the lake scene, rendered by the hero's engine.</figcaption></figure></article>
+    <article class="rule"><code class="r">causal-lww</code><h3>Ticks, names, notes</h3><p>The write that had seen the other wins. Concurrent edits that differ come back as a twin. A clock never decides.</p></article>
     <article class="rule"><code class="r">commutes</code><h3>Counts and shares</h3><p>Both edits count. Severity takes the worse; expense shares sum to the total in whole cents.</p></article>
     <article class="rule"><code class="r">ordered-move</code><h3>Reorder</h3><p>Two concurrent moves land in one stable order, with no twin.</p></article>
   </div>
@@ -447,16 +477,16 @@ section.s{padding:84px 0 0}
 <section class="wrap s" id="crew" aria-labelledby="crew-h">
   <div class="s-head">
     <h2 id="crew-h">One skeleton. <i>Two apps, two folders.</i></h2>
-    <p>Each app lives in its own folder and supplies five things. Everything else, from the op layer to the fog, comes from the skeleton.</p>
+    <p>Each app lives in its own folder and supplies a model, ops with declared merges, a seed, views and a config. The op layer, replica and sync, the local store and the Limbo layer come from the skeleton.</p>
   </div>
   <div class="crew">
     <div class="skel">
       <h3>skeleton/</h3>
       <p>Op layer and named merges, replica and links, the local store, and the Limbo layer: fog, twins, inspector.</p>
       <dl>
-        <dt>24</dt><dd>production files</dd>
-        <dt>2,520</dt><dd>non-blank TS/TSX lines</dd>
-        <dt>15</dt><dd>exported values</dd>
+        <dt>24</dt><dd>non-test files (1 CSS, 2 test helpers)</dd>
+        <dt>2,520</dt><dd>non-blank TS/TSX lines, comments included</dd>
+        <dt>15</dt><dd>values exported from the main entry</dd>
         <dt>34</dt><dd>test files beside them</dd>
       </dl>
       <ol><li>a model</li><li>ops, each with a declared merge</li><li>a seed script</li><li>views</li><li>a config</li></ol>
@@ -472,12 +502,17 @@ section.s{padding:84px 0 0}
   <div class="wrap">
     <div class="s-head">
       <p class="plate-no">Plate IV · How Kiro built this</p>
-      <h2 id="kiro-h">Kiro wrote the code. <i>The hooks kept the ledger.</i></h2>
+      <h2 id="kiro-h">Kiro wrote most of the product. <i>The hooks kept the ledger.</i></h2>
       <p>Headless Kiro CLI sessions ran tasks from Kiro-authored specs. Each hook logged its fires, and the Agent Stop gate refused "done" while a property failed.</p>
     </div>
     <div class="kiro-grid">
       <div>
         <figure class="term" aria-label="Replay of Kiro session sess_545bc98d"><div class="term-bar"><i></i><i></i><i></i>kiro-cli 3.3.0 · --v3 --no-interactive · merge-kit task 12 · 4.6864 credits · 294 s</div><pre class="term-body"><span class="term-line"><span class="t-time">09:43:14</span>  <span class="t-hook">PreTaskExec    task-start       </span> merge-kit task 12 · logged</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileCreate op-scaffold      </span> item.rename.op.ts · scaffolded</span><span class="term-line"><span class="t-time">09:43:35</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.rename.op.ts · pass</span><span class="term-line"><span class="t-time">09:43:45</span>  <span class="t-hook">PreToolUse     guard-shell      </span> $ pnpm test … ; pnpm props … · allow</span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; convergence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; replay equivalence</span></span><span class="term-line">          <span class="t-fail">FAIL … op item.tick &gt; idempotence</span></span><span class="term-line"><span class="t-time">09:45:26</span>  <span class="t-hook">Stop           stop-gate        </span> <span class="t-block">BLOCK 1/3</span> · 24.9 s</span><span class="term-line">          <span class="t-say">kiro: “item.tick.op.ts stores at: Date.now() in its state. Replicas that apply the same op end up with different states.”</span></span><span class="term-line"><span class="t-time">09:45:55</span>  <span class="t-hook">PostFileSave   op-lint          </span> item.tick.op.ts · pass</span><span class="term-line"><span class="t-time">09:47:12</span>  <span class="t-hook">PostTaskExec   props-after-task </span> <span class="t-pass">pass</span> · 26.1 s</span><span class="term-line">          <span class="t-say">kiro: “I removed Date.now() and at. … pnpm props: 157 pass and 2 are skipped.”</span></span></pre><figcaption class="term-src">Re-set from <code>evidence/kiro/hooks.jsonl</code> (session sess_545bc98d, 2026-11-15, times UTC) and the agent's own words in <code>evidence/kiro/g2/kiro-closing.txt</code>; lines selected, long commands cut at “…”. The <code>Date.now()</code> fault was seeded on purpose (commit <code>cca30a0</code>) to prove the gate fires.</figcaption></figure>
+        <ul class="kit">
+          <li><code>.kiro/steering/</code> 6 files: <code>local-first.md</code> always on, <code>ops-guide.md</code> on <code>**/ops/**</code></li>
+          <li><code>.kiro/hooks/</code> 8 hooks, incl. the shell guard, op scaffold and lint, properties after each task, and the Stop gate</li>
+          <li><code>.kiro/agents/</code> 2 custom agents · <code>.kiro/specs/</code> 11 specs · 1 MCP server (8 calls)</li>
+        </ul>
       </div>
       <div>
         <ol class="ledger">
@@ -487,12 +522,7 @@ section.s{padding:84px 0 0}
           <li><span class="n">3</span><span class="l">commands the shell guard denied</span></li>
         </ol>
         <ul class="bars" aria-label="Hook fires by trigger"><li><span>PreToolUse</span><s><b style="--w:100.0%"></b></s><span>1,226</span></li><li><span>Stop</span><s><b style="--w:15.0%"></b></s><span>184</span></li><li><span>PreTaskExec</span><s><b style="--w:12.0%"></b></s><span>147</span></li><li><span>PostTaskExec</span><s><b style="--w:11.3%"></b></s><span>139</span></li><li><span>SessionStart</span><s><b style="--w:3.3%"></b></s><span>41</span></li><li><span>PostFileSave</span><s><b style="--w:1.1%"></b></s><span>13</span></li><li><span>PostFileCreate</span><s><b style="--w:1.0%"></b></s><span>12</span></li><li><span>PostToolUse</span><s><b style="--w:0.8%"></b></s><span>8</span></li></ul>
-        <ul class="kit">
-          <li><code>.kiro/steering/</code> 6 files, incl. <code>local-first.md</code> on <code>**/ops/**</code></li>
-          <li><code>.kiro/hooks/</code> 8 hooks, incl. the shell guard, op scaffold and lint, properties after each task, and the Stop gate</li>
-          <li><code>.kiro/agents/</code> 2 custom agents · <code>.kiro/specs/</code> 11 specs · 1 MCP server (8 calls)</li>
-        </ul>
-        <p class="workflow">The honest workflow: Claude Code wrote each brief, launched the Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with its reason.</p>
+        <p class="workflow">The honest workflow: an outside orchestrator wrote each brief, launched the Kiro session, reviewed the diff and committed. 14 ledger rows are edits made outside Kiro, each with its reason.</p>
       </div>
     </div>
   </div>
@@ -504,9 +534,9 @@ section.s{padding:84px 0 0}
   </div>
   <div class="honest">
     <ul class="quotes">
-      <li><q>Convergence is measured, property-tested, not proven.</q><small>README, The Solution · 10,000 orderings, seed 20251031, Yjs 13.6.33</small></li>
+      <li><q>Convergence is measured, property-tested, not proven.</q><small>README, The number · 10,000 orderings, seed 20251031, Yjs 13.6.33</small></li>
       <li><q>No CRDT can stop two offline people from claiming the last stove.</q><small>README, The merge rules</small></li>
-      <li><q>So we claim nothing about the kit improving correctness here.</q><small>README, A/B pilot</small></li>
+      <li><q>So we claim nothing about the kit improving correctness here.</q><small>README, How Kiro built this</small></li>
     </ul>
     <aside class="ab" aria-labelledby="ab-h">
       <h3 id="ab-h">The experiment found no effect</h3>
@@ -520,12 +550,12 @@ section.s{padding:84px 0 0}
 <section class="wrap s" id="faq" aria-labelledby="faq-h">
   <div class="s-head"><h2 id="faq-h">Questions a judge asks first</h2></div>
   <div class="faq">
-    <details><summary>Is the demo on this page real?</summary><p>Yes. It bundles BASECAMP's ops and the LIMBO skeleton unchanged (<code>site/src/hero.ts</code>). Two replicas run in memory; the link between them is simulated in the page, because DevTools "offline" does not cut it.</p></details>
+    <details><summary>Is the demo on this page real?</summary><p>Yes. It bundles BASECAMP's ops and the LIMBO skeleton unchanged (<code>site/src/hero.ts</code>). The link between the two replicas is simulated, because DevTools "offline" does not cut it.</p></details>
     <details><summary>Is it really offline?</summary><p>Each app is a PWA: after one visit it reopens in airplane mode, with its edits kept in IndexedDB. Live end-to-end tests against both deployed apps passed 6 of 6, offline reload included. Not built: a relay between two devices; the replicas sync inside one page.</p></details>
     <details><summary>Can two offline people both claim the last stove?</summary><p>Both claims are provisional. On reconnect, <code>claim-one</code> keeps exactly one claimant on every replica and shows the other person a twin that names the winner.</p></details>
     <details><summary>Did Kiro really write the code?</summary><p>111 of 119 commits in <code>skeleton/</code> and <code>apps/</code> carry a <code>Kiro-Session</code> trailer that maps to a row in <code>evidence/kiro/sessions.jsonl</code>. The other 8 are listed in <code>share.json</code>.</p></details>
     <details><summary>Does the kit make Kiro better?</summary><p>Our pre-registered pilot found no measurable effect (0 of 10 vs 0 of 10). What it did show was a gap in the gate, which we then closed (the fix has not been re-piloted).</p></details>
-    <details><summary>Can I build my own app on the skeleton?</summary><p>Supply a model, ops with declared merges, a seed, views and a config, as both apps do. <code>docs/ADOPT.md</code> walks through it, and the kit's property suite runs over every registered op.</p></details>
+    <details><summary>Can I build my own app on the skeleton?</summary><p>Supply a model, ops with declared merges, a seed, views and a config. <code>docs/ADOPT.md</code> walks through it; the property suite runs over every registered op.</p></details>
   </div>
 </section>
 
@@ -576,6 +606,6 @@ section.s{padding:84px 0 0}
 fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
   .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
 </script>
-<script src="/assets/hero.js?v=d6241fecf8" defer></script>
+<script src="/assets/hero.js?v=8d44b4895d" defer></script>
 </body>
 </html>

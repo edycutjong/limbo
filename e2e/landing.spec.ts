@@ -17,7 +17,7 @@ test('the hero instrument follows the real sync state from cut to FIXED', async 
   await page.click('[data-act="link"]');
   await expect.poll(() => axes(page)).toEqual(['FOGGED', 'FOGGED']);
   await page.click('[data-replica="b"] [data-act="tick"][data-id="gas"]');
-  await expect(page.locator('[data-replica="b"] .lb-count')).toHaveText('1');
+  await expect(page.locator('[data-hero] [data-replica="b"] .lb-limbo .lb-count')).toHaveText('1');
   await expect(page.locator('[data-replica="b"] .lb-limbo')).toContainText('item.tick');
   await page.click('[data-act="link"]');
   await expect.poll(() => axes(page)).toEqual(['LIVE', 'LIVE']);
