@@ -38,7 +38,8 @@ for (const [name, cmd, opt = {}] of steps) {
   out.push(`\n$ ${cmd}   # ${name}\n${text.split('\n').slice(-14).join('\n')}\nexit ${r.status} in ${seconds}s`);
   console.log(`${r.status === 0 ? 'PASS' : opt.advisory ? 'WARN' : 'FAIL'} ${name} (${seconds}s)`);
   if (name.includes('tests + 100%')) {
-    const m = text.match(/Tests\s+(\d+) passed(?: \| (\d+) skipped)?/);
+    // the run's final summary is the last match (per-project lines can come first)
+    const m = [...text.matchAll(/Tests\s+(\d+) passed(?: \| (\d+) skipped)?/g)].at(-1);
     if (m) unit = { passed: Number(m[1]), skipped: Number(m[2] ?? 0) };
     for (const k of ['statements', 'branches', 'functions', 'lines']) {
       const c = text.match(new RegExp(`${k[0].toUpperCase()}${k.slice(1)}\\s*:\\s*([\\d.]+)%`));
@@ -46,8 +47,8 @@ for (const [name, cmd, opt = {}] of steps) {
     }
   }
   if (name === 'Stage 4 e2e') {
-    const m = text.match(/(\d+) passed/);
-    const k = text.match(/(\d+) skipped/);
+    const m = [...text.matchAll(/(\d+) passed/g)].at(-1);
+    const k = [...text.matchAll(/(\d+) skipped/g)].at(-1);
     if (m) e2e = { passed: Number(m[1]), skipped: k ? Number(k[1]) : 0 };
   }
 }

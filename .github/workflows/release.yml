@@ -1,10 +1,13 @@
 name: release
 
-# Follows the system recipe: a release is cut from commit messages on every push to main. Nothing deploys from here (deploys are done by
-# hand from the Vercel CLI), so a tag never ships code by itself; CI status is shown separately on the commit.
+# Follows the system recipe: a release is cut from commit messages, but only after the CI/CD Pipeline run for that push to main has
+# succeeded (a red main never gets a tag; the landing's version chip reads releases/latest). Nothing deploys from here (deploys are done
+# by hand from the Vercel CLI), so a tag never ships code by itself. workflow_dispatch is a manual cut by the owner.
 on:
-  push:
-    branches: ["main"]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,11 +15,13 @@ permissions:
 
 jobs:
   release:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # full history: we read commits since the last tag
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }} # tag exactly the commit CI judged
 
       - name: Compute next version from Angular commits
         id: ver

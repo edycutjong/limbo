@@ -33,7 +33,7 @@
 - **What is built:** the skeleton (`skeleton/`), **two distinct apps** on it in two folders (`apps/basecamp/`, `apps/aftershock/`), and the `/.kiro` kit (steering, hooks, custom agents, specs) under which Kiro built them. A Kiroween **Skeleton Crew** entry. Convergence is a measured, property-tested claim, not a proof ([The number](#the-number)).
 
 
-Live, no install, works offline after the first load:
+Live, no install; the two apps work offline after the first load (the landing page is a static page with no service worker):
 - **BASECAMP**, a group trip list: https://basecamp.limbo.edycu.dev
 - **AFTERSHOCK**, a field form whose sector reports merge into a shared grid (demo data only; no field use is claimed): https://aftershock.limbo.edycu.dev
 - The landing page: https://limbo.edycu.dev
@@ -161,9 +161,9 @@ in-page link, or through a dev-only test relay in the e2e suite.
   `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **24 Playwright tests pass** (2 skipped), including `/judge` with no credentials.
   `pnpm typecheck` is clean. Steps and expected output: [`DEMO.md`](DEMO.md). The exclusions from the coverage gate (entry points, workers, views) and their
   reasons are in [`vitest.config.ts`](vitest.config.ts).
-- **CI:** [`ci.yml`](.github/workflows/ci.yml) has six stages: Quality, Security (gitleaks, `pnpm audit`), Build with a bundle budget, E2E, Performance
+- **CI:** [`ci.yml`](.github/workflows/ci.yml) has six stages: Quality, Security (gitleaks, `pnpm audit`), Build with a bundle budget and a landing-hero freshness check, E2E, Performance
   (Lighthouse, advisory) and a Deploy Gate; plus CodeQL, a conventional-commit release workflow and grouped monthly Dependabot with no major bumps. A check fails the build if
-  `/.kiro` is ignored or empty. GitHub Actions on this private repo did not start (account billing limit), so the Stage 1-4 steps ran locally (Lighthouse, the Deploy Gate, the `/judge` mirror check and the full advisory audit run only on GitHub Actions):
+  `/.kiro` is ignored or empty. GitHub Actions on this private repo did not start (account billing limit), so the Stage 1-4 steps ran locally, including the `/judge` mirror check and the advisory full audit (Lighthouse and the Deploy Gate run only on GitHub Actions):
   [`evidence/ci/`](evidence/ci/) (`node kit/scripts/ci-local.mjs`).
 - **Built during the submission period.** First commit: 2026-11-15 (`git log --reverse`). The period opened 2026-10-30.
   **Pre-existing code: none.** Libraries: Yjs, y-indexeddb, React, Vite, vite-plugin-pwa, fast-check, Vitest, Playwright.

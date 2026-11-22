@@ -23,8 +23,8 @@ No setup, no keys, no cloning.
 |---|---|---|
 | Convergence | 10,000 random orderings of 3 replicas, 0 divergences across every op of both apps (seed 20251031); a measured, property-tested claim, not a proof | `evidence/convergence/full-2026-11-22.json` |
 | Tests | 1,393 unit, component and property tests pass (9 skipped: the AFTERSHOCK rows for conflict classes it has no ops for), 24 Playwright e2e tests pass (2 skipped: viewport-conditional phone checks) | `evidence/ci/latest.json` |
-| Coverage | 100% lines, 100% branches, 100% functions on the skeleton and each app's domain modules (CI fails below 100%) | `evidence/ci/latest.json, vitest.config.ts` |
-| Kiro work | 188 Kiro sessions (build ledger; the A/B pilot sessions are logged separately), 173 sessions across 11 specs (155 ran numbered tasks, 11 authored a spec, 7 were follow-ups), 1,770 hook fires, 659.11 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
+| Coverage | 100% statements, 100% lines, 100% branches, 100% functions on skeleton/src and apps/*/src, excluding the React views, the browser and worker entries and the dev relay (each listed with its reason in vitest.config.ts); CI fails below 100%. The landing hero (site/) is outside this gate | `evidence/ci/latest.json, vitest.config.ts` |
+| Kiro work | 190 Kiro sessions (build ledger; the A/B pilot sessions are logged separately), 175 sessions across 12 specs (156 ran numbered tasks, 12 authored a spec, 7 were follow-ups), 1,797 hook fires, 665.95 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
 | Kiro share | 111 of 119 product commits carry a Kiro-Session trailer (93.28%); the others are listed with their subjects | `evidence/kiro/share.json` |
 
 ## Where Kiro did the work
