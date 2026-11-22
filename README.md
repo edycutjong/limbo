@@ -117,8 +117,8 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 **Experiment: a pre-registered A/B pilot, no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
 0 to 28%) in both arms, Fisher exact p = 1 (pre-registered before run 1, `PREREG.md`). So we claim nothing about the kit improving
 correctness here. What the pilot did show: all 8 Agent Stop blocks in the kit arm were false alarms from the kit's own vacuity guard,
-and 2 of 10 kit-arm runs edited that guard to pass. We then put the gate files under a hash manifest the session wrapper checks after every
-Kiro session (`pnpm gate` re-checks it); that fix has not been re-piloted.
+and 2 of 10 kit-arm runs edited that guard to pass: the session wrapper's hash manifest did not flag it, because the property suite was
+not on its protected list. We then added the suite and the vacuity guard to that list (`pnpm gate` re-checks it); that fix has not been re-piloted.
 [`evidence/kiro/ab/summary.md`](evidence/kiro/ab/summary.md), [`observations.md`](evidence/kiro/ab/observations.md).
 
 **IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 151), which fires the spec task hooks and
