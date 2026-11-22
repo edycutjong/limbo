@@ -8,14 +8,15 @@ import { execFileSync } from 'node:child_process';
 const rows = (f) => readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
 const sessions = rows('evidence/kiro/sessions.jsonl');
 const hooks = rows('evidence/kiro/hooks.jsonl');
-const kiro = sessions.filter((s) => s.actor === 'kiro');
+// One row per Kiro session id: a duplicated ledger row must not count twice (retries are separate sessions with their own ids).
+const kiro = [...new Map(sessions.filter((s) => s.actor === 'kiro').map((s) => [s.session_id ?? JSON.stringify(s), s])).values()];
 const bump = (o, k) => ((o[k] = (o[k] || 0) + 1), o);
 
 const hooksByTrigger = {}, hooksByHook = {}, results = {};
 for (const h of hooks) {
   bump(hooksByTrigger, h.trigger); bump(hooksByHook, h.hook); bump(results, `${h.hook}:${h.result}`);
 }
-const specDirs = new Set(readdirSync('.kiro/specs'));
+const specDirs = new Set(readdirSync('.kiro/specs', { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name));
 const tasks = kiro.filter((s) => s.task != null && specDirs.has(s.spec));
 const kitRevisions = kiro.filter((s) => s.spec && !specDirs.has(s.spec)).length;
 const specs = {};
@@ -24,6 +25,7 @@ const share = JSON.parse(readFileSync('evidence/kiro/share.json', 'utf8'));
 const first = execFileSync('git', ['log', '--reverse', '--format=%ad %h', '--date=short'], { encoding: 'utf8' }).split('\n')[0];
 const commits = Number(execFileSync('git', ['rev-list', '--count', 'HEAD'], { encoding: 'utf8' }).trim());
 const ab = JSON.parse(readFileSync('evidence/kiro/ab/results.json', 'utf8'));
+const mcpCalls = existsSync('evidence/kiro/mcp-calls.jsonl') ? rows('evidence/kiro/mcp-calls.jsonl') : [];
 
 const tally = {
   sessions_total: sessions.length,
@@ -51,6 +53,14 @@ const tally = {
   product_commits: share.product_commits,
   kiro_product_commits: share.kiro_commits,
   kiro_share: share.share,
+  // CLI version per Kiro session, as the wrapper recorded it (`kiro-cli --version` at launch).
+  cli_versions: kiro.reduce((m, s) => ({ ...m, [s.kiro_cli_version ?? 'unknown']: (m[s.kiro_cli_version ?? 'unknown'] || 0) + 1 }), {}),
+  // The MCP server's own call log (kit/mcp writes evidence/kiro/mcp-calls.jsonl); hooks.jsonl mcp-log rows name the sessions.
+  mcp_calls: mcpCalls.length,
+  mcp_calls_by_tool: mcpCalls.reduce((m, c) => ({ ...m, [c.tool]: (m[c.tool] || 0) + 1 }), {}),
+  mcp_fuzzed_ops: [...new Set(mcpCalls.filter((c) => c.tool === 'fuzz_op').map((c) => `${c.app}:${c.op}`))],
+  mcp_apps: [...new Set(mcpCalls.map((c) => c.app).filter(Boolean))],
+  mcp_sessions: [...new Set(hooks.filter((h) => h.hook === 'mcp-log').map((h) => h.session_id))].length,
   total_commits: commits,
   first_commit: first,
   ab_keys: Object.keys(ab),

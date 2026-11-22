@@ -78,7 +78,28 @@
   "product_commits": 119,
   "kiro_product_commits": 111,
   "kiro_share": 0.9328,
-  "total_commits": 237,
+  "cli_versions": {
+    "kiro-cli 3.3.0": 37,
+    "kiro-cli 3.5.0": 151
+  },
+  "mcp_calls": 8,
+  "mcp_calls_by_tool": {
+    "list_ops": 2,
+    "fuzz_op": 4,
+    "check_lint": 2
+  },
+  "mcp_fuzzed_ops": [
+    "basecamp:item.add",
+    "basecamp:item.move",
+    "basecamp:expense.add",
+    "aftershock:sector.count"
+  ],
+  "mcp_apps": [
+    "basecamp",
+    "aftershock"
+  ],
+  "mcp_sessions": 1,
+  "total_commits": 242,
   "first_commit": "2026-11-15 5601bf6",
   "ab_keys": [
     "pilot",

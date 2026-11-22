@@ -94,6 +94,8 @@ jobs:
         run: pnpm build
       - name: Bundle budget (blocking over 700 KB of JS per app, warning over 500 KB)
         run: node kit/scripts/bundle-budget.mjs
+      - name: Landing hero bundle matches its source (site/src/hero.ts)
+        run: node kit/scripts/site-hero.mjs --check
       - uses: actions/upload-artifact@v4
         with:
           name: dist

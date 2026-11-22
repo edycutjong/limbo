@@ -75,7 +75,7 @@ const links = [
   ['Landing page', URLS.landing],
 ];
 
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const html = `<!doctype html>
 <html lang="en">
@@ -142,7 +142,7 @@ ${limits.map((l) => `    <li>${esc(l)}</li>`).join('\n')}
 
   <h2>Links</h2>
   <ul>
-${links.map(([k, u]) => `    <li>${esc(k)}: <a href="${u}">${u}</a></li>`).join('\n')}
+${links.map(([k, u]) => `    <li>${esc(k)}: <a href="${esc(u)}">${esc(u)}</a></li>`).join('\n')}
   </ul>
 </main>
 <script>

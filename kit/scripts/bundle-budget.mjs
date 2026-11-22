@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Bundle budget for the two built apps: total JavaScript under dist/assets (the service worker is excluded).
-// Warns over 500 KB, fails over 700 KB. Run after `pnpm build`.
+// Warns over 500 KB, fails over 700 KB (raw bytes) or when no JavaScript is found. Run after `pnpm build`.
 import { readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -14,11 +14,10 @@ for (const app of ['basecamp', 'aftershock']) {
     failed = true;
     continue;
   }
-  const bytes = readdirSync(dir)
-    .filter((f) => f.endsWith('.js'))
-    .reduce((n, f) => n + statSync(join(dir, f)).size, 0);
-  const kb = Math.round((bytes / 1024) * 10) / 10;
-  const level = kb > FAIL_KB ? 'FAIL' : kb > WARN_KB ? 'WARN' : 'OK';
+  const js = readdirSync(dir, { recursive: true }).filter((f) => /\.m?js$/.test(String(f)));
+  const bytes = js.reduce((n, f) => n + statSync(join(dir, String(f))).size, 0);
+  const kb = Math.round((bytes / 1024) * 10) / 10; // display only; the gates compare raw bytes
+  const level = js.length === 0 ? 'FAIL' : bytes > FAIL_KB * 1024 ? 'FAIL' : bytes > WARN_KB * 1024 ? 'WARN' : 'OK';
   console.log(`${level} ${app}: ${kb} KB of JS (warn ${WARN_KB}, fail ${FAIL_KB})`);
   if (level === 'FAIL') failed = true;
 }
