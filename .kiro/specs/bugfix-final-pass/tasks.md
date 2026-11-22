@@ -4,7 +4,7 @@ Each task writes its failing test first, runs it and records the failure, then a
 
 Order: D1, D2, then the cross-cutting pass.
 
-- [ ] 1. D1 (part 1): failing tests for Label in Name
+- [x] 1. D1 (part 1): failing tests for Label in Name
   - In `apps/aftershock/src/views/SectorGrid.test.tsx`, add the helpers `norm`, `visibleText` (clone the cell, drop `[aria-hidden="true"]`, normalise) and `nameOf` (aria-label without commas, normalised), as in `design.md`.
   - Add "every cell's visible text is contained in its accessible name": a hand-built `sectors` map with `safe`, `damaged`, `unsafe`, one reported cell with total 2, one reported cell with no counts, and unreported cells; also the 24 seed cells. Assert all four `data-severity` values (`safe`, `damaged`, `unsafe`, `none`) occur, so the loop is not vacuous.
   - Add "visible spans are separated by whitespace" for `A1`.
