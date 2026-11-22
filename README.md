@@ -83,7 +83,7 @@ picks one claimant deterministically when they reconnect, and the other person i
   ([`docs/ADOPT.md`](docs/ADOPT.md)). AFTERSHOCK's own spec changed 0 files under `skeleton/` (later UI polish touched skeleton CSS and markup for both apps).
 - Skeleton size: **21 files, 2,189 lines** against its budget of 30 files and 2,400 lines (non-blank, non-comment TS/TSX outside tests;
   `skeleton_budget_*` in [`evidence/lean.json`](evidence/lean.json)), with **15 exported values** from its public `index.ts`.
-  BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,464 lines (non-blank). Wider counts and the budget history: [Skeleton size](#skeleton-size).
+  BASECAMP: 12 ops, 2,192 lines. AFTERSHOCK: 6 ops, 1,471 lines (non-blank). Wider counts and the budget history: [Skeleton size](#skeleton-size).
 
 Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the local store, fast-check, Vitest, Playwright.
 
@@ -93,26 +93,26 @@ Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the
 Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro/`](evidence/kiro/) (output:
 [`evidence/kiro/tally.json`](evidence/kiro/tally.json)); none are typed by hand.
 
-- **Ledger:** 202 rows in `sessions.jsonl`: 188 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 659.11 credits) and 14
-  `claude-direct` rows for edits made outside Kiro (the build ledger; the 20 A/B pilot sessions, 64.31 credits, are logged separately in `evidence/kiro/ab/`). 173 of the Kiro sessions belong to one of 11 specs (155 ran a numbered task, 11 authored a spec, 7 were follow-ups (4 of them re-runs of an earlier task)); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
-- **Kiro share:** 111 of 119 product commits (`skeleton/` or `apps/`) carry a `Kiro-Session` trailer, **93.28%**
-  ([`share.json`](evidence/kiro/share.json)). The 8 others are listed there, with subjects.
-- **Hooks:** 1,770 logged fires across 8 hooks and 8 triggers: PreToolUse 1,226, Stop 184, PreTaskExec 147, PostTaskExec 139,
-  SessionStart 41, PostFileSave 13, PostFileCreate 12, PostToolUse 8. Of these, the shell guard denied 3 commands, the Agent Stop gate
+- **Ledger:** 210 rows in `sessions.jsonl`: 194 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 679.87 credits) and 16
+  `claude-direct` rows for edits made outside Kiro (the build ledger; the 20 A/B pilot sessions, 64.31 credits, are logged separately in `evidence/kiro/ab/`). 179 of the Kiro sessions belong to one of 12 specs (160 ran a numbered task, 12 authored a spec, 7 were follow-ups (4 of them re-runs of an earlier task)); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
+- **Kiro share:** 115 of 124 product commits (`skeleton/` or `apps/`) carry a `Kiro-Session` trailer, **92.74%**
+  ([`share.json`](evidence/kiro/share.json)). The 9 others are listed there, with subjects.
+- **Hooks:** 1,824 logged fires across 8 hooks and 8 triggers: PreToolUse 1,261, Stop 191, PreTaskExec 153, PostTaskExec 144,
+  SessionStart 42, PostFileSave 13, PostFileCreate 12, PostToolUse 8. Of these, the shell guard denied 4 commands, the Agent Stop gate
   **blocked the agent from finishing 2 times**, and the op linter failed 2 saves. The first block was unplanned: in merge-kit task 9.5 the
   shared property suite ran the new `item.move` op without its own payload generator; Kiro wired the per-op options into the suite and the
   properties passed (commit `651730d`). The second was a wall-clock fault seeded on purpose to prove the gate fires; Kiro removed it.
 
 | `.kiro/` file | Job | Fired |
 |---|---|---|
-| `steering/` (4 always-on: product, structure, tech, local-first; 2 by file match: testing, ops-guide) | Rules and the four wrong-but-convergent ops | always-on files loaded in 187 of 188 Kiro sessions; testing in 38, ops-guide in 32 (`steering_sessions_by_file` in `tally.json`) |
-| `hooks/session-context`, `task-start` | Inject context, log the task start | 41 and 147 |
-| `hooks/guard-shell` | Deny pushes, posts and destructive commands | 1,226 checks, 3 denials |
+| `steering/` (4 always-on: product, structure, tech, local-first; 2 by file match: testing, ops-guide) | Rules and the four wrong-but-convergent ops | always-on files loaded in 193 of 194 Kiro sessions; testing in 39, ops-guide in 33 (`steering_sessions_by_file` in `tally.json`) |
+| `hooks/session-context`, `task-start` | Inject context, log the task start | 42 and 153 |
+| `hooks/guard-shell` | Deny pushes, posts and destructive commands | 1,261 checks, 4 denials |
 | `hooks/op-scaffold`, `op-lint` | Scaffold and lint a new op file | 12 and 13 |
-| `hooks/props-after-task` | Run the property suite after each task | 139 |
-| `hooks/stop-gate` | Block "done" while fast-tier properties fail | 184 checks, 2 blocks |
+| `hooks/props-after-task` | Run the property suite after each task | 144 |
+| `hooks/stop-gate` | Block "done" while fast-tier properties fail | 191 checks, 2 blocks |
 | `hooks/mcp-log` + the `limbo-convergence` MCP server (`kit/mcp/`, wired to `agents/limbo-builder` and `settings/mcp.json`) | `list_ops`, `fuzz_op`, `check_lint` (`explain_trace` unused) | 8 calls from one Kiro session (4 `fuzz_op`, 2 `list_ops`, 2 `check_lint`, across 4 ops in both apps) |
-| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 sessions across the specs (155 numbered tasks) |
+| `agents/` (limbo-builder, limbo-kitsmith), `specs/` (12) | Builder and kit-author agents; requirements, design, tasks per feature | 179 sessions across the specs (160 numbered tasks) |
 
 **Experiment: a pre-registered A/B pilot, no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
 0 to 28%) in both arms, Fisher exact p = 1 (pre-registered before run 1, `PREREG.md`). So we claim nothing about the kit improving
@@ -121,7 +121,7 @@ and 2 of 10 kit-arm runs edited that guard to pass: the session wrapper's hash m
 not on its protected list. We then added the suite and the vacuity guard to that list (`pnpm gate` re-checks it); that fix has not been re-piloted.
 [`evidence/kiro/ab/summary.md`](evidence/kiro/ab/summary.md), [`observations.md`](evidence/kiro/ab/observations.md).
 
-**IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 151), which fires the spec task hooks and
+**IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 157), which fires the spec task hooks and
 the Agent Stop hook. Spec Correctness (property-based) is IDE-only and the Agent Hooks panel is IDE UI; we did not use either.
 Per Kiro's docs, Spec Correctness is IDE-only; the project `.kiro/` files use the same format in IDE and CLI.
 
@@ -157,8 +157,8 @@ in-page link, or through a dev-only test relay in the e2e suite.
 ## 🧪 Testing & CI
 
 - `pnpm test:coverage` runs everything below under a **100% threshold** (lines, statements, functions, branches) on `skeleton/` and each app's
-  op, model and action modules: **1,393 tests pass, 9 skipped, 100% coverage** (`pnpm test` alone: 1,034 unit and component tests in 103 files;
-  `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **24 Playwright tests pass** (2 skipped), including `/judge` with no credentials.
+  op, model and action modules: **1,399 tests pass, 9 skipped, 100% coverage** (`pnpm test` alone: 1,040 unit and component tests in 103 files;
+  `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **26 Playwright tests pass** (2 skipped), including `/judge` with no credentials.
   `pnpm typecheck` is clean. Steps and expected output: [`DEMO.md`](DEMO.md). The exclusions from the coverage gate (entry points, workers, views) and their
   reasons are in [`vitest.config.ts`](vitest.config.ts).
 - **CI:** [`ci.yml`](.github/workflows/ci.yml) has six stages: Quality, Security (gitleaks, `pnpm audit`), Build with a bundle budget and a landing-hero freshness check, E2E, Performance
