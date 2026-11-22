@@ -17,7 +17,7 @@ Numbers below are the ones printed in [`README.md`](README.md). Each row says wh
 | Kiro share 93.28% (111 of 119 product commits) | `pnpm share` | rewrites `evidence/kiro/share.json` | [`share.json`](evidence/kiro/share.json) |
 | Skeleton 21 files, 2,189 lines by the budget count (wider count: 24 files, 2,520 non-blank lines, 2,297 non-comment) | `node kit/scripts/readme-tally.mjs` | writes `evidence/lean.json` | [`lean.json`](evidence/lean.json) |
 | A/B pilot 0/10 vs 0/10, p = 1 | `node kit/scripts/ab-report.mjs` reads `evidence/kiro/ab/runs.jsonl` | regenerates `summary.md` and `results.json` | [`ab/summary.md`](evidence/kiro/ab/summary.md) |
-| Gate files match the committed manifest | `pnpm gate` | gate manifest ok | [`gate-manifest.json`](evidence/kiro/gate-manifest.json) |
+| Gate files match the committed manifest | `pnpm gate` | `gate-integrity: ok` | [`gate-manifest.json`](evidence/kiro/gate-manifest.json) |
 
 The A/B re-run itself (`kit/scripts/ab-run.mjs`) needs a Kiro CLI login and spends credits; the recorded runs are in `evidence/kiro/ab/runs/`.
 
