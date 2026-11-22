@@ -1,8 +1,8 @@
 <div align="center">
   <img src="docs/assets/icon.svg" alt="LIMBO icon" width="144">
   <h1>LIMBO 🌫️</h1>
-  <p><em>When the signal dies, your app keeps working, and comes back without silently losing an edit.</em></p>
-  <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two phones fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
+  <p><em>The signal died at the lake. The conflicts came back as ghosts.</em></p>
+  <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two replicas, drawn as phones, fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
 
   <br/>
 
@@ -27,12 +27,10 @@
 ## 📸 See it in Action
 
 **For people whose shared list breaks when the signal does, and for the builders who need offline merges that do not diverge.**
-When the connection dies, your app crosses over, keeps working on the other side, and comes back without silently losing an edit.
-That is a measured, property-tested claim, not a proof (see [The number](#the-number)).
 
-
-LIMBO is a Kiroween **Skeleton Crew** entry: a lean local-first skeleton where every operation declares how it merges, **two distinct
-apps** built on it, and a `/.kiro` kit (steering, hooks, custom agents, specs) under which Kiro built the skeleton and the apps.
+- **Problem:** a shared list that needs the network breaks when the signal does, and last-write-wins quietly drops an edit.
+- **Solution:** a lean local-first skeleton where every operation declares how it merges. An item deleted on one replica while it was edited on the other comes back as a ghost twin, and a lost claim is shown to its owner, instead of either vanishing.
+- **What is built:** the skeleton (`skeleton/`), **two distinct apps** on it in two folders (`apps/basecamp/`, `apps/aftershock/`), and the `/.kiro` kit (steering, hooks, custom agents, specs) under which Kiro built them. A Kiroween **Skeleton Crew** entry. Convergence is a measured, property-tested claim, not a proof ([The number](#the-number)).
 
 
 Live, no install, works offline after the first load:
@@ -46,6 +44,8 @@ Both pages show two replicas side by side, **REPLICA A — SARI** and **REPLICA 
 2. Press **Play the lake scene**: Sari ticks the tent while Budi deletes it, and both claim the last stove.
 3. Press **Restore link**. The tent returns as a ghost **twin**; the stove goes to one claimant on both replicas.
    The fog lifts once both sides agree. Tap **Keep** on the twin and **OK** on the lost claim to get the **FIXED** stamp.
+   **Your own edit, not the scene:** type an item into **Add an item** on A (it appears on B), cut the link, tick it on A and
+   delete it on B (**⋯ → Delete**), restore: it comes back as a twin on both cards (`rule: resurrect`); **Keep** settles it.
 4. Press **I** inside a card for the inspector: every op that crossed, its declared merge rule, its causal stamp and deps.
 5. **Run shuffle test** replays the on-screen ops in random causal orders in your browser and prints the count it actually ran.
 
@@ -55,7 +55,7 @@ Both pages show two replicas side by side, **REPLICA A — SARI** and **REPLICA 
 A shared list that needs the network breaks when the signal does, and the usual fix, last-write-wins, quietly drops an edit.
 
 ### The Solution
-Every operation declares how it merges, and the kit refuses ops that converge on the wrong answer. Convergence is measured, property-tested, not proven.
+Every operation declares how it merges, and each op must pass convergence and intent properties (does every replica end on the same state, and on the one its rule declares?) before the Agent Stop gate lets Kiro finish. Convergence is measured, property-tested, not proven.
 
 ### The merge rules
 Every op declares a named rule and an intent that the kit checks independently.
@@ -81,12 +81,9 @@ picks one claimant deterministically when they reconnect, and the other person i
   layer, fog, twin, inspector (`limbo/`).
 - `apps/basecamp/` and `apps/aftershock/` are the two apps. Each supplies five things: a model, ops, a seed script, views, a config
   ([`docs/ADOPT.md`](docs/ADOPT.md)). AFTERSHOCK's own spec changed 0 files under `skeleton/` (later UI polish touched skeleton CSS and markup for both apps).
-- Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evidence/lean.json): skeleton = **24 production files (23 TS/TSX and 1 CSS),
-  2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines), 15 exported values** from its public `index.ts` (plus type-only exports), 34 test files
-  beside them. The budget (30 files, 2,400 lines) counts non-blank, non-comment lines outside tests and `limbo/test/`; by that command (`evidence/budget-basecamp-baseline.md`)
-  the skeleton is 21 files and 2,189 lines, and the wider counts above also include comments and test helpers. The spec first set 1,800 lines; the owner
-  restated it to 2,400 on 2026-11-21 when the Limbo layer landed. We are inside the restated budget and over the original one.
-  BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,464 lines.
+- Skeleton size: **21 files, 2,189 lines** against its budget of 30 files and 2,400 lines (non-blank, non-comment TS/TSX outside tests;
+  `skeleton_budget_*` in [`evidence/lean.json`](evidence/lean.json)), with **15 exported values** from its public `index.ts`.
+  BASECAMP: 12 ops, 2,187 lines. AFTERSHOCK: 6 ops, 1,464 lines (non-blank). Wider counts and the budget history: [Skeleton size](#skeleton-size).
 
 Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the local store, fast-check, Vitest, Playwright.
 
@@ -102,11 +99,13 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
   ([`share.json`](evidence/kiro/share.json)). The 8 others are listed there, with subjects.
 - **Hooks:** 1,770 logged fires across 8 hooks and 8 triggers: PreToolUse 1,226, Stop 184, PreTaskExec 147, PostTaskExec 139,
   SessionStart 41, PostFileSave 13, PostFileCreate 12, PostToolUse 8. Of these, the shell guard denied 3 commands, the Agent Stop gate
-  **blocked the agent from finishing 2 times** (once on a seeded wall-clock fault Kiro then fixed), and the op linter failed 2 saves.
+  **blocked the agent from finishing 2 times**, and the op linter failed 2 saves. The first block was unplanned: in merge-kit task 9.5 the
+  shared property suite ran the new `item.move` op without its own payload generator; Kiro wired the per-op options into the suite and the
+  properties passed (commit `651730d`). The second was a wall-clock fault seeded on purpose to prove the gate fires; Kiro removed it.
 
 | `.kiro/` file | Job | Fired |
 |---|---|---|
-| `steering/` (6 files: product, structure, tech, testing, local-first, ops-guide) | Rules and the four wrong-but-convergent ops | loaded in 187 of 188 Kiro sessions (`steering_loaded` in the ledger) |
+| `steering/` (4 always-on: product, structure, tech, local-first; 2 by file match: testing, ops-guide) | Rules and the four wrong-but-convergent ops | always-on files loaded in 187 of 188 Kiro sessions; testing in 38, ops-guide in 32 (`steering_sessions_by_file` in `tally.json`) |
 | `hooks/session-context`, `task-start` | Inject context, log the task start | 41 and 147 |
 | `hooks/guard-shell` | Deny pushes, posts and destructive commands | 1,226 checks, 3 denials |
 | `hooks/op-scaffold`, `op-lint` | Scaffold and lint a new op file | 12 and 13 |
@@ -115,10 +114,11 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
 | `hooks/mcp-log` + the `limbo-convergence` MCP server (`kit/mcp/`, wired to `agents/limbo-builder` and `settings/mcp.json`) | `list_ops`, `fuzz_op`, `check_lint` (`explain_trace` unused) | 8 calls from one Kiro session (4 `fuzz_op`, 2 `list_ops`, 2 `check_lint`, across 4 ops in both apps) |
 | `agents/` (limbo-builder, limbo-kitsmith), `specs/` (11) | Builder and kit-author agents; requirements, design, tasks per feature | 173 sessions across the specs (155 numbered tasks) |
 
-**A/B pilot: no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
+**Experiment: a pre-registered A/B pilot, no measurable effect.** 20 runs of an op-writing task, with and without the kit: held-out failures 0 of 10 (95% CI
 0 to 28%) in both arms, Fisher exact p = 1 (pre-registered before run 1, `PREREG.md`). So we claim nothing about the kit improving
 correctness here. What the pilot did show: all 8 Agent Stop blocks in the kit arm were false alarms from the kit's own vacuity guard,
-and 2 of 10 kit-arm runs edited that guard to pass, a gate-integrity gap we then closed.
+and 2 of 10 kit-arm runs edited that guard to pass. We then put the gate files under a hash manifest the session wrapper checks after every
+Kiro session (`pnpm gate` re-checks it); that fix has not been re-piloted.
 [`evidence/kiro/ab/summary.md`](evidence/kiro/ab/summary.md), [`observations.md`](evidence/kiro/ab/observations.md).
 
 **IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 151), which fires the spec task hooks and
@@ -136,6 +136,13 @@ Per Kiro's docs, Spec Correctness is IDE-only; the project `.kiro/` files use th
 (about 22 minutes). Offline e2e on BASECAMP: the lake-scene test and the two-browser-context test (a real partition through a dev-only relay)
 passed 10 of 10 repeats, [`evidence/e2e/task-21-repeat10.txt`](evidence/e2e/task-21-repeat10.txt); live e2e against both deployed URLs
 passed 6 of 6, [`evidence/live/`](evidence/live/).
+
+### Skeleton size
+<a id="skeleton-size"></a>
+Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evidence/lean.json). The budget count above (21 files, 2,189 lines) is
+non-blank, non-comment TS/TSX outside tests and `limbo/test/` (the command is in `evidence/budget-basecamp-baseline.md`). Wider counts: 24 production
+files (23 TS/TSX and 1 CSS), 2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines; both include test helpers), 34 test files beside them.
+The spec first set 1,800 lines; the owner restated it to 2,400 on 2026-11-21 when the Limbo layer landed. We are inside the restated budget and over the original one.
 
 
 ## 🚀 Getting Started

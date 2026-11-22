@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LIMBO for judges: the 60-second path, the receipts, the limits</title>
-<meta name="description" content="When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit. The 60-second judge path, the measured receipts and the honest limits.">
+<meta name="description" content="When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner. The 60-second judge path, the measured receipts and the honest limits.">
 <style>
   :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
   * { box-sizing: border-box; }
@@ -32,7 +32,7 @@
 <main>
   <h1>LIMBO, for judges</h1>
   <p class="version"><a id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a> · <a href="https://limbo.edycu.dev/">landing page</a></p>
-  <p class="claim">When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit.</p>
+  <p class="claim">When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.</p>
 
   <h2>The 60-second path</h2>
   <p class="note">No setup, no keys, no cloning.</p>
@@ -42,6 +42,7 @@
     <li>Press <strong>Play the lake scene</strong>. Sari ticks the tent while Budi deletes it, and both claim the last stove.</li>
     <li>Press <strong>Restore link</strong>. The tent returns as a ghost <em>twin</em>; the stove goes to exactly one claimant on both replicas.</li>
     <li>Tap <strong>Keep</strong> on the twin and <strong>OK</strong> on the lost claim. The fog lifts and the <strong>FIXED</strong> stamp appears: both replicas hold the same list.</li>
+    <li>Now your own edit, not the scene: type an item into <strong>Add an item</strong> on REPLICA A (it appears on B), press <strong>Cut link</strong>, tick it on A and delete it on B (<strong>⋯</strong> then <strong>Delete</strong>), press <strong>Restore link</strong>. It comes back as a twin on both cards (rule: resurrect); <strong>Keep</strong> settles it.</li>
     <li>Open <a href="https://aftershock.limbo.edycu.dev/?replicas=2">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note by tapping either <strong>Keep … note</strong> button on the twin card.</li>
     <li>Optional: press <strong>Run shuffle test</strong> in either page's shuffle section to replay the on-screen ops in random causal orders in your browser.</li>
   </ol>

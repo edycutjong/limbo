@@ -66,10 +66,19 @@
   "agent_stop_blocks_ledger": 2,
   "agent_stop_blocks_hooklog": 2,
   "shell_denials": 3,
+  "steering_sessions_any": 187,
+  "steering_sessions_by_file": {
+    ".kiro/steering/local-first.md": 187,
+    ".kiro/steering/product.md": 187,
+    ".kiro/steering/structure.md": 187,
+    ".kiro/steering/tech.md": 187,
+    ".kiro/steering/ops-guide.md": 32,
+    ".kiro/steering/testing.md": 38
+  },
   "product_commits": 119,
   "kiro_product_commits": 111,
   "kiro_share": 0.9328,
-  "total_commits": 225,
+  "total_commits": 237,
   "first_commit": "2026-11-15 5601bf6",
   "ab_keys": [
     "pilot",

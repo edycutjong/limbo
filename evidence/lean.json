@@ -11,6 +11,8 @@
     "limbo": 10,
     "sync": 8
   },
+  "skeleton_budget_files": 21,
+  "skeleton_budget_loc": 2189,
   "basecamp_ts_files": 50,
   "basecamp_ts_loc_nonblank": 2187,
   "basecamp_ops": 12,

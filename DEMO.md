@@ -15,7 +15,7 @@ Numbers below are the ones printed in [`README.md`](README.md). Each row says wh
 | Live e2e against both URLs, 6 of 6 | `pnpm e2e:live` (needs network and the live URLs) | 6 passed | [`evidence/live/`](evidence/live/) |
 | Kiro ledger numbers (202 rows, 188 Kiro, 173 sessions in 11 specs (155 numbered tasks), 659.11 credits, 1,770 hook fires, 2 Stop blocks, 3 denials) | `node kit/scripts/readme-tally.mjs` | prints and writes `evidence/kiro/tally.json` | [`tally.json`](evidence/kiro/tally.json) |
 | Kiro share 93.28% (111 of 119 product commits) | `pnpm share` | rewrites `evidence/kiro/share.json` | [`share.json`](evidence/kiro/share.json) |
-| Skeleton 24 files, 2,520 non-blank lines (2,297 non-comment) | `node kit/scripts/readme-tally.mjs` | writes `evidence/lean.json` | [`lean.json`](evidence/lean.json) |
+| Skeleton 21 files, 2,189 lines by the budget count (wider count: 24 files, 2,520 non-blank lines, 2,297 non-comment) | `node kit/scripts/readme-tally.mjs` | writes `evidence/lean.json` | [`lean.json`](evidence/lean.json) |
 | A/B pilot 0/10 vs 0/10, p = 1 | `node kit/scripts/ab-report.mjs` reads `evidence/kiro/ab/runs.jsonl` | regenerates `summary.md` and `results.json` | [`ab/summary.md`](evidence/kiro/ab/summary.md) |
 | Gate files not edited by Kiro | `pnpm gate` | gate manifest ok | [`gate-manifest.json`](evidence/kiro/gate-manifest.json) |
 

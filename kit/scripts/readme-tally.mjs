@@ -45,6 +45,9 @@ const tally = {
   agent_stop_blocks_ledger: kiro.reduce((a, s) => a + (s.stop_blocks || 0), 0),
   agent_stop_blocks_hooklog: results['stop-gate:block'] || 0,
   shell_denials: results['guard-shell:deny'] || 0,
+  // Sessions whose stream reported each steering file as loaded (`steering_loaded`); fileMatch files load only on a match.
+  steering_sessions_any: kiro.filter((s) => (s.steering_loaded || []).length > 0).length,
+  steering_sessions_by_file: kiro.flatMap((s) => s.steering_loaded || []).reduce((m, f) => ({ ...m, [f]: (m[f] || 0) + 1 }), {}),
   product_commits: share.product_commits,
   kiro_product_commits: share.kiro_commits,
   kiro_share: share.share,
@@ -74,6 +77,14 @@ const lean = {
   index_exports: readFileSync('skeleton/src/index.ts', 'utf8').split('\n').reduce((n, l) => (/^export \{/.test(l) ? n + l.slice(l.indexOf('{') + 1, l.indexOf('}')).split(',').filter((x) => x.trim()).length : /^export const /.test(l) ? n + 1 : n), 0),
   files_by_dir: ts.reduce((o, f) => bump(o, relative('skeleton/src', f).split('/')[0]), {}),
 };
+// The 30-file / 2,400-line budget's own count (evidence/budget-basecamp-baseline.md): TS/TSX outside tests and limbo/test/,
+// non-blank lines that are not `//` lines or inside `/* ... */` blocks.
+const budgetFiles = ts.filter((f) => !relative('skeleton/src', f).startsWith('limbo/test/'));
+const budgetLoc = (f) => { let blk = false; return readFileSync(f, 'utf8').split('\n').filter((raw) => { const l = raw.trimStart();
+  if (blk) { if (l.includes('*/')) blk = false; return false; } if (!l || l.startsWith('//')) return false;
+  if (l.startsWith('/*')) { if (!l.includes('*/')) blk = true; return false; } return true; }).length; };
+lean.skeleton_budget_files = budgetFiles.length;
+lean.skeleton_budget_loc = budgetFiles.reduce((a, f) => a + budgetLoc(f), 0);
 for (const app of ['basecamp', 'aftershock']) {
   const af = walk(`apps/${app}/src`).filter((f) => /\.tsx?$/.test(f) && !isTest(f));
   lean[`${app}_ts_files`] = af.length;

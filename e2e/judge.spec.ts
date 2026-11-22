@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 // carry the one-sentence claim, and keep the six sections in order. The same checks run against the live URL when
 // LIMBO_LIVE_LANDING is set (the `live` project).
 
-const CLAIM = 'When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit.';
+const CLAIM = 'When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.';
 const SECTIONS = ['The 60-second path', 'The receipts', 'Where Kiro did the work', 'Reproduce it', 'Honest limits', 'Links'];
 
 const base = process.env['LIMBO_LIVE_LANDING'];

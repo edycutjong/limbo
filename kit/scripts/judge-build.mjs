@@ -13,7 +13,7 @@ const n = (x) => x.toLocaleString('en-US');
 const failures = Object.values(conv.failuresPerProperty).reduce((a, b) => a + b, 0);
 const pct = (x) => `${(x * 100).toFixed(2)}%`;
 
-const CLAIM = 'When the connection dies, your app crosses over, keeps working on the other side, and comes back without losing an edit.';
+const CLAIM = 'When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.';
 const REPO = 'https://github.com/edycutjong/limbo';
 const URLS = {
   basecamp: 'https://basecamp.limbo.edycu.dev/?replicas=2',
@@ -28,6 +28,8 @@ const path = [
   ['Press <strong>Play the lake scene</strong>. Sari ticks the tent while Budi deletes it, and both claim the last stove.', 'Press **Play the lake scene**. Sari ticks the tent while Budi deletes it, and both claim the last stove.'],
   ['Press <strong>Restore link</strong>. The tent returns as a ghost <em>twin</em>; the stove goes to exactly one claimant on both replicas.', 'Press **Restore link**. The tent returns as a ghost _twin_; the stove goes to exactly one claimant on both replicas.'],
   ['Tap <strong>Keep</strong> on the twin and <strong>OK</strong> on the lost claim. The fog lifts and the <strong>FIXED</strong> stamp appears: both replicas hold the same list.', 'Tap **Keep** on the twin and **OK** on the lost claim. The fog lifts and the **FIXED** stamp appears: both replicas hold the same list.'],
+  ['Now your own edit, not the scene: type an item into <strong>Add an item</strong> on REPLICA A (it appears on B), press <strong>Cut link</strong>, tick it on A and delete it on B (<strong>⋯</strong> then <strong>Delete</strong>), press <strong>Restore link</strong>. It comes back as a twin on both cards (rule: resurrect); <strong>Keep</strong> settles it.',
+   'Now your own edit, not the scene: type an item into **Add an item** on REPLICA A (it appears on B), press **Cut link**, tick it on A and delete it on B (**⋯** then **Delete**), press **Restore link**. It comes back as a twin on both cards (rule: resurrect); **Keep** settles it.'],
   [`Open <a href="${URLS.aftershock}">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note by tapping either <strong>Keep … note</strong> button on the twin card.`, `Open [AFTERSHOCK](${URLS.aftershock}) (a second, different app on the same skeleton) and run the same cut, **Play the survey scene**, restore. Resolve the lost note by tapping either **Keep … note** button on the twin card.`],
   ['Optional: press <strong>Run shuffle test</strong> in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.', 'Optional: press **Run shuffle test** in either page\'s shuffle section to replay the on-screen ops in random causal orders in your browser.'],
 ];
