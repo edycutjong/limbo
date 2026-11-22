@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-21T23:53:19.317Z",
-  "commit": "72f99cb943e95221ceaa5b8419618ce4cf3098cc",
+  "date": "2026-11-22T06:48:21.496Z",
+  "commit": "b35ddeb1323b06c287a329a03ea4e2642c801870",
   "tree_dirty": false,
   "machine": "Apple M1 Max, darwin 27.2.0",
   "node": "v22.22.0",
@@ -25,19 +25,25 @@
       "name": "Stage 1 gate integrity",
       "cmd": "pnpm gate",
       "ok": true,
-      "seconds": 0.3
+      "seconds": 0.2
+    },
+    {
+      "name": "Stage 1 /judge page and JUDGE.md match the committed measurements",
+      "cmd": "node kit/scripts/judge-build.mjs --check",
+      "ok": true,
+      "seconds": 0.1
     },
     {
       "name": "Stage 1 tests + 100% coverage",
       "cmd": "pnpm test:coverage",
       "ok": true,
-      "seconds": 114.9
+      "seconds": 94.6
     },
     {
       "name": "Stage 2 gitleaks (full history)",
       "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
       "ok": true,
-      "seconds": 1.5
+      "seconds": 0.9
     },
     {
       "name": "Stage 2 pnpm audit (shipped deps)",
@@ -46,10 +52,17 @@
       "seconds": 0.5
     },
     {
+      "name": "Stage 2 pnpm audit (all deps, advisory)",
+      "cmd": "pnpm audit --audit-level=high",
+      "ok": false,
+      "seconds": 1.4,
+      "advisory": true
+    },
+    {
       "name": "Stage 3 build",
       "cmd": "pnpm build",
       "ok": true,
-      "seconds": 3.3
+      "seconds": 2.3
     },
     {
       "name": "Stage 3 bundle budget",
@@ -58,14 +71,20 @@
       "seconds": 0
     },
     {
+      "name": "Stage 3 landing hero bundle fresh",
+      "cmd": "node kit/scripts/site-hero.mjs --check",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
       "name": "Stage 4 e2e",
       "cmd": "pnpm e2e:ci",
       "ok": true,
-      "seconds": 53.1
+      "seconds": 46.8
     }
   ],
   "unit": {
-    "passed": 1393,
+    "passed": 1399,
     "skipped": 9
   },
   "coverage": {
@@ -75,7 +94,7 @@
     "lines": 100
   },
   "e2e": {
-    "passed": 24,
+    "passed": 26,
     "skipped": 2
   }
 }

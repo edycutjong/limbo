@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-22T06:44:56.706Z",
+  "commit": "40b8394ebb43030614dbd02389df65db96cf8841",
+  "tree_dirty": false,
+  "machine": "Apple M1 Max, darwin 27.2.0",
+  "node": "v22.22.0",
+  "pnpm": "10.34.5",
+  "stages_skipped": [],
+  "note": "Stage 5 (Lighthouse, advisory) and Stage 6 (deploy gate) run only on GitHub Actions",
+  "all_passed": false,
+  "steps": [
+    {
+      "name": "Stage 1 typecheck",
+      "cmd": "pnpm typecheck",
+      "ok": true,
+      "seconds": 3.8
+    },
+    {
+      "name": "Stage 1 /.kiro root check",
+      "cmd": "pnpm kiro:check",
+      "ok": true,
+      "seconds": 0.3
+    },
+    {
+      "name": "Stage 1 gate integrity",
+      "cmd": "pnpm gate",
+      "ok": true,
+      "seconds": 0.3
+    },
+    {
+      "name": "Stage 1 /judge page and JUDGE.md match the committed measurements",
+      "cmd": "node kit/scripts/judge-build.mjs --check",
+      "ok": false,
+      "seconds": 0.1
+    },
+    {
+      "name": "Stage 1 tests + 100% coverage",
+      "cmd": "pnpm test:coverage",
+      "ok": true,
+      "seconds": 103.4
+    },
+    {
+      "name": "Stage 2 gitleaks (full history)",
+      "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
+      "ok": true,
+      "seconds": 1.5
+    },
+    {
+      "name": "Stage 2 pnpm audit (shipped deps)",
+      "cmd": "pnpm audit --prod --audit-level=high",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 2 pnpm audit (all deps, advisory)",
+      "cmd": "pnpm audit --audit-level=high",
+      "ok": false,
+      "seconds": 0.8,
+      "advisory": true
+    },
+    {
+      "name": "Stage 3 build",
+      "cmd": "pnpm build",
+      "ok": true,
+      "seconds": 2.6
+    },
+    {
+      "name": "Stage 3 bundle budget",
+      "cmd": "node kit/scripts/bundle-budget.mjs",
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "name": "Stage 3 landing hero bundle fresh",
+      "cmd": "node kit/scripts/site-hero.mjs --check",
+      "ok": false,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 4 e2e",
+      "cmd": "pnpm e2e:ci",
+      "ok": true,
+      "seconds": 47.8
+    }
+  ],
+  "unit": {
+    "passed": 1399,
+    "skipped": 9
+  },
+  "coverage": {
+    "statements": 100,
+    "branches": 100,
+    "functions": 100,
+    "lines": 100
+  },
+  "e2e": {
+    "passed": 26,
+    "skipped": 2
+  }
+}
