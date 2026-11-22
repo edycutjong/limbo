@@ -35,6 +35,8 @@ const tally = {
   spec_sessions_numbered_task: tasks.filter((s) => /^\d+(\.\d+)*$/.test(String(s.task))).length,
   spec_sessions_authoring: tasks.filter((s) => s.task === 'spec').length,
   spec_sessions_other: tasks.filter((s) => !/^\d+(\.\d+)*$/.test(String(s.task)) && s.task !== 'spec').length,
+  // follow-ups that re-ran a numbered task (`5.5-rev`, `5.6-rev-rpc`, ...)
+  spec_sessions_rerun: tasks.filter((s) => /^\d+(\.\d+)*-rev/.test(String(s.task))).length,
   bootstrap_sessions: kiro.length - tasks.length - kitRevisions,
   spec_dirs: specDirs.size,
   kit_revision_sessions: kitRevisions,
@@ -63,6 +65,8 @@ const tally = {
   mcp_sessions: [...new Set(hooks.filter((h) => h.hook === 'mcp-log').map((h) => h.session_id))].length,
   total_commits: commits,
   first_commit: first,
+  ab_sessions: ab.runs.length,
+  ab_credits: Math.round(ab.runs.reduce((a, r) => a + (r.credits || 0), 0) * 100) / 100,
   ab_keys: Object.keys(ab),
 };
 writeFileSync('evidence/kiro/tally.json', JSON.stringify(tally, null, 2) + '\n');
