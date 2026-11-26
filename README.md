@@ -198,15 +198,21 @@ in-page link, or through a dev-only test relay in the e2e suite.
 
 ## 🧪 Testing & CI
 
-- `pnpm test:coverage` runs everything below under a **100% threshold** (lines, statements, functions, branches) on `skeleton/` and each app's
-  op, model and action modules: **1,399 tests pass, 9 skipped, 100% coverage** (`pnpm test` alone: 1,040 unit and component tests in 103 files;
-  `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **26 Playwright tests pass** (2 skipped), including `/judge` with no credentials.
-  `pnpm typecheck` is clean. Steps and expected output: [`DEMO.md`](DEMO.md). The exclusions from the coverage gate (entry points, workers, views) and their
-  reasons are in [`vitest.config.ts`](vitest.config.ts).
-- **CI:** [`ci.yml`](.github/workflows/ci.yml) has six stages: Quality, Security (gitleaks, `pnpm audit`), Build with a bundle budget and a landing-hero freshness check, E2E, Performance
-  (Lighthouse, advisory) and a Deploy Gate; plus CodeQL, a conventional-commit release workflow and grouped monthly Dependabot with no major bumps. A check fails the build if
-  `/.kiro` is ignored or empty. GitHub Actions on this private repo did not start (account billing limit), so the Stage 1-4 steps ran locally, including the `/judge` mirror check and the advisory full audit (Lighthouse and the Deploy Gate run only on GitHub Actions):
-  [`evidence/ci/`](evidence/ci/) (`node kit/scripts/ci-local.mjs`).
+- `pnpm test:coverage` runs everything below under a **100% threshold** (lines, statements, functions, branches; Vitest 4's AST-aware v8 coverage) on
+  `skeleton/` and each app's op, model and action modules: **1,407 tests pass, 9 skipped, 100% coverage** (`pnpm test` alone: 1,048 unit and component
+  tests in 105 files; `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **26 Playwright tests pass** (2 skipped), including
+  `/judge` with no credentials. `pnpm typecheck` is clean and `pnpm lint` passes on all 18 op files. Steps and expected output: [`DEMO.md`](DEMO.md).
+  The exclusions from the coverage gate (entry points, workers, views) and their reasons are in [`vitest.config.ts`](vitest.config.ts).
+- **CI/CD: six GitHub Actions workflows, every check blocking.**
+  [`ci.yml`](.github/workflows/ci.yml): typecheck, op lint, the `/.kiro` root and gate-integrity checks, the `/judge` mirror check, the full suite at 100%
+  coverage, both builds with a bundle budget and a landing-hero freshness check (a check fails the build if `/.kiro` is ignored or empty).
+  [`e2e.yml`](.github/workflows/e2e.yml): Playwright. [`codeql.yml`](.github/workflows/codeql.yml): code scanning of the TypeScript and of the workflows.
+  [`security.yml`](.github/workflows/security.yml): gitleaks over the full history, `pnpm audit` (shipped dependencies at any severity, everything at
+  moderate and above), dependency review on pull requests. [`lighthouse.yml`](.github/workflows/lighthouse.yml): Lighthouse CI, median of 3 desktop runs,
+  on both app builds and the landing and `/judge` pages (performance ≥ 0.9, accessibility ≥ 0.95, LCP ≤ 2.5 s, CLS ≤ 0.1).
+  [`release.yml`](.github/workflows/release.yml): a semver tag and GitHub release from Angular commit messages, only after a green CI run on `main`.
+  Dependabot groups npm and Actions updates weekly. Deploys are run by hand from the Vercel CLI; no workflow deploys. A local run of the same checks,
+  with machine and versions, is committed as a receipt: [`evidence/ci/`](evidence/ci/) (`node kit/scripts/ci-local.mjs`).
 - **Built during the submission period.** First commit: 2026-11-15 (`git log --reverse`). The period opened 2026-10-30.
   **Pre-existing code: none.** Libraries: Yjs, y-indexeddb, React, Vite, vite-plugin-pwa, fast-check, Vitest, Playwright.
 - Offline claims are provisional; convergence is measured, not proven.

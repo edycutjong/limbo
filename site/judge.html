@@ -82,8 +82,6 @@
     <li>No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op's declared rule picks one claimant deterministically and the other user sees a twin ghost.</li>
     <li>The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).</li>
     <li>AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.</li>
-    <li>GitHub Actions did not run on the private repo (account billing limit). The Stage 1 to 4 steps of the CI ran locally instead (evidence/ci/); Lighthouse and the Deploy Gate have only the workflow file behind them.</li>
-    <li>The full pnpm audit lists 2 critical and 7 moderate findings, all in test and build tooling (vitest and its helpers, a glob/minimatch chain under vite-plugin-pwa); fixing them needs a major upgrade (evidence/ci/audit-all.txt). Shipped dependencies have no high or critical findings (pnpm audit --prod --audit-level=high).</li>
   </ul>
 
   <h2>Links</h2>
