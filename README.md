@@ -1,14 +1,16 @@
 <div align="center">
-  <img src="docs/assets/icon.svg" alt="LIMBO icon" width="144">
+  <img src="docs/assets/icon-animated.svg" alt="LIMBO icon: a tent and its cyanotype ghost twin fog over, a queued edit crosses, the fog lifts and a FIXED seal lands." width="144">
   <h1>LIMBO 🌫️</h1>
   <p><em>The signal died at the lake. The conflicts came back as ghosts.</em></p>
-  <p><strong>A shared list breaks when the signal does, and last-write-wins quietly drops an edit.</strong> LIMBO is a local-first skeleton where every op declares how it merges, so an item deleted while it was edited comes back as a ghost twin. Built: <code>skeleton/</code>, <code>apps/basecamp/</code>, <code>apps/aftershock/</code>, and the <code>/.kiro</code> kit under which Kiro built them.</p>
   <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two replicas, drawn as phones, fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
+
+  <p><strong>A shared list breaks when the signal does, and last-write-wins quietly drops an edit.</strong> LIMBO is a local-first skeleton where every op declares how it merges, so an item deleted while it was edited comes back as a ghost twin. Built: <code>skeleton/</code>, <code>apps/basecamp/</code>, <code>apps/aftershock/</code>, and the <code>/.kiro</code> kit under which Kiro built them.</p>
 
   <br/>
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
   [![For judges](https://img.shields.io/badge/For_judges-the_judge_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
+  [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://limbo.edycu.dev/deck/)
   [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
 
   <br/>
@@ -146,6 +148,43 @@ Measured by `node kit/scripts/readme-tally.mjs` into [`evidence/lean.json`](evid
 non-blank, non-comment TS/TSX outside tests and `limbo/test/` (the command is in `evidence/budget-basecamp-baseline.md`). Wider counts: 24 production
 files (23 TS/TSX and 1 CSS), 2,520 non-blank TS/TSX lines (2,297 excluding comment-only lines; both include test helpers), 34 test files beside them.
 The spec first set 1,800 lines; the owner restated it to 2,400 on 2026-11-21 when the Limbo layer landed. We are inside the restated budget and over the original one.
+
+### Attacks defeated
+Convergence alone passes ops that converge on the wrong answer, so the kit ships 15 deliberately wrong ops in [`kit/props/bad/`](kit/props/bad/).
+Each must be killed by a named property or golden history, or the suite fails
+([`kit/props/mutants.props.test.ts:40`](kit/props/mutants.props.test.ts), run by `pnpm props` in CI).
+
+| Wrong op (fixture) | What it gets wrong | Must be killed by (one of) |
+|---|---|---|
+| `tick-toggle` | a tick flips the field; two equal ticks cancel and every replica agrees on the wrong value | `intent:set` |
+| `lww-wallclock` | the winner is picked by each replica's own clock, so skewed clocks disagree | `intent:set`, `convergence` |
+| `qty-read-modify-write` | writes `seen + 1` instead of a delta, so concurrent adds are lost | `intent:delta` |
+| `delete-wins` | an unobserved delete beats a concurrent edit; the edit is lost with no twin | `intent:life` |
+| `resolve-noop` | the **Keep** of a twin is dropped, so a deleted item never comes back | `intent:life` |
+| `claim-both` | every claimant wins a one-unit item: two people hold one stove | `intent:claim` |
+| `claim-max-stamp` | the highest stamp wins, so a claim that had seen another beats it | `intent:claim` |
+| `split-float` | each share is rounded on its own and the shares drift from the total | `intent:split`, golden `G20` |
+| `split-first-member` | the remainder cent goes to the first member listed, not by id order | golden `G20` |
+| `severity-lww` | a later, lower severity report overwrites a higher one | `intent:max` |
+| `move-reinsert` | a move inserts without removing, so concurrent moves duplicate an item | `intent:move`, `convergence` |
+| `move-ignore` | converges and loses nothing, but ignores every move | `intent:move` |
+| `arrival-order` | the last op to arrive wins; replicas diverge | `convergence` |
+| `apply-append` | applying the same op twice changes the state | raw idempotence |
+| `apply-append-inplace` | mutates the input in place, hiding a double apply | raw idempotence |
+
+### Honest limits (12)
+1. Convergence is measured (10,000 orderings of 3 replicas, property-tested), not proven.
+2. There is no cross-device relay. The two replicas sync through an in-page link, or a dev-only test relay in the e2e suite.
+3. DevTools "offline" does not cut that in-page link, so the UI labels it as simulated.
+4. Claims under partition are provisional: two offline people can both claim the last stove; one wins on reconnect and the other is told.
+5. The pre-registered A/B pilot found no measurable effect of the kit on Kiro's correctness (0 of 10 held-out failures in both arms, p = 1).
+6. In that pilot all 8 Stop blocks in the kit arm were false alarms, and 2 of 10 kit-arm runs edited the vacuity guard; the fix is not re-piloted.
+7. The Agent Stop gate blocked Kiro 2 times in 194 sessions, and one of those was a fault seeded on purpose.
+8. 9 of 124 product commits were made outside Kiro; [`share.json`](evidence/kiro/share.json) lists them.
+9. The skeleton is inside its restated budget (2,400 lines) and over the original one (1,800).
+10. All builds ran headless through the Kiro CLI; Spec Correctness and the Agent Hooks panel (IDE only) were not used.
+11. The MCP server was used lightly: 8 calls from one Kiro session, and `explain_trace` never.
+12. AFTERSHOCK runs on demo data; no field use is claimed. The landing page is static, with no service worker; only the two apps work offline.
 
 
 ## 🚀 Getting Started
