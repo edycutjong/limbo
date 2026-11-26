@@ -26,6 +26,7 @@
   [![CodeQL](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml)
   [![Security](https://github.com/edycutjong/limbo/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/security.yml)
   [![Lighthouse](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml)
+  [![Deploy](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 
 </div>
@@ -33,6 +34,9 @@
 ---
 
 ## 📸 See it in Action
+
+<p align="center"><img src="docs/broll/ghost-twin.gif" alt="BASECAMP live, two replicas side by side (REPLICA A, Sari; REPLICA B, Budi). Cut link fogs both cards. A scripted scene ticks the tent on A and deletes it on B, and both claim the last stove. Restore link lifts the fog: the tent returns on both cards as a TWIN card reading 'Budi deleted this while Sari ticked it · rule: resurrect', and the stove shows one claimant. Keep on A and OK on B land a FIXED stamp on both replicas; Reset demo starts it again." width="100%"></p>
+<p align="center"><sub>Live capture of <a href="https://basecamp.limbo.edycu.dev/?replicas=2">basecamp.limbo.edycu.dev</a> on 2026-11-27, real time. Cut, Restore, Keep and OK are real clicks; the scene and Reset demo buttons sit below the frame and are pressed by the capture script. The caption rail and cursor are the only overlays.</sub></p>
 
 **For people whose shared list breaks when the signal does, and for the builders who need offline merges that do not diverge.**
 
@@ -87,6 +91,10 @@ picks one claimant deterministically when they reconnect, and the other person i
 Every box in the figure names a real path. The gate is the loop at the top: a Kiro session fires the hooks, the hooks run the properties, and `stop-gate` refuses "done" (at most 3 times per session) while one fails.
 
 ### Skeleton Crew: one skeleton, two apps
+
+<p align="center"><img src="docs/broll/aftershock.gif" alt="AFTERSHOCK live, the second app on the same skeleton: a sector grid on two replicas, marked DEMO DATA. Cut link fogs both. A scripted survey has Sari report sector C3 damaged with 2 people on A and Budi report it unsafe with 3 on B. Restore link: both grids show C3 UNSAFE 5 and '5 reported, Sari 2, Budi 3' (the worse report wins, both counts are kept). One tap on the note twin below the frame lands a FIXED stamp on both replicas." width="100%"></p>
+<p align="center"><sub>AFTERSHOCK, the second app: the same fog, twin and FIXED stamp from <code>skeleton/</code>, with its own ops (a severity report <code>commutes</code>, so the worse report wins; each surveyor's count is kept). Live capture of <a href="https://aftershock.limbo.edycu.dev/?replicas=2">aftershock.limbo.edycu.dev</a>, real time, demo data.</sub></p>
+
 - `skeleton/` is the template: op layer and named merges (`core/`), replica, links and local store (`sync/`), and the Limbo visual
   layer, fog, twin, inspector (`limbo/`).
 - `apps/basecamp/` and `apps/aftershock/` are the two apps. Each supplies five things: a model, ops, a seed script, views, a config
@@ -112,6 +120,9 @@ Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro
   **blocked the agent from finishing 2 times**, and the op linter failed 2 saves. The first block was unplanned: in merge-kit task 9.5 the
   shared property suite ran the new `item.move` op without its own payload generator; Kiro wired the per-op options into the suite and the
   properties passed (commit `651730d`). The second was a wall-clock fault seeded on purpose to prove the gate fires; Kiro removed it.
+
+<p align="center"><img src="docs/broll/stop-gate.gif" alt="Slide 10 of the live pitch deck, 'The gate said: not done.', replaying logged Kiro session sess_545bc98d line by line: PreTaskExec, op-scaffold, op-lint pass, guard-shell allows pnpm test and pnpm props; three FAIL lines for op item.tick (convergence, replay equivalence, idempotence); Stop, stop-gate, BLOCK 1/3; Kiro's diagnosis that item.tick stores Date.now() in its state; op-lint pass; PostTaskExec props-after-task pass." width="100%"></p>
+<p align="center"><sub>The seeded block, replayed: slide 10 of <a href="https://limbo.edycu.dev/deck/">the deck</a>, re-set from <code>evidence/kiro/hooks.jsonl</code> (session <code>sess_545bc98d</code>) and stepped with the deck's own keys. The <code>Date.now()</code> fault was seeded on purpose (<code>cca30a0</code>); the unplanned block is <code>651730d</code>.</sub></p>
 
 | `.kiro/` file | Job | Fired |
 |---|---|---|
