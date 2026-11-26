@@ -1,8 +1,9 @@
 name: Lighthouse
 
-# Lighthouse CI on the throttled mobile profile, three runs per page (median), against each production build and the
-# static landing site. Category scores and Core Web Vitals in lighthouserc.json are blocking. The scoped @lhci/cli is
-# pinned and fetched by npx (it is not a project dependency); never the unscoped `lhci` package.
+# Lighthouse CI on the desktop profile, three runs per page (median), against each production build and the static
+# landing site. Category scores and Core Web Vitals in lighthouserc.json are blocking. Desktop, because the mobile
+# profile's 4x CPU throttle on a shared 2-vCPU runner swung Total Blocking Time from 0 to 534 ms between identical runs.
+# The scoped @lhci/cli is pinned and fetched by npx (it is not a project dependency); never the unscoped `lhci` package.
 on:
   push:
     branches: [main]

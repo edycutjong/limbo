@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "numberOfRuns": 3,
-      "settings": { "chromeFlags": "--no-sandbox --headless=new" }
+      "settings": { "preset": "desktop", "chromeFlags": "--no-sandbox --headless=new" }
     },
     "assert": {
       "aggregationMethod": "median-run",
