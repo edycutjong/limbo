@@ -1,0 +1,207 @@
+name: Deploy
+
+# Production deploy of the three static Vercel projects (BASECAMP, AFTERSHOCK, and the site: landing, /judge, /deck), only after
+# the CI run for that push to main has succeeded and only if that commit is still the tip of main; then a smoke test of the live URLs
+# and the live Playwright suite. Each project is built here and shipped prebuilt (vercel pull -> vercel build --prod ->
+# vercel deploy --prebuilt --prod), so what ships is exactly what this job built from the commit CI judged. The Vercel CLI is pinned
+# to 66.2.0, the version Vercel's own build machine used for the hand deploys this workflow replaces: a dry run of these steps on
+# 6799ecb rebuilt both apps byte-for-byte as served (index.html, sw.js, manifest.webmanifest). The Vercel projects have no Git
+# connection, so this workflow is the only path to production. workflow_dispatch redeploys the dispatched commit by hand.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false # never cancel a deploy half way; a newer run waits its turn
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: Green CI on the tip of main
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.tip.outputs.sha }}
+      deploy: ${{ steps.tip.outputs.deploy }}
+    steps:
+      - name: Deploy only the commit CI judged, and only while it is still the tip of main
+        id: tip
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          SHA: ${{ github.event.workflow_run.head_sha || github.sha }} # passed as data, never spliced into the script
+        run: |
+          set -euo pipefail
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "refusing sha '$SHA'"; exit 1; }
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          if [ "$EVENT" = workflow_dispatch ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          TIP=$(gh api "repos/$REPO/commits/main" --jq .sha)
+          if [ "$TIP" = "$SHA" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::main moved on to $TIP; the CI run for that commit deploys it, so $SHA is not deployed."
+          fi
+
+  deploy:
+    name: Deploy ${{ matrix.name }}
+    needs: gate
+    if: needs.gate.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false # the three projects are independent; never cancel one mid-deploy because another failed
+      matrix:
+        include:
+          - name: BASECAMP
+            env_name: production-basecamp
+            project_secret: VERCEL_PROJECT_ID_BASECAMP
+            url: https://basecamp.limbo.edycu.dev
+          - name: AFTERSHOCK
+            env_name: production-aftershock
+            project_secret: VERCEL_PROJECT_ID_AFTERSHOCK
+            url: https://aftershock.limbo.edycu.dev
+          - name: site (landing, /judge, /deck)
+            env_name: production-site
+            project_secret: VERCEL_PROJECT_ID_SITE
+            url: https://limbo.edycu.dev
+    environment:
+      name: ${{ matrix.env_name }}
+      url: ${{ matrix.url }}
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.project_secret] }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      LIVE: ${{ matrix.url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install the Vercel CLI (pinned)
+        run: npm install --global vercel@66.2.0
+      - name: Pull the production project settings (root directory, framework, build command)
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - name: Build (vercel build runs pnpm install and the project's build under its root directory)
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+      - name: The build holds the pages this project serves
+        run: |
+          set -euo pipefail
+          out=.vercel/output/static
+          test -s "$out/index.html"
+          if [ -f "$out/judge.html" ]; then
+            # the site: /judge must ship exactly as committed (CI already checked it against evidence/ with judge-build --check)
+            cmp "$out/judge.html" site/judge.html
+            test -s "$out/deck/index.html"
+          else
+            # an app: the offline shell ships with it
+            test -s "$out/sw.js"
+            test -s "$out/manifest.webmanifest"
+          fi
+          echo "files: $(find "$out" -type f | wc -l)"
+      - name: Deploy the prebuilt output to production
+        id: deploy
+        run: |
+          set -euo pipefail
+          url=$(vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN")
+          echo "deployment=$url" >> "$GITHUB_OUTPUT"
+          echo "Deployed $url -> $LIVE"
+      - name: Production now serves this build
+        env:
+          NAME: ${{ matrix.name }}
+          DEPLOYMENT: ${{ steps.deploy.outputs.deployment }}
+          SHA: ${{ needs.gate.outputs.sha }}
+        run: |
+          set -euo pipefail
+          out=.vercel/output/static
+          serves() { # $1 = path on the live domain, $2 = the built file it must match byte for byte
+            for i in $(seq 1 24); do
+              if curl -fsS -H 'Cache-Control: no-cache' "$LIVE$1?deploy=$GITHUB_RUN_ID-$i" -o live.html && cmp -s live.html "$2"; then
+                echo "$LIVE$1 serves the new build (try $i)"; return 0
+              fi
+              sleep 5
+            done
+            echo "::error::$LIVE$1 does not serve the build after 2 minutes"; return 1
+          }
+          serves / "$out/index.html"
+          if [ -f "$out/judge.html" ]; then serves /judge "$out/judge.html"; fi
+          {
+            echo "### $NAME"
+            echo
+            echo "- Vercel deployment: $DEPLOYMENT"
+            echo "- Live: $LIVE serves the build of \`$SHA\` byte for byte"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  smoke:
+    name: Smoke test the live URLs
+    needs: [gate, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+          persist-credentials: false
+      - name: Five live URLs answer 200, and /judge shows the committed test count
+        run: |
+          set -euo pipefail
+          fail=0
+          { echo "### Live smoke test"; echo; echo "| URL | status |"; echo "|---|---:|"; } >> "$GITHUB_STEP_SUMMARY"
+          for u in https://limbo.edycu.dev/ https://limbo.edycu.dev/judge https://limbo.edycu.dev/deck/ \
+                   https://basecamp.limbo.edycu.dev/ https://aftershock.limbo.edycu.dev/; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 5 "$u")
+            echo "$u -> $code"
+            echo "| $u | $code |" >> "$GITHUB_STEP_SUMMARY"
+            [ "$code" = 200 ] || fail=1
+          done
+          want=$(node -p "require('./evidence/ci/latest.json').unit.passed.toLocaleString('en-US')")
+          if curl -fsS "https://limbo.edycu.dev/judge" | grep -qF "${want} unit, component and property tests pass"; then
+            echo "/judge shows ${want} tests (evidence/ci/latest.json)"
+            echo >> "$GITHUB_STEP_SUMMARY"; echo "/judge shows **${want}** tests, as in \`evidence/ci/latest.json\`." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error::/judge does not show ${want} tests"; fail=1
+          fi
+          exit "$fail"
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install Chromium and its system dependencies
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Live Playwright suite on the deployed URLs (judge flow, offline reload, sw.js revalidation on both apps; /judge with no credentials)
+        env:
+          LIMBO_LIVE_BASECAMP: https://basecamp.limbo.edycu.dev
+          LIMBO_LIVE_AFTERSHOCK: https://aftershock.limbo.edycu.dev
+          LIMBO_LIVE_LANDING: https://limbo.edycu.dev
+        run: pnpm exec playwright test --project=live --project=live-judge
+      - name: Upload the Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-live
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7

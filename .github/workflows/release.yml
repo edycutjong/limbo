@@ -2,7 +2,7 @@ name: Release
 
 # A release is cut from Angular-convention commit messages, but only after the CI run for that push to main has succeeded
 # (a red main never gets a tag; the landing's version chip reads releases/latest). feat bumps minor, fix/perf bump patch;
-# docs, ci, build, test and chore cut nothing. Nothing deploys from here (deploys are done by hand from the Vercel CLI),
+# docs, ci, build, test and chore cut nothing. Nothing deploys from here (deploy.yml deploys after the same green CI run),
 # so a tag never ships code by itself. workflow_dispatch is a manual cut by the owner.
 on:
   workflow_run:
