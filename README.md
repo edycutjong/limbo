@@ -75,7 +75,9 @@ picks one claimant deterministically when they reconnect, and the other person i
 
 ## 🏗️ Architecture & Tech Stack
 
-<p align="center"><img src="docs/assets/architecture.svg" alt="Two apps declare ops on one skeleton: op layer with named merges, replica and link, local Yjs and IndexedDB store, Limbo visual layer. The kit property gate checks every op; the .kiro rig runs the kit." width="100%"></p>
+<p align="center"><img src="docs/architecture.png" alt="LIMBO architecture as built. Build time: the Kiro CLI fires 8 hooks that run the property gate (kit/props), which checks every op of both apps and blocks the agent's 'done' while a property fails. Product: BASECAMP and AFTERSHOCK declare ops on the skeleton, a Limbo UI layer, replica and link, a local Yjs op log and an op layer with six named merges. Ship: a vite-plugin-pwa offline shell deployed by hand to three static Vercel projects; GitHub Actions run the checks." width="100%"></p>
+
+Every box in the figure names a real path. The gate is the loop at the top: a Kiro session fires the hooks, the hooks run the properties, and `stop-gate` refuses "done" (at most 3 times per session) while one fails.
 
 ### Skeleton Crew: one skeleton, two apps
 - `skeleton/` is the template: op layer and named merges (`core/`), replica, links and local store (`sync/`), and the Limbo visual
