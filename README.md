@@ -82,7 +82,7 @@ picks one claimant deterministically when they reconnect, and the other person i
 
 ## 🏗️ Architecture & Tech Stack
 
-<p align="center"><img src="docs/architecture.png" alt="LIMBO architecture as built. Build time: the Kiro CLI fires 8 hooks that run the property gate (kit/props), which checks every op of both apps and blocks the agent's 'done' while a property fails. Product: BASECAMP and AFTERSHOCK declare ops on the skeleton, a Limbo UI layer, replica and link, a local Yjs op log and an op layer with six named merges. Ship: a vite-plugin-pwa offline shell deployed by hand to three static Vercel projects; GitHub Actions run the checks." width="100%"></p>
+<p align="center"><img src="docs/architecture.png" alt="LIMBO architecture as built. Build time: the Kiro CLI fires 8 hooks that run the property gate (kit/props), which checks every op of both apps and blocks the agent's 'done' while a property fails. Product: BASECAMP and AFTERSHOCK declare ops on the skeleton, a Limbo UI layer, replica and link, a local Yjs op log and an op layer with six named merges. Ship: a vite-plugin-pwa offline shell, built in CI and deployed to three static Vercel projects by the Deploy workflow after a green CI run; GitHub Actions run the checks." width="100%"></p>
 
 Every box in the figure names a real path. The gate is the loop at the top: a Kiro session fires the hooks, the hooks run the properties, and `stop-gate` refuses "done" (at most 3 times per session) while one fails.
 
@@ -208,7 +208,7 @@ in-page link, or through a dev-only test relay in the e2e suite.
   tests in 105 files; `pnpm props`: 359 property tests pass, 9 skipped, 22 files). `pnpm e2e:ci`: **26 Playwright tests pass** (2 skipped), including
   `/judge` with no credentials. `pnpm typecheck` is clean and `pnpm lint` passes on all 18 op files. Steps and expected output: [`DEMO.md`](DEMO.md).
   The exclusions from the coverage gate (entry points, workers, views) and their reasons are in [`vitest.config.ts`](vitest.config.ts).
-- **CI/CD: six GitHub Actions workflows, every check blocking.**
+- **CI/CD: seven GitHub Actions workflows, every check blocking.**
   [`ci.yml`](.github/workflows/ci.yml): typecheck, op lint, the `/.kiro` root and gate-integrity checks, the `/judge` mirror check, the full suite at 100%
   coverage, both builds with a bundle budget and a landing-hero freshness check (a check fails the build if `/.kiro` is ignored or empty).
   [`e2e.yml`](.github/workflows/e2e.yml): Playwright. [`codeql.yml`](.github/workflows/codeql.yml): code scanning of the TypeScript and of the workflows.
@@ -216,7 +216,11 @@ in-page link, or through a dev-only test relay in the e2e suite.
   moderate and above), dependency review on pull requests. [`lighthouse.yml`](.github/workflows/lighthouse.yml): Lighthouse CI, median of 3 desktop runs,
   on both app builds and the landing and `/judge` pages (performance ≥ 0.9, accessibility ≥ 0.95, LCP ≤ 2.5 s, CLS ≤ 0.1).
   [`release.yml`](.github/workflows/release.yml): a semver tag and GitHub release from Angular commit messages, only after a green CI run on `main`.
-  Dependabot groups npm and Actions updates weekly. Deploys are run by hand from the Vercel CLI; no workflow deploys. A local run of the same checks,
+  [`deploy.yml`](.github/workflows/deploy.yml): continuous deployment of the three Vercel projects after that same green CI run, and only while
+  that commit is still the tip of `main`. Each project is built in the job and shipped prebuilt (`vercel pull`, `vercel build --prod`,
+  `vercel deploy --prebuilt --prod`, CLI pinned); each leg waits until its live domain serves the new build byte for byte, then a smoke job checks
+  the five live URLs, checks that `/judge` shows the test count in `evidence/ci/latest.json`, and runs the live Playwright suite against the deployed apps.
+  Dependabot groups npm and Actions updates weekly. A local run of the same checks,
   with machine and versions, is committed as a receipt: [`evidence/ci/`](evidence/ci/) (`node kit/scripts/ci-local.mjs`).
 - **Built during the submission period.** First commit: 2026-11-15 (`git log --reverse`). The period opened 2026-10-30.
   **Pre-existing code: none.** Libraries: Yjs, y-indexeddb, React, Vite, vite-plugin-pwa, fast-check, Vitest, Playwright.
