@@ -7,7 +7,6 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const json = (f) => JSON.parse(readFileSync(f, 'utf8'));
 const conv = json('evidence/convergence/full-2026-11-22.json');
 const tally = json('evidence/kiro/tally.json');
-const share = json('evidence/kiro/share.json');
 const ci = json('evidence/ci/latest.json');
 const n = (x) => x.toLocaleString('en-US');
 const failures = Object.values(conv.failuresPerProperty).reduce((a, b) => a + b, 0);

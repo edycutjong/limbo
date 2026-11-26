@@ -2,7 +2,7 @@
 // ab-report: turn evidence/kiro/ab/runs.jsonl into results.json + summary.md, exactly as PREREG.md registers
 // (fail counts per arm per op, 95% Wilson intervals, two-sided Fisher exact p on the pooled arms, the class rule).
 // Orchestration tooling (claude-direct). Usage: node kit/scripts/ab-report.mjs
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
