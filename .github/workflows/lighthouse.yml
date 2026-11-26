@@ -1,0 +1,67 @@
+name: Lighthouse
+
+# Lighthouse CI on the throttled mobile profile, three runs per page (median), against each production build and the
+# static landing site. Category scores and Core Web Vitals in lighthouserc.json are blocking. The scoped @lhci/cli is
+# pinned and fetched by npx (it is not a project dependency); never the unscoped `lhci` package.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  LHCI_VERSION: 0.16.1
+
+jobs:
+  lighthouse:
+    name: Lighthouse (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: basecamp
+            dir: apps/basecamp/dist
+            urls: --collect.url=http://localhost/index.html
+          - target: aftershock
+            dir: apps/aftershock/dist
+            urls: --collect.url=http://localhost/index.html
+          - target: landing and judge
+            dir: site
+            urls: --collect.url=http://localhost/index.html --collect.url=http://localhost/judge.html
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build both apps
+        if: matrix.dir != 'site'
+        run: pnpm build
+      - name: Lighthouse CI (collect, assert, keep reports)
+        env:
+          DIST: ${{ matrix.dir }}
+          URLS: ${{ matrix.urls }}
+        run: |
+          # URLS holds one or more --collect.url flags, so word splitting is intended there.
+          # shellcheck disable=SC2086
+          npx --yes "@lhci/cli@${LHCI_VERSION}" autorun --config=lighthouserc.json "--collect.staticDistDir=${DIST}" $URLS
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ strategy.job-index }}
+          path: .lighthouseci/
+          retention-days: 7
+          if-no-files-found: ignore

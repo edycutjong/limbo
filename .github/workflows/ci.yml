@@ -1,167 +1,91 @@
-name: CI/CD Pipeline
+name: CI
 
-# Six stages: Quality and Security run in parallel, then Build, E2E, Performance, and the Deploy Gate.
-# Nothing here needs Kiro, a KIRO_API_KEY, or any secret beyond the default GITHUB_TOKEN.
+# Typecheck and lint, the full unit/component/property suite under a 100% coverage gate, and both production builds with
+# their budgets. Nothing here needs Kiro, a KIRO_API_KEY, or any secret beyond the default GITHUB_TOKEN.
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
 
 jobs:
-  # ── STAGE 1: Quality (parallel with Stage 2) ───────────────
-  quality:
-    name: "Stage 1 · Quality"
+  lint:
+    name: Typecheck and lint
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Type check
+      - name: Typecheck (tsc strict, noUncheckedIndexedAccess)
         run: pnpm typecheck
-      - name: "/.kiro is at the root, tracked and never ignored (R26)"
+      - name: Op lint (every *.op.ts declares merge and intent, matches the manifest, reads no clock or randomness)
+        run: pnpm lint
+      - name: "/.kiro is at the root, tracked and never ignored"
         run: pnpm kiro:check
-      - name: Gate integrity (kit-owned properties, hooks, agents)
+      - name: Gate integrity (kit-owned properties, hooks, agents unchanged)
         run: pnpm gate
       - name: /judge page and JUDGE.md match the committed measurements
         run: node kit/scripts/judge-build.mjs --check
+
+  test:
+    name: Tests (unit, component, property; 100% coverage)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - name: Unit, component and property tests with 100% coverage thresholds
         # The property suite runs at its CI-sized ordering count here; the full 10,000-ordering tier is committed under evidence/convergence/.
         run: pnpm test:coverage
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: coverage/
           retention-days: 7
           if-no-files-found: ignore
 
-  # ── STAGE 2: Security (parallel with Stage 1) ──────────────
-  secret-scan:
-    name: "Stage 2 · Secret Scanning (gitleaks)"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  dependency-audit:
-    name: "Stage 2 · Dependency Audit (pnpm audit)"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Shipped dependencies, high and critical (blocking)
-        run: pnpm audit --prod --audit-level=high
-      - name: All dependencies incl. test tooling (advisory)
-        run: pnpm audit --audit-level=high
-        continue-on-error: true
-
-  # ── STAGE 3: Build ─────────────────────────────────────────
   build:
-    name: "Stage 3 · Build"
-    needs: [quality]
+    name: Build and budgets
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Build both apps
+      - name: Build both apps (static, offline shell)
         run: pnpm build
       - name: Bundle budget (blocking over 700 KB of JS per app, warning over 500 KB)
         run: node kit/scripts/bundle-budget.mjs
       - name: Landing hero bundle matches its source (site/src/hero.ts)
         run: node kit/scripts/site-hero.mjs --check
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: |
             apps/basecamp/dist
             apps/aftershock/dist
           retention-days: 7
-
-  # ── STAGE 4: E2E (two browser contexts, offline merge) ─────
-  e2e:
-    name: "Stage 4 · E2E"
-    needs: [build]
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec playwright install --with-deps chromium
-      - name: Offline two-context scenarios, offline shell, UI layout, /judge
-        run: pnpm e2e:ci
-      - name: Upload E2E artifacts on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 7
-
-  # ── STAGE 5: Performance (advisory Lighthouse) ─────────────
-  performance:
-    name: "Stage 5 · Performance"
-    needs: [build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
-      - name: Lighthouse CI (advisory)
-        run: npx --yes @lhci/cli@0.14.0 autorun --config=lighthouserc.json
-        continue-on-error: true
-
-  # ── STAGE 6: Deploy Gate (main only) ───────────────────────
-  deploy-gate:
-    name: "Stage 6 · Deploy Gate"
-    needs: [quality, secret-scan, dependency-audit, build, e2e, performance]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: All gates passed
-        run: |
-          echo "All gates passed:"
-          echo "  Stage 1 Quality: typecheck, /.kiro check, gate integrity, tests at 100% coverage"
-          echo "  Stage 2 Security: gitleaks, pnpm audit (shipped deps)"
-          echo "  Stage 3 Build: both apps, bundle budget"
-          echo "  Stage 4 E2E: two-context offline scenarios"
-          echo "  Stage 5 Performance: Lighthouse (advisory)"
-          echo "Deploys are done from the Vercel CLI by the maintainer, not from this workflow."

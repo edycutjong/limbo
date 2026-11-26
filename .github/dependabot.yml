@@ -1,25 +1,35 @@
 version: 2
 updates:
+  # pnpm workspace: one lockfile at the root, a package.json per workspace package.
   - package-ecosystem: "npm"
     directories: ["/", "/skeleton", "/apps/basecamp", "/apps/aftershock", "/kit"]
     schedule:
-      interval: "monthly"
+      interval: "weekly"
+      day: "monday"
     open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build(deps)"
+      prefix-development: "build(deps-dev)"
     groups:
-      minor-and-patch:
+      dev-dependencies:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+      production-dependencies:
+        dependency-type: "production"
         update-types: ["minor", "patch"]
     ignore:
-      # Major bumps are framework migrations, not maintenance. They must be a deliberate, separate piece of work.
+      # Major version updates are migrations, not maintenance; they are a deliberate, separate piece of work.
+      # (Security updates are not affected by this rule.)
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
+      day: "monday"
     open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci(deps)"
     groups:
       actions:
         patterns: ["*"]
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]

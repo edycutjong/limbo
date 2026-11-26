@@ -11,6 +11,7 @@
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "node kit/scripts/op-lint-all.mjs",
     "site:hero": "node kit/scripts/site-hero.mjs",
     "test": "vitest run --project unit --project limbo",
     "props": "vitest run --project props",

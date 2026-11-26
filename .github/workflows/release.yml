@@ -1,24 +1,33 @@
-name: release
+name: Release
 
-# Follows the system recipe: a release is cut from commit messages, but only after the CI/CD Pipeline run for that push to main has
-# succeeded (a red main never gets a tag; the landing's version chip reads releases/latest). Nothing deploys from here (deploys are done
-# by hand from the Vercel CLI), so a tag never ships code by itself. workflow_dispatch is a manual cut by the owner.
+# A release is cut from Angular-convention commit messages, but only after the CI run for that push to main has succeeded
+# (a red main never gets a tag; the landing's version chip reads releases/latest). feat bumps minor, fix/perf bump patch;
+# docs, ci, build, test and chore cut nothing. Nothing deploys from here (deploys are done by hand from the Vercel CLI),
+# so a tag never ships code by itself. workflow_dispatch is a manual cut by the owner.
 on:
   workflow_run:
-    workflows: ["CI/CD Pipeline"]
+    workflows: ["CI"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 permissions:
-  contents: write # required to push the tag and create the Release
+  contents: read
 
 jobs:
   release:
+    name: Tag and release (after green CI)
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push')
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # required to push the tag and create the Release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # full history: we read commits since the last tag
           ref: ${{ github.event.workflow_run.head_sha || github.sha }} # tag exactly the commit CI judged
@@ -33,16 +42,16 @@ jobs:
           else
             RANGE="${LAST}..HEAD"; CUR="${LAST#v}"
           fi
-          LOG=$(git log --format=%B $RANGE)
+          LOG=$(git log --format=%B ${RANGE:+"$RANGE"})
           if [ -z "$(echo "$LOG" | tr -d '[:space:]')" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
 
           BUMP=none
           # here-strings, not `echo | grep -q`: grep -q exits early and pipefail would turn the SIGPIPE into a false negative
-          grep -qE '^(feat|fix|perf)(\(.+\))?!:|BREAKING CHANGE:' <<< "$LOG" && BUMP=major
-          [ "$BUMP" = none ] && grep -qE '^feat(\(.+\))?:' <<< "$LOG"        && BUMP=minor
-          [ "$BUMP" = none ] && grep -qE '^(fix|perf)(\(.+\))?:' <<< "$LOG"  && BUMP=patch
+          grep -qE '^(feat|fix|perf)(\(.+\))?!:|BREAKING CHANGE:' <<< "$LOG" && BUMP="major"
+          [ "$BUMP" = none ] && grep -qE '^feat(\(.+\))?:' <<< "$LOG"        && BUMP="minor"
+          [ "$BUMP" = none ] && grep -qE '^(fix|perf)(\(.+\))?:' <<< "$LOG"  && BUMP="patch"
           if [ "$BUMP" = none ]; then
             echo "No releasable commits since ${LAST:-the beginning}."
             echo "skip=true" >> "$GITHUB_OUTPUT"; exit 0
@@ -56,9 +65,11 @@ jobs:
           esac
           NEXT="v${MA}.${MI}.${PA}"
           echo "Bump: $BUMP  ${LAST:-none} -> $NEXT"
-          echo "next=$NEXT"  >> "$GITHUB_OUTPUT"
-          echo "bump=$BUMP"  >> "$GITHUB_OUTPUT"
-          echo "skip=false"  >> "$GITHUB_OUTPUT"
+          {
+            echo "next=$NEXT"
+            echo "bump=$BUMP"
+            echo "skip=false"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Tag and publish the release
         if: steps.ver.outputs.skip == 'false'
