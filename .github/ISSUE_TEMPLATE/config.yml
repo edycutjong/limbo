@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/edycutjong/limbo/security/advisories/new
+    about: Please report vulnerabilities privately, not in a public issue.
+  - name: The judge path (live apps, receipts, limits)
+    url: https://limbo.edycu.dev/judge
+    about: Start here to try both apps with no install, and to see what is and is not claimed.

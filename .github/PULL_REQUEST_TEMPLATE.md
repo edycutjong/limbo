@@ -5,7 +5,7 @@
 -
 
 ## Checklist
-- [ ] `pnpm typecheck` and `pnpm test:coverage` pass (100% coverage gate)
+- [ ] `pnpm typecheck`, `pnpm lint` and `pnpm test:coverage` pass (100% coverage gate)
 - [ ] `pnpm e2e:ci` passes
 - [ ] New or changed ops declare their merge rule and keep the convergence properties green (`pnpm props`)
 - [ ] Tests added or updated for the change
