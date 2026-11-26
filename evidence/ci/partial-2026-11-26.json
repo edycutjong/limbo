@@ -1,0 +1,100 @@
+{
+  "date": "2026-11-26T17:21:20.803Z",
+  "commit": "8b0df2c9d235a95ec0d7833a0f46b5c0016e236e",
+  "tree_dirty": false,
+  "machine": "Apple M1 Max, darwin 27.2.0",
+  "node": "v22.22.0",
+  "pnpm": "10.34.5",
+  "stages_skipped": [],
+  "note": "CodeQL and Lighthouse run only on GitHub Actions",
+  "all_passed": false,
+  "steps": [
+    {
+      "name": "Stage 1 typecheck",
+      "cmd": "pnpm typecheck",
+      "ok": true,
+      "seconds": 5.5
+    },
+    {
+      "name": "Stage 1 op lint",
+      "cmd": "pnpm lint",
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "name": "Stage 1 /.kiro root check",
+      "cmd": "pnpm kiro:check",
+      "ok": true,
+      "seconds": 0.3
+    },
+    {
+      "name": "Stage 1 gate integrity",
+      "cmd": "pnpm gate",
+      "ok": true,
+      "seconds": 0.2
+    },
+    {
+      "name": "Stage 1 /judge page and JUDGE.md match the committed measurements",
+      "cmd": "node kit/scripts/judge-build.mjs --check",
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "name": "Stage 1 tests + 100% coverage",
+      "cmd": "pnpm test:coverage",
+      "ok": false,
+      "seconds": 99.8
+    },
+    {
+      "name": "Stage 2 gitleaks (full history)",
+      "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 2 pnpm audit (shipped deps, any severity)",
+      "cmd": "pnpm audit --prod",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 2 pnpm audit (all deps, moderate and above)",
+      "cmd": "pnpm audit --audit-level=moderate",
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "name": "Stage 3 build",
+      "cmd": "pnpm build",
+      "ok": true,
+      "seconds": 2.4
+    },
+    {
+      "name": "Stage 3 bundle budget",
+      "cmd": "node kit/scripts/bundle-budget.mjs",
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "name": "Stage 3 landing hero bundle fresh",
+      "cmd": "node kit/scripts/site-hero.mjs --check",
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "name": "Stage 4 e2e",
+      "cmd": "pnpm e2e:ci",
+      "ok": true,
+      "seconds": 40.9
+    }
+  ],
+  "unit": {
+    "passed": 0,
+    "skipped": 0
+  },
+  "coverage": {},
+  "e2e": {
+    "passed": 26,
+    "skipped": 2
+  }
+}

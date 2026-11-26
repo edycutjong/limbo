@@ -1,0 +1,119 @@
+# Local CI: the GitHub Actions checks run on this machine (receipt)
+commit: 8b0df2c9d235a95ec0d7833a0f46b5c0016e236e
+date: 2026-11-26T17:21:20.803Z
+machine: Apple M1 Max, darwin 27.2.0
+node: v22.22.0  pnpm: 10.34.5
+
+$ pnpm typecheck   # Stage 1 typecheck
+
+> limbo@0.1.0 typecheck /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> tsc -p tsconfig.json --noEmit
+
+
+exit 0 in 5.5s
+
+$ pnpm lint   # Stage 1 op lint
+
+> limbo@0.1.0 lint /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> node kit/scripts/op-lint-all.mjs
+
+op-lint: 18 of 18 op files pass
+
+exit 0 in 0.9s
+
+$ pnpm kiro:check   # Stage 1 /.kiro root check
+
+> limbo@0.1.0 kiro:check /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> node kit/scripts/kiro-root-check.mjs
+
+OK /.kiro root check: 66 tracked files, none ignored, no .gitignore mentions it
+
+exit 0 in 0.3s
+
+$ pnpm gate   # Stage 1 gate integrity
+
+> limbo@0.1.0 gate /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> node kit/scripts/gate-integrity.mjs
+
+gate-integrity: ok
+
+exit 0 in 0.2s
+
+$ node kit/scripts/judge-build.mjs --check   # Stage 1 /judge page and JUDGE.md match the committed measurements
+OK judge pages match evidence/
+
+exit 0 in 0s
+
+$ pnpm test:coverage   # Stage 1 tests + 100% coverage
+
+ FAIL  |unit| kit/mcp/limits.test.ts > spawnJob kills and caps (item 9) > escalates to SIGKILL when the job ignores SIGTERM
+AssertionError: expected 3 to be greater than or equal to 250
+ ❯ kit/mcp/limits.test.ts:140:29
+    138|     expect(r.ok).toBe(false);
+    139|     expect(await waitDead(pid, 5000)).toBe(true);
+    140|     expect(Date.now() - t0).toBeGreaterThanOrEqual(250); // it survive…
+       |                             ^
+    141|     expect(existsSync(join(d, 'got-term.txt'))).toBe(true);
+    142|   }, 20_000);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+exit 1 in 99.8s
+
+$ gitleaks detect --source . --log-opts="--all" --no-banner -l warn   # Stage 2 gitleaks (full history)
+
+exit 0 in 0.5s
+
+$ pnpm audit --prod   # Stage 2 pnpm audit (shipped deps, any severity)
+No known vulnerabilities found
+
+exit 0 in 0.5s
+
+$ pnpm audit --audit-level=moderate   # Stage 2 pnpm audit (all deps, moderate and above)
+No known vulnerabilities found
+
+exit 0 in 0.9s
+
+$ pnpm build   # Stage 3 build
+apps/basecamp build: mode      generateSW
+apps/basecamp build: precache  30 entries (682.54 KiB)
+apps/basecamp build: files generated
+apps/basecamp build:   dist/sw.js
+apps/basecamp build:   dist/workbox-9c191d2f.js
+apps/aftershock build: PWA v2.0.0
+apps/aftershock build: mode      generateSW
+apps/aftershock build: precache  30 entries (667.00 KiB)
+apps/aftershock build: files generated
+apps/aftershock build:   dist/sw.js
+apps/aftershock build:   dist/workbox-9c191d2f.js
+apps/basecamp build: Done
+apps/aftershock build: Done
+
+exit 0 in 2.4s
+
+$ node kit/scripts/bundle-budget.mjs   # Stage 3 bundle budget
+OK basecamp: 367.4 KB of JS (warn 500, fail 700)
+OK aftershock: 351.9 KB of JS (warn 500, fail 700)
+
+exit 0 in 0s
+
+$ node kit/scripts/site-hero.mjs --check   # Stage 3 landing hero bundle fresh
+OK site/assets/hero.js matches site/src/hero.ts
+
+exit 0 in 0.5s
+
+$ pnpm e2e:ci   # Stage 4 e2e
+
+> limbo@0.1.0 e2e:ci /Users/edycu/Hackathon/devpost/devpost-kiroween/limbo/build
+> playwright test --project=spike --project=basecamp --project=aftershock --project=basecamp-shell --project=aftershock-shell --project=ui-polish-basecamp --project=ui-polish-aftershock --project=judge --project=landing
+
+
+Running 28 tests using 1 worker
+············°·······°·······
+  2 skipped
+  26 passed (40.3s)
+
+exit 0 in 40.9s
+
+RESULT: FAILED
