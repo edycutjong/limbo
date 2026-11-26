@@ -21,6 +21,11 @@
   ![Yjs](https://img.shields.io/badge/Yjs_13.6.33-333?style=flat)
   ![Built with Kiro](https://img.shields.io/badge/Built_with-Kiro-8b5cf6?style=flat)
   [![Release](https://img.shields.io/github/v/release/edycutjong/limbo?sort=semver)](https://github.com/edycutjong/limbo/releases/latest)
+  [![CI](https://github.com/edycutjong/limbo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/ci.yml)
+  [![E2E](https://github.com/edycutjong/limbo/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/e2e.yml)
+  [![CodeQL](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml)
+  [![Security](https://github.com/edycutjong/limbo/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/security.yml)
+  [![Lighthouse](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 
 </div>
