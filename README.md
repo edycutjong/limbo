@@ -98,7 +98,7 @@ Stack: TypeScript, React, Vite (+ vite-plugin-pwa), Yjs with y-indexeddb for the
 Numbers below come from `node kit/scripts/readme-tally.mjs` over [`evidence/kiro/`](evidence/kiro/) (output:
 [`evidence/kiro/tally.json`](evidence/kiro/tally.json)); none are typed by hand.
 
-- **Ledger:** 210 rows in `sessions.jsonl`: 194 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 679.87 credits) and 16
+- **Ledger:** 211 rows in `sessions.jsonl`: 194 Kiro sessions (`kiro-cli chat --v3 --no-interactive`, 679.87 credits) and 17
   `claude-direct` rows for edits made outside Kiro (the build ledger; the 20 A/B pilot sessions, 64.31 credits, are logged separately in `evidence/kiro/ab/`). 179 of the Kiro sessions belong to one of 12 specs (160 ran a numbered task, 12 authored a spec, 7 were follow-ups (4 of them re-runs of an earlier task)); 12 more were kit-revision sessions and 3 were bootstrap sessions before any spec existed.
 - **Kiro share:** 115 of 124 product commits (`skeleton/` or `apps/`) carry a `Kiro-Session` trailer, **92.74%**
   ([`share.json`](evidence/kiro/share.json)). The 9 others are listed there, with subjects.

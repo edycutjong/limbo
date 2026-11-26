@@ -85,13 +85,15 @@ describe('explain_trace bounds (item 8)', () => {
 });
 
 describe('spawnJob kills and caps (item 9)', () => {
-  /** A temp root whose job-main.mjs is `body`. The child writes its pid to `<root>/pid.txt` first. */
+  /** A temp root whose job-main.mjs is `body`. The child writes its pid to `<root>/pid.txt` after the body's synchronous
+   *  setup, so its signal handlers exist before the test can read the pid and signal it (written first, a SIGTERM could
+   *  land before `process.on('SIGTERM')` and kill the child at once). */
   function fakeRoot(body: string): string {
     const d = tempDir();
     mkdirSync(join(d, 'kit', 'mcp'), { recursive: true });
     writeFileSync(
       join(d, 'kit', 'mcp', 'job-main.mjs'),
-      `import { writeFileSync } from 'node:fs';\nwriteFileSync('pid.txt', String(process.pid));\n${body}\n`,
+      `import { writeFileSync } from 'node:fs';\n${body}\nwriteFileSync('pid.txt', String(process.pid));\n`,
     );
     return d;
   }

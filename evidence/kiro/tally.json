@@ -1,7 +1,7 @@
 {
-  "sessions_total": 210,
+  "sessions_total": 211,
   "kiro_sessions": 194,
-  "claude_direct_rows": 16,
+  "claude_direct_rows": 17,
   "kiro_executed_spec_tasks": 179,
   "spec_sessions_numbered_task": 160,
   "spec_sessions_authoring": 12,
@@ -101,7 +101,7 @@
     "aftershock"
   ],
   "mcp_sessions": 1,
-  "total_commits": 254,
+  "total_commits": 267,
   "first_commit": "2026-11-15 5601bf6",
   "ab_sessions": 20,
   "ab_credits": 64.31,
