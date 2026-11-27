@@ -46,7 +46,7 @@ The live page embeds two BASECAMP replicas running the skeleton's `createPair` a
 ## V. Kiro, file by file
 
 - **Kiro share:** 115 of 124 product commits (92.74%) carry a `Kiro-Session` trailer; the 9 others are listed in `evidence/kiro/share.json`.
-- **Sessions:** 194 headless Kiro CLI build sessions (679.87 credits; 3.3.0 (37), 3.5.0 (157)), 179 inside 12 specs; 17 hand rows in the ledger (16 edits made outside Kiro, 1 attribution correction) (`evidence/kiro/sessions.jsonl`). The 20 A/B pilot sessions (64.31 credits) are logged separately in `evidence/kiro/ab/`. 186 briefs in `evidence/kiro/prompts/`.
+- **Sessions:** 194 headless Kiro CLI build sessions (679.87 credits; 3.3.0 (37), 3.5.0 (157)), 179 inside 12 specs; 17 hand rows (16 edits made outside Kiro, 1 attribution correction) in the ledger (`evidence/kiro/sessions.jsonl`). The 20 A/B pilot sessions (64.31 credits) are logged separately in `evidence/kiro/ab/`. 186 briefs in `evidence/kiro/prompts/`.
 - **Specs (12, `.kiro/specs/`):** aftershock (feature, 27 sessions), basecamp (feature, 24 sessions), bugfix-arch-review (bugfix, 10 sessions), bugfix-final-pass (bugfix, 6 sessions), bugfix-inspector-resolved (bugfix, 5 sessions), convergence-mcp (feature, 11 sessions), coverage-full (feature, 11 sessions), limbo-layer (feature, 18 sessions), merge-kit (feature, 32 sessions), offline-shell (feature, 10 sessions), skeleton-sync (feature, 10 sessions), ui-polish (feature, 15 sessions).
 - **Hooks (8, 1,824 logged runs, at least 6 of them started by hand from Kiro's shell, `.kiro/hooks/`):** `stop-gate` Stop, 191 (2 blocks, 170 passes, 19 skipped (no harness yet)); `props-after-task` PostTaskExec, 144 (123 pass, 1 fail, 20 skipped (no harness yet)); `guard-shell` PreToolUse, 1,261 (4 denials); `op-lint` PostFileSave, 13 (11 pass, 2 failed saves); `op-scaffold` PostFileCreate, 12 (9 scaffolded); `task-start` PreTaskExec, 153 (task logged); `session-context` SessionStart, 42 (context injected); `mcp-log` PostToolUse, 8 (8 MCP calls logged).
 - **Agent Stop gate:** refused "done" 2 times in the build (at most 3 blocks a session): 2026-11-15 unplanned (merge-kit task 9.5 added `item.move`, the after-task properties failed; Kiro added per-op payload generators to the shared suite in `651730d` and the gate passed), 2026-11-15 on a wall-clock fault seeded on purpose (`cca30a0`, session `sess_545bc98d`).
@@ -77,11 +77,11 @@ https://youtu.be/V4m3zTV5MPs (2:47; chapters and transcript in [docs/VIDEO.md](d
 |---|---|---|
 | 10,000 | random orderings, 0 divergences: 3 replicas, every op of both apps, seed 20251031, all 15 property kinds green. Measured, property-tested, not proven. | [convergence/full-2026-11-22.json](evidence/convergence/full-2026-11-22.json) |
 | 1,407 | tests pass, under a 100% coverage gate: 1,407 unit, component and property tests pass; 9 skipped (AFTERSHOCK rows for conflict classes it has no ops for). Local CI receipt at `ff8bcd0`, Node 22.22.0. | [ci/latest.json](evidence/ci/latest.json) [local-2026-11-27.txt](evidence/ci/local-2026-11-27.txt) |
-| 100% | line, branch, function, statement coverage: On [skeleton/src](skeleton/src) and each app's domain modules; CI fails below 100%. Views, entries and the dev relay are excluded, each with its reason; `site/` (this page's instrument) is outside the gate. | [vitest.config.ts](vitest.config.ts) |
+| 100% | line, branch, function, statement coverage: On [skeleton/src](skeleton/src) and each app's domain modules; CI fails below 100%. Views, browser entries, the shuffle worker and its runner, and the dev relay are excluded, each with its reason; `site/` (this page's instrument) is outside the gate. | [vitest.config.ts](vitest.config.ts) |
 | 26 | Playwright end-to-end tests pass: 2 skipped (viewport-conditional). Two browser contexts through a real partition, the offline shell of both builds, the landing and this page. | [e2e/](e2e) |
 | 92.74% | of product commits from Kiro sessions: 115 of 124 commits touching `skeleton/` or `apps/` carry a `Kiro-Session` trailer; the 9 others are listed. | [kiro/share.json](evidence/kiro/share.json) |
 | 1,824 | Kiro hook runs, one log row each: 1,261 shell checks; the Stop gate ran 191 times (19 skipped before the property harness existed; 2 blocks); 144 after-task runs (20 skipped). At least 6 rows are Kiro running a hook script by hand from its shell. | [kiro/hooks.jsonl](evidence/kiro/hooks.jsonl) |
-| 194 | headless Kiro CLI build sessions: 679.87 credits; 179 inside 12 specs. Plus 17 hand rows in the ledger (16 edits made outside Kiro, 1 attribution correction), each with its reason. The 20 A/B pilot sessions (64.31 credits) are logged separately. | [kiro/sessions.jsonl](evidence/kiro/sessions.jsonl) |
+| 194 | headless Kiro CLI build sessions: 679.87 credits; 179 inside 12 specs. Plus 17 hand rows (16 edits made outside Kiro, 1 attribution correction) in the ledger, each with its reason. The 20 A/B pilot sessions (64.31 credits) are logged separately. | [kiro/sessions.jsonl](evidence/kiro/sessions.jsonl) |
 | 0 vs 0 | held-out failures, without vs with the kit: A pre-registered pilot, 20 runs: no measurable effect (Fisher p = 1). Published as run. | [kiro/ab/summary.md](evidence/kiro/ab/summary.md) |
 
 ## VIII. Real or simulated
@@ -109,7 +109,7 @@ $ pnpm e2e:ci
   26 passed   # two browser contexts, a real partition, the offline shell of both builds
 $ pnpm --filter @limbo/basecamp dev
 # BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev, port 5176)
-$ node kit/scripts/readme-tally.mjs && pnpm share
+$ pnpm share && node kit/scripts/readme-tally.mjs
 # recomputes the ledger, hook, steering, MCP and share tallies (tally.json, lean.json, share.json)
 $ pnpm props:full
 # about 22 minutes; writes evidence/convergence/full-<date>.json with orderings 10000, seed 20251031, passed true
@@ -124,7 +124,7 @@ OK judge pages match evidence/
 2. **There is no cross-device relay.** The live apps sync two replicas through an in-page link labelled as simulated. DevTools "offline" does not cut it; the dev-only relay in the e2e suite ships in no production build.
 3. **Offline claims are provisional.** No CRDT can stop two offline people both claiming the last stove. On reconnect the declared rule picks one claimant on every replica and the other is told.
 4. **The kit showed no measurable effect.** The pre-registered A/B pilot: 0 of 10 vs 0 of 10 held-out failures, p = 1. Its 8 kit-arm Stop blocks were false alarms from the kit's own vacuity guard, and 2 of 10 kit-arm runs edited that guard; the fix (the guard is now hash-protected) has not been re-piloted.
-5. **Not every product commit is Kiro’s.** 9 of 124 product commits were made outside Kiro (listed with their subjects in share.json), and the ledger holds 17 hand rows in the ledger (16 edits made outside Kiro, 1 attribution correction), each with its reason.
+5. **Not every product commit is Kiro’s.** 9 of 124 product commits were made outside Kiro (listed with their subjects in share.json), and the ledger holds 17 hand rows (16 edits made outside Kiro, 1 attribution correction), each with its reason.
 6. **The Stop gate blocked twice in 194 build sessions.** Once unplanned, once on a fault we seeded to prove it fires. It allows at most 3 blocks a session, and it skipped 19 times before the property harness existed.
 7. **Kiro CLI only.** No logged session used the Kiro IDE, its Spec Correctness (property-based) or the Agent Hooks panel, or Powers. The MCP server was used lightly: 8 calls from 1 session.
 8. **The skeleton is over its first budget.** 21 files and 2,189 lines by the budget count: inside the restated 2,400-line budget, over the original 1,800.

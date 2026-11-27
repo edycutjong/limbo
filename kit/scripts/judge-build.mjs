@@ -90,7 +90,7 @@ const touches = (r, prefixes) => (r.files_changed ?? []).some((f) => prefixes.so
 const touched = (...prefixes) => ({ kiro: kiroRows.filter((r) => touches(r, prefixes)).length, hand: handRows.filter((r) => touches(r, prefixes)).length });
 const handEdits = handRows.filter((r) => (r.files_changed ?? []).length > 0).length;
 const handNotes = handRows.length - handEdits;
-const handText = handNotes ? `${handRows.length} hand rows in the ledger (${handEdits} edits made outside Kiro, ${handNotes} attribution ${handNotes === 1 ? 'correction' : 'corrections'})` : `${handRows.length} ledger rows are edits made outside Kiro`;
+const handText = handNotes ? `${handRows.length} hand rows (${handEdits} edits made outside Kiro, ${handNotes} attribution ${handNotes === 1 ? 'correction' : 'corrections'})` : `${handRows.length} hand rows (edits made outside Kiro)`;
 // Hook-log rows that Kiro started by hand from its shell: a guard-shell row in the same session, at most 10 s earlier, whose
 // command runs kit/hooks/<hook>.mjs with node, or was cut off by the logger mid-way through that path ("… | node kit").
 // The log truncates commands, so this is a lower bound and the page says "at least".
@@ -126,6 +126,11 @@ assert(guardEdits.length === 2 && ab.arms.B.stop_blocks > 0, 'A/B observations m
 const DECK_SLIDES = (read('site/deck/index.html').match(/<section class="slide/g) || []).length;
 assert(DECK_SLIDES >= 10, `deck slides not counted (${DECK_SLIDES})`);
 const SKEL_DIRS = ls('skeleton/src').filter((d) => statSync(`skeleton/src/${d}`).isDirectory());
+const MAX_BLOCKS = Number((read('kit/hooks/stop-gate.mjs').match(/const MAX_BLOCKS = (\d+);/) || [])[1]);
+const EXCHANGES = Number((read('skeleton/src/sync/status.ts').match(/\.slice\(-(\d+)\)/) || [])[1]);
+const FULL_MIN = Math.round(conv.durationMs / 60000);
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five'];
+assert(MAX_BLOCKS > 0 && EXCHANGES > 0 && FULL_MIN > 0, 'stop-gate MAX_BLOCKS, the exchange-log length or the full-tier duration not found');
 const vitestCfg = read('vitest.config.ts');
 assert(/lines:\s*100/.test(vitestCfg) && /branches:\s*100/.test(vitestCfg) && /functions:\s*100/.test(vitestCfg) && /statements:\s*100/.test(vitestCfg), 'vitest.config.ts no longer gates coverage at 100%');
 
@@ -308,7 +313,7 @@ const criteria = [
     `Every look is a sync state: fog while a replica's link is down, a count of waiting edits, a cyanotype ghost twin for a surfaced conflict, the FIXED seal when a replica is back to live with no open conflict. The Inspector lists the queued and recently exchanged ops with their rule and causal stamp. Two complete apps with an offline shell; the same look on the landing, the deck and this page.`,
     `<a href="${URLS.basecamp}">BASECAMP</a> · <a href="${URLS.aftershock}">AFTERSHOCK</a> · <a href="/">landing</a> · <a href="/deck/">${DECK_SLIDES}-slide deck</a> · <a href="#run">Plate III</a>`],
   ['Innovation / Idea', '20% · 10 points', 'How creative and novel? Does it differ from existing concepts?',
-    `Last-write-wins, the common default, settles a conflict by silently keeping one edit. Here every op must declare one of ${MERGES.length} named merge rules, and the conflicts a person should see (an item deleted while it was edited, two claims on the last stove) come back as ghost twins with their rule printed on them. The merge code itself was gated: the Stop gate refused to let Kiro finish (up to 3 times a session) while a fast-tier property failed.`,
+    `Last-write-wins, the common default, settles a conflict by silently keeping one edit. Here every op must declare one of ${MERGES.length} named merge rules, and the conflicts a person should see (an item deleted while it was edited, two claims on the last stove) come back as ghost twins with their rule printed on them. The merge code itself was gated: the Stop gate refused to let Kiro finish (up to ${MAX_BLOCKS} times a session) while a fast-tier property failed.`,
     `${gh('skeleton/src/core/merges.ts', 'merges.ts')} · ${gh('kit/props/')} · <a href="#kiro">the Stop gate</a>`],
   ['Presentation', '20% · 10 points', 'Does the video show it working end to end? Problem, audience, why it matters?',
     `A ${VIDEO_LEN} video: the ghost twin on the first frame, a judge-style edit of our own, the second app, an offline reload, Kiro and the Stop gate, the receipts. Then this page, a landing page and a deck, every number linked to its file.`,
@@ -318,11 +323,11 @@ const criteria = [
 const receipts = [
   [n(conv.orderings), 'random orderings, 0 divergences', `${conv.replicas} replicas, every op of both apps, seed ${conv.seed}, all ${Object.keys(conv.passesPerProperty).length} property kinds green. Measured, property-tested, not proven.`, gh('evidence/convergence/full-2026-11-22.json', 'convergence/full-2026-11-22.json')],
   [n(ci.unit.passed), 'tests pass, under a 100% coverage gate', `${n(ci.unit.passed)} unit, component and property tests pass; ${ci.unit.skipped} skipped (AFTERSHOCK rows for conflict classes it has no ops for). Local CI receipt at <code>${ci.commit.slice(0, 7)}</code>, Node ${ci.node.replace(/^v/, '')}.`, `${gh('evidence/ci/latest.json', 'ci/latest.json')} ${gh(CI_LOG, CI_LOG.split('/').pop())}`],
-  [`${ci.coverage.lines}<small>%</small>`, 'line, branch, function, statement coverage', `On ${gh('skeleton/src/', 'skeleton/src')} and each app's domain modules; CI fails below 100%. Views, entries and the dev relay are excluded, each with its reason; <code>site/</code> (this page's instrument) is outside the gate.`, gh('vitest.config.ts')],
+  [`${ci.coverage.lines}<small>%</small>`, 'line, branch, function, statement coverage', `On ${gh('skeleton/src/', 'skeleton/src')} and each app's domain modules; CI fails below 100%. Views, browser entries, the shuffle worker and its runner, and the dev relay are excluded, each with its reason; <code>site/</code> (this page's instrument) is outside the gate.`, gh('vitest.config.ts')],
   [n(ci.e2e.passed), 'Playwright end-to-end tests pass', `${ci.e2e.skipped} skipped (viewport-conditional). Two browser contexts through a real partition, the offline shell of both builds, the landing and this page.`, gh('e2e/')],
   [pct(tally.kiro_share), `of product commits from Kiro sessions`, `${tally.kiro_product_commits} of ${tally.product_commits} commits touching <code>skeleton/</code> or <code>apps/</code> carry a <code>Kiro-Session</code> trailer; the ${tally.product_commits - tally.kiro_product_commits} others are listed.`, gh('evidence/kiro/share.json', 'kiro/share.json')],
   [n(tally.hook_fires_total), 'Kiro hook runs, one log row each', `${n(tally.hooks_by_trigger.PreToolUse)} shell checks; the Stop gate ran ${tally.hooks_by_trigger.Stop} times (${res('stop-gate:skipped:no-harness')} skipped before the property harness existed; ${stopBlocks.length} blocks); ${tally.hooks_by_trigger.PostTaskExec} after-task runs (${res('props-after-task:skipped:no-harness')} skipped). At least ${manualHookRuns} rows are Kiro running a hook script by hand from its shell.`, gh('evidence/kiro/hooks.jsonl', 'kiro/hooks.jsonl')],
-  [n(tally.kiro_sessions), 'headless Kiro CLI build sessions', `${tally.credits_used} credits; ${tally.kiro_executed_spec_tasks} inside ${tally.spec_dirs} specs. Plus ${handText}, each with its reason. The ${tally.ab_sessions} A/B pilot sessions (${tally.ab_credits} credits) are logged separately.`, gh('evidence/kiro/sessions.jsonl', 'kiro/sessions.jsonl')],
+  [n(tally.kiro_sessions), 'headless Kiro CLI build sessions', `${tally.credits_used} credits; ${tally.kiro_executed_spec_tasks} inside ${tally.spec_dirs} specs. Plus ${handText} in the ledger, each with its reason. The ${tally.ab_sessions} A/B pilot sessions (${tally.ab_credits} credits) are logged separately.`, gh('evidence/kiro/sessions.jsonl', 'kiro/sessions.jsonl')],
   [`${ab.fails.A.k} <small>vs</small> ${ab.fails.B.k}`, 'held-out failures, without vs with the kit', `A pre-registered pilot, ${ab.runs_done} runs: no measurable effect (Fisher p = ${ab.fisher_two_sided_p}). Published as run.`, gh('evidence/kiro/ab/summary.md', 'kiro/ab/summary.md')],
 ];
 assert(ab.fails.A.n === 10 && ab.fails.B.n === 10, 'A/B arms are not 10 + 10');
@@ -345,7 +350,7 @@ const limits = [
   ['Offline claims are provisional.', 'No CRDT can stop two offline people both claiming the last stove. On reconnect the declared rule picks one claimant on every replica and the other is told.'],
   ['The kit showed no measurable effect.', `The pre-registered A/B pilot: ${ab.fails.A.k} of 10 vs ${ab.fails.B.k} of 10 held-out failures, p = ${ab.fisher_two_sided_p}. Its ${ab.arms.B.stop_blocks} kit-arm Stop blocks were false alarms from the kit's own vacuity guard, and ${guardEdits[0]} of ${guardEdits[1]} kit-arm runs edited that guard; the fix (the guard is now hash-protected) has not been re-piloted.`],
   ['Not every product commit is Kiro’s.', `${tally.product_commits - tally.kiro_product_commits} of ${tally.product_commits} product commits were made outside Kiro (listed with their subjects in share.json), and the ledger holds ${handText}, each with its reason.`],
-  [`The Stop gate blocked ${stopBlocks.length === 2 ? 'twice' : `${stopBlocks.length} times`} in ${tally.kiro_sessions} build sessions.`, `Once unplanned, once on a fault we seeded to prove it fires. It allows at most 3 blocks a session, and it skipped ${res('stop-gate:skipped:no-harness')} times before the property harness existed.`],
+  [`The Stop gate blocked ${stopBlocks.length === 2 ? 'twice' : `${stopBlocks.length} times`} in ${tally.kiro_sessions} build sessions.`, `Once unplanned, once on a fault we seeded to prove it fires. It allows at most ${MAX_BLOCKS} blocks a session, and it skipped ${res('stop-gate:skipped:no-harness')} times before the property harness existed.`],
   ['Kiro CLI only.', `No logged session used the Kiro IDE, its Spec Correctness (property-based) or the Agent Hooks panel, or Powers. The MCP server was used lightly: ${tally.mcp_calls} calls from ${tally.mcp_sessions} session.`],
   ['The skeleton is over its first budget.', `${lean.skeleton_budget_files} files and ${n(lean.skeleton_budget_loc)} lines by the budget count: inside the restated ${BUDGET.lines}-line budget, over the original ${BUDGET.first}.`],
   ['Demo data, no outside users.', 'AFTERSHOCK runs on data we wrote and no field use is claimed; we have no outside-user data for either app.'],
@@ -361,10 +366,10 @@ const verify = [
   ['o', `  ${ci.e2e.passed} passed   # two browser contexts, a real partition, the offline shell of both builds`],
   ['c', 'pnpm --filter @limbo/basecamp dev'],
   ['n', '# BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev, port 5176)'],
-  ['c', 'node kit/scripts/readme-tally.mjs && pnpm share'],
+  ['c', 'pnpm share && node kit/scripts/readme-tally.mjs'],
   ['n', '# recomputes the ledger, hook, steering, MCP and share tallies (tally.json, lean.json, share.json)'],
   ['c', 'pnpm props:full'],
-  ['n', `# about 22 minutes; writes evidence/convergence/full-<date>.json with orderings ${conv.orderings}, seed ${conv.seed}, passed true`],
+  ['n', `# about ${FULL_MIN} minutes; writes evidence/convergence/full-<date>.json with orderings ${conv.orderings}, seed ${conv.seed}, passed true`],
   ['c', 'node kit/scripts/judge-build.mjs --check'],
   ['s', 'OK judge pages match evidence/'],
   ['n', '# re-derives everything else on this page (per-card ledger counts, A/B, engine states) and checks every repo link'],
@@ -512,7 +517,7 @@ ${step(2, '0:05 – 0:15', 'Cut the link, play the scene', `Press ${pill('Cut li
 ${step(3, '0:15 – 0:25', 'Restore the link', `Press ${pill('Restore link')}. The waiting ops cross, and each is merged by the rule it declares.`, `the tent back as a ghost twin on both cards: <q class="tw">TWIN · Budi deleted this while Sari ticked it · rule: resurrect</q>. On Budi's card: <q class="tw">TWIN · Budi and Sari both claimed this · rule: claim-one</q>, with ${pill('OK')} and ${pill('Why Sari?')}.${img('/assets/basecamp-twin.webp', 'BASECAMP after Restore link: the tent twin on both cards, and the stove claim twin on Budi\u2019s card.', 1400, 785)}`)}
 ${step(4, '0:25 – 0:30', 'Settle it with one tap each', `Tap ${pill('Keep')} on the tent twin and ${pill('OK')} on Budi's lost claim.`, `the twins clear and a <span class="stamp">FIXED</span> stamp lands on each replica; both cards show the same list.${img('/assets/basecamp-fixed.webp', 'BASECAMP after Keep and OK: both replicas live, a FIXED stamp on each.', 1400, 785)}`)}
 ${step(5, '0:30 – 0:45', 'Now your own edit, not the scene', `Type an item into <em>Add an item</em> on replica A (it appears on B), press ${pill('Cut link')}, tick it on A, delete it on B (${pill('⋯')} then ${pill('Delete')}), press ${pill('Restore link')}.`, `your item back as a twin on both cards, <q class="tw">rule: resurrect</q>; ${pill('Keep')} settles it.`)}
-${step(6, '0:45 – 0:50', 'Inspector and the shuffle test', `Open the ${pill('Inspector')} in a card, then press ${pill('Run shuffle test')} in the page's shuffle section.`, `the queued ops and the last three exchanges, each op with its merge rule, causal stamp and dependencies; then <q>1,000 / 1,000 orderings → same state</q>: your browser replayed the ops on screen in random causal orders (not the ${n(conv.orderings)}-ordering run).`)}
+${step(6, '0:45 – 0:50', 'Inspector and the shuffle test', `Open the ${pill('Inspector')} in a card, then press ${pill('Run shuffle test')} in the page's shuffle section.`, `the queued ops and the last ${WORDS[EXCHANGES] ?? EXCHANGES} exchanges, each op with its merge rule, causal stamp and dependencies; then <q>1,000 / 1,000 orderings → same state</q>: your browser replayed the ops on screen in random causal orders (not the ${n(conv.orderings)}-ordering run).`)}
 ${step(7, '0:50 – 1:00', 'AFTERSHOCK: a second, different app', `<a href="${URLS.aftershock}" target="_blank" rel="noopener">aftershock.limbo.edycu.dev/?replicas=2</a>: ${pill('Cut link')}, ${pill('Play the survey scene')}, ${pill('Restore link')}.`, `sector C3 on both grids as <q>UNSAFE</q>, <q>5 reported — Sari 2, Budi 3</q> (the worse report wins, both counts are kept), and the two notes as a twin: ${pill("Keep Sari's note")} or ${pill("Keep Budi's note")} lands FIXED.${img('/assets/aftershock.webp', 'AFTERSHOCK: two replicas of the sector grid, marked demo data.', 1400, 875)}`, openLink(URLS.aftershock, 'Open AFTERSHOCK'))}
 </ol>
 <p class="after"><a class="btn solid" href="#run">${ICON.down}<span>Or run the same path on this page</span></a><span class="small">Also live: the <a href="/">landing page</a>, whose hero runs the lake scene in the page, and the <a href="/deck/">${DECK_SLIDES}-slide deck</a> (arrow keys).</span></p>
@@ -578,7 +583,7 @@ ${SPECS.map((d) => `<tr><td>${gh(`.kiro/specs/${d}/`, d)}</td><td>${specKind(d)}
 </tbody></table>
 <dl><dt>ledger</dt><dd>${tSpecs.kiro} Kiro sessions changed files in <code>.kiro/specs/</code>; ${tSpecs.hand} hand edits</dd><dt>evidence</dt><dd>${gh('evidence/kiro/sessions.jsonl', 'sessions.jsonl')} ${gh('evidence/kiro/tally.json', 'tally.json')}</dd></dl></li>
 <li class="kcard"><div class="kcard__head"><h3>Agent Stop gate</h3><span class="who who--k">fired by Kiro CLI</span></div>
-<p>${gh('.kiro/hooks/stop-gate.json', 'stop-gate.json')} runs the fast-tier properties when Kiro tries to finish and refuses while one fails (at most 3 blocks a session). It refused <b>${stopBlocks.length} times</b> in the ${tally.kiro_sessions} build sessions:</p>
+<p>${gh('.kiro/hooks/stop-gate.json', 'stop-gate.json')} runs the fast-tier properties when Kiro tries to finish and refuses while one fails (at most ${MAX_BLOCKS} blocks a session). It refused <b>${stopBlocks.length} times</b> in the ${tally.kiro_sessions} build sessions:</p>
 <p><b>${unplanned.ts.slice(0, 10)}, unplanned.</b> Merge-kit task 9.5 added <code>item.move</code>; the after-task property run failed and the gate blocked. Kiro added the op's property file and per-op payload generators to the shared suite (${ghc('651730d')}), and the gate then passed.</p>
 <p><b>${seeded.ts.slice(0, 10)}, seeded.</b> We broke <code>item.tick</code> with a wall-clock tie-break on purpose (${ghc('cca30a0')}, a claude-direct row); Kiro found it and removed the clock. The log is in the next card.</p>
 <dl><dt>files</dt><dd>${gh('.kiro/hooks/stop-gate.json', 'stop-gate.json')} ${gh('kit/hooks/stop-gate.mjs', 'stop-gate.mjs')}</dd><dt>evidence</dt><dd>${gh('evidence/kiro/hooks.jsonl', 'hooks.jsonl')} ${gh('evidence/kiro/g2/kiro-closing.txt', 'kiro-closing.txt')}</dd></dl></li>
@@ -629,7 +634,7 @@ ${CHAPTERS.map((c) => `<li><a href="${VIDEO}?t=${c.s}"><span class="chap__t">${c
 </div></section>
 
 <section class="sec" id="receipts" aria-labelledby="h-receipts"><div class="wrap">
-${head('receipts', 'Every number <i>has a file.</i>', `<p>Read from the committed evidence when this page is generated; nothing here is typed by hand. ${gh('DEMO.md')} has the command that regenerates each one.</p>`)}
+${head('receipts', 'Every number <i>has a file.</i>', `<p>Every figure in these cards is read from the committed evidence when this page is generated. ${gh('DEMO.md')} has the command that regenerates each one.</p>`)}
 <ul class="rgrid">
 ${receipts.map(([num, k, v, src]) => `<li class="rcpt"><span class="rcpt__n">${num}</span><span class="rcpt__k">${k}</span><span class="rcpt__v">${v}</span><span class="rcpt__src">${src}</span></li>`).join('\n')}
 </ul>
@@ -667,7 +672,7 @@ ${limits.map(([b, t]) => `<li><div><b>${esc(b)}</b><span>${esc(t)}</span></div><
 <a class="brand" href="/"><img src="/assets/icon.svg" alt="" width="32" height="32"><b>LIMBO</b></a>
 <nav aria-label="Footer"><a href="/">Landing</a><a href="/deck/">Pitch deck</a><a href="${VIDEO}">Video</a><a href="${REPO}">Source (MIT)</a><a href="${REPO}/blob/main/JUDGE.md">JUDGE.md</a><a href="${REPO}/blob/main/DEMO.md">DEMO.md</a><a href="${REPO}/blob/main/README.md">README</a><a href="${DEVPOST}">Devpost entry</a><a href="${EVENT}">Kiroween 2026</a></nav>
 <a class="version-chip" id="version" href="${REPO}/releases/latest">latest release</a>
-<p>Kiroween 2026 · Skeleton Crew · MIT. Every figure on this page is read from a file in the repository when the page is generated by ${gh('kit/scripts/judge-build.mjs', 'kit/scripts/judge-build.mjs')}; the only figures computed in your browser are the instrument's fingerprints, its shuffle count and its time.</p>
+<p>Kiroween 2026 · Skeleton Crew · MIT. Every measured figure on this page is read from a file in the repository when the page is generated by ${gh('kit/scripts/judge-build.mjs', 'kit/scripts/judge-build.mjs')}; the only figures computed in your browser are the instrument's fingerprints, its shuffle count and its time.</p>
 </div>
 </div></footer>
 <script>
@@ -770,10 +775,10 @@ ${criteria.map(([k, w, , a, where]) => `| ${k} | ${w} | ${strip(a)} (${strip(whe
 ## V. Kiro, file by file
 
 - **Kiro share:** ${tally.kiro_product_commits} of ${tally.product_commits} product commits (${pct(tally.kiro_share)}) carry a \`Kiro-Session\` trailer; the ${tally.product_commits - tally.kiro_product_commits} others are listed in \`evidence/kiro/share.json\`.
-- **Sessions:** ${tally.kiro_sessions} headless Kiro CLI build sessions (${tally.credits_used} credits; ${cliVersions}), ${tally.kiro_executed_spec_tasks} inside ${tally.spec_dirs} specs; ${handText} (\`evidence/kiro/sessions.jsonl\`). The ${tally.ab_sessions} A/B pilot sessions (${tally.ab_credits} credits) are logged separately in \`evidence/kiro/ab/\`. ${PROMPTS.length} briefs in \`evidence/kiro/prompts/\`.
+- **Sessions:** ${tally.kiro_sessions} headless Kiro CLI build sessions (${tally.credits_used} credits; ${cliVersions}), ${tally.kiro_executed_spec_tasks} inside ${tally.spec_dirs} specs; ${handText} in the ledger (\`evidence/kiro/sessions.jsonl\`). The ${tally.ab_sessions} A/B pilot sessions (${tally.ab_credits} credits) are logged separately in \`evidence/kiro/ab/\`. ${PROMPTS.length} briefs in \`evidence/kiro/prompts/\`.
 - **Specs (${SPECS.length}, \`.kiro/specs/\`):** ${SPECS.map((d) => `${d} (${specKind(d)}, ${tally.specs[d]} sessions)`).join(', ')}.
 - **Hooks (${HOOKS.length}, ${n(tally.hook_fires_total)} logged runs, at least ${manualHookRuns} of them started by hand from Kiro's shell, \`.kiro/hooks/\`):** ${hookOrder.map((name) => `\`${name}\` ${hookByName[name].trigger}, ${n(tally.hooks_by_hook[name])} (${hookOutcome[name]})`).join('; ')}.
-- **Agent Stop gate:** refused "done" ${stopBlocks.length} times in the build (at most 3 blocks a session): ${unplanned.ts.slice(0, 10)} unplanned (merge-kit task 9.5 added \`item.move\`, the after-task properties failed; Kiro added per-op payload generators to the shared suite in \`651730d\` and the gate passed), ${seeded.ts.slice(0, 10)} on a wall-clock fault seeded on purpose (\`cca30a0\`, session \`sess_545bc98d\`).
+- **Agent Stop gate:** refused "done" ${stopBlocks.length} times in the build (at most ${MAX_BLOCKS} blocks a session): ${unplanned.ts.slice(0, 10)} unplanned (merge-kit task 9.5 added \`item.move\`, the after-task properties failed; Kiro added per-op payload generators to the shared suite in \`651730d\` and the gate passed), ${seeded.ts.slice(0, 10)} on a wall-clock fault seeded on purpose (\`cca30a0\`, session \`sess_545bc98d\`).
 - **Steering (${STEERING.length}):** ${STEERING.map((st) => `${st.file} (${st.inclusion === 'always' ? 'always' : 'file match'}, ${tally.steering_sessions_by_file[`.kiro/steering/${st.file}`]} sessions)`).join(', ')}.
 - **Custom agents (${AGENTS.length}):** limbo-kitsmith (${agentRuns['limbo-kitsmith']} sessions), limbo-builder (${agentRuns['limbo-builder']}); Kiro's built-in spec agent ran ${agentRuns.spec}, the default agent ${agentRuns.default}.
 - **MCP:** \`limbo-convergence\` (${mcpTools.join(', ')}), ${tally.mcp_calls} calls from ${tally.mcp_sessions} session, a modest contribution. Server by Kiro (${tMcp.kiro} sessions; ${tMcp.hand} hand fix to a test); \`.kiro/settings/mcp.json\` was written by hand (Kiro's Write File tool failed on it).
