@@ -27,6 +27,18 @@ No setup, no keys, no cloning.
 | Kiro work | 194 Kiro sessions (build ledger; the A/B pilot sessions are logged separately), 179 sessions across 12 specs (160 ran numbered tasks, 12 authored a spec, 7 were follow-ups), 1,824 hook fires, 679.87 credits | `evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json` |
 | Kiro share | 115 of 124 product commits carry a Kiro-Session trailer (92.74%); the others are listed with their subjects | `evidence/kiro/share.json` |
 
+## What is real, what is simulated
+
+| Claim | Status | Where |
+|---|---|---|
+| Two apps on one skeleton work offline after the first load | Tested | e2e/offline-shell.spec.ts (offline reload keeps the edit and the state), run by pnpm e2e:ci and, against both deployed URLs, by e2e/live.spec.ts |
+| A delete during an edit comes back as a ghost twin; a lost claim is shown to its owner | Tested, and yours to try | the judge path above, steps 3 to 6; e2e/basecamp-offline.spec.ts (lake scene: one resurrect twin and one claim-one twin resolved, replicas converge) |
+| Every replica converges | Measured, not proven: 10,000 random orderings of 3 replicas, 0 divergences | evidence/convergence/full-2026-11-22.json |
+| Two devices syncing | Simulated in the live apps: the two replicas share an in-page link, labelled as such. The partition test runs two browser contexts through a dev-only relay. No physical two-device test, no hosted relay | two contexts through the dev relay in e2e/basecamp-offline.spec.ts and e2e/aftershock-offline.spec.ts; evidence/e2e/task-21-repeat10.txt (BASECAMP, 10 repeats) |
+| Kiro wrote the product code | 115 of 124 product commits carry a Kiro-Session trailer; the other 9 are listed | evidence/kiro/share.json |
+| The kit makes Kiro write more correct merges | Not shown: the pre-registered A/B pilot found no measurable effect (Fisher p = 1) | evidence/kiro/ab/ |
+| AFTERSHOCK is used in the field | Not claimed: it runs on demonstration data | apps/aftershock/ |
+
 ## Where Kiro did the work
 
 - `.kiro/specs/`: requirements, design and tasks for each feature, authored by Kiro sessions from an orchestrator brief. Start with .kiro/specs/basecamp/ or coverage-full/.
@@ -51,7 +63,7 @@ No setup, no keys, no cloning.
 - The live apps sync two replicas through an in-page link that is labelled as simulated. There is no hosted cross-device relay; the two-browser-context partition test uses a dev-only relay that ships in no production build.
 - No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op's declared rule picks one claimant deterministically and the other user sees a twin ghost.
 - The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).
-- AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.
+- AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every Kiro session ran through the Kiro CLI, dispatched by an outside orchestrator. Edits made outside Kiro are logged too: 17 claude-direct ledger rows, and 9 of 124 product commits (listed in evidence/kiro/share.json).
 
 ## Links
 

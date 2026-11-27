@@ -41,6 +41,17 @@ const receipts = [
   ['Kiro share', `${tally.kiro_product_commits} of ${tally.product_commits} product commits carry a Kiro-Session trailer (${pct(tally.kiro_share)}); the others are listed with their subjects`, 'evidence/kiro/share.json'],
 ];
 
+// What is real, what is simulated, what is not claimed: said before a judge has to ask.
+const status = [
+  ['Two apps on one skeleton work offline after the first load', 'Tested', 'e2e/offline-shell.spec.ts (offline reload keeps the edit and the state), run by pnpm e2e:ci and, against both deployed URLs, by e2e/live.spec.ts'],
+  ['A delete during an edit comes back as a ghost twin; a lost claim is shown to its owner', 'Tested, and yours to try', 'the judge path above, steps 3 to 6; e2e/basecamp-offline.spec.ts (lake scene: one resurrect twin and one claim-one twin resolved, replicas converge)'],
+  ['Every replica converges', `Measured, not proven: ${n(conv.orderings)} random orderings of ${conv.replicas} replicas, ${failures} divergences`, 'evidence/convergence/full-2026-11-22.json'],
+  ['Two devices syncing', 'Simulated in the live apps: the two replicas share an in-page link, labelled as such. The partition test runs two browser contexts through a dev-only relay. No physical two-device test, no hosted relay', 'two contexts through the dev relay in e2e/basecamp-offline.spec.ts and e2e/aftershock-offline.spec.ts; evidence/e2e/task-21-repeat10.txt (BASECAMP, 10 repeats)'],
+  ['Kiro wrote the product code', `${tally.kiro_product_commits} of ${tally.product_commits} product commits carry a Kiro-Session trailer; the other ${tally.product_commits - tally.kiro_product_commits} are listed`, 'evidence/kiro/share.json'],
+  ['The kit makes Kiro write more correct merges', 'Not shown: the pre-registered A/B pilot found no measurable effect (Fisher p = 1)', 'evidence/kiro/ab/'],
+  ['AFTERSHOCK is used in the field', 'Not claimed: it runs on demonstration data', 'apps/aftershock/'],
+];
+
 const reproduce = [
   ['git clone ' + REPO + ' && cd limbo && pnpm install', 'the real product, locally'],
   ['pnpm --filter @limbo/basecamp dev', 'BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev)'],
@@ -55,7 +66,7 @@ const limits = [
   'The live apps sync two replicas through an in-page link that is labelled as simulated. There is no hosted cross-device relay; the two-browser-context partition test uses a dev-only relay that ships in no production build.',
   'No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op\'s declared rule picks one claimant deterministically and the other user sees a twin ghost.',
   'The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).',
-  'AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every build session ran through the Kiro CLI, dispatched by an outside orchestrator.',
+  `AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every Kiro session ran through the Kiro CLI, dispatched by an outside orchestrator. Edits made outside Kiro are logged too: ${tally.claude_direct_rows} claude-direct ledger rows, and ${tally.product_commits - tally.kiro_product_commits} of ${tally.product_commits} product commits (listed in evidence/kiro/share.json).`,
 ];
 
 const kiro = [
@@ -122,6 +133,11 @@ ${path.map(([h]) => `    <li>${h}</li>`).join('\n')}
 ${receipts.map(([k, v, s]) => `    <tr><th scope="row">${esc(k)}</th><td>${esc(v)}<div class="src">${esc(s)}</div></td></tr>`).join('\n')}
   </table>
 
+  <h2>What is real, what is simulated</h2>
+  <table>
+${status.map(([k, v, s]) => `    <tr><th scope="row">${esc(k)}</th><td><strong>${esc(v.split(':')[0])}</strong>${v.includes(':') ? esc(':' + v.split(':').slice(1).join(':')) : ''}<div class="src">${esc(s)}</div></td></tr>`).join('\n')}
+  </table>
+
   <h2>Where Kiro did the work</h2>
   <ul>
 ${kiro.map(([k, v]) => `    <li><code>${esc(k)}</code>: ${esc(v)}</li>`).join('\n')}
@@ -169,6 +185,12 @@ ${path.map(([, m], i) => `${i + 1}. ${m}`).join('\n')}
 | What | Number | Source |
 |---|---|---|
 ${receipts.map(([k, v, s]) => `| ${k} | ${v} | \`${s}\` |`).join('\n')}
+
+## What is real, what is simulated
+
+| Claim | Status | Where |
+|---|---|---|
+${status.map(([k, v, s]) => `| ${k} | ${v} | ${s} |`).join('\n')}
 
 ## Where Kiro did the work
 

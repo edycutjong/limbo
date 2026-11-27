@@ -5,6 +5,7 @@
   <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two replicas, drawn as phones, fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
 
   <p><strong>A shared list breaks when the signal does, and last-write-wins quietly drops an edit.</strong> LIMBO is a local-first skeleton where every op declares how it merges, so an item deleted while it was edited comes back as a ghost twin. Built: <code>skeleton/</code>, <code>apps/basecamp/</code>, <code>apps/aftershock/</code>, and the <code>/.kiro</code> kit under which Kiro built them.</p>
+  <p><strong>Who it is for:</strong> groups who share a list or a form where the signal drops (a trip, a site survey), and the developers who build those apps. <strong>Why Kiro:</strong> merge code is what an agent writes confidently and gets subtly wrong, so Kiro worked under a gate: a hook ran the fast-tier convergence properties after spec tasks, and the Agent Stop hook refused "done" while one failed (it blocked Kiro twice, once on a fault we seeded). 115 of 124 product commits carry a Kiro-Session trailer.</p>
 
   <br/>
 
@@ -146,7 +147,7 @@ and 2 of 10 kit-arm runs edited that guard to pass: the session wrapper's hash m
 not on its protected list. We then added the suite and the vacuity guard to that list (`pnpm gate` re-checks it); that fix has not been re-piloted.
 [`evidence/kiro/ab/summary.md`](evidence/kiro/ab/summary.md), [`observations.md`](evidence/kiro/ab/observations.md).
 
-**IDE vs CLI.** All builds ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 157), which fires the spec task hooks and
+**IDE vs CLI.** All 194 Kiro sessions ran headless through the Kiro CLI (`--v3 --no-interactive`; version 3.3.0 for 37 sessions, 3.5.0 for 157), which fires the spec task hooks and
 the Agent Stop hook. Spec Correctness (property-based) is IDE-only and the Agent Hooks panel is IDE UI; we did not use either.
 Per Kiro's docs, Spec Correctness is IDE-only; the project `.kiro/` files use the same format in IDE and CLI.
 
@@ -202,7 +203,7 @@ Each must be killed by a named property or golden history, or the suite fails
 7. The Agent Stop gate blocked Kiro 2 times in 194 sessions, and one of those was a fault seeded on purpose.
 8. 9 of 124 product commits were made outside Kiro; [`share.json`](evidence/kiro/share.json) lists them.
 9. The skeleton is inside its restated budget (2,400 lines) and over the original one (1,800).
-10. All builds ran headless through the Kiro CLI; Spec Correctness and the Agent Hooks panel (IDE only) were not used.
+10. All 194 Kiro sessions ran headless through the Kiro CLI (the 17 edits made outside Kiro are `claude-direct` ledger rows); Spec Correctness and the Agent Hooks panel (IDE only) were not used.
 11. The MCP server was used lightly: 8 calls from one Kiro session, and `explain_trace` never.
 12. AFTERSHOCK runs on demo data; no field use is claimed. The landing page is static, with no service worker; only the two apps work offline.
 
