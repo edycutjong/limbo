@@ -16,7 +16,8 @@
   [![Basecamp](docs/badges/production-basecamp.svg)](https://basecamp.limbo.edycu.dev)
   [![Aftershock](docs/badges/production-aftershock.svg)](https://aftershock.limbo.edycu.dev)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://limbo.edycu.dev/deck/)
-  [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
+  [![Track: Kiroween 2026 Skeleton Crew](https://img.shields.io/badge/Track-Kiroween_2026_·_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
+  [![Devpost entry](https://img.shields.io/badge/Devpost-View_entry-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/software/limbo-offline-merge-skeleton-two-apps)
 
   <br/>
 
