@@ -11,6 +11,9 @@
   [![For judges](https://img.shields.io/badge/For_judges-the_judge_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
   [![Demo Video](https://img.shields.io/badge/▶_Demo-Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/V4m3zTV5MPs)
+  [![Landing](docs/badges/production-site.svg)](https://limbo.edycu.dev)
+  [![Basecamp](docs/badges/production-basecamp.svg)](https://basecamp.limbo.edycu.dev)
+  [![Aftershock](docs/badges/production-aftershock.svg)](https://aftershock.limbo.edycu.dev)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://limbo.edycu.dev/deck/)
   [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
 
@@ -21,17 +24,14 @@
   ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)
   ![Yjs](https://img.shields.io/badge/Yjs_13.6.33-333?style=flat)
   ![Built with Kiro](https://img.shields.io/badge/Built_with-Kiro-8b5cf6?style=flat)
-  [![Release](docs/badges/release.svg)](https://github.com/edycutjong/limbo/releases/latest)
   [![CI](https://github.com/edycutjong/limbo/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/ci.yml)
   [![E2E](https://github.com/edycutjong/limbo/actions/workflows/e2e.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/e2e.yml)
   [![CodeQL](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/codeql.yml)
   [![Security](https://github.com/edycutjong/limbo/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/security.yml)
   [![Lighthouse](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml)
   [![Deploy](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml)
-  [![Production: site](docs/badges/production-site.svg)](https://limbo.edycu.dev)
-  [![Production: basecamp](docs/badges/production-basecamp.svg)](https://basecamp.limbo.edycu.dev)
-  [![Production: aftershock](docs/badges/production-aftershock.svg)](https://aftershock.limbo.edycu.dev)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
+  [![Release](docs/badges/release.svg)](https://github.com/edycutjong/limbo/releases/latest)
 
 </div>
 
