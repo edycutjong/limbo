@@ -184,13 +184,17 @@ function gh(p, label, cls = '') {
   return `<a${cls ? ` class="${cls}"` : ''} href="${url}">${esc(label ?? p)}</a>`;
 }
 const ghc = (sha) => `<a href="${REPO}/commit/${sha}"><code>${sha}</code></a>`;
+// A missing path always fails. An existing but untracked one fails under --check (CI, where only tracked files exist) and
+// warns otherwise, so a freshly written receipt (kit/scripts/ci-local.mjs) can be rendered and then staged.
 function checkLinks() {
-  const bad = [...linked].filter((p) => {
+  const missing = [...linked].filter((p) => !existsSync(p.replace(/\/$/, '')));
+  const untracked = [...linked].filter((p) => {
     const q = p.replace(/\/$/, '');
-    if (!existsSync(q)) return true;
-    return isDir(p) ? ![...tracked].some((t) => t.startsWith(`${q}/`)) : !tracked.has(q);
+    return existsSync(q) && (isDir(p) ? ![...tracked].some((t) => t.startsWith(`${q}/`)) : !tracked.has(q));
   });
-  if (bad.length) fail(`the page links paths that are missing or untracked in the repo:\n- ${bad.join('\n- ')}`);
+  if (missing.length) fail(`the page links paths that are missing in the repo:\n- ${missing.join('\n- ')}`);
+  if (untracked.length && CHECK) fail(`the page links paths that git does not track:\n- ${untracked.join('\n- ')}`);
+  if (untracked.length) console.warn(`judge-build: stage these before committing (linked but untracked): ${untracked.join(', ')}`);
   return linked.size;
 }
 
