@@ -5,7 +5,7 @@
   <img src="docs/assets/readme-hero-animated.svg" alt="LIMBO: two replicas, drawn as phones, fog silver offline; reconnected, the fog lifts and a cyanotype ghost tent waits for one tap." width="100%">
 
   <p><strong>A shared list breaks when the signal does, and last-write-wins quietly drops an edit.</strong> LIMBO is a local-first skeleton where every op declares how it merges, so an item deleted while it was edited comes back as a ghost twin. Built: <code>skeleton/</code>, <code>apps/basecamp/</code>, <code>apps/aftershock/</code>, and the <code>/.kiro</code> kit under which Kiro built them.</p>
-  <p><strong>Who it is for:</strong> groups who share a list or a form where the signal drops (a trip, a site survey), and the developers who build those apps. <strong>Why Kiro:</strong> merge code is what an agent writes confidently and gets subtly wrong, so Kiro worked under a gate: a hook ran the fast-tier convergence properties after spec tasks, and the Agent Stop hook refused "done" while one failed (it blocked Kiro twice, once on a fault we seeded). 115 of 124 product commits carry a Kiro-Session trailer.</p>
+  <p><strong>Who it is for:</strong> groups who share a list or a form where the signal drops (a trip, a site survey), and the developers who build those apps. <strong>Why Kiro:</strong> merge code is the kind an agent can write confidently and get subtly wrong (the steering lists four wrong ops that still converge), so Kiro worked under a gate, as insurance: a hook ran the fast-tier convergence properties after spec tasks, and the Agent Stop hook refused "done" while one failed. In 194 Kiro sessions it blocked twice: once on a new op the shared property suite had no generator for yet, once on a fault we seeded. Neither was a wrong merge written by Kiro, and our A/B pilot found 0 of 10 held-out failures with and without the kit. 115 of 124 product commits carry a Kiro-Session trailer.</p>
 
   <br/>
 
@@ -64,7 +64,7 @@ Both pages show two replicas side by side, **REPLICA A — SARI** and **REPLICA 
    The fog lifts once both sides agree. Tap **Keep** on the twin and **OK** on the lost claim to get the **FIXED** stamp.
    **Your own edit, not the scene:** type an item into **Add an item** on A (it appears on B), cut the link, tick it on A and
    delete it on B (**⋯ → Delete**), restore: it comes back as a twin on both cards (`rule: resurrect`); **Keep** settles it.
-4. Press **I** inside a card for the inspector: every op that crossed, its declared merge rule, its causal stamp and deps.
+4. Open the **Inspector** in a card (keyboard: **I**, outside a text field): every op that crossed, its declared merge rule, its causal stamp and deps.
 5. **Run shuffle test** replays the on-screen ops in random causal orders in your browser and prints the count it actually ran.
 
 No tab switch: [limbo.edycu.dev/judge](https://limbo.edycu.dev/judge) runs the same path inside the judge page, on the skeleton's own `createPair` and BASECAMP's ops (`site/src/judge.ts`), and ticks each step from a value the engine computes.
@@ -96,7 +96,7 @@ picks one claimant deterministically when they reconnect, and the other person i
 
 <p align="center"><img src="docs/architecture.png" alt="LIMBO architecture as built. Build time: the Kiro CLI fires 8 hooks that run the property gate (kit/props), which checks every op of both apps and blocks the agent's 'done' while a property fails. Product: BASECAMP and AFTERSHOCK declare ops on the skeleton, a Limbo UI layer, replica and link, a local Yjs op log and an op layer with six named merges. Ship: a vite-plugin-pwa offline shell, built in CI and deployed to three static Vercel projects by the Deploy workflow after a green CI run; GitHub Actions run the checks." width="100%"></p>
 
-Every box in the figure names a real path. The gate is the loop at the top: a Kiro session fires the hooks, the hooks run the properties, and `stop-gate` refuses "done" (at most 3 times per session) while one fails.
+Every box in the figure names a real path. The gate is the loop at the top: a Kiro session fires the hooks, the hooks run the properties, and `stop-gate` refuses "done" while one fails (at most 3 refusals a session; it refused twice in 194 Kiro sessions).
 
 ### Skeleton Crew: one skeleton, two apps
 
