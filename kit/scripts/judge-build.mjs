@@ -69,6 +69,7 @@ const stopBlocks = hookRows.filter((r) => r.hook === 'stop-gate' && r.result ===
 assert(stopBlocks.length === tally.agent_stop_blocks_hooklog, 'stop-gate block rows disagree with the tally');
 const seeded = stopBlocks.find((r) => r.session_id.startsWith('sess_545bc98d'));
 const unplanned = stopBlocks.find((r) => r !== seeded);
+const gaveUp = hookRows.filter((r) => r.hook === 'stop-gate' && r.result === 'gave_up').length;
 assert(seeded && unplanned, 'expected the seeded and the unplanned Stop block');
 
 // counted from the tree now
@@ -129,7 +130,7 @@ const SKEL_DIRS = ls('skeleton/src').filter((d) => statSync(`skeleton/src/${d}`)
 const MAX_BLOCKS = Number((read('kit/hooks/stop-gate.mjs').match(/const MAX_BLOCKS = (\d+);/) || [])[1]);
 const EXCHANGES = Number((read('skeleton/src/sync/status.ts').match(/\.slice\(-(\d+)\)/) || [])[1]);
 const FULL_MIN = Math.round(conv.durationMs / 60000);
-const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five'];
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'];
 assert(MAX_BLOCKS > 0 && EXCHANGES > 0 && FULL_MIN > 0, 'stop-gate MAX_BLOCKS, the exchange-log length or the full-tier duration not found');
 const vitestCfg = read('vitest.config.ts');
 assert(/lines:\s*100/.test(vitestCfg) && /branches:\s*100/.test(vitestCfg) && /functions:\s*100/.test(vitestCfg) && /statements:\s*100/.test(vitestCfg), 'vitest.config.ts no longer gates coverage at 100%');
@@ -262,7 +263,7 @@ function plate(id, c, print, { inert = false } = {}) {
 <ul class="lb-list" aria-label="${NAMES[id]}'s packing list">${list}</ul>
 ${inert ? '' : `<div class="lb-limbo"><p class="lb-limbo-h">In limbo, with their rules</p><ol>${c.waiting.length ? '' : '<li class="lb-empty">nothing waiting</li>'}</ol></div>`}
 <p class="lb-print">state fingerprint <b data-print>${print}</b></p>
-<span class="lb-fixed" aria-hidden="true">FIXED</span>
+${inert && !c.fixed ? '' : '<span class="lb-fixed" aria-hidden="true">FIXED</span>'}
 <div class="lb-veil" aria-hidden="true"></div>
 </article>`;
 }
@@ -312,7 +313,7 @@ const criteria = [
     `Every look is a sync state: fog while a replica's link is down, a count of waiting edits, a cyanotype ghost twin for a surfaced conflict, the FIXED seal when a replica is back to live with no open conflict. The Inspector lists the queued and recently exchanged ops with their rule and causal stamp. Two complete apps with an offline shell; the same look on the landing, the deck and this page.`,
     `<a href="${URLS.basecamp}">BASECAMP</a> · <a href="${URLS.aftershock}">AFTERSHOCK</a> · <a href="/">landing</a> · <a href="/deck/">${DECK_SLIDES}-slide deck</a> · <a href="#run">Plate III</a>`],
   ['Innovation / Idea', '20% · 10 points', 'How creative and novel? Does it differ from existing concepts?',
-    `Last-write-wins, the common default, settles a conflict by silently keeping one edit. Here every op must declare one of ${MERGES.length} named merge rules, and the conflicts a person should see (an item deleted while it was edited, two claims on the last stove) come back as ghost twins with their rule printed on them. The merge code itself was gated: the Stop gate refused to let Kiro finish (up to ${MAX_BLOCKS} times a session) while a fast-tier property failed.`,
+    `Last-write-wins, the common default, settles a conflict by silently keeping one edit. Here every op must declare a named merge rule (the ${OPS.length} ops use ${WORDS[usedMerges.length] ?? usedMerges.length} of the skeleton's ${WORDS[MERGES.length] ?? MERGES.length}${usedMerges.length < MERGES.length ? `; <code>${MERGES.filter((m) => !usedMerges.includes(m)).join('</code>, <code>')}</code> is a helper no op declares` : ''}), and the conflicts a person should see (an item deleted while it was edited, two claims on the last stove) come back as ghost twins with their rule printed on them. The merge code itself was gated: each time Kiro tried to finish, the Stop gate ran the fast-tier properties and refused while one failed. It refused ${stopBlocks.length === 2 ? 'twice' : `${stopBlocks.length} times`} in ${tally.kiro_sessions} Kiro sessions, once on a fault we seeded; after ${MAX_BLOCKS} refusals in one session it lets the session end and logs it, and ${gaveUp === 0 ? 'no session reached that cap' : `${gaveUp} sessions reached that cap`}.`,
     `${gh('skeleton/src/core/merges.ts', 'merges.ts')} · ${gh('kit/props/')} · <a href="#kiro">the Stop gate</a>`],
   ['Presentation', '20% · 10 points', 'Does the video show it working end to end? Problem, audience, why it matters?',
     `A ${VIDEO_LEN} video: the ghost twin on the first frame, a judge-style edit of our own, the second app, an offline reload, Kiro and the Stop gate, the receipts. Then this page, a landing page and a deck, every number linked to its file.`,
@@ -526,7 +527,7 @@ ${step(7, '0:50 – 1:00', 'AFTERSHOCK: a second, different app', `<a href="${UR
 ${head('run', 'No tab switch: <i>run the path here.</i>', `<p>Two BASECAMP replicas in this page: the skeleton's <code>createPair</code>, its in-page link and BASECAMP's own ops, bundled from ${gh('site/src/judge.ts', 'site/src/judge.ts')} (it imports ${gh('skeleton/src/', 'skeleton/src/')} and ${gh('apps/basecamp/', 'apps/basecamp/')} unchanged). The store is in memory, so a reload starts from the seed. The engine downloads the first time you hover over, focus or press inside it.</p><p>The checklist is not a script: each box ticks when a value the engine computes says so, and the fingerprints hash each replica's own state.</p>`)}
 <div class="lab" data-proof data-engine="idle" data-link="up" data-same="yes" data-src="/assets/judge.js?v=${bundleV}">
 <div class="proof">
-<p class="engine"><b data-engine data-live="LIVE IN THIS TAB">NOT LOADED</b><span>judge.js, ${bundleKB} KB (${bundleGzKB} KB gzipped), loads on first hover, focus or press</span></p>
+<p class="engine"><b data-engine data-live="LIVE IN THIS TAB">LOADS ON FIRST TOUCH</b><span>judge.js, ${bundleKB} KB (${bundleGzKB} KB gzipped): a tap, click, hover or keyboard focus here downloads it</span></p>
 <div class="lb-viewer" role="group" aria-label="Two replicas of BASECAMP joined by a simulated link">
 ${plate('a', P.live.cards.a, P.live.prints.a)}
 <div class="lb-cord" data-link="up"><button type="button" data-act="link" aria-pressed="false">Cut link</button><small>simulated link</small></div>
@@ -757,7 +758,7 @@ LIMBO is a local-first skeleton where every op declares how it merges. Kiroween 
 
 ## I. Skeleton Crew
 
-- \`skeleton/\`: \`core/\` (ops and the ${MERGES.length} named merge rules: ${MERGES.map((m) => `\`${m}\``).join(', ')}), \`sync/\` (replica, links, the local op log), \`limbo/\` (fog, twins, the Inspector, FIXED). ${lean.skeleton_budget_files} files and ${n(lean.skeleton_budget_loc)} lines by the budget count (budget ${BUDGET.files} files, ${BUDGET.lines} lines), ${lean.index_exports} exported values (\`evidence/lean.json\`).
+- \`skeleton/\`: \`core/\` (ops and the ${MERGES.length} named merge rules: ${MERGES.map((m) => `\`${m}\``).join(', ')}; ops declare ${usedMerges.length}${usedMerges.length < MERGES.length ? `, and ${MERGES.filter((m) => !usedMerges.includes(m)).map((m) => `\`${m}\``).join(', ')} is a helper` : ''}), \`sync/\` (replica, links, the local op log), \`limbo/\` (fog, twins, the Inspector, FIXED). ${lean.skeleton_budget_files} files and ${n(lean.skeleton_budget_loc)} lines by the budget count (budget ${BUDGET.files} files, ${BUDGET.lines} lines), ${lean.index_exports} exported values (\`evidence/lean.json\`).
 - \`apps/basecamp/\`: a group trip list, ${lean.basecamp_ops} ops. Live: ${URLS.basecamp}
 - \`apps/aftershock/\`: a field survey form on a sector grid, ${lean.aftershock_ops} ops, demo data. Live: ${URLS.aftershock}
 - Each app supplies five things: a model, ops, a seed script, views and a config ([docs/ADOPT.md](docs/ADOPT.md)). AFTERSHOCK's ${tally.specs.aftershock} Kiro spec sessions changed 0 files under \`skeleton/\` (later UI polish touched skeleton CSS and markup for both apps).
