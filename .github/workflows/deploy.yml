@@ -38,15 +38,16 @@ jobs:
           REPO: ${{ github.repository }}
           EVENT: ${{ github.event_name }}
           SHA: ${{ github.event.workflow_run.head_sha || github.sha }} # passed as data, never spliced into the script
+          RUN_SHA: ${{ github.sha }} # the commit every later job checks out (default checkout, no ref: override)
         run: |
           set -euo pipefail
           [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "refusing sha '$SHA'"; exit 1; }
-          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "sha=$RUN_SHA" >> "$GITHUB_OUTPUT"
           if [ "$EVENT" = workflow_dispatch ]; then
             echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
           TIP=$(gh api "repos/$REPO/commits/main" --jq .sha)
-          if [ "$TIP" = "$SHA" ]; then
+          if [ "$TIP" = "$SHA" ] && [ "$RUN_SHA" = "$SHA" ]; then
             echo "deploy=true" >> "$GITHUB_OUTPUT"
           else
             echo "deploy=false" >> "$GITHUB_OUTPUT"
@@ -65,34 +66,37 @@ jobs:
         include:
           - name: BASECAMP
             env_name: production-basecamp
-            project_secret: VERCEL_PROJECT_ID_BASECAMP
+            app: basecamp
             url: https://basecamp.limbo.edycu.dev
           - name: AFTERSHOCK
             env_name: production-aftershock
-            project_secret: VERCEL_PROJECT_ID_AFTERSHOCK
+            app: aftershock
             url: https://aftershock.limbo.edycu.dev
           - name: site (landing, /judge, /deck)
             env_name: production-site
-            project_secret: VERCEL_PROJECT_ID_SITE
+            app: site
             url: https://limbo.edycu.dev
     environment:
       name: ${{ matrix.env_name }}
       url: ${{ matrix.url }}
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets[matrix.project_secret] }}
+      # each secret named explicitly: secrets[<expression>] would expose every repository secret to this job
+      VERCEL_PROJECT_ID: ${{ matrix.app == 'basecamp' && secrets.VERCEL_PROJECT_ID_BASECAMP || matrix.app == 'aftershock' && secrets.VERCEL_PROJECT_ID_AFTERSHOCK || secrets.VERCEL_PROJECT_ID_SITE }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       LIVE: ${{ matrix.url }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7 # no ref: override; the run's own commit, which the gate required to equal the CI-judged one
         with:
-          ref: ${{ needs.gate.outputs.sha }}
           persist-credentials: false
+      - name: The checkout is the commit the gate approved
+        env:
+          WANT: ${{ needs.gate.outputs.sha }}
+        run: test "$(git rev-parse HEAD)" = "$WANT" || { echo "::error::checked out $(git rev-parse HEAD), gate approved $WANT"; exit 1; }
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
-          cache: pnpm
+          node-version: 22 # no cache: this workflow runs with deploy secrets; it never reads or writes shared caches
       - name: Install the Vercel CLI (pinned)
         run: npm install --global vercel@66.2.0
       - name: Pull the production project settings (root directory, framework, build command)
@@ -153,10 +157,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7 # no ref: override; the run's own commit, which the gate required to equal the CI-judged one
         with:
-          ref: ${{ needs.gate.outputs.sha }}
           persist-credentials: false
+      - name: The checkout is the commit the gate approved
+        env:
+          WANT: ${{ needs.gate.outputs.sha }}
+        run: test "$(git rev-parse HEAD)" = "$WANT" || { echo "::error::checked out $(git rev-parse HEAD), gate approved $WANT"; exit 1; }
       - name: Five live URLs answer 200, and /judge shows the committed test count
         run: |
           set -euo pipefail
@@ -180,14 +187,8 @@ jobs:
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
-          cache: pnpm
+          node-version: 22 # no cache: this workflow runs with deploy secrets; it never reads or writes shared caches
       - run: pnpm install --frozen-lockfile
-      - name: Cache Playwright browsers
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install Chromium and its system dependencies
         run: pnpm exec playwright install --with-deps chromium
       - name: Live Playwright suite on the deployed URLs (judge flow, offline reload, sw.js revalidation on both apps; /judge with no credentials)
