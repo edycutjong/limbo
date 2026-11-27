@@ -67,6 +67,8 @@ Both pages show two replicas side by side, **REPLICA A — SARI** and **REPLICA 
 4. Press **I** inside a card for the inspector: every op that crossed, its declared merge rule, its causal stamp and deps.
 5. **Run shuffle test** replays the on-screen ops in random causal orders in your browser and prints the count it actually ran.
 
+No tab switch: [limbo.edycu.dev/judge](https://limbo.edycu.dev/judge) runs the same path inside the judge page, on the skeleton's own `createPair` and BASECAMP's ops (`site/src/judge.ts`), and ticks each step from a value the engine computes.
+
 ## 💡 The Problem & Solution
 
 ### The Problem
