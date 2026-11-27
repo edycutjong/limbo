@@ -8,10 +8,9 @@
 
   <br/>
 
-  [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
-
-  [![Demo Video](https://img.shields.io/badge/▶_Demo-Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/V4m3zTV5MPs)
   [![For judges](https://img.shields.io/badge/For_judges-the_judge_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
+  [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
+  [![Demo Video](https://img.shields.io/badge/▶_Demo-Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/V4m3zTV5MPs)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://limbo.edycu.dev/deck/)
   [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
 
@@ -29,6 +28,9 @@
   [![Security](https://github.com/edycutjong/limbo/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/security.yml)
   [![Lighthouse](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml)
   [![Deploy](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml)
+  [![Production: site](docs/badges/production-site.svg)](https://github.com/edycutjong/limbo/deployments/production-site)
+  [![Production: basecamp](docs/badges/production-basecamp.svg)](https://github.com/edycutjong/limbo/deployments/production-basecamp)
+  [![Production: aftershock](docs/badges/production-aftershock.svg)](https://github.com/edycutjong/limbo/deployments/production-aftershock)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 
 </div>
