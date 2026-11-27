@@ -3,110 +3,935 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LIMBO for judges: the judge path, the receipts, the limits</title>
-<meta name="description" content="When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner. The judge path (no install, no login), the measured receipts and the honest limits.">
+<title>LIMBO for judges: the path, the receipts, the limits</title>
+<meta name="description" content="The 3-minute judge guide to LIMBO (Kiroween 2026, Skeleton Crew): one local-first skeleton and two apps where a deleted-while-edited item comes back as a ghost twin. A 60-second path, the judge path run live on this page, each criterion, Kiro file by file, receipts and honest limits.">
+<meta name="author" content="edycutjong">
+<meta name="theme-color" content="#F2EADB">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://limbo.edycu.dev/judge">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LIMBO">
+<meta property="og:title" content="LIMBO for judges: the path, the receipts, the limits">
+<meta property="og:description" content="The 3-minute judge guide to LIMBO (Kiroween 2026, Skeleton Crew): one local-first skeleton and two apps where a deleted-while-edited item comes back as a ghost twin. A 60-second path, the judge path run live on this page, each criterion, Kiro file by file, receipts and honest limits.">
+<meta property="og:url" content="https://limbo.edycu.dev/judge">
+<meta property="og:image" content="https://limbo.edycu.dev/assets/og-image.png?v=af5cfddd59">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Two replica cards of a packing list, Sari and Budi, reconnected: each shows the deleted tent as a blue ghost twin with a Keep button.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@edycutjong">
+<meta name="twitter:title" content="LIMBO for judges: the path, the receipts, the limits">
+<meta name="twitter:description" content="The 3-minute judge guide to LIMBO (Kiroween 2026, Skeleton Crew): one local-first skeleton and two apps where a deleted-while-edited item comes back as a ghost twin. A 60-second path, the judge path run live on this page, each criterion, Kiro file by file, receipts and honest limits.">
+<meta name="twitter:image" content="https://limbo.edycu.dev/assets/og-image.png?v=af5cfddd59">
+<link rel="preload" href="/fonts/old-standard-tt-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/old-standard-tt-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/atkinson-hyperlegible-next-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<script>document.documentElement.classList.add("js")</script>
 <style>
-  :root { --paper:#F2EADB; --ink:#1B1A17; --muted:#5B564B; --line:#CDBFA5; --accent:#1F4E79; }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--paper); color:var(--ink); font:18px/1.55 "Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif; }
-  main { max-width: 860px; margin: 0 auto; padding: 40px 20px 64px; }
-  h1 { font:400 clamp(32px,6vw,48px)/1.1 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:0 0 12px; }
-  h2 { font:400 26px/1.2 "Old Standard TT","Libre Caslon Text",Georgia,serif; margin:36px 0 10px; }
-  .claim { font-size:22px; border-left:4px solid var(--accent); padding:4px 0 4px 16px; margin:16px 0; }
-  .version { font-size:14px; color:var(--muted); margin:0 0 20px; }
-  .version a { color:var(--muted); }
-  ol, ul { padding-left: 24px; } li { margin: 8px 0; }
-  table { border-collapse: collapse; width:100%; font-size:16px; }
-  th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line); }
-  th { color:var(--muted); font-weight:600; width:150px; }
-  code { font:15px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; background:#E8DEC8; padding:1px 5px; border-radius:3px; }
-  .src { color:var(--muted); font-size:14px; }
-  a { color:var(--accent); text-underline-offset:3px; }
-  a:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-  a:hover { background:#E8DEC8; }
-  .note { color:var(--muted); font-size:15px; }
-  @media (max-width: 640px) { th { width:auto; display:block; border:0; padding-bottom:0; } td { display:block; } }
+/* /judge — LIMBO's own visual language: albumen paper, cyanotype twins, silver fog, the FIXED seal, the darkroom mat.
+   Tokens and the replica-plate classes (.lb-*) match the landing (site/index.html); inlined into site/judge.html by
+   kit/scripts/judge-build.mjs. Self-hosted fonts only. */
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-400-italic.woff2) format("woff2");font-style:italic;font-weight:400;font-display:swap}
+@font-face{font-family:"Old Standard TT";src:url(/fonts/old-standard-tt-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible Next";src:url(/fonts/atkinson-hyperlegible-next-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Atkinson Hyperlegible Next";src:url(/fonts/atkinson-hyperlegible-next-latin-700-normal.woff2) format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:"DM Mono";src:url(/fonts/dm-mono-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"DM Mono";src:url(/fonts/dm-mono-latin-500-normal.woff2) format("woff2");font-weight:500;font-display:swap}
+:root{
+  --bg:#F2EADB;--card:#E8DDC9;--ink:#2A2019;--muted:#6B5B4B;--rule:#CDBFA8;
+  --live:#2F6B4F;--before:#8F989C;--fog-ink:#4E5A60;--developing:#80560F;--twin:#2F5D86;--after:#8A2E22;
+  --paper:#FAF5EA;--mat:#211A14;--mat-2:#2E251D;--mat-ink:#EFE6D4;--mat-muted:#C9BBA3;--mat-line:#4a3d32;
+  --font-display:"Old Standard TT","Libre Caslon Text",Georgia,serif;
+  --font-body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",system-ui,sans-serif;
+  --font-data:"DM Mono",ui-monospace,monospace;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .33 0 0 0 0 .35 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  --gut:40px;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 var(--font-body);overflow-wrap:break-word}
+::selection{background:var(--ink);color:var(--paper)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px;border-radius:3px}
+a{color:var(--ink);text-underline-offset:3px;text-decoration-thickness:1px;transition:color .15s,background .15s,text-decoration-thickness .15s}
+a:hover{text-decoration-thickness:2px}
+code,kbd,.data{font-family:var(--font-data);font-size:.86em}
+code{background:#e8ddc9b3;border:1px solid #cdbfa880;border-radius:4px;padding:0 4px;overflow-wrap:anywhere}
+h1,h2,h3{font-weight:400;font-family:var(--font-display)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gut)}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:4px;z-index:30}
+.skip:focus{left:8px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+section[id]{scroll-margin-top:84px}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:0;z-index:20;background:#f2eadbeb;backdrop-filter:saturate(1.2) blur(8px);-webkit-backdrop-filter:saturate(1.2) blur(8px);border-bottom:1px solid transparent;transition:border-color .2s}
+.top.is-stuck{border-bottom-color:var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:18px;min-height:66px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto;min-width:0}
+.brand img{width:32px;height:32px;flex:none}
+.brand b{font:700 20px/1 var(--font-display);letter-spacing:.2em}
+.brand small{font:500 11.5px/1 var(--font-data);letter-spacing:.12em;text-transform:uppercase;color:var(--twin);border:1px dashed var(--twin);border-radius:999px;padding:5px 8px 4px;white-space:nowrap}
+.top nav{display:flex;gap:4px}
+.top nav a{font-size:14.5px;color:var(--muted);text-decoration:none;padding:8px 9px;border-radius:6px}
+.top nav a:hover{color:var(--ink);background:var(--card)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:11px 18px;border:2px solid var(--ink);border-radius:6px;font:700 16px/1.15 var(--font-body);text-decoration:none;color:var(--ink);background:transparent;cursor:pointer;transition:background .15s,color .15s,transform .1s,border-color .15s;text-align:center}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn:active{transform:translateY(1px)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:#4A3A2E;border-color:#4A3A2E}
+.btn.sm{min-height:40px;padding:8px 13px;font-size:14.5px}
+.btn svg{width:17px;height:17px;flex:none}
+.btn.quiet{border-color:transparent;text-decoration:underline;text-underline-offset:4px;padding-inline:8px}
+.btn.quiet:hover{background:var(--card);color:var(--ink)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,6.2fr) minmax(0,5.8fr);gap:52px;align-items:start;padding-block:34px 60px}
+.hero::before{content:"";position:absolute;top:-120px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;background:radial-gradient(55% 70% at 16% 18%,#fffaf0 0,transparent 70%),radial-gradient(60% 60% at 88% 60%,#2f5d860d 0,transparent 70%)}
+.plate-no{font:400 15px/1.3 var(--font-display);font-variant:small-caps;letter-spacing:.12em;color:var(--muted);margin:0 0 14px;text-transform:lowercase}
+.plate-no b{font-weight:400;color:var(--ink)}
+.hero h1{font-size:clamp(42px,5.4vw,74px);line-height:1;margin:0 0 22px;letter-spacing:-.01em}
+.hero h1 em{display:block;font-style:italic;background:linear-gradient(100deg,var(--ink) 0 45%,var(--fog-ink) 62%,#6f7a80 80%) 0 0/240% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent;animation:develop 2.6s cubic-bezier(.3,0,.2,1) .4s both;padding-bottom:.08em}
+@keyframes develop{from{background-position:100% 0}to{background-position:0 0}}
+.lede{font-size:20px;line-height:1.5;margin:0 0 18px;max-width:40ch}
+.lede b{font:700 1.06em/1 var(--font-display);letter-spacing:.06em}
+.crew-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:0 0 22px;font-size:15.5px;color:var(--muted)}
+.crew-line a{font:500 13.5px/1 var(--font-data);color:var(--ink);text-decoration:none;background:var(--paper);border:1px solid var(--rule);border-radius:999px;padding:7px 11px}
+.crew-line a:hover{border-color:var(--ink);background:var(--card)}
+.crew-line .plus{font-family:var(--font-display);font-style:italic;color:var(--muted)}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px;color:var(--muted)}
+.facts li{display:flex;align-items:center;gap:7px}
+.facts li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--live);flex:none}
+.facts li.sim::before{background:none;border:1.5px dashed var(--fog-ink)}
+
+/* the proof print: one replica, printed by the engine at build time, mounted like an albumen print */
+.print-mount{position:relative;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:18px 18px 14px;box-shadow:0 1px 0 #fff8 inset,0 40px 70px -40px #2a201988;transform:rotate(.6deg)}
+.print-mount::before{content:"";position:absolute;inset:7px;border:1px dashed var(--rule);border-radius:8px;pointer-events:none}
+.print-tag{position:relative;display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin:0 4px 10px;font:500 11.5px/1.3 var(--font-data);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink)}
+.print-tag span:last-child{color:var(--twin)}
+.print-mount .lb-plate{box-shadow:0 18px 30px -24px #2a201977}
+.print-cap{position:relative;margin:12px 4px 0;font-size:14px;line-height:1.45;color:var(--muted)}
+.print-cap a{color:var(--muted)}
+.fakebtn{display:inline-flex;align-items:center;font:600 13.5px/1 var(--font-body);color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:999px;padding:7px 11px;min-height:32px}
+.print-mount .lb-del,.print-mount .lb-tick{pointer-events:none}
+.print-strip{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:16px 0 0;border-top:1px solid var(--rule);padding-top:12px}
+.print-strip div{padding:0 10px;border-left:1px solid var(--rule)}
+.print-strip div:first-child{border-left:0;padding-left:4px}
+.print-strip b{display:block;font:400 30px/1 var(--font-display);font-variant-numeric:lining-nums tabular-nums}
+.print-strip span{display:block;font-size:13px;line-height:1.35;color:var(--muted);margin-top:4px}
+
+/* ---------- the contact strip: the numbered section rail ---------- */
+.strip{background:var(--mat);color:var(--mat-ink);position:relative;padding:14px 0}
+.strip::before,.strip::after{content:"";position:absolute;left:0;right:0;height:8px;background:repeating-linear-gradient(90deg,transparent 0 14px,#f2eadb24 14px 26px);background-size:26px 8px}
+.strip::before{top:3px}.strip::after{bottom:3px}
+.strip ol{list-style:none;margin:0 auto;padding:12px var(--gut);max-width:1240px;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.strip a{display:flex;flex-direction:column;gap:3px;height:100%;padding:10px 10px 11px;border:1px solid var(--mat-line);border-radius:4px;text-decoration:none;color:var(--mat-ink);background:linear-gradient(#2e251d,#251d16);transition:border-color .15s,background .15s,transform .15s}
+.strip a:hover{border-color:var(--mat-ink);transform:translateY(-2px)}
+.strip .n{font:italic 400 17px/1 var(--font-display);color:var(--mat-muted)}
+.strip .t{font-size:13.5px;line-height:1.25}
+.strip a:focus-visible{outline-color:var(--mat-ink)}
+
+/* ---------- sections ---------- */
+.sec{padding:88px 0 0}
+.sec-head{max-width:820px;margin:0 0 34px}
+.sec-head h2{font-size:clamp(32px,3.5vw,48px);line-height:1.06;margin:6px 0 14px;letter-spacing:-.005em}
+.sec-head h2 i{font-style:italic}
+.sec-head p{margin:0;color:var(--muted);max-width:66ch}
+.sec-head p + p{margin-top:10px}
+.small{font-size:14.5px;color:var(--muted)}
+.src{font:12.5px/1.45 var(--font-data);color:var(--muted);overflow-wrap:anywhere}
+.src a{color:var(--muted)}
+.src a:hover{color:var(--ink)}
+.f{font-family:var(--font-data);font-size:.84em}
+
+/* I · Skeleton Crew */
+.crew{display:grid;grid-template-columns:minmax(0,4.3fr) minmax(0,7.7fr);gap:26px;align-items:stretch}
+.skel{background:var(--mat);color:var(--mat-ink);border-radius:10px;padding:26px 26px 22px;position:relative;overflow:hidden}
+.skel::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 90% 0%,#5a4632aa,transparent 70%);pointer-events:none}
+.skel>*{position:relative}
+.skel h3{font-size:30px;line-height:1.1;margin:0 0 6px}
+.skel h3 a{color:var(--mat-ink);text-decoration:none;font-family:var(--font-data);font-size:.8em}
+.skel h3 a:hover{text-decoration:underline}
+.skel p{margin:0 0 14px;color:var(--mat-muted);font-size:15.5px}
+.skel a{color:var(--mat-ink)}
+.skel ul{list-style:none;margin:0 0 16px;padding:0;font-size:15px}
+.skel li{padding:8px 0;border-top:1px dashed var(--mat-line);color:var(--mat-muted)}
+.skel li a{color:var(--mat-ink);font-family:var(--font-data);font-size:.9em}
+.skel dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px}
+.skel dt{font:500 22px/1.1 var(--font-display);text-align:right;color:var(--mat-ink);font-variant-numeric:lining-nums tabular-nums}
+.skel dd{margin:0;color:var(--mat-muted);align-self:center}
+.skel .src,.skel .src a{color:var(--mat-muted)}
+.skel :focus-visible{outline-color:var(--mat-ink)}
+.apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.app{background:var(--paper);border:1px solid var(--rule);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.app img{width:100%;height:auto;display:block;border-bottom:1px solid var(--rule);aspect-ratio:1400/800;object-fit:cover;object-position:top left}
+.app div{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.app h3{font-size:26px;line-height:1.1;margin:0;letter-spacing:.06em}
+.app h3 a{font:500 13px/1 var(--font-data);letter-spacing:0;color:var(--muted);margin-left:8px;vertical-align:3px}
+.app p{margin:0;color:var(--muted);font-size:15.5px}
+.app .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.rulebox{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:4px}
+.quote{margin:0;padding:18px 20px;border-left:3px solid var(--ink);background:var(--paper);border-radius:0 8px 8px 0}
+.quote p{margin:0;font:italic 400 19px/1.4 var(--font-display)}
+.quote footer{margin-top:8px;font-size:13.5px;color:var(--muted)}
+.checks-q{list-style:none;margin:0;padding:18px 20px;background:var(--paper);border:1px solid var(--rule);border-radius:8px;font-size:15.5px}
+.checks-q li{display:grid;grid-template-columns:24px 1fr;gap:8px;padding:6px 0}
+.checks-q li::before{content:"✓";font:700 16px/1.5 var(--font-body);color:var(--live)}
+.merges{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.merges li{font:500 13px/1 var(--font-data);background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:7px 10px;color:var(--ink)}
+.merges li small{font:inherit;color:var(--muted)}
+
+/* II · the 60-second path */
+.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.step{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(0,.95fr);gap:6px 26px;padding:26px 0;border-top:1px solid var(--rule);align-items:start}
+.step:last-child{border-bottom:1px solid var(--rule)}
+.step__no{width:52px;height:52px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font:400 24px/1 var(--font-display);background:var(--paper)}
+.step__t{font:500 12px/1.3 var(--font-data);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink);margin:2px 0 6px}
+.step h3{font-size:25px;line-height:1.15;margin:0 0 8px}
+.step p{margin:0 0 10px;font-size:16.5px}
+.step .open{margin-top:4px}
+.pill{display:inline-block;font:600 .86em/1.2 var(--font-body);border:1px solid var(--ink);border-radius:999px;padding:2px 9px 3px;background:var(--paper);white-space:nowrap}
+.see{background:var(--paper);border:1px dashed var(--rule);border-radius:8px;padding:12px 14px 13px;position:relative}
+.see__k{display:block;font:500 11.5px/1.2 var(--font-data);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.see__v{display:block;font-size:15px;line-height:1.5}
+.see q{quotes:none;font-family:var(--font-data);font-size:13.5px;background:var(--card);padding:1px 5px;border-radius:3px}
+.see q.tw{color:var(--twin);background:#2f5d8614;border:1px dashed #2f5d8666}
+.see .stamp{display:inline-block;font:700 14px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2px solid var(--after);border-radius:3px;padding:4px 6px 2px;transform:rotate(-5deg);margin:0 2px}
+.see img{display:block;width:100%;height:auto;margin-top:10px;border-radius:5px;border:1px solid var(--rule)}
+.see.fog{background:linear-gradient(#8f989c1a,#8f989c26),var(--paper)}
+.after{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:24px}
+
+/* III · the instrument (the hero's plates, rebuilt for judges) */
+.lab{display:grid;grid-template-columns:minmax(0,7.4fr) minmax(0,4.6fr);gap:26px;align-items:start}
+.engine{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin:0 0 12px;font:500 12px/1.3 var(--font-data);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink)}
+.engine b{font-weight:500;color:var(--paper);background:var(--fog-ink);border-radius:3px;padding:4px 7px 3px}
+[data-engine="loading"] .engine b{background:var(--developing)}
+[data-engine="live"] .engine b{background:var(--live)}
+[data-engine="recorded"] .engine b{background:var(--after)}
+.engine span{text-transform:none;letter-spacing:0;font-size:12.5px}
+.lb-viewer{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 76px minmax(0,1fr);background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:16px;box-shadow:0 1px 0 #fff8 inset,0 34px 60px -34px #2a201980}
+.lb-viewer::before{content:"";position:absolute;inset:7px;border:1px dashed var(--rule);border-radius:10px;pointer-events:none}
+.lb-plate{position:relative;background:var(--paper);border:1px solid var(--rule);border-radius:6px;padding:12px 14px 12px;overflow:hidden;min-width:0;z-index:1;display:flex;flex-direction:column}
+.lb-imprint{display:flex;align-items:center;gap:8px;font:600 14px/1.3 var(--font-body);color:var(--ink);min-height:26px}
+.lb-dot{width:9px;height:9px;border-radius:50%;background:var(--live);flex:none;transition:background .4s}
+[data-axis="FOGGED"] .lb-dot{background:var(--before)}
+[data-axis="DEVELOPING"] .lb-dot{background:var(--developing)}
+[data-conflict="CONFLICT"] .lb-chip{color:var(--twin)}
+.lb-sitter{font:italic 400 20px/1.2 var(--font-display);margin:4px 0 6px;color:var(--ink)}
+.lb-list{list-style:none;margin:0;padding:0;transition:filter .6s ease-out;flex:1}
+.lb-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto auto;align-items:center;gap:4px 10px;padding:7px 0;border-bottom:1px dashed var(--rule);font-size:15.5px;line-height:1.3}
+.lb-name{min-width:0}
+[data-ticked] .lb-name{text-decoration:line-through;text-decoration-color:var(--muted);text-decoration-thickness:1px}
+.lb-tick{all:unset;box-sizing:border-box;width:24px;height:24px;border:1.5px solid var(--ink);border-radius:4px;cursor:pointer;flex:none;display:grid;place-items:center;transition:background .15s,transform .1s;background:var(--paper)}
+.lb-tick:hover{background:var(--card)}
+.lb-tick:active{transform:scale(.92)}
+.lb-tick[aria-pressed="true"]::after,.lb-tick[data-on]::after{content:"";width:6px;height:11px;border:solid var(--ink);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+.lb-tick:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.lb-who{display:block;font-size:13px;color:var(--muted);margin-top:1px}
+.lb-act,.lb-del,.lb-btns button,.lb-cord button,.ctl button{font:600 13.5px/1 var(--font-body);color:var(--ink);background:var(--paper);border:1px solid var(--ink);border-radius:999px;padding:7px 11px;min-height:32px;cursor:pointer;transition:background .15s,color .15s,transform .1s}
+.lb-del{border-color:transparent;background:transparent;color:var(--muted);font:400 20px/1 var(--font-body);width:32px;padding:0;display:grid;place-items:center}
+.lb-act:hover,.lb-btns button:hover,.lb-cord button:hover,.ctl button:hover{background:var(--ink);color:var(--paper)}
+.lb-del:hover{border-color:var(--rule);background:var(--card);color:var(--ink)}
+.lb-act:active,.lb-del:active,.lb-btns button:active,.lb-cord button:active,.ctl button:active{transform:translateY(1px)}
+.lb-twin{position:relative;margin:8px 0 10px;padding:10px 12px 10px;border:1px dashed var(--twin);border-left:3px solid var(--twin);border-radius:6px;background:#2f5d860d}
+.lb-ghost{display:block;font:italic 400 20px/1.2 var(--font-display);color:var(--twin);opacity:.7;transform:translate(6px,4px);margin-bottom:6px}
+.lb-cap{margin:0 0 8px;font-size:14px;line-height:1.4;color:var(--ink)}
+.lb-cap b{color:var(--twin);letter-spacing:.06em;text-transform:uppercase;font-size:12.5px}
+.lb-btns{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.lb-note{font-size:13.5px;color:var(--muted);padding:5px 0 6px 32px;border-bottom:1px dashed var(--rule)}
+.lb-enter{animation:lb-twin-in .7s cubic-bezier(.2,.7,.2,1) both}
+.lb-enter .lb-ghost{animation:lb-ghost-in .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes lb-twin-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes lb-ghost-in{from{opacity:0;transform:translate(0,0)}to{opacity:.7;transform:translate(6px,4px)}}
+.lb-limbo{margin-top:10px;border-top:1px solid var(--rule);padding-top:8px;display:flex;flex-wrap:wrap;align-items:baseline;column-gap:10px}
+.lb-limbo .lb-limbo-h{margin:0;font:600 12.5px/1.2 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink)}
+.lb-limbo ol{list-style:none;margin:0;padding:0;font:12.5px/1.6 var(--font-data);color:var(--fog-ink);flex:1 0 100%;min-height:20px}
+.lb-limbo ol:has(.lb-empty){flex:0 1 auto;min-height:0}
+.lb-limbo li span{color:var(--ink)}
+.lb-limbo .lb-empty{color:var(--muted);font-family:var(--font-body);font-style:italic}
+.lb-count{font-family:var(--font-data);font-weight:500;color:var(--ink)}
+.lb-print{margin:8px 0 0;font:12px/1.3 var(--font-data);color:var(--muted);display:flex;gap:6px;align-items:center}
+.lb-print b{font-weight:500;color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:2px 5px}
+[data-same="yes"] .lb-print b{border-color:var(--live);color:var(--live)}
+[data-same="no"] .lb-print b{border-color:var(--twin);color:var(--twin);border-style:dashed}
+.lb-veil{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .9s ease-in-out;background:radial-gradient(120% 90% at 50% 45%,#8f989c1f 30%,#8f989c99 100%),var(--grain);background-size:auto,160px;mix-blend-mode:multiply}
+[data-axis="FOGGED"] .lb-veil{opacity:1;transition-duration:.6s;transition-timing-function:ease-out}
+[data-axis="FOGGED"] .lb-list{filter:saturate(.25) contrast(.9) blur(.25px)}
+[data-axis="DEVELOPING"] .lb-veil{opacity:.8;background:radial-gradient(120% 90% at 50% 40%,#e2a84b1f 20%,#80560f4d 100%)}
+[data-axis="DEVELOPING"] .lb-chip{color:var(--developing)}
+.lb-fixed{position:absolute;left:50%;top:58%;font:700 44px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:4px solid var(--after);border-radius:6px;padding:12px 20px 8px;transform:translate(-50%,-50%) rotate(-7deg);opacity:0;pointer-events:none;z-index:4;background:#faf5eaf2;box-shadow:0 0 0 8px #faf5eacc;white-space:nowrap}
+[data-fixed] .lb-fixed{animation:lb-stamp .28s cubic-bezier(.3,1.4,.5,1) both,lb-settle .6s cubic-bezier(.4,0,.2,1) 2s both}
+@keyframes lb-stamp{from{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.7)}to{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}}
+@keyframes lb-settle{to{opacity:.95;left:calc(100% - 84px);top:calc(100% - 128px);transform:translate(-50%,-50%) rotate(-7deg) scale(.55)}}
+@keyframes lb-settle-m{to{opacity:.95;left:calc(100% - 80px);top:44px;transform:translate(-50%,-50%) rotate(-7deg) scale(.5)}}
+.lb-big{position:absolute;right:14px;top:10px;display:flex;align-items:baseline;gap:6px;color:var(--fog-ink);opacity:0;transition:opacity .5s;z-index:3;pointer-events:none;white-space:nowrap}
+.lb-big b{font:400 44px/1 var(--font-display);font-variant-numeric:lining-nums}
+.lb-big i{font:italic 400 18px/1 var(--font-display)}
+[data-axis="FOGGED"] .lb-big,[data-axis="DEVELOPING"] .lb-big{opacity:1}
+[data-axis="DEVELOPING"] .lb-big{color:var(--developing)}
+.lb-cord{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:3}
+.lb-cord::before,.lb-cord::after{content:"";position:absolute;z-index:0;left:50%;width:2px;margin-left:-1px;background:repeating-linear-gradient(var(--fog-ink) 0 7px,transparent 7px 12px);transition:height .4s ease}
+.lb-cord::before{top:8px;height:calc(50% - 40px)}
+.lb-cord::after{bottom:8px;height:calc(50% - 40px)}
+.lb-cord[data-link="down"]::before,.lb-cord[data-link="down"]::after{height:calc(50% - 74px)}
+.lb-cord button{position:relative;padding:9px 8px;font-size:13px;white-space:normal;width:68px;line-height:1.15;background:var(--paper);min-height:44px}
+.lb-cord small{position:absolute;top:calc(50% + 34px);background:var(--card);padding:3px 0;z-index:1;font:600 10.5px/1.25 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--fog-ink);text-align:center;width:76px}
+.lb-wisp{position:absolute;top:50%;left:50%;font:500 11px/1 var(--font-data);color:var(--ink);background:var(--paper);border:1px solid var(--before);border-radius:999px;padding:4px 7px;white-space:nowrap;pointer-events:none;box-shadow:0 0 14px 4px #8f989c55;opacity:0;animation:lb-wisp-ab .8s cubic-bezier(.4,0,.2,1) both;z-index:5}
+.lb-wisp[data-to="a"]{animation-name:lb-wisp-ba}
+@keyframes lb-wisp-ab{0%{opacity:0;transform:translate(-160%,-50%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(60%,-50%)}}
+@keyframes lb-wisp-ba{0%{opacity:0;transform:translate(60%,-50%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-160%,-50%)}}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:14px}
+.ctl button{font-size:14.5px;padding:10px 16px;min-height:44px}
+.ctl button.solid{background:var(--ink);color:var(--paper)}
+.ctl button.solid:hover{background:#4A3A2E;border-color:#4A3A2E}
+.ctl button[disabled]{opacity:.55;cursor:progress}
+.say{margin:12px 0 0;font:italic 400 17px/1.4 var(--font-display);color:var(--muted);min-height:2.8em}
+.lab .lb-plate{min-height:452px}
+.match{margin:10px 0 0;font:13px/1.4 var(--font-data);color:var(--muted)}
+/* the checks */
+.checks{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 20px 16px;position:sticky;top:86px}
+.checks h3{font-size:24px;line-height:1.15;margin:0 0 4px}
+.checks>p{margin:0 0 12px;font-size:14px;color:var(--muted)}
+.checks ol{list-style:none;margin:0;padding:0}
+.check{display:grid;grid-template-columns:30px minmax(0,1fr);gap:2px 10px;padding:11px 0;border-top:1px dashed var(--rule)}
+.check__box{grid-row:span 3;width:24px;height:24px;border:1.5px solid var(--ink);border-radius:50%;margin-top:2px;display:grid;place-items:center;background:var(--bg);transition:background .2s,border-color .2s}
+.check[data-done] .check__box{background:var(--live);border-color:var(--live)}
+.check[data-done] .check__box::after{content:"";width:6px;height:11px;border:solid var(--paper);border-width:0 2.5px 2.5px 0;transform:translateY(-1px) rotate(45deg)}
+.check.is-new .check__box{animation:pop .5s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.check b{font-size:15.5px;line-height:1.3}
+.check code{font-size:11.5px;background:none;border:0;padding:0;color:var(--fog-ink)}
+.check [data-detail]{font-size:13.5px;line-height:1.4;color:var(--muted)}
+.check[data-done] [data-detail]{color:var(--ink)}
+.shuf{margin:12px 0 0;padding:12px 14px;border-radius:8px;background:var(--card);font:13px/1.5 var(--font-data);color:var(--fog-ink);min-height:3.2em}
+.shuf[data-tone="busy"]{color:var(--developing)}
+.shuf[data-tone="ok"]{color:var(--live);background:#2f6b4f14;border:1px solid #2f6b4f55}
+.shuf[data-tone="bad"]{color:var(--after);background:#8a2e2214;border:1px solid var(--after)}
+/* recorded fallback: what the same code printed when this page was built */
+.recorded{margin-top:18px;background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;position:relative}
+.recorded h3{font-size:22px;margin:0 0 8px;line-height:1.2}
+.recorded .rstamp{position:absolute;right:16px;top:14px;font:700 13px/1 var(--font-display);letter-spacing:.14em;color:var(--after);border:2px solid var(--after);border-radius:3px;padding:5px 7px 3px;transform:rotate(-4deg)}
+.recorded dl{display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:8px 16px;margin:10px 0 0;font-size:14.5px}
+.recorded dt{font-weight:700}
+.recorded dd{margin:0;color:var(--muted)}
+.recorded dd code{color:var(--ink)}
+html.js .recorded{display:none}
+html.js [data-engine="recorded"] .recorded{display:block}
+html:not(.js) .ctl,html:not(.js) .lb-cord button{display:none}
+html.js .nojs{display:none}
+[data-engine="recorded"] .ctl button,[data-engine="recorded"] .lb-cord button,[data-engine="recorded"] .lb-list button{opacity:.45;pointer-events:none}
+
+/* IV · criteria */
+.crit{border-top:1px solid var(--ink)}
+.crit__row{display:grid;grid-template-columns:minmax(0,3.2fr) minmax(0,5.6fr) minmax(0,3.2fr);gap:10px 28px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.crit__k{margin:0}
+.crit__k b{display:block;font:400 24px/1.15 var(--font-display)}
+.crit__k span{display:block;font:500 12px/1.4 var(--font-data);color:var(--muted);margin-top:4px;letter-spacing:.04em}
+.crit__k .q{font:italic 400 15px/1.4 var(--font-display);letter-spacing:0;margin-top:8px;color:var(--muted)}
+.crit__a{margin:0;font-size:16.5px}
+.crit__w{margin:0;font-size:14.5px;color:var(--muted)}
+.crit__w a{color:var(--ink)}
+.crit__row.gate{background:linear-gradient(90deg,#2f6b4f0f,transparent 70%)}
+
+/* V · Kiro: the darkroom mat */
+.kiro{margin-top:96px;background:var(--mat);color:var(--mat-ink);padding:88px 0 92px;position:relative;overflow:hidden}
+.kiro::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 82% 10%,#5a4632aa,transparent 70%),radial-gradient(40% 50% at 6% 92%,#3a2d2288,transparent 70%);pointer-events:none}
+.kiro .wrap{position:relative}
+.kiro .sec-head h2,.kiro h3{color:var(--mat-ink)}
+.kiro .sec-head p,.kiro .plate-no{color:var(--mat-muted)}
+.kiro .plate-no b{color:var(--mat-ink)}
+.kiro a{color:var(--mat-ink)}
+.kiro a:hover{color:#fff}
+.kiro :focus-visible{outline-color:var(--mat-ink)}
+.kiro code{background:#ffffff12;border-color:#ffffff1f;color:var(--mat-ink)}
+.meter{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px 30px;align-items:center;border:1px solid var(--mat-line);border-radius:10px;padding:22px 26px;background:#ffffff06;margin:0 0 22px}
+.meter__n{font:400 clamp(56px,7vw,92px)/.95 var(--font-display);font-variant-numeric:lining-nums tabular-nums}
+.meter__n small{font-size:.45em}
+.meter p{margin:0 0 10px;color:var(--mat-muted);font-size:16px}
+.meter p b{color:var(--mat-ink);font-weight:700}
+.meter__bar{height:8px;border-radius:2px;background:#5a4b3d;overflow:hidden}
+.meter__bar span{display:block;height:100%;background:var(--mat-ink)}
+.kstats{list-style:none;margin:0 0 30px;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:18px}
+.kstats li{border-top:1px solid var(--mat-line);padding-top:12px}
+.kstats b{display:block;font:400 38px/1 var(--font-display);font-variant-numeric:lining-nums tabular-nums}
+.kstats span{display:block;font-size:14px;line-height:1.4;color:var(--mat-muted);margin-top:6px}
+.kgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.kcard{border:1px solid var(--mat-line);border-radius:10px;padding:18px 18px 16px;background:linear-gradient(#2e251d,#261e17);display:flex;flex-direction:column;gap:10px}
+.kcard.wide{grid-column:span 2}
+.kcard.full{grid-column:1/-1}
+.kcard__head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 10px}
+.kcard h3{font-size:23px;line-height:1.15;margin:0}
+.kcard h3 small{font:400 15px/1 var(--font-data);color:var(--mat-muted);margin-left:6px}
+.who{font:500 11px/1.2 var(--font-data);letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:4px 6px 3px}
+.who--k{color:#17120E;background:var(--mat-ink)}
+.who--o{color:var(--mat-ink);border:1px solid var(--mat-muted)}
+.who--n{color:var(--mat-muted);border:1px dashed var(--mat-muted)}
+.kcard p{margin:0;color:var(--mat-muted);font-size:15px;line-height:1.5}
+.kcard p b{color:var(--mat-ink)}
+.kcard dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:auto 0 0;padding-top:10px;border-top:1px dashed var(--mat-line);font-size:13.5px}
+.kcard dt{font:500 11px/1.9 var(--font-data);letter-spacing:.08em;text-transform:uppercase;color:var(--mat-muted)}
+.kcard dd{margin:0;overflow-wrap:anywhere}
+.kcard dd a{font-family:var(--font-data);font-size:12.5px;margin-right:8px;display:inline-block;padding:3px 0;line-height:18px}
+.ktable{width:100%;border-collapse:collapse;font-size:14px}
+.ktable th,.ktable td{text-align:left;padding:7px 8px 7px 0;border-top:1px dashed var(--mat-line);vertical-align:top}
+.ktable th{font:500 11px/1.4 var(--font-data);letter-spacing:.08em;text-transform:uppercase;color:var(--mat-muted)}
+.ktable td{color:var(--mat-muted)}
+.ktable td:first-child a{font-family:var(--font-data);font-size:13px;color:var(--mat-ink)}
+.ktable td.n{text-align:right;font:500 14px/1.4 var(--font-data);color:var(--mat-ink);white-space:nowrap}
+.ktable tr.hot td{color:var(--mat-ink)}
+.ktable td{overflow-wrap:anywhere}
+@media (max-width:560px){
+  .ktable thead{display:none}
+  .ktable tr{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;border-top:1px dashed var(--mat-line);padding:7px 0}
+  .ktable td{border:0;padding:1px 0}
+  .ktable td.n{grid-column:2;grid-row:1}
+  .ktable td:not(:first-child):not(.n){grid-column:1/-1;font-size:13px}
+}
+.term{background:#17120E;color:#E9DFCC;border-radius:10px;border:1px solid #3b3027;font:12.5px/1.6 var(--font-data);overflow:hidden}
+.term__bar{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #3b3027;color:#BFAF95;font:12px/1.3 var(--font-data);flex-wrap:wrap}
+.term__bar i{width:9px;height:9px;border-radius:50%;background:#4a3d32;flex:none}
+.term__bar .copy{margin-left:auto}
+.term pre{margin:0;padding:12px 14px 14px;white-space:pre-wrap;word-break:break-word;font:inherit}
+.term pre code{background:none;border:0;padding:0;border-radius:0;color:inherit;font:inherit}
+.term .ln{display:block}
+.term .t-time{color:#9E8F79}
+.term .t-fail{color:#FFF6E6;font-weight:500}
+.term .t-block{color:#17120E;background:#EFE6D4;padding:0 5px;border-radius:2px;font-weight:500;letter-spacing:.04em}
+.term .t-say{color:#D9C6A3;font-family:var(--font-body);font-style:italic;font-size:13.5px}
+.term .pr{color:#9E8F79}
+.term .ln--o{color:#D9C6A3}
+.term .ln--n{color:#9E8F79}
+.term .ln--s{color:#B8E0C2}
+.term__src{padding:8px 14px 11px;color:#9E8F79;font:11.5px/1.45 var(--font-body);border-top:1px dashed #3b3027}
+.term__src a{color:#BFAF95}
+.copy{font:500 12px/1 var(--font-data);color:#E9DFCC;background:transparent;border:1px solid #6b5b4b;border-radius:4px;padding:7px 9px;cursor:pointer;min-height:32px}
+.copy:hover{background:#EFE6D4;color:#17120E}
+.copy:focus-visible{outline-color:#EFE6D4}
+.ab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:2px 0}
+.ab div{border:1px solid var(--mat-line);border-radius:6px;padding:10px;text-align:center}
+.ab b{display:block;font:400 30px/1 var(--font-display)}
+.ab span{font-size:12.5px;color:var(--mat-muted)}
+
+/* VI · video */
+.vid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:30px;align-items:start}
+.vid__thumb{position:relative;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--rule);background:var(--mat);box-shadow:0 30px 60px -36px #2a201999}
+.vid__thumb img{display:block;width:100%;height:auto;aspect-ratio:16/11;object-fit:cover;object-position:top;opacity:.92;transition:opacity .2s,transform .4s}
+.vid__thumb:hover img{opacity:1;transform:scale(1.015)}
+.vid__play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;box-shadow:0 0 0 8px #faf5ea66}
+.vid__play svg{width:30px;height:30px;margin-left:4px}
+.vid__len{position:absolute;right:12px;bottom:12px;font:500 13px/1 var(--font-data);background:var(--ink);color:var(--paper);padding:6px 8px;border-radius:4px}
+.vid__note{margin:12px 0 0}
+.chap{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.chap li{border-bottom:1px solid var(--rule)}
+.chap a{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:4px 14px;align-items:baseline;padding:12px 4px;text-decoration:none}
+.chap a:hover{background:var(--card)}
+.chap__t{font:500 15px/1.3 var(--font-data);color:var(--twin)}
+.chap__l{font:400 20px/1.25 var(--font-display)}
+.chap__k{font:500 11px/1.2 var(--font-data);letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--mat);border-radius:3px;padding:4px 6px 3px;white-space:nowrap}
+.chap__vo{grid-column:2/-1;font-size:14.5px;line-height:1.45;color:var(--muted)}
+
+/* VII · receipts */
+.rgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.rcpt{background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden}
+.rcpt::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:radial-gradient(circle at 6px -2px,transparent 5px,var(--bg) 5.5px) 0 0/12px 6px repeat-x}
+.rcpt__n{font:400 clamp(36px,3.6vw,50px)/1 var(--font-display);font-variant-numeric:lining-nums tabular-nums;letter-spacing:-.01em}
+.rcpt__n small{font-size:.5em;color:var(--muted)}
+.rcpt__k{font-weight:700;font-size:15.5px;line-height:1.3}
+.rcpt__v{font-size:14.5px;line-height:1.45;color:var(--muted)}
+.rcpt__src{margin-top:auto;padding:8px 0 6px;border-top:1px dashed var(--rule);font:12px/1.45 var(--font-data);overflow-wrap:anywhere}
+.rcpt__src a{color:var(--muted)}
+.rnote{margin-top:18px}
+
+/* VIII · real or simulated */
+.real{border-top:1px solid var(--ink)}
+.real__row{display:grid;grid-template-columns:minmax(0,3.4fr) minmax(0,2fr) minmax(0,6.6fr);gap:8px 24px;padding:16px 0;border-bottom:1px solid var(--rule);align-items:baseline}
+.real__k{margin:0;font:400 20px/1.3 var(--font-display)}
+.real__st{margin:0}
+.real__v{margin:0;font-size:15.5px}
+.real__v .src{display:block;margin-top:4px}
+.stamp-s{display:inline-block;font:700 12.5px/1 var(--font-display);letter-spacing:.12em;border:2px solid currentColor;border-radius:3px;padding:5px 7px 3px;transform:rotate(-3deg);white-space:nowrap}
+.stamp-s--real{color:var(--live)}
+.stamp-s--sim{color:var(--fog-ink);border-style:dashed}
+.stamp-s--rec{color:var(--developing)}
+.stamp-s--no{color:var(--after)}
+.stamp-s--twin{color:var(--twin)}
+
+/* IX · verify */
+.verify{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:28px;align-items:start}
+.verify p{margin:0 0 12px;color:var(--muted);font-size:16px}
+
+/* X · limits */
+.limits{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 34px;counter-reset:l}
+.limits li{counter-increment:l;display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 10px;padding:16px 0;border-top:1px solid var(--rule)}
+.limits li::before{content:counter(l);font:italic 400 24px/1.1 var(--font-display);color:var(--muted)}
+.limits b{display:block;font:400 21px/1.25 var(--font-display);margin-bottom:4px}
+.limits span{font-size:15.5px;color:var(--muted)}
+
+/* closing + footer */
+.closing{margin-top:96px;background:var(--card);border-top:1px solid var(--rule);padding:60px 0 30px}
+.closing h2{font-size:clamp(32px,3.6vw,48px);line-height:1.08;margin:0 0 18px;max-width:24ch}
+.closing h2 em{font-style:italic}
+.closing .cta{margin-bottom:0}
+.foot{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);font-size:14.5px;color:var(--muted)}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 18px}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--ink)}
+.foot p{margin:0;flex:1 1 100%;font-size:13.5px}
+.version-chip{font:500 12.5px/1 var(--font-data);color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:6px 10px;text-decoration:none}
+.version-chip:hover{background:var(--ink);color:var(--paper)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1180px){
+  .top nav{display:none}
+  .strip ol{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .kgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kcard.wide{grid-column:1/-1}
+  .rgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kstats{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:1040px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:34px}
+  .print-mount{max-width:560px;transform:none}
+  .crew,.lab,.vid,.verify{grid-template-columns:minmax(0,1fr)}
+  .checks{position:static}
+  .step{grid-template-columns:56px minmax(0,1fr)}
+  .step .see{grid-column:2}
+  .crit__row{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr)}
+  .crit__w{grid-column:2}
+}
+@media (max-width:760px){
+  :root{--gut:16px}
+  body{font-size:17px}
+  .top .wrap{min-height:58px;gap:10px}
+  .brand b{font-size:18px}
+  .brand small{display:none}
+  .top .btn.ghost-src{display:none}
+  .hero{padding-block:18px 44px}
+  .lede{font-size:18.5px}
+  .strip ol{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sec{padding-top:64px}
+  .apps,.rulebox{grid-template-columns:minmax(0,1fr)}
+  .step{grid-template-columns:44px minmax(0,1fr);gap:6px 14px;padding:22px 0}
+  .step__no{width:40px;height:40px;font-size:20px}
+  .step .see{grid-column:1/-1}
+  .lb-viewer{grid-template-columns:minmax(0,1fr);padding:12px}
+  .lb-cord{flex-direction:row;height:64px}
+  .lb-cord::before,.lb-cord::after{top:50%;left:8px;width:calc(50% - 50px);height:2px;margin:0;background:repeating-linear-gradient(90deg,var(--fog-ink) 0 7px,transparent 7px 12px)}
+  .lb-cord::after{left:auto;right:8px;bottom:auto}
+  .lb-cord[data-link="down"]::before,.lb-cord[data-link="down"]::after{height:2px;width:calc(50% - 86px)}
+  .lb-cord button{width:auto;padding:9px 14px}
+  .lb-cord small{position:static;width:auto;max-width:110px;text-align:left}
+  .lb-wisp{animation-name:lb-wisp-down}
+  .lb-wisp[data-to="a"]{animation-name:lb-wisp-up}
+  @keyframes lb-wisp-down{0%{opacity:0;transform:translate(-50%,-160%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-50%,60%)}}
+  @keyframes lb-wisp-up{0%{opacity:0;transform:translate(-50%,60%)}20%,80%{opacity:1}100%{opacity:0;transform:translate(-50%,-160%)}}
+  .lab .lb-plate{min-height:0}
+  .lb-fixed{font-size:34px}
+  [data-fixed] .lb-fixed{animation-name:lb-stamp,lb-settle-m}
+  .crit__row{grid-template-columns:minmax(0,1fr);gap:8px}
+  .crit__w{grid-column:auto}
+  .kiro{padding:64px 0;margin-top:72px}
+  .meter{grid-template-columns:minmax(0,1fr);padding:18px}
+  .kstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kstats b{font-size:32px}
+  .kgrid{grid-template-columns:minmax(0,1fr)}
+  .kcard.wide{grid-column:auto}
+  .ktable--hooks th:nth-child(3),.ktable--hooks td:nth-child(3){display:none}
+  .rgrid{grid-template-columns:minmax(0,1fr)}
+  .real__row{grid-template-columns:minmax(0,1fr);gap:6px}
+  .limits{grid-template-columns:minmax(0,1fr)}
+  .chap a{grid-template-columns:52px minmax(0,1fr)}
+  .chap__k{grid-column:2;justify-self:start}
+  .recorded dl{grid-template-columns:minmax(0,1fr)}
+  .print-strip b{font-size:24px}
+  .closing{margin-top:72px}
+}
+@media (max-width:380px){
+  .hide-xs{display:none}
+  .strip ol{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .hero h1{font-size:38px}
+  .print-strip{grid-template-columns:minmax(0,1fr)}
+  .print-strip div{border-left:0;padding:6px 0 0 4px}
+}
+@media (prefers-reduced-motion:reduce) and (max-width:760px){
+  [data-fixed] .lb-fixed{left:calc(100% - 80px)!important;top:44px!important;transform:translate(-50%,-50%) rotate(-7deg) scale(.5)!important}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .hero h1 em{background-position:0 0}
+  [data-fixed] .lb-fixed{opacity:.95;left:calc(100% - 84px);top:calc(100% - 128px);transform:translate(-50%,-50%) rotate(-7deg) scale(.55)}
+  .lb-enter .lb-ghost{opacity:.7}
+}
+@media print{
+  .top,.strip,.ctl,.skip,.lb-veil,.lb-wisp{display:none}
+  .kiro{background:#fff;color:#000}
+  .hero h1 em{background-position:0 0}
+  *{animation:none!important;transition:none!important}
+}
+
 </style>
 </head>
 <body>
-<main>
-  <h1>LIMBO, for judges</h1>
-  <p class="version"><a id="version" href="https://github.com/edycutjong/limbo/releases/latest">v0.1.0</a> · <a href="https://limbo.edycu.dev/">landing page</a></p>
-  <p class="claim">When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.</p>
+<a class="skip" href="#main">Skip to the judge guide</a>
+<header class="top" id="top"><div class="wrap">
+<a class="brand" href="/judge" aria-label="LIMBO for judges"><img src="/assets/icon.svg" alt="" width="32" height="32"><b>LIMBO</b><small>for judges</small></a>
+<nav aria-label="Sections"><a href="#path">Path</a><a href="#run">Run it here</a><a href="#criteria">Criteria</a><a href="#kiro">Kiro</a><a href="#video">Video</a><a href="#receipts">Receipts</a><a href="#limits">Limits</a></nav>
+<a class="btn sm ghost-src" href="https://github.com/edycutjong/limbo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6l-5 6 5 6M16 6l5 6-5 6"/></svg><span>Source</span></a>
+<a class="btn sm solid" href="https://basecamp.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span><span class="hide-xs">Open </span>BASECAMP</span></a>
+</div></header>
+<main id="main">
 
-  <h2>The judge path</h2>
-  <p class="note">No setup, no keys, no cloning.</p>
-  <ol>
-    <li>Open <a href="https://basecamp.limbo.edycu.dev/?replicas=2">BASECAMP in its two-replica view</a>. No install, no login, no credits. Two cards appear: REPLICA A (Sari) and REPLICA B (Budi), joined by an in-page link that is labelled as simulated.</li>
-    <li>Press <strong>Cut link</strong>. Both cards fog over and count their waiting edits.</li>
-    <li>Press <strong>Play the lake scene</strong>. Sari ticks the tent while Budi deletes it, and both claim the last stove.</li>
-    <li>Press <strong>Restore link</strong>. The tent returns as a ghost <em>twin</em>; the stove goes to exactly one claimant on both replicas.</li>
-    <li>Tap <strong>Keep</strong> on the twin and <strong>OK</strong> on the lost claim. The fog lifts and the <strong>FIXED</strong> stamp appears: both replicas hold the same list.</li>
-    <li>Now your own edit, not the scene: type an item into <strong>Add an item</strong> on REPLICA A (it appears on B), press <strong>Cut link</strong>, tick it on A and delete it on B (<strong>⋯</strong> then <strong>Delete</strong>), press <strong>Restore link</strong>. It comes back as a twin on both cards (rule: resurrect); <strong>Keep</strong> settles it.</li>
-    <li>Open <a href="https://aftershock.limbo.edycu.dev/?replicas=2">AFTERSHOCK</a> (a second, different app on the same skeleton) and run the same cut, <strong>Play the survey scene</strong>, restore. Resolve the lost note by tapping either <strong>Keep … note</strong> button on the twin card.</li>
-    <li>Then press <strong>Run shuffle test</strong> in either page's shuffle section: it replays the on-screen ops in random causal orders in your browser (the same ops replayed, not the 10,000-ordering run).</li>
-  </ol>
+<div class="wrap"><section class="hero" aria-labelledby="h1">
+<div>
+<p class="plate-no">for judges · kiroween 2026 · <b>skeleton crew</b></p>
+<h1 id="h1">Cut the link. <em>Judge what comes back.</em></h1>
+<p class="lede"><b>LIMBO</b> is a local-first skeleton where every op declares how it merges. When the connection dies, your app keeps working. When it returns, an item deleted while it was edited comes back as a ghost twin, and a lost claim is shown to its owner.</p>
+<p class="crew-line">One skeleton, two apps, two folders: <a href="https://github.com/edycutjong/limbo/tree/main/skeleton">skeleton/</a><span class="plus">+</span><a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp">apps/basecamp/</a><span class="plus">+</span><a href="https://github.com/edycutjong/limbo/tree/main/apps/aftershock">apps/aftershock/</a></p>
+<div class="cta"><a class="btn solid" href="#path"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>The 60-second path</span></a><a class="btn" href="#run">Run it on this page</a><a class="btn" href="https://youtu.be/V4m3zTV5MPs"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Video, 2:47</span></a><a class="btn quiet" href="https://github.com/edycutjong/limbo/blob/main/JUDGE.md">JUDGE.md</a></div>
+<ul class="facts"><li>No install, no login, no keys</li><li>Both apps work offline after the first load</li><li class="sim">The link between the two replicas is simulated, and labelled so</li></ul>
+</div>
+<figure class="print-mount" aria-labelledby="print-cap" style="margin:0">
+<p class="print-tag"><span>Replica B · after the lake scene</span><span>printed by the engine</span></p>
+<article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CONFLICT" aria-label="Replica B, Budi">
+<header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live · 2 conflicts</span></header>
+<span class="lb-big" aria-hidden="true"><b class="lb-count">0</b><i>in limbo</i></span>
+<p class="lb-sitter">Replica B — Budi</p>
+<ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="tent" data-ticked><span class="lb-tick" data-on aria-hidden="true"></span><span class="lb-name">Tent (2-person)</span></li><li class="lb-twin" data-twin="tent:life"><span class="lb-ghost" aria-hidden="true">Tent (2-person)</span><p class="lb-cap"><b>Twin</b> · Budi deleted this while Sari ticked it · rule: <code>resurrect</code></p><p class="lb-btns"><span class="fakebtn">Keep</span><span class="fakebtn">Delete</span></p></li><li class="lb-row" data-id="stove"><span class="lb-tick" aria-hidden="true"></span><span class="lb-name">Stove (the last one)<small class="lb-who">Sari is bringing it</small></span></li><li class="lb-twin" data-twin="stove:claim:budi"><span class="lb-ghost" aria-hidden="true">Stove (the last one)</span><p class="lb-cap"><b>Twin</b> · Budi and Sari both claimed this · rule: <code>claim-one</code> picks Sari on every replica (lower Lamport stamp, then replica id)</p><p class="lb-btns"><span class="fakebtn">OK</span></p></li><li class="lb-row" data-id="gas"><span class="lb-tick" aria-hidden="true"></span><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span></li><li class="lb-row" data-id="filter"><span class="lb-tick" aria-hidden="true"></span><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span></li></ul>
 
-  <h2>The receipts</h2>
-  <table>
-    <tr><th scope="row">Convergence</th><td>10,000 random orderings of 3 replicas, 0 divergences across every op of both apps (seed 20251031); a measured, property-tested claim, not a proof<div class="src">evidence/convergence/full-2026-11-22.json</div></td></tr>
-    <tr><th scope="row">Tests</th><td>1,407 unit, component and property tests pass (9 skipped: the AFTERSHOCK rows for conflict classes it has no ops for), 26 Playwright e2e tests pass (2 skipped: viewport-conditional checks)<div class="src">evidence/ci/latest.json</div></td></tr>
-    <tr><th scope="row">Coverage</th><td>100% statements, 100% lines, 100% branches, 100% functions on skeleton/src and apps/*/src, excluding the React views, the browser and worker entries and the dev relay (each listed with its reason in vitest.config.ts); CI fails below 100%. The landing hero (site/) is outside this gate<div class="src">evidence/ci/latest.json, vitest.config.ts</div></td></tr>
-    <tr><th scope="row">Kiro work</th><td>194 Kiro sessions (build ledger; the A/B pilot sessions are logged separately), 179 sessions across 12 specs (160 ran numbered tasks, 12 authored a spec, 7 were follow-ups), 1,824 hook fires, 679.87 credits<div class="src">evidence/kiro/sessions.jsonl, hooks.jsonl, tally.json</div></td></tr>
-    <tr><th scope="row">Kiro share</th><td>115 of 124 product commits carry a Kiro-Session trailer (92.74%); the others are listed with their subjects<div class="src">evidence/kiro/share.json</div></td></tr>
-  </table>
+<p class="lb-print">state fingerprint <b data-print>7e11f8e1</b></p>
+<span class="lb-fixed" aria-hidden="true">FIXED</span>
+<div class="lb-veil" aria-hidden="true"></div>
+</article>
+<div class="print-strip"><div><b>10,000</b><span>orderings, 0 divergences</span></div><div><b>92.74%</b><span>product commits from Kiro</span></div><div><b>1,824</b><span>logged hook runs, 2 Stop blocks</span></div></div>
+<figcaption class="print-cap" id="print-cap">Not a screenshot: BASECAMP's own ops on the skeleton's <code>createPair</code>, run when this page was built. Budi deleted the tent while Sari ticked it, and both claimed the last stove; after the link came back, Budi's card holds both twins. Replica A holds the same state (<code>7e11f8e1</code>). <a href="#run">Run it live</a>.</figcaption>
+</figure>
+</section></div>
 
-  <h2>What is real, what is simulated</h2>
-  <table>
-    <tr><th scope="row">Two apps on one skeleton work offline after the first load</th><td><strong>Tested</strong><div class="src">e2e/offline-shell.spec.ts (offline reload keeps the edit and the state), run by pnpm e2e:ci and, against both deployed URLs, by e2e/live.spec.ts</div></td></tr>
-    <tr><th scope="row">A delete during an edit comes back as a ghost twin; a lost claim is shown to its owner</th><td><strong>Tested, and yours to try</strong><div class="src">the judge path above, steps 3 to 6; e2e/basecamp-offline.spec.ts (lake scene: one resurrect twin and one claim-one twin resolved, replicas converge)</div></td></tr>
-    <tr><th scope="row">Every replica converges</th><td><strong>Measured, not proven</strong>: 10,000 random orderings of 3 replicas, 0 divergences<div class="src">evidence/convergence/full-2026-11-22.json</div></td></tr>
-    <tr><th scope="row">Two devices syncing</th><td><strong>Simulated in the live apps</strong>: the two replicas share an in-page link, labelled as such. The partition test runs two browser contexts through a dev-only relay. No physical two-device test, no hosted relay<div class="src">two contexts through the dev relay in e2e/basecamp-offline.spec.ts and e2e/aftershock-offline.spec.ts; evidence/e2e/task-21-repeat10.txt (BASECAMP, 10 repeats)</div></td></tr>
-    <tr><th scope="row">Kiro wrote the product code</th><td><strong>115 of 124 product commits carry a Kiro-Session trailer; the other 9 are listed</strong><div class="src">evidence/kiro/share.json</div></td></tr>
-    <tr><th scope="row">The kit makes Kiro write more correct merges</th><td><strong>Not shown</strong>: the pre-registered A/B pilot found no measurable effect (Fisher p = 1)<div class="src">evidence/kiro/ab/</div></td></tr>
-    <tr><th scope="row">AFTERSHOCK is used in the field</th><td><strong>Not claimed</strong>: it runs on demonstration data<div class="src">apps/aftershock/</div></td></tr>
-  </table>
+<nav class="strip" aria-label="Plates on this page"><ol>
+<li><a href="#crew"><span class="n">I</span><span class="t">Skeleton Crew</span></a></li>
+<li><a href="#path"><span class="n">II</span><span class="t">The 60-second path</span></a></li>
+<li><a href="#run"><span class="n">III</span><span class="t">Run it on this page</span></a></li>
+<li><a href="#criteria"><span class="n">IV</span><span class="t">The five criteria</span></a></li>
+<li><a href="#kiro"><span class="n">V</span><span class="t">Kiro, file by file</span></a></li>
+<li><a href="#video"><span class="n">VI</span><span class="t">The video, by chapter</span></a></li>
+<li><a href="#receipts"><span class="n">VII</span><span class="t">Receipts</span></a></li>
+<li><a href="#real"><span class="n">VIII</span><span class="t">Real or simulated</span></a></li>
+<li><a href="#verify"><span class="n">IX</span><span class="t">Verify from a clone</span></a></li>
+<li><a href="#limits"><span class="n">X</span><span class="t">Honest limits</span></a></li>
+</ol></nav>
 
-  <h2>Where Kiro did the work</h2>
-  <ul>
-    <li><code>.kiro/specs/</code>: requirements, design and tasks for each feature, authored by Kiro sessions from an orchestrator brief. Start with .kiro/specs/basecamp/ or coverage-full/.</li>
-    <li><code>.kiro/steering/</code>: the rules Kiro was held to: local-first.md (no wall clock, commute or declare the merge) and testing.md (properties first).</li>
-    <li><code>.kiro/hooks/ and .kiro/agents/</code>: the hooks that ran the convergence properties after each task and blocked the agent from stopping while one failed.</li>
-    <li><code>.kiro/hooks/stop-gate.json</code>: blocked Kiro from finishing 2 times. Once unplanned: in merge-kit task 9.5 the shared property suite ran the new item.move op without its own payload generator, and Kiro wired it in (commit 651730d). Once on a wall-clock fault seeded on purpose (commit cca30a0); that is the session the video replays.</li>
-    <li><code>evidence/kiro/sessions.jsonl</code>: one row per Kiro session (spec, task, credits, hooks fired, outcome). Hand edits are logged as claude-direct rows. hooks.jsonl is written only by the hook scripts.</li>
-  </ul>
+<section class="sec" id="crew" aria-labelledby="h-crew"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>I</b> · skeleton crew</p><h2 id="h-crew">One skeleton. <i>Two apps, two folders.</i></h2><p>The category asks for a template lean enough to be clear and two distinct applications built from it. LIMBO's template is the op layer, sync and the offline look; each app supplies five things and nothing else (<a href="https://github.com/edycutjong/limbo/blob/main/docs/ADOPT.md">ADOPT.md</a>).</p></div>
+<div class="crew">
+<div class="skel">
+<h3><a href="https://github.com/edycutjong/limbo/tree/main/skeleton">skeleton/</a></h3>
+<p>The template. Three folders, 15 values exported from <a href="https://github.com/edycutjong/limbo/blob/main/skeleton/src/index.ts">index.ts</a>.</p>
+<ul>
+<li><a href="https://github.com/edycutjong/limbo/tree/main/skeleton/src/core">core/</a>: ops and the 6 named merge rules</li>
+<li><a href="https://github.com/edycutjong/limbo/tree/main/skeleton/src/sync">sync/</a>: replica, links, the local op log</li>
+<li><a href="https://github.com/edycutjong/limbo/tree/main/skeleton/src/limbo">limbo/</a>: fog, twins, the Inspector, FIXED</li>
+</ul>
+<dl><dt>21</dt><dd>files by the budget count (budget 30)</dd><dt>2,189</dt><dd>non-blank, non-comment lines (budget 2,400)</dd><dt>34</dt><dd>test files beside them</dd></dl>
+<p class="src" style="margin:14px 0 0"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/lean.json">evidence/lean.json</a></p>
+</div>
+<div class="apps">
+<article class="app"><img src="/assets/basecamp-twin.webp" alt="BASECAMP live after reconnect: on both replica cards the deleted tent is a twin reading Budi deleted this while Sari ticked it, rule: resurrect, with Keep and Delete." width="1400" height="785" loading="lazy" decoding="async"><div><h3>BASECAMP <a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp">apps/basecamp/</a></h3><p>A group trip list: ticks, claims on the last stove, delete-versus-edit twins, reorder, shared expenses. 12 ops.</p><div class="row"><a class="btn sm solid" href="https://basecamp.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open live</span></a><span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/apps/basecamp/app.config.ts">app.config.ts</a></span></div></div></article>
+<article class="app"><img src="/assets/aftershock.webp" alt="AFTERSHOCK live: two replicas of a sector grid with SAFE, DAMAGED and NO REPORT cells, marked demo data." width="1400" height="875" loading="lazy" decoding="async"><div><h3>AFTERSHOCK <a href="https://github.com/edycutjong/limbo/tree/main/apps/aftershock">apps/aftershock/</a></h3><p>A field survey form on a sector grid: two reports of one sector merge to the worse severity, and both head counts are kept. 6 ops, demo data.</p><div class="row"><a class="btn sm solid" href="https://aftershock.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open live</span></a><span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/apps/aftershock/app.config.ts">app.config.ts</a></span></div></div></article>
+</div>
+<div class="rulebox">
+<blockquote class="quote"><p>“Build a skeleton code template lean enough to be clear but flexible enough to support various use cases. Show us its versatility with two distinct applications from your foundation.”</p><footer>Kiroween 2026 rules, Skeleton Crew. And: “Your repo must contain 2 separate repo folders for the 2 separate applications.”</footer></blockquote>
+<div><ul class="checks-q">
+<li><span>Two apps in two folders, <a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp">apps/basecamp/</a> and <a href="https://github.com/edycutjong/limbo/tree/main/apps/aftershock">apps/aftershock/</a>, each with its own ops, model, seed, views and config.</span></li>
+<li><span>AFTERSHOCK was built second: its 27 Kiro spec sessions changed 0 files under <code>skeleton/</code> (later UI polish touched skeleton CSS and markup for both apps).</span></li>
+<li><span>18 ops across the two apps, each declaring one of the skeleton's rules:</span></li>
+</ul>
+<ul class="merges"><li>commutes <small>· 8 ops</small></li><li>causal-lww <small>· 5 ops</small></li><li>resurrect <small>· 2 ops</small></li><li>claim-one <small>· 2 ops</small></li><li>sum-split <small>· 0 ops</small></li><li>ordered-move <small>· 1 ops</small></li></ul>
+<p class="src" style="margin-top:8px"><a href="https://github.com/edycutjong/limbo/blob/main/skeleton/src/core/types.ts">types.ts</a> · <a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp/src/ops">basecamp ops</a> · <a href="https://github.com/edycutjong/limbo/tree/main/apps/aftershock/src/ops">aftershock ops</a> · <code>sum-split</code> splits each expense into shares inside <a href="https://github.com/edycutjong/limbo/blob/main/apps/basecamp/src/ops/expense.state.ts">expense.state.ts</a>; no op declares it</p>
+</div>
+</div>
+</div>
+</div></section>
 
-  <h2>Reproduce it</h2>
-  <ul>
-    <li><code>git clone https://github.com/edycutjong/limbo &amp;&amp; cd limbo &amp;&amp; pnpm install</code>: the real product, locally</li>
-    <li><code>pnpm --filter @limbo/basecamp dev</code>: BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev)</li>
-    <li><code>pnpm test:coverage</code>: unit, component and property tests with the 100% coverage gate</li>
-    <li><code>pnpm e2e:ci</code>: two browser contexts, a real partition, offline shell</li>
-    <li><code>pnpm props:full</code>: the full 10,000-ordering tier (about 22 minutes)</li>
-    <li><code>node kit/scripts/readme-tally.mjs</code>: recomputes every Kiro number above from evidence/kiro/</li>
-  </ul>
-  <p class="note"><strong>CI / deterministic replay.</strong> The in-page &quot;Run shuffle test&quot; button replays the on-screen ops in random causal orders inside your browser and prints the count it actually ran. It is a deterministic replay of the same ops, not the full-tier run.</p>
+<section class="sec" id="path" aria-labelledby="h-path"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>II</b> · the 60-second path</p><h2 id="h-path">Sixty seconds <i>in the live apps.</i></h2><p>Each step names the exact button and what you should see. Open BASECAMP in a new tab; it shows two replicas side by side, so one browser is enough. The times are a budget, not a measurement. If you see something else, that is a bug we want to hear about.</p></div>
+<ol class="steps">
+<li class="step"><span class="step__no" aria-hidden="true">1</span><div><p class="step__t">0:00 – 0:05</p><h3>Open BASECAMP, two replicas</h3><p><a href="https://basecamp.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener">basecamp.limbo.edycu.dev/?replicas=2</a>. No install, no login, no credits.</p><p class="open"><a class="btn sm" href="https://basecamp.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open BASECAMP</span></a></p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">two cards, <q>REPLICA A — Sari</q> and <q>REPLICA B — Budi</q>, joined by a cord captioned <q>SIMULATED LINK — DevTools offline does not cut it; use the lever</q>.</span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">2</span><div><p class="step__t">0:05 – 0:15</p><h3>Cut the link, play the scene</h3><p>Press <span class="pill">Cut link</span>, then <span class="pill">Play the lake scene</span>. Offline, Sari ticks the tent while Budi deletes it, and both claim the last stove.</p></div><div class="see fog"><span class="see__k">You should see</span><span class="see__v">both cards fog over, each chip reads <q>Offline — 2 waiting</q>, and the edits are tagged as scripted.<img src="/assets/basecamp-fogged.webp" alt="BASECAMP with the link cut: both replica cards fogged, each chip reading Offline, 2 waiting." width="1400" height="785" loading="lazy" decoding="async"></span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">3</span><div><p class="step__t">0:15 – 0:25</p><h3>Restore the link</h3><p>Press <span class="pill">Restore link</span>. The waiting ops cross, and each is merged by the rule it declares.</p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">the tent back as a ghost twin on both cards: <q class="tw">TWIN · Budi deleted this while Sari ticked it · rule: resurrect</q>. On Budi's card: <q class="tw">TWIN · Budi and Sari both claimed this · rule: claim-one</q>, with <span class="pill">OK</span> and <span class="pill">Why Sari?</span>.<img src="/assets/basecamp-twin.webp" alt="BASECAMP after Restore link: the tent twin on both cards, and the stove claim twin on Budi’s card." width="1400" height="785" loading="lazy" decoding="async"></span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">4</span><div><p class="step__t">0:25 – 0:30</p><h3>Settle it with one tap each</h3><p>Tap <span class="pill">Keep</span> on the tent twin and <span class="pill">OK</span> on Budi's lost claim.</p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">the twins clear and a <span class="stamp">FIXED</span> stamp lands on each replica; both cards show the same list.<img src="/assets/basecamp-fixed.webp" alt="BASECAMP after Keep and OK: both replicas live, a FIXED stamp on each." width="1400" height="785" loading="lazy" decoding="async"></span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">5</span><div><p class="step__t">0:30 – 0:45</p><h3>Now your own edit, not the scene</h3><p>Type an item into <em>Add an item</em> on replica A (it appears on B), press <span class="pill">Cut link</span>, tick it on A, delete it on B (<span class="pill">⋯</span> then <span class="pill">Delete</span>), press <span class="pill">Restore link</span>.</p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">your item back as a twin on both cards, <q class="tw">rule: resurrect</q>; <span class="pill">Keep</span> settles it.</span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">6</span><div><p class="step__t">0:45 – 0:50</p><h3>Inspector and the shuffle test</h3><p>Open the <span class="pill">Inspector</span> in a card, then press <span class="pill">Run shuffle test</span> in the page's shuffle section.</p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">the queued ops and the last three exchanges, each op with its merge rule, causal stamp and dependencies; then <q>1,000 / 1,000 orderings → same state</q>: your browser replayed the ops on screen in random causal orders (not the 10,000-ordering run).</span></div></li>
+<li class="step"><span class="step__no" aria-hidden="true">7</span><div><p class="step__t">0:50 – 1:00</p><h3>AFTERSHOCK: a second, different app</h3><p><a href="https://aftershock.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener">aftershock.limbo.edycu.dev/?replicas=2</a>: <span class="pill">Cut link</span>, <span class="pill">Play the survey scene</span>, <span class="pill">Restore link</span>.</p><p class="open"><a class="btn sm" href="https://aftershock.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open AFTERSHOCK</span></a></p></div><div class="see"><span class="see__k">You should see</span><span class="see__v">sector C3 on both grids as <q>UNSAFE</q>, <q>5 reported — Sari 2, Budi 3</q> (the worse report wins, both counts are kept), and the two notes as a twin: <span class="pill">Keep Sari's note</span> or <span class="pill">Keep Budi's note</span> lands FIXED.<img src="/assets/aftershock.webp" alt="AFTERSHOCK: two replicas of the sector grid, marked demo data." width="1400" height="875" loading="lazy" decoding="async"></span></div></li>
+</ol>
+<p class="after"><a class="btn solid" href="#run"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span>Or run the same path on this page</span></a><span class="small">Also live: the <a href="/">landing page</a>, whose hero runs the lake scene in the page, and the <a href="/deck/">12-slide deck</a> (arrow keys).</span></p>
+</div></section>
 
-  <h2>Honest limits</h2>
-  <ul>
-    <li>The live apps sync two replicas through an in-page link that is labelled as simulated. There is no hosted cross-device relay; the two-browser-context partition test uses a dev-only relay that ships in no production build.</li>
-    <li>No CRDT can stop two offline users from both claiming the last tent. Offline claims are provisional; on reconnect the op's declared rule picks one claimant deterministically and the other user sees a twin ghost.</li>
-    <li>The pre-registered A/B pilot (20 op-writing runs with and without the kit) showed no measurable effect: held-out failures 0 of 10 in both arms (95% CI 0 to 28%, Fisher p = 1). We claim nothing about the kit improving correctness. It is published as run (evidence/kiro/ab/).</li>
-    <li>AFTERSHOCK uses demonstration data; no field use is claimed. The Kiro IDE features (Spec Correctness, Agent Hooks panel) were not used: every Kiro session ran through the Kiro CLI, dispatched by an outside orchestrator. Edits made outside Kiro are logged too: 17 claude-direct ledger rows, and 9 of 124 product commits (listed in evidence/kiro/share.json).</li>
-  </ul>
+<section class="sec" id="run" aria-labelledby="h-run"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>III</b> · run it on this page</p><h2 id="h-run">No tab switch: <i>run the path here.</i></h2><p>Two BASECAMP replicas in this page: the skeleton's <code>createPair</code>, its in-page link and BASECAMP's own ops, bundled from <a href="https://github.com/edycutjong/limbo/blob/main/site/src/judge.ts">site/src/judge.ts</a> (it imports <a href="https://github.com/edycutjong/limbo/tree/main/skeleton/src">skeleton/src/</a> and <a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp">apps/basecamp/</a> unchanged). The store is in memory, so a reload starts from the seed. The engine downloads the first time you hover over, focus or press inside it.</p><p>The checklist is not a script: each box ticks when a value the engine computes says so, and the fingerprints hash each replica's own state.</p></div>
+<div class="lab" data-proof data-engine="idle" data-link="up" data-same="yes" data-src="/assets/judge.js?v=0b70bf6541">
+<div class="proof">
+<p class="engine"><b data-engine data-live="LIVE IN THIS TAB">NOT LOADED</b><span>judge.js, 127 KB (41 KB gzipped), loads on first hover, focus or press</span></p>
+<div class="lb-viewer" role="group" aria-label="Two replicas of BASECAMP joined by a simulated link">
+<article class="lb-plate" data-replica="a" data-axis="LIVE" data-conflict="CLEAR" aria-label="Replica A, Sari">
+<header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live</span></header>
+<span class="lb-big" aria-hidden="true"><b class="lb-count">0</b><i>in limbo</i></span>
+<p class="lb-sitter">Replica A — Sari</p>
+<ul class="lb-list" aria-label="Sari's packing list"><li class="lb-row" data-id="tent"><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="false" aria-label="Tick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-act" data-act="claim" data-id="tent">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)</span><button type="button" class="lb-act" data-act="claim" data-id="stove">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
+<div class="lb-limbo"><p class="lb-limbo-h">In limbo, with their rules</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+<p class="lb-print">state fingerprint <b data-print>6d51bcbd</b></p>
+<span class="lb-fixed" aria-hidden="true">FIXED</span>
+<div class="lb-veil" aria-hidden="true"></div>
+</article>
+<div class="lb-cord" data-link="up"><button type="button" data-act="link" aria-pressed="false">Cut link</button><small>simulated link</small></div>
+<article class="lb-plate" data-replica="b" data-axis="LIVE" data-conflict="CLEAR" aria-label="Replica B, Budi">
+<header class="lb-imprint"><span class="lb-dot" aria-hidden="true"></span><span class="lb-chip">Live</span></header>
+<span class="lb-big" aria-hidden="true"><b class="lb-count">0</b><i>in limbo</i></span>
+<p class="lb-sitter">Replica B — Budi</p>
+<ul class="lb-list" aria-label="Budi's packing list"><li class="lb-row" data-id="tent"><button type="button" class="lb-tick" data-act="tick" data-id="tent" aria-pressed="false" aria-label="Tick Tent (2-person)"></button><span class="lb-name">Tent (2-person)</span><button type="button" class="lb-act" data-act="claim" data-id="tent">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="tent" aria-label="Delete Tent (2-person)" title="Delete">×</button></li><li class="lb-row" data-id="stove"><button type="button" class="lb-tick" data-act="tick" data-id="stove" aria-pressed="false" aria-label="Tick Stove (the last one)"></button><span class="lb-name">Stove (the last one)</span><button type="button" class="lb-act" data-act="claim" data-id="stove">I'll bring it</button><button type="button" class="lb-del" data-act="del" data-id="stove" aria-label="Delete Stove (the last one)" title="Delete">×</button></li><li class="lb-row" data-id="gas"><button type="button" class="lb-tick" data-act="tick" data-id="gas" aria-pressed="false" aria-label="Tick Gas canister ×2"></button><span class="lb-name">Gas canister ×2<small class="lb-who">Citra is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="gas" aria-label="Delete Gas canister ×2" title="Delete">×</button></li><li class="lb-row" data-id="filter"><button type="button" class="lb-tick" data-act="tick" data-id="filter" aria-pressed="false" aria-label="Tick Water filter"></button><span class="lb-name">Water filter<small class="lb-who">Dewi is bringing it</small></span><button type="button" class="lb-del" data-act="del" data-id="filter" aria-label="Delete Water filter" title="Delete">×</button></li></ul>
+<div class="lb-limbo"><p class="lb-limbo-h">In limbo, with their rules</p><ol><li class="lb-empty">nothing waiting</li></ol></div>
+<p class="lb-print">state fingerprint <b data-print>6d51bcbd</b></p>
+<span class="lb-fixed" aria-hidden="true">FIXED</span>
+<div class="lb-veil" aria-hidden="true"></div>
+</article>
+</div>
+<div class="ctl"><button type="button" class="solid" data-act="auto">Play the whole path</button><button type="button" data-act="scene">Play the lake scene</button><button type="button" data-act="shuffle">Run shuffle test</button><button type="button" data-act="reset">Reset</button></div>
+<p class="say" data-say role="status" aria-live="polite">Press Cut link and edit both cards, or press Play the whole path.</p>
+<div class="recorded" role="region" aria-label="Recorded results"><span class="rstamp">RECORDED</span><h3>The engine did not load here. <span class="nojs">(JavaScript is off.)</span></h3><p class="small">The same code ran when this page was built (<a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/judge-build.mjs">judge-build.mjs</a> calls <code>prerender()</code> in Node). This is what it printed:</p><dl><dt>After Cut link + the lake scene</dt><dd>chips “Offline — 2 waiting” and “Offline — 2 waiting”; 2 + 2 ops in limbo; fingerprints <code>88b3705c</code> ≠ <code>99a93050</code></dd><dt>After Restore link</dt><dd>chips “Live · 2 conflicts” on both; the tent is a twin on both replicas; Stove (the last one) → Sari on both, Budi sees the twin; fingerprints <code>7e11f8e1</code> = <code>7e11f8e1</code></dd><dt>After Keep + OK</dt><dd>FIXED on both replicas; fingerprints <code>88b3705c</code> = <code>88b3705c</code></dd><dt>Shuffle</dt><dd>1,000 orderings of 21 ops → 1 final state, <code>88b3705c</code>, the state both fixed replicas hold</dd></dl></div>
+</div>
+<aside class="checks" aria-labelledby="h-checks">
+<h3 id="h-checks">The path, checked by the engine</h3>
+<p>Each line names the value it reads.</p>
+<ol>
+<li class="check" data-check="cut"><span class="check__box" aria-hidden="true"></span><b>Cut link: both replicas fog</b><code>view.axis = FOGGED on A and B</code><span data-detail data-idle="waiting for the link to be cut">waiting for the link to be cut</span></li>
+<li class="check" data-check="limbo"><span class="check__box" aria-hidden="true"></span><b>Edits wait in limbo, one state each</b><code>pair.queued(a), pair.queued(b) &gt; 0</code><span data-detail data-idle="edit both cards, or press Play the lake scene">edit both cards, or press Play the lake scene</span></li>
+<li class="check" data-check="twin"><span class="check__box" aria-hidden="true"></span><b>Restore: the deleted item returns as a twin on both</b><code>item.life = twin on A and on B</code><span data-detail data-idle="needs a delete on one side and an edit on the other">needs a delete on one side and an edit on the other</span></li>
+<li class="check" data-check="claim"><span class="check__box" aria-hidden="true"></span><b>Two claims, one winner on both, the loser told</b><code>same winners on A and B, a loser left</code><span data-detail data-idle="needs both replicas to claim the stove offline">needs both replicas to claim the stove offline</span></li>
+<li class="check" data-check="fixed"><span class="check__box" aria-hidden="true"></span><b>Keep + OK: FIXED on both, one fingerprint</b><code>view.fixed on A and B, fingerprints equal</code><span data-detail data-idle="settle every twin">settle every twin</span></li>
+<li class="check" data-check="shuffle"><span class="check__box" aria-hidden="true"></span><b>Shuffle: 1,000 random causal orders, one final state</b><code>runShuffle(ops on screen, 1,000, seed 1)</code><span data-detail data-idle="press Run shuffle test">press Run shuffle test</span></li>
+</ol>
+<p class="shuf" data-shuffle-out data-idle="The apps' shuffle test, on this page: the ops on screen, replayed in 1,000 random causal orders by the skeleton's runShuffle.">The apps' shuffle test, on this page: the ops on screen, replayed in 1,000 random causal orders by the skeleton's runShuffle.</p>
+</aside>
+</div>
+</div></section>
 
-  <h2>Links</h2>
-  <ul>
-    <li>Repository (MIT): <a href="https://github.com/edycutjong/limbo">https://github.com/edycutjong/limbo</a></li>
-    <li>BASECAMP: <a href="https://basecamp.limbo.edycu.dev/">https://basecamp.limbo.edycu.dev/</a></li>
-    <li>AFTERSHOCK: <a href="https://aftershock.limbo.edycu.dev/">https://aftershock.limbo.edycu.dev/</a></li>
-    <li>Landing page: <a href="https://limbo.edycu.dev/">https://limbo.edycu.dev/</a></li>
-  </ul>
+<section class="sec" id="criteria" aria-labelledby="h-criteria"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>IV</b> · the five criteria</p><h2 id="h-criteria">Where each criterion <i>is answered.</i></h2><p>The event's criteria, paraphrased from the official rules: a pass/fail Stage One, then five criteria at 20% each.</p></div>
+<div class="crit" role="list">
+<div class="crit__row gate" role="listitem"><p class="crit__k"><b>Stage One</b><span>pass / fail</span><span class="q">Fits the theme and applies the required tools.</span></p><p class="crit__a">Skeleton Crew: one skeleton and two apps in two separate folders (<a href="https://github.com/edycutjong/limbo/tree/main/skeleton">skeleton/</a>, <a href="https://github.com/edycutjong/limbo/tree/main/apps/basecamp">apps/basecamp/</a>, <a href="https://github.com/edycutjong/limbo/tree/main/apps/aftershock">apps/aftershock/</a>). <a href="https://github.com/edycutjong/limbo/tree/main/.kiro">/.kiro</a> sits at the root with specs, hooks, steering and agents, and CI fails if it is ignored or empty. MIT <a href="https://github.com/edycutjong/limbo/blob/main/LICENSE">license</a>.</p><p class="crit__w"><a href="#crew">Plate I</a> · <a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/kiro-root-check.mjs">kiro-root-check.mjs</a></p></div>
+<div class="crit__row" role="listitem"><p class="crit__k"><b>Potential Impact</b><span>20% · 10 points</span><span class="q">A real problem for a real audience? Would someone actually use this?</span></p><p class="crit__a">For groups who share a list or a form where the signal drops (a trip, a site survey), and for the developers who build those apps. Last-write-wins quietly drops an edit; LIMBO shows the lost edit as a twin with the rule that decided it, and one tap settles it. Both apps keep working offline after the first load (tested), with no account. The scenarios are ours: there is no outside-user data yet.</p><p class="crit__w"><a href="#path">the path</a>, steps 3 to 5 · <a href="https://github.com/edycutjong/limbo/blob/main/e2e/offline-shell.spec.ts">offline-shell.spec.ts</a> · <a href="https://github.com/edycutjong/limbo/blob/main/docs/ADOPT.md">ADOPT.md</a> (for developers)</p></div>
+<div class="crit__row" role="listitem"><p class="crit__k"><b>Technological Implementation</b><span>20% · 10 points</span><span class="q">How thoroughly and skillfully does it use Kiro? Variety, strategy, experimentation?</span></p><p class="crit__a">12 Kiro-authored specs (179 spec sessions) among 194 headless Kiro CLI build sessions; 8 hooks with 1,824 logged runs, including an Agent Stop gate that refused "done" 2 times; 6 steering files; 2 custom agents; an MCP server; property-based tests at 10,000 orderings; a pre-registered A/B pilot, published with its null result.</p><p class="crit__w"><a href="#kiro">Plate V, file by file</a> · <a href="https://github.com/edycutjong/limbo/tree/main/evidence/kiro">evidence/kiro/</a> · <a href="#receipts">receipts</a></p></div>
+<div class="crit__row" role="listitem"><p class="crit__k"><b>Design</b><span>20% · 10 points</span><span class="q">A complete, coherent product experience? Intuitive, polished, intentional?</span></p><p class="crit__a">Every look is a sync state: fog while a replica's link is down, a count of waiting edits, a cyanotype ghost twin for a surfaced conflict, the FIXED seal when a replica is back to live with no open conflict. The Inspector lists the queued and recently exchanged ops with their rule and causal stamp. Two complete apps with an offline shell; the same look on the landing, the deck and this page.</p><p class="crit__w"><a href="https://basecamp.limbo.edycu.dev/?replicas=2">BASECAMP</a> · <a href="https://aftershock.limbo.edycu.dev/?replicas=2">AFTERSHOCK</a> · <a href="/">landing</a> · <a href="/deck/">12-slide deck</a> · <a href="#run">Plate III</a></p></div>
+<div class="crit__row" role="listitem"><p class="crit__k"><b>Innovation / Idea</b><span>20% · 10 points</span><span class="q">How creative and novel? Does it differ from existing concepts?</span></p><p class="crit__a">Last-write-wins, the common default, settles a conflict by silently keeping one edit. Here every op must declare one of 6 named merge rules, and the conflicts a person should see (an item deleted while it was edited, two claims on the last stove) come back as ghost twins with their rule printed on them. The merge code itself was gated: the Stop gate refused to let Kiro finish (up to 3 times a session) while a fast-tier property failed.</p><p class="crit__w"><a href="https://github.com/edycutjong/limbo/blob/main/skeleton/src/core/merges.ts">merges.ts</a> · <a href="https://github.com/edycutjong/limbo/tree/main/kit/props">kit/props/</a> · <a href="#kiro">the Stop gate</a></p></div>
+<div class="crit__row" role="listitem"><p class="crit__k"><b>Presentation</b><span>20% · 10 points</span><span class="q">Does the video show it working end to end? Problem, audience, why it matters?</span></p><p class="crit__a">A 2:47 video: the ghost twin on the first frame, a judge-style edit of our own, the second app, an offline reload, Kiro and the Stop gate, the receipts. Then this page, a landing page and a deck, every number linked to its file.</p><p class="crit__w"><a href="#video">chapters</a> · <a href="https://youtu.be/V4m3zTV5MPs">YouTube</a> · <a href="https://github.com/edycutjong/limbo/blob/main/README.md">README.md</a> · <a href="https://github.com/edycutjong/limbo/blob/main/JUDGE.md">JUDGE.md</a></p></div>
+</div>
+</div></section>
+
+<section class="kiro" id="kiro" aria-labelledby="h-kiro"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>V</b> · kiro, file by file</p><h2 id="h-kiro">Most product commits are Kiro’s. <i>The hooks kept the ledger.</i></h2><p>Claude Code orchestrated: it wrote each brief (186 are committed in <a href="https://github.com/edycutjong/limbo/tree/main/evidence/kiro/prompts">evidence/kiro/prompts/</a>), launched a headless Kiro CLI session through <a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/kiro-run.mjs">kiro-run.mjs</a>, reviewed the diff and committed. Kiro authored the specs and executed the tasks. Each card below says who wrote its files, counted from the ledger's <code>files_changed</code>.</p></div>
+<div class="meter" role="group" aria-label="Kiro share of the product commits">
+<div class="meter__n">92.74<small>%</small></div>
+<div><p><b>115 of 124 product commits</b> (commits touching <code>skeleton/</code> or <code>apps/</code>) carry a <code>Kiro-Session</code> trailer; the 9 others are listed with their subjects in <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">share.json</a> (<code>pnpm share</code> recomputes it from git).</p><div class="meter__bar" aria-hidden="true"><span style="width:92.74%"></span></div></div>
+</div>
+<ul class="kstats">
+<li><b>194</b><span>Kiro sessions, all headless CLI</span></li>
+<li><b>679.87</b><span>credits, one ledger row per session</span></li>
+<li><b>12</b><span>specs, 179 sessions inside them</span></li>
+<li><b>1,824</b><span>logged runs of 8 hooks</span></li>
+<li><b>2</b><span>Stop-gate blocks in the build (the A/B pilot's 8 are logged apart)</span></li>
+</ul>
+<ul class="kgrid">
+<li class="kcard wide"><div class="kcard__head"><h3>Specs <small>12</small></h3><span class="who who--k">written + executed by Kiro</span></div>
+<p>Requirements (or a bugfix document), design and tasks for each feature, authored by a Kiro session from a brief; tasks bounded each session and gave the hooks a place to check. Review findings became bugfix specs instead of silent patches.</p>
+<table class="ktable"><thead><tr><th scope="col">spec</th><th scope="col">kind</th><th scope="col">sessions</th></tr></thead><tbody>
+<tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/aftershock">aftershock</a></td><td>feature</td><td class="n">27</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/basecamp">basecamp</a></td><td>feature</td><td class="n">24</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/bugfix-arch-review">bugfix-arch-review</a></td><td>bugfix</td><td class="n">10</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/bugfix-final-pass">bugfix-final-pass</a></td><td>bugfix</td><td class="n">6</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/bugfix-inspector-resolved">bugfix-inspector-resolved</a></td><td>bugfix</td><td class="n">5</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/convergence-mcp">convergence-mcp</a></td><td>feature</td><td class="n">11</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/coverage-full">coverage-full</a></td><td>feature</td><td class="n">11</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/limbo-layer">limbo-layer</a></td><td>feature</td><td class="n">18</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/merge-kit">merge-kit</a></td><td>feature</td><td class="n">32</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/offline-shell">offline-shell</a></td><td>feature</td><td class="n">10</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/skeleton-sync">skeleton-sync</a></td><td>feature</td><td class="n">10</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/tree/main/.kiro/specs/ui-polish">ui-polish</a></td><td>feature</td><td class="n">15</td></tr>
+</tbody></table>
+<dl><dt>ledger</dt><dd>160 Kiro sessions changed files in <code>.kiro/specs/</code>; 0 hand edits</dd><dt>evidence</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/sessions.jsonl">sessions.jsonl</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">tally.json</a></dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>Agent Stop gate</h3><span class="who who--k">fired by Kiro CLI</span></div>
+<p><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/stop-gate.json">stop-gate.json</a> runs the fast-tier properties when Kiro tries to finish and refuses while one fails (at most 3 blocks a session). It refused <b>2 times</b> in the 194 build sessions:</p>
+<p><b>2026-11-15, unplanned.</b> Merge-kit task 9.5 added <code>item.move</code>; the after-task property run failed and the gate blocked. Kiro added the op's property file and per-op payload generators to the shared suite (<a href="https://github.com/edycutjong/limbo/commit/651730d"><code>651730d</code></a>), and the gate then passed.</p>
+<p><b>2026-11-15, seeded.</b> We broke <code>item.tick</code> with a wall-clock tie-break on purpose (<a href="https://github.com/edycutjong/limbo/commit/cca30a0"><code>cca30a0</code></a>, a claude-direct row); Kiro found it and removed the clock. The log is in the next card.</p>
+<dl><dt>files</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/stop-gate.json">stop-gate.json</a> <a href="https://github.com/edycutjong/limbo/blob/main/kit/hooks/stop-gate.mjs">stop-gate.mjs</a></dd><dt>evidence</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">hooks.jsonl</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/g2/kiro-closing.txt">kiro-closing.txt</a></dd></dl></li>
+<li class="kcard wide"><div class="kcard__head"><h3>The seeded block, from the hook log</h3><span class="who who--n">re-set, not re-run</span></div>
+<div class="term"><div class="term__bar"><i></i><i></i><i></i><span>sess_545bc98d · merge-kit task 12 · 2026-11-15 (UTC)</span></div><pre><span class="ln"><span class="t-time">09:43:14</span>  PreTaskExec    task-start        .kiro/specs/merge-kit/tasks.md</span><span class="ln"><span class="t-time">09:43:35</span>  PostFileCreate op-scaffold       item.rename.op.ts · scaffolded</span><span class="ln"><span class="t-time">09:43:35</span>  PostFileSave   op-lint           item.rename.op.ts · pass</span><span class="ln"><span class="t-time">09:43:45</span>  PreToolUse     guard-shell       pnpm test; pnpm props</span><span class="ln">          <span class="t-fail">FAIL op item.tick &gt; convergence</span></span><span class="ln">          <span class="t-fail">FAIL op item.tick &gt; replay equivalence</span></span><span class="ln">          <span class="t-fail">FAIL op item.tick &gt; idempotence</span></span><span class="ln"><span class="t-time">09:45:26</span>  Stop           stop-gate         <span class="t-block">BLOCK 1/3</span> · 24.9 s</span><span class="ln"><span class="t-say">kiro: “item.tick.op.ts stores at: Date.now() in its state.”</span></span><span class="ln"><span class="t-time">09:45:55</span>  PostFileSave   op-lint           item.tick.op.ts · pass</span><span class="ln"><span class="t-time">09:45:55</span>  PreToolUse     guard-shell       pnpm typecheck &amp;&amp; pnpm test &amp;&amp; pnpm props</span><span class="ln"><span class="t-time">09:47:12</span>  PostTaskExec   props-after-task  .kiro/specs/merge-kit/tasks.md · pass</span><span class="ln"><span class="t-say">kiro: “item.tick.op.ts is fixed, and pnpm typecheck, pnpm test and pnpm props all pass.”</span></span></pre><p class="term__src">Selected rows of the session in <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">hooks.jsonl</a> (20 rows in all); the FAIL lines and Kiro's words are from <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/g2/kiro-closing.txt">kiro-closing.txt</a>.</p></div></li>
+<li class="kcard"><div class="kcard__head"><h3>Steering <small>6</small></h3><span class="who who--k">written by Kiro</span></div>
+<p>The rules Kiro was held to: no wall clock; every op commutes or declares its merge. <code>ops-guide.md</code> lists four wrong-but-convergent ops, so the model sees the failure it is most likely to write.</p>
+<table class="ktable"><tbody><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/local-first.md">local-first.md</a></td><td>always</td><td class="n">193</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/ops-guide.md">ops-guide.md</a></td><td>file match</td><td class="n">33</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/product.md">product.md</a></td><td>always</td><td class="n">193</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/structure.md">structure.md</a></td><td>always</td><td class="n">193</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/tech.md">tech.md</a></td><td>always</td><td class="n">193</td></tr><tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/steering/testing.md">testing.md</a></td><td>file match</td><td class="n">39</td></tr></tbody></table>
+<dl><dt>ledger</dt><dd>sessions that loaded each file; 2 Kiro sessions wrote them, 0 hand edits</dd></dl></li>
+<li class="kcard full"><div class="kcard__head"><h3>Hooks <small>8 · 1,824 fires</small></h3><span class="who who--k">written by Kiro</span></div>
+<p>Each hook is a command in <a href="https://github.com/edycutjong/limbo/tree/main/kit/hooks">kit/hooks/</a>; each run is one row in the hook log, written only by the hook scripts. At least 6 of the rows are Kiro running a hook script by hand from its shell (for example <code>echo … | node kit/hooks/op-lint.mjs</code>); the rest fired from a Kiro trigger.</p>
+<table class="ktable ktable--hooks"><thead><tr><th scope="col">hook</th><th scope="col">trigger</th><th scope="col">job</th><th scope="col">fires</th><th scope="col">outcome</th></tr></thead><tbody>
+<tr class="hot"><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/stop-gate.json">stop-gate</a></td><td>Stop</td><td>Block the agent from stopping while fast-tier properties fail (max 3 blocks per session).</td><td class="n">191</td><td>2 blocks, 170 passes, 19 skipped (no harness yet)</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/props-after-task.json">props-after-task</a></td><td>PostTaskExec</td><td>Run fast-tier properties after a spec task. Never blocks.</td><td class="n">144</td><td>123 pass, 1 fail, 20 skipped (no harness yet)</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/guard-shell.json">guard-shell</a></td><td>PreToolUse <code>shell</code></td><td>Deny commits, pushes, publishes, deploys and uploads from agent shells.</td><td class="n">1,261</td><td>4 denials</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/op-lint.json">op-lint</a></td><td>PostFileSave <code>op files</code></td><td>Static check of an op file: banned tokens, declared merge and intent, manifest match.</td><td class="n">13</td><td>11 pass, 2 failed saves</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/op-scaffold.json">op-scaffold</a></td><td>PostFileCreate <code>op files</code></td><td>Create the props test and regenerate registry.gen.ts for a new op file.</td><td class="n">12</td><td>9 scaffolded</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/task-start.json">task-start</a></td><td>PreTaskExec</td><td>Log the spec and task about to run.</td><td class="n">153</td><td>task logged</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/session-context.json">session-context</a></td><td>SessionStart</td><td>Print registered ops and the last properties result at session start.</td><td class="n">42</td><td>context injected</td></tr>
+<tr><td><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/hooks/mcp-log.json">mcp-log</a></td><td>PostToolUse <code>@limbo-convergence</code></td><td>Log limbo-convergence MCP tool calls and whether they passed.</td><td class="n">8</td><td>8 MCP calls logged</td></tr>
+</tbody></table>
+<dl><dt>ledger</dt><dd>7 Kiro sessions changed <code>.kiro/hooks/</code> or <code>kit/hooks/</code>; 0 hand edits</dd><dt>evidence</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">hooks.jsonl</a> <a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/gate-integrity.mjs">gate-integrity.mjs</a> (hook files hash-checked in CI)</dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>Custom agents <small>2</small></h3><span class="who who--k">written by Kiro</span></div>
+<p><b>limbo-kitsmith</b> revises the kit and authors specs (41 sessions). <b>limbo-builder</b> loads the steering and the MCP server with scoped shell and write permissions (2 sessions). Kiro's built-in spec agent ran 149, the default agent 2.</p>
+<dl><dt>files</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/.kiro/agents/limbo-builder.json">limbo-builder.json</a> <a href="https://github.com/edycutjong/limbo/blob/main/.kiro/agents/limbo-kitsmith.json">limbo-kitsmith.json</a> <a href="https://github.com/edycutjong/limbo/tree/main/.kiro/agents/prompts">.kiro/agents/prompts/</a></dd><dt>ledger</dt><dd>2 Kiro sessions wrote them, 0 hand edits</dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>MCP server</h3><span class="who who--k">server by Kiro · config by hand</span></div>
+<p><code>limbo-convergence</code>: <code>list_ops</code>, <code>fuzz_op</code>, <code>explain_trace</code>, <code>check_lint</code>. Called 8 times from 1 Kiro session, fuzzing 4 ops across both apps (list_ops 2, fuzz_op 4, check_lint 2): a modest contribution.</p>
+<dl><dt>files</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/kit/mcp/server.mjs">server.mjs</a> <a href="https://github.com/edycutjong/limbo/blob/main/kit/mcp/tools.ts">tools.ts</a> <a href="https://github.com/edycutjong/limbo/blob/main/.kiro/settings/mcp.json">mcp.json</a></dd><dt>ledger</dt><dd>9 Kiro sessions wrote <code>kit/mcp/</code>, 1 hand edit (a test race, <a href="https://github.com/edycutjong/limbo/commit/d40a167"><code>d40a167</code></a>); <code>mcp.json</code> is a hand row too (Kiro's Write File tool failed on it)</dd><dt>evidence</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/mcp-calls.jsonl">mcp-calls.jsonl</a></dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>Property-based tests</h3><span class="who who--k">harness by Kiro</span></div>
+<p>fast-check properties the hooks run: convergence, replay equivalence, idempotence, commutation, no lost edit and each rule's intent. 15 deliberately wrong ops in <a href="https://github.com/edycutjong/limbo/tree/main/kit/props/bad">kit/props/bad/</a> must each be killed, or the suite fails. Full tier: 10,000 orderings.</p>
+<dl><dt>files</dt><dd><a href="https://github.com/edycutjong/limbo/tree/main/kit/props">kit/props/</a> <a href="https://github.com/edycutjong/limbo/blob/main/kit/props/mutants.props.test.ts">mutants.props.test.ts</a></dd><dt>ledger</dt><dd>28 Kiro sessions and 2 hand edits in <code>kit/props/</code>; the simulator it uses, <code>skeleton/src/core/simulate.ts</code>, has 3 more hand rows (each logged)</dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>CLI only, headless</h3><span class="who who--o">our orchestration</span></div>
+<p>All 194 sessions: <code>kiro-cli chat --v3 --no-interactive</code>, versions 3.3.0 (37), 3.5.0 (157). The CLI fires the spec task hooks and the Agent Stop hook. No logged session used the Kiro IDE, so none used its Spec Correctness or Agent Hooks panel; no Powers.</p>
+<dl><dt>files</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/kiro-run.mjs">kiro-run.mjs</a> <a href="https://github.com/edycutjong/limbo/tree/main/evidence/kiro/prompts">prompts/</a></dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>The ledgers</h3><span class="who who--o">wrapper + hooks</span></div>
+<p><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/sessions.jsonl">sessions.jsonl</a>: one row per Kiro session (spec, task, agent, credits, hooks fired, steering loaded, files changed, outcome), <b>211 rows</b>: 194 Kiro, 17 hand edits with their reasons. <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">hooks.jsonl</a>: <b>1,824 rows</b>, written only by the hook scripts.</p>
+<dl><dt>recompute</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/readme-tally.mjs">readme-tally.mjs</a> <a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/kiro-share.mjs">kiro-share.mjs</a></dd><dt>output</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/tally.json">tally.json</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">share.json</a></dd></dl></li>
+<li class="kcard"><div class="kcard__head"><h3>A pre-registered A/B</h3><span class="who who--o">our experiment</span></div>
+<p>20 op-writing runs, without and with the kit, registered before run 1:</p>
+<div class="ab"><div><b>0 of 10</b><span>held-out failures, no kit</span></div><div><b>0 of 10</b><span>held-out failures, kit</span></div></div>
+<p>No measurable effect (Fisher p = 1). We claim nothing about the kit improving correctness.</p>
+<dl><dt>evidence</dt><dd><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/PREREG.md">PREREG.md</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/summary.md">summary.md</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/observations.md">observations.md</a></dd></dl></li>
+</ul>
+</div></section>
+
+<section class="sec" id="video" aria-labelledby="h-video"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>VI</b> · the video, by chapter</p><h2 id="h-video">The video, <i>chapter by chapter.</i></h2><p>2:47, public on YouTube. Each chapter opens the video at its timestamp; under it is what the voiceover says (<a href="https://github.com/edycutjong/limbo/blob/main/docs/VIDEO.md">docs/VIDEO.md</a>).</p></div>
+<div class="vid">
+<div><a class="vid__thumb" href="https://youtu.be/V4m3zTV5MPs" aria-label="Play the 2:47 LIMBO demo video on YouTube"><img src="/assets/crop-twin-b.webp" alt="" width="1000" height="980" loading="lazy" decoding="async"><span class="vid__play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="vid__len">2:47</span></a>
+<p class="small vid__note">Product footage is captured from the deployed apps in real time. The Stop-gate scene replays a logged session, labelled on screen. Voiceover: ElevenLabs. Music and sound: synthesized, no third-party music. The still above is BASECAMP's replica B after reconnect.</p></div>
+<ol class="chap">
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=0"><span class="chap__t">0:00</span><span class="chap__l">The lake scene: cut the link</span><span></span><span class="chap__vo">Two replicas of one camping list. We cut the link. This is for anyone whose shared list breaks when the signal does. Offline, Sari ticks the tent while Budi deletes it, and both claim the last stove. Reconnect, and both conflicts surface. The deleted tent comes back as a ghost twin, with the rule that decided it. The stove goes to exactly one person, on both replicas, and Budi is told. One tap each, and the fog lifts.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=33"><span class="chap__t">0:33</span><span class="chap__l">Your own edit, not scripted</span><span></span><span class="chap__vo">That was the scripted scene. This edit is ours. Add marshmallows; it syncs. Cut the link. Tick it on one side, delete it on the other. Restore: a twin on both cards. Keep it, and the lists match.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=50"><span class="chap__t">0:50</span><span class="chap__l">AFTERSHOCK: a second app on the same skeleton</span><span></span><span class="chap__vo">The same skeleton runs a second, different app: AFTERSHOCK, a survey form for field teams, on demo data. Offline, Sari marks sector C3 damaged; Budi marks it unsafe. On reconnect the worse report wins, and both head counts are kept. Their two notes come back side by side.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=71"><span class="chap__t">1:11</span><span class="chap__l">Offline reload and the Limbo inspector</span><span></span><span class="chap__vo">Now the browser itself goes offline. A reload still opens the app from the service worker, with every edit read back from IndexedDB. None of it is a skin. Fog means this replica's link is down, and the inspector lists every queued op with the merge rule it declares.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=92"><span class="chap__t">1:32</span><span class="chap__l">One skeleton, two folders</span><span></span><span class="chap__vo">Both apps live in their own folders on one skeleton. Each supplies just five things: a model, its ops, a seed, its views, and a config.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=103"><span class="chap__t">1:43</span><span class="chap__l">How Kiro built it</span><span class="chap__k">Kiro · the /.kiro tree</span><span class="chap__vo">Most of it was built by Kiro, from twelve Kiro-authored specs. Headless Kiro CLI sessions ran the tasks under steering rules: no wall clock; every op commutes or declares its merge. Hooks ran the convergence properties after spec tasks.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=120"><span class="chap__t">2:00</span><span class="chap__l">The Stop gate, replayed</span><span class="chap__k">Kiro · a logged session, replayed</span><span class="chap__vo">Here is one logged session, replayed. We seeded a wall-clock fault on purpose. Kiro tried to finish. The Stop hook blocked it, because the convergence properties failed. Kiro removed the clock, and the properties passed.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=136"><span class="chap__t">2:16</span><span class="chap__l">The receipts</span><span></span><span class="chap__vo">Every number is in the repo. Ten thousand random orderings across three replicas, zero divergences: measured, not proven. Ninety-three percent of product commits came from Kiro sessions. Our pre-registered A/B test of the kit found no measurable effect, and we published it as run.</span></a></li>
+<li><a href="https://youtu.be/V4m3zTV5MPs?t=156"><span class="chap__t">2:36</span><span class="chap__l">Try it</span><span></span><span class="chap__vo">Today the two replicas share one page; a cross-device relay is next. Cut the link yourself, at the judge page on screen.</span></a></li>
+</ol>
+</div>
+</div></section>
+
+<section class="sec" id="receipts" aria-labelledby="h-receipts"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>VII</b> · receipts</p><h2 id="h-receipts">Every number <i>has a file.</i></h2><p>Read from the committed evidence when this page is generated; nothing here is typed by hand. <a href="https://github.com/edycutjong/limbo/blob/main/DEMO.md">DEMO.md</a> has the command that regenerates each one.</p></div>
+<ul class="rgrid">
+<li class="rcpt"><span class="rcpt__n">10,000</span><span class="rcpt__k">random orderings, 0 divergences</span><span class="rcpt__v">3 replicas, every op of both apps, seed 20251031, all 15 property kinds green. Measured, property-tested, not proven.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">convergence/full-2026-11-22.json</a></span></li>
+<li class="rcpt"><span class="rcpt__n">1,407</span><span class="rcpt__k">tests pass, under a 100% coverage gate</span><span class="rcpt__v">1,407 unit, component and property tests pass; 9 skipped (AFTERSHOCK rows for conflict classes it has no ops for). Local CI receipt at <code>d40a167</code>, Node 22.22.0.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/latest.json">ci/latest.json</a> <a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/local-2026-11-26.txt">local-2026-11-26.txt</a></span></li>
+<li class="rcpt"><span class="rcpt__n">100<small>%</small></span><span class="rcpt__k">line, branch, function, statement coverage</span><span class="rcpt__v">On <a href="https://github.com/edycutjong/limbo/tree/main/skeleton/src">skeleton/src</a> and each app's domain modules; CI fails below 100%. Views, entries and the dev relay are excluded, each with its reason; <code>site/</code> (this page's instrument) is outside the gate.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/vitest.config.ts">vitest.config.ts</a></span></li>
+<li class="rcpt"><span class="rcpt__n">26</span><span class="rcpt__k">Playwright end-to-end tests pass</span><span class="rcpt__v">2 skipped (viewport-conditional). Two browser contexts through a real partition, the offline shell of both builds, the landing and this page.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/tree/main/e2e">e2e/</a></span></li>
+<li class="rcpt"><span class="rcpt__n">92.74%</span><span class="rcpt__k">of product commits from Kiro sessions</span><span class="rcpt__v">115 of 124 commits touching <code>skeleton/</code> or <code>apps/</code> carry a <code>Kiro-Session</code> trailer; the 9 others are listed.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/share.json">kiro/share.json</a></span></li>
+<li class="rcpt"><span class="rcpt__n">1,824</span><span class="rcpt__k">Kiro hook runs, one log row each</span><span class="rcpt__v">1,261 shell checks; the Stop gate ran 191 times (19 skipped before the property harness existed; 2 blocks); 144 after-task runs (20 skipped). At least 6 rows are Kiro running a hook script by hand from its shell.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">kiro/hooks.jsonl</a></span></li>
+<li class="rcpt"><span class="rcpt__n">194</span><span class="rcpt__k">headless Kiro CLI build sessions</span><span class="rcpt__v">679.87 credits; 179 inside 12 specs. Plus 17 hand rows in the ledger (16 edits made outside Kiro, 1 attribution correction), each with its reason. The 20 A/B pilot sessions (64.31 credits) are logged separately.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/sessions.jsonl">kiro/sessions.jsonl</a></span></li>
+<li class="rcpt"><span class="rcpt__n">0 <small>vs</small> 0</span><span class="rcpt__k">held-out failures, without vs with the kit</span><span class="rcpt__v">A pre-registered pilot, 20 runs: no measurable effect (Fisher p = 1). Published as run.</span><span class="rcpt__src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/summary.md">kiro/ab/summary.md</a></span></li>
+</ul>
+<p class="small rnote">7 GitHub Actions workflows: <a href="https://github.com/edycutjong/limbo/actions/workflows/ci.yml">CI</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/codeql.yml">CodeQL</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/deploy.yml">Deploy</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/e2e.yml">E2E</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml">Lighthouse</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/release.yml">Release</a>, <a href="https://github.com/edycutjong/limbo/actions/workflows/security.yml">Security</a>. CI, E2E, CodeQL, Security and Lighthouse run on every push to <code>main</code>; Deploy and Release start after a green CI run on <code>main</code> (or by manual dispatch). This page is checked against the evidence in CI (<code>judge-build.mjs --check</code>), and its 90 repository links are checked to exist when it is generated.</p>
+</div></section>
+
+<section class="sec" id="real" aria-labelledby="h-real"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>VIII</b> · real or simulated</p><h2 id="h-real">What is real, <i>what is simulated.</i></h2><p>Said before you have to ask.</p></div>
+<div class="real" role="list">
+<div class="real__row" role="listitem"><p class="real__k">The instrument on this page</p><p class="real__st"><span class="stamp-s stamp-s--real">REAL CODE</span></p><p class="real__v">the skeleton's <code>createPair</code>, replica, in-page link and <code>runShuffle</code> with BASECAMP's own ops, bundled from <a href="https://github.com/edycutjong/limbo/blob/main/site/src/judge.ts">site/src/judge.ts</a>; an in-memory store instead of IndexedDB<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/site/src/hero.ts">site/src/hero.ts</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">The link between the two replicas</p><p class="real__st"><span class="stamp-s stamp-s--sim">SIMULATED</span></p><p class="real__v">an in-page link, labelled on screen (“SIMULATED LINK — DevTools offline does not cut it; use the lever”). The partition e2e test runs two browser contexts through a dev-only relay<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/skeleton/src/sync/inpage-link.ts">inpage-link.ts</a> (the link) <a href="https://github.com/edycutjong/limbo/blob/main/skeleton/src/sync/dev-relay-link.ts">dev-relay-link.ts</a> (the e2e relay, in no production build)</span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">Two devices syncing</p><p class="real__st"><span class="stamp-s stamp-s--no">NOT BUILT</span></p><p class="real__v">no hosted relay and no physical two-device test; a cross-device relay is the next step<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/e2e/basecamp-offline.spec.ts">basecamp-offline.spec.ts (two browser contexts, one machine)</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">Working offline after the first load</p><p class="real__st"><span class="stamp-s stamp-s--real">TESTED</span></p><p class="real__v">a service worker serves each app; an offline reload keeps every edit (IndexedDB), in CI and against both live URLs<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/e2e/offline-shell.spec.ts">offline-shell.spec.ts</a> <a href="https://github.com/edycutjong/limbo/blob/main/e2e/live.spec.ts">live.spec.ts</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">Every replica converges</p><p class="real__st"><span class="stamp-s stamp-s--twin">MEASURED</span></p><p class="real__v">10,000 random orderings of 3 replicas, 0 divergences: a property test, not a proof<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">full-2026-11-22.json</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">AFTERSHOCK’s survey data</p><p class="real__st"><span class="stamp-s stamp-s--sim">DEMO DATA</span></p><p class="real__v">written by us; no field use is claimed<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/apps/aftershock/src/seed.ts">seed.ts</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">The video’s Stop-gate scene</p><p class="real__st"><span class="stamp-s stamp-s--rec">REPLAYED</span></p><p class="real__v">logged session <code>sess_545bc98d</code>, re-set from the hook log; its <code>Date.now()</code> fault was seeded on purpose (<a href="https://github.com/edycutjong/limbo/commit/cca30a0"><code>cca30a0</code></a>)<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/hooks.jsonl">hooks.jsonl</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">The kit makes Kiro more correct</p><p class="real__st"><span class="stamp-s stamp-s--no">NO EFFECT</span></p><p class="real__v">the pre-registered A/B pilot found none (0 of 10 vs 0 of 10, p = 1)<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/ab/PREREG.md">PREREG.md</a></span></p></div>
+<div class="real__row" role="listitem"><p class="real__k">Kiro IDE, Spec Correctness, Powers</p><p class="real__st"><span class="stamp-s stamp-s--no">NOT USED</span></p><p class="real__v">every logged Kiro session ran in the Kiro CLI; the IDE and its Spec Correctness and Agent Hooks panel were not used in any of them, nor Powers<span class="src"><a href="https://github.com/edycutjong/limbo/blob/main/evidence/kiro/sessions.jsonl">sessions.jsonl</a></span></p></div>
+</div>
+</div></section>
+
+<section class="sec" id="verify" aria-labelledby="h-verify"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>IX</b> · verify from a clone</p><h2 id="h-verify">From a clone, <i>no Kiro account needed.</i></h2></div>
+<div class="verify">
+<div><p>Node 22 or later and pnpm 10 (<code>corepack enable</code>). Nothing below needs Kiro, a key or credits. Expected outputs are quoted from the committed receipts: <a href="https://github.com/edycutjong/limbo/blob/main/evidence/ci/local-2026-11-26.txt">local-2026-11-26.txt</a> and <a href="https://github.com/edycutjong/limbo/blob/main/evidence/convergence/full-2026-11-22.json">full-2026-11-22.json</a>.</p><p>Every other number has its command in <a href="https://github.com/edycutjong/limbo/blob/main/DEMO.md">DEMO.md</a>.</p></div>
+<div class="term"><div class="term__bar"><i></i><i></i><i></i><span>a fresh clone</span><button class="copy" type="button" data-copy>copy the commands</button></div>
+<pre><code><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>git clone https://github.com/edycutjong/limbo &amp;&amp; cd limbo &amp;&amp; pnpm install --frozen-lockfile</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>pnpm test:coverage</span><span class="ln ln--o">Tests  1407 passed | 9 skipped (1416)   # and all four coverage rows at 100%</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>pnpm e2e:ci</span><span class="ln ln--o">  2 skipped</span><span class="ln ln--o">  26 passed   # two browser contexts, a real partition, the offline shell of both builds</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>pnpm --filter @limbo/basecamp dev</span><span class="ln ln--n"># BASECAMP on http://localhost:5174 (AFTERSHOCK: pnpm --filter @limbo/aftershock dev, port 5176)</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>node kit/scripts/readme-tally.mjs &amp;&amp; pnpm share</span><span class="ln ln--n"># recomputes the ledger, hook, steering, MCP and share tallies (tally.json, lean.json, share.json)</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>pnpm props:full</span><span class="ln ln--n"># about 22 minutes; writes evidence/convergence/full-&lt;date&gt;.json with orderings 10000, seed 20251031, passed true</span><span class="ln ln--c"><span class="pr" aria-hidden="true">$ </span>node kit/scripts/judge-build.mjs --check</span><span class="ln ln--s">OK judge pages match evidence/</span><span class="ln ln--n"># re-derives everything else on this page (per-card ledger counts, A/B, engine states) and checks every repo link</span></code></pre></div>
+</div>
+</div></section>
+
+<section class="sec" id="limits" aria-labelledby="h-limits"><div class="wrap">
+<div class="sec-head"><p class="plate-no">plate <b>X</b> · honest limits</p><h2 id="h-limits">Honest limits, <i>before you find them.</i></h2></div>
+<ol class="limits">
+<li><div><b>Convergence is measured, not proven.</b><span>10,000 random orderings of 3 replicas with property tests is strong evidence, not a proof.</span></div></li>
+<li><div><b>There is no cross-device relay.</b><span>The live apps sync two replicas through an in-page link labelled as simulated. DevTools &quot;offline&quot; does not cut it; the dev-only relay in the e2e suite ships in no production build.</span></div></li>
+<li><div><b>Offline claims are provisional.</b><span>No CRDT can stop two offline people both claiming the last stove. On reconnect the declared rule picks one claimant on every replica and the other is told.</span></div></li>
+<li><div><b>The kit showed no measurable effect.</b><span>The pre-registered A/B pilot: 0 of 10 vs 0 of 10 held-out failures, p = 1. Its 8 kit-arm Stop blocks were false alarms from the kit's own vacuity guard, and 2 of 10 kit-arm runs edited that guard; the fix (the guard is now hash-protected) has not been re-piloted.</span></div></li>
+<li><div><b>Not every product commit is Kiro’s.</b><span>9 of 124 product commits were made outside Kiro (listed with their subjects in share.json), and the ledger holds 17 hand rows in the ledger (16 edits made outside Kiro, 1 attribution correction), each with its reason.</span></div></li>
+<li><div><b>The Stop gate blocked twice in 194 build sessions.</b><span>Once unplanned, once on a fault we seeded to prove it fires. It allows at most 3 blocks a session, and it skipped 19 times before the property harness existed.</span></div></li>
+<li><div><b>Kiro CLI only.</b><span>No logged session used the Kiro IDE, its Spec Correctness (property-based) or the Agent Hooks panel, or Powers. The MCP server was used lightly: 8 calls from 1 session.</span></div></li>
+<li><div><b>The skeleton is over its first budget.</b><span>21 files and 2,189 lines by the budget count: inside the restated 2,400-line budget, over the original 1,800.</span></div></li>
+<li><div><b>Demo data, no outside users.</b><span>AFTERSHOCK runs on data we wrote and no field use is claimed; we have no outside-user data for either app.</span></div></li>
+<li><div><b>Only the apps work offline.</b><span>The landing page and this page are static pages with no service worker.</span></div></li>
+</ol>
+</div></section>
+
 </main>
+<footer class="closing"><div class="wrap">
+<h2>Cut the link yourself. <em>Watch the tent come back.</em></h2>
+<div class="cta"><a class="btn solid" href="https://basecamp.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open BASECAMP</span></a><a class="btn" href="https://aftershock.limbo.edycu.dev/?replicas=2" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg><span>Open AFTERSHOCK</span></a><a class="btn" href="#run">Run it on this page</a></div>
+<div class="foot">
+<a class="brand" href="/"><img src="/assets/icon.svg" alt="" width="32" height="32"><b>LIMBO</b></a>
+<nav aria-label="Footer"><a href="/">Landing</a><a href="/deck/">Pitch deck</a><a href="https://youtu.be/V4m3zTV5MPs">Video</a><a href="https://github.com/edycutjong/limbo">Source (MIT)</a><a href="https://github.com/edycutjong/limbo/blob/main/JUDGE.md">JUDGE.md</a><a href="https://github.com/edycutjong/limbo/blob/main/DEMO.md">DEMO.md</a><a href="https://github.com/edycutjong/limbo/blob/main/README.md">README</a><a href="https://devpost.com/software/limbo-offline-merge-skeleton-two-apps">Devpost entry</a><a href="https://kiroween.devpost.com/">Kiroween 2026</a></nav>
+<a class="version-chip" id="version" href="https://github.com/edycutjong/limbo/releases/latest">latest release</a>
+<p>Kiroween 2026 · Skeleton Crew · MIT. Every figure on this page is read from a file in the repository when the page is generated by <a href="https://github.com/edycutjong/limbo/blob/main/kit/scripts/judge-build.mjs">kit/scripts/judge-build.mjs</a>; the only figures computed in your browser are the instrument's fingerprints, its shuffle count and its time.</p>
+</div>
+</div></footer>
 <script>
-// Version chip: the baked text stays if the request fails (offline, rate limit, private repo).
-fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
-  .then(function (j) { if (j && j.tag_name) document.getElementById('version').textContent = j.tag_name; }).catch(function () {});
+(function () {
+  var d = document;
+  // header rule once the page scrolls
+  var top = d.getElementById('top');
+  var onScroll = function () { top.classList.toggle('is-stuck', window.scrollY > 8); };
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  // copy the $ lines of the verify block
+  var cp = d.querySelector('[data-copy]');
+  if (cp) cp.addEventListener('click', function () {
+    var t = Array.prototype.map.call(cp.closest('.term').querySelectorAll('.ln--c'), function (l) { return l.textContent.replace(/^\$ /, ''); }).join('\n');
+    var done = function (m) { cp.textContent = m; setTimeout(function () { cp.textContent = 'copy the commands'; }, 1800); };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(function () { done('copied'); }, function () { done('select the text'); }); else done('select the text');
+  });
+  // version chip: the baked text stays if the request fails (offline, rate limit)
+  fetch('https://api.github.com/repos/edycutjong/limbo/releases/latest').then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { if (j && j.tag_name) d.getElementById('version').textContent = j.tag_name; }).catch(function () {});
+  // the instrument: download the engine on the first press (or when a pointer or focus arrives), then hand it the press.
+  // If it cannot load, the panel says RECORDED and shows what the same code printed at build time.
+  var root = d.querySelector('[data-proof]');
+  if (!root) return;
+  var state = 0, queued = null, label = root.querySelector('[data-engine]');
+  var recorded = function () { state = 3; root.dataset.engine = 'recorded'; label.textContent = 'RECORDED'; root.querySelector('[data-say]').textContent = 'The engine could not load in this browser. Below: what the same code printed when this page was built.'; };
+  var load = function () {
+    if (state) return;
+    state = 1; root.dataset.engine = 'loading'; label.textContent = 'LOADING';
+    var s = d.createElement('script'), timer = setTimeout(recorded, 12000);
+    s.src = root.dataset.src; s.async = true;
+    s.onload = function () {
+      clearTimeout(timer);
+      if (state === 3) return;
+      if (!window.LimboJudge || !window.LimboJudge.mount) { recorded(); return; }
+      state = 2; var p = queued; queued = null;
+      window.LimboJudge.mount(root, p || undefined).catch(recorded);
+    };
+    s.onerror = function () { clearTimeout(timer); recorded(); };
+    d.head.appendChild(s);
+  };
+  root.addEventListener('click', function (e) {
+    if (state === 2 || state === 3) return;
+    var el = e.target.closest('[data-act]');
+    if (!el || !root.contains(el)) return;
+    var plate = el.closest('[data-replica]');
+    queued = { act: el.dataset.act };
+    if (el.dataset.id) queued.id = el.dataset.id;
+    if (plate) queued.replica = plate.dataset.replica;
+    if (el.dataset.who) queued.who = el.dataset.who;
+    load();
+  }, true);
+  root.addEventListener('pointerenter', load, { once: true });
+  root.addEventListener('focusin', load, { once: true });
+})();
 </script>
 </body>
 </html>

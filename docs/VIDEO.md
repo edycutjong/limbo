@@ -4,6 +4,14 @@
 
 The chapters are the ones in the video's YouTube description. The transcript is the voiceover, with the start time of each caption cue (minutes:seconds). The `/judge` page reads both from this file.
 
+## On screen
+
+What the picture shows where a chapter's title does not say it (checked against frames of the uploaded file):
+
+- 0:00 BASECAMP live, replica A after reconnect: the tent's twin card, "TWIN · Budi deleted this while Sari ticked it · rule: resurrect"
+- 1:43 the `/.kiro` tree at the repository root: 12 specs, 2 agents, 6 steering files, 8 hooks
+- 2:00 slide 10 of the deck, replaying logged Kiro session `sess_545bc98d` line by line from `evidence/kiro/hooks.jsonl`
+
 ## Chapters
 
 - 0:00 The lake scene: cut the link
