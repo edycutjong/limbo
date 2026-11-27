@@ -502,7 +502,7 @@ ${head('crew', 'One skeleton. <i>Two apps, two folders.</i>', `<p>The category a
 <li><span>AFTERSHOCK was built second: its ${tally.specs.aftershock} Kiro spec sessions changed 0 files under <code>skeleton/</code> (later UI polish touched skeleton CSS and markup for both apps).</span></li>
 <li><span>${OPS.length} ops across the two apps, each declaring one of the skeleton's rules:</span></li>
 </ul>
-<ul class="merges">${MERGES.map((m) => `<li>${m} <small>· ${OPS.filter((o) => o.merge === m).length} ops</small></li>`).join('')}</ul>
+<ul class="merges">${MERGES.map((m) => `<li>${m} <small>· ${OPS.filter((o) => o.merge === m).length} op${OPS.filter((o) => o.merge === m).length === 1 ? '' : 's'}</small></li>`).join('')}</ul>
 <p class="src" style="margin-top:8px">${gh('skeleton/src/core/types.ts', 'types.ts')} · ${gh('apps/basecamp/src/ops/', 'basecamp ops')} · ${gh('apps/aftershock/src/ops/', 'aftershock ops')}${usedMerges.length < MERGES.length ? ` · <code>sum-split</code> splits each expense into shares inside ${gh('apps/basecamp/src/ops/expense.state.ts', 'expense.state.ts')}; no op declares it` : ''}</p>
 </div>
 </div>
