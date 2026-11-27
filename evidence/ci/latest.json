@@ -1,6 +1,6 @@
 {
-  "date": "2026-11-26T17:26:36.816Z",
-  "commit": "d40a1679cadeb0b6b70d0e3511d4b40c868d7ec6",
+  "date": "2026-11-27T10:17:54.661Z",
+  "commit": "ff8bcd0dd26c52131c31c8e39d5c84a631f8ff2e",
   "tree_dirty": false,
   "machine": "Apple M1 Max, darwin 27.2.0",
   "node": "v22.22.0",
@@ -13,13 +13,13 @@
       "name": "Stage 1 typecheck",
       "cmd": "pnpm typecheck",
       "ok": true,
-      "seconds": 2.9
+      "seconds": 3.3
     },
     {
       "name": "Stage 1 op lint",
       "cmd": "pnpm lint",
       "ok": true,
-      "seconds": 0.8
+      "seconds": 0.9
     },
     {
       "name": "Stage 1 /.kiro root check",
@@ -31,25 +31,25 @@
       "name": "Stage 1 gate integrity",
       "cmd": "pnpm gate",
       "ok": true,
-      "seconds": 0.2
+      "seconds": 0.3
     },
     {
       "name": "Stage 1 /judge page and JUDGE.md match the committed measurements",
       "cmd": "node kit/scripts/judge-build.mjs --check",
       "ok": true,
-      "seconds": 0
+      "seconds": 3
     },
     {
       "name": "Stage 1 tests + 100% coverage",
       "cmd": "pnpm test:coverage",
       "ok": true,
-      "seconds": 101.5
+      "seconds": 100.4
     },
     {
       "name": "Stage 2 gitleaks (full history)",
       "cmd": "gitleaks detect --source . --log-opts=\"--all\" --no-banner -l warn",
       "ok": true,
-      "seconds": 0.3
+      "seconds": 0.5
     },
     {
       "name": "Stage 2 pnpm audit (shipped deps, any severity)",
@@ -67,7 +67,7 @@
       "name": "Stage 3 build",
       "cmd": "pnpm build",
       "ok": true,
-      "seconds": 2.2
+      "seconds": 2.4
     },
     {
       "name": "Stage 3 bundle budget",
@@ -85,7 +85,7 @@
       "name": "Stage 4 e2e",
       "cmd": "pnpm e2e:ci",
       "ok": true,
-      "seconds": 40.3
+      "seconds": 46.2
     }
   ],
   "unit": {

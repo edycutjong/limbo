@@ -76,7 +76,7 @@ https://youtu.be/V4m3zTV5MPs (2:47; chapters and transcript in [docs/VIDEO.md](d
 | Number | What | Source |
 |---|---|---|
 | 10,000 | random orderings, 0 divergences: 3 replicas, every op of both apps, seed 20251031, all 15 property kinds green. Measured, property-tested, not proven. | [convergence/full-2026-11-22.json](evidence/convergence/full-2026-11-22.json) |
-| 1,407 | tests pass, under a 100% coverage gate: 1,407 unit, component and property tests pass; 9 skipped (AFTERSHOCK rows for conflict classes it has no ops for). Local CI receipt at `d40a167`, Node 22.22.0. | [ci/latest.json](evidence/ci/latest.json) [local-2026-11-26.txt](evidence/ci/local-2026-11-26.txt) |
+| 1,407 | tests pass, under a 100% coverage gate: 1,407 unit, component and property tests pass; 9 skipped (AFTERSHOCK rows for conflict classes it has no ops for). Local CI receipt at `ff8bcd0`, Node 22.22.0. | [ci/latest.json](evidence/ci/latest.json) [local-2026-11-27.txt](evidence/ci/local-2026-11-27.txt) |
 | 100% | line, branch, function, statement coverage: On [skeleton/src](skeleton/src) and each app's domain modules; CI fails below 100%. Views, entries and the dev relay are excluded, each with its reason; `site/` (this page's instrument) is outside the gate. | [vitest.config.ts](vitest.config.ts) |
 | 26 | Playwright end-to-end tests pass: 2 skipped (viewport-conditional). Two browser contexts through a real partition, the offline shell of both builds, the landing and this page. | [e2e/](e2e) |
 | 92.74% | of product commits from Kiro sessions: 115 of 124 commits touching `skeleton/` or `apps/` carry a `Kiro-Session` trailer; the 9 others are listed. | [kiro/share.json](evidence/kiro/share.json) |
