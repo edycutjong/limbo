@@ -9,6 +9,8 @@
   <br/>
 
   [![Live Demo](https://img.shields.io/badge/🚀_Live-Demo-06b6d4?style=for-the-badge)](https://basecamp.limbo.edycu.dev)
+
+  [![Demo Video](https://img.shields.io/badge/▶_Demo-Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtu.be/V4m3zTV5MPs)
   [![For judges](https://img.shields.io/badge/For_judges-the_judge_path-1F4E79?style=for-the-badge)](https://limbo.edycu.dev/judge)
   [![Pitch Deck](https://img.shields.io/badge/📊_Pitch-Deck-f59e0b?style=for-the-badge)](https://limbo.edycu.dev/deck/)
   [![Built for Kiroween](https://img.shields.io/badge/Devpost-Kiroween_Skeleton_Crew-8b5cf6?style=for-the-badge)](https://kiroween.devpost.com/)
