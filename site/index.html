@@ -377,6 +377,13 @@ section.s{padding:84px 0 0}
 .proof{margin:18px 0 0;font-size:15px;color:var(--muted)}
 .proof b{font:700 1.08em/1 var(--font-display);color:var(--ink)}
 @media (min-width:761px){.lb-list{min-height:440px}}
+/* hero demo: the live scene adds twin rows, limbo entries and status text as it plays; reserve its tallest state (measured
+   over a full loop at 320-1920 px) so the cards grow inside a fixed box and nothing below the demo moves */
+@media (min-width:761px){.lb-viewer>.lb-plate{min-height:706px}.lb-controls{min-height:80px;align-content:flex-start}}
+@media (max-width:760px){.lb-viewer>.lb-plate[data-replica="a"]{min-height:531px}.lb-viewer>.lb-plate[data-replica="b"]{min-height:647px}.lb-controls{min-height:132px;align-content:flex-start}}
+@media (max-width:480px){.lb-viewer>.lb-plate[data-replica="a"]{min-height:551px}.lb-viewer>.lb-plate[data-replica="b"]{min-height:686px}}
+@media (max-width:374px){.lb-viewer>.lb-plate[data-replica="b"]{min-height:706px}}
+@media (max-width:340px){.lb-viewer>.lb-plate[data-replica="a"]{min-height:612px}.lb-viewer>.lb-plate[data-replica="b"]{min-height:765px}}
 /* states strip: real engine plates at cabinet-card size */
 .cab-plate{height:236px;padding:0;background:var(--card)}
 .cab-plate .lb-plate{width:172%;zoom:.58;border:0;border-radius:0;min-height:407px}
