@@ -28,9 +28,9 @@
   [![Security](https://github.com/edycutjong/limbo/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/security.yml)
   [![Lighthouse](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/lighthouse.yml)
   [![Deploy](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/edycutjong/limbo/actions/workflows/deploy.yml)
-  [![Production: site](docs/badges/production-site.svg)](https://github.com/edycutjong/limbo/deployments/production-site)
-  [![Production: basecamp](docs/badges/production-basecamp.svg)](https://github.com/edycutjong/limbo/deployments/production-basecamp)
-  [![Production: aftershock](docs/badges/production-aftershock.svg)](https://github.com/edycutjong/limbo/deployments/production-aftershock)
+  [![Production: site](docs/badges/production-site.svg)](https://limbo.edycu.dev)
+  [![Production: basecamp](docs/badges/production-basecamp.svg)](https://basecamp.limbo.edycu.dev)
+  [![Production: aftershock](docs/badges/production-aftershock.svg)](https://aftershock.limbo.edycu.dev)
   [![License](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 
 </div>
